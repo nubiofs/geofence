@@ -1,0 +1,54 @@
+##
+## This file has been automatically generated.
+## Any edit to this file will be lost on next update.
+## If you need to add static paths to the ignore list, please edit the createGitIgnore script.
+##
+## - ETj
+
+nb*.xml
+.classpath
+.project
+.settings
+*~
+
+src/gui/core/plugin/mapsui/gwt-unitCache/
+src/gui/core/plugin/mapsui/war/
+src/gui/core/plugin/userui/gwt-unitCache/
+src/gui/core/plugin/userui/war/
+src/gui/web/gwt-unitCache/
+src/gui/web/war/WEB-INF/deploy/
+src/gui/web/war/WEB-INF/classes/
+src/gui/web/war/WEB-INF/lib/
+src/gui/web/war/geofence/
+src/geoserver21x/web-app/src/main/webapp/data/
+src/geoserver22x/web-app/src/main/webapp/data/
+
+src/geoserver21x/target
+src/geoserver21x/security/target
+src/geoserver21x/web-app/target
+src/geoserver22x/target
+src/geoserver22x/security/target
+src/geoserver22x/web-app/target
+src/gui/core/plugin/mapsui/target
+src/gui/core/plugin/target
+src/gui/core/plugin/userui/target
+src/gui/core/target
+src/gui/core/resources/target
+src/gui/target
+src/gui/web/target
+src/target
+src/services/core/model/target
+src/services/core/persistence/target
+src/services/core/target
+src/services/core/services-api/target
+src/services/core/services-impl/target
+src/services/core/webtest/target
+src/services/modules/generic-api/target
+src/services/modules/login/api/target
+src/services/modules/login/impl/target
+src/services/modules/login/target
+src/services/modules/target
+src/services/modules/rest/target
+src/services/modules/rest/rest/target
+src/services/modules/rest/test/target
+src/services/target

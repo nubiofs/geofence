@@ -1,0 +1,23 @@
+<module rename-to="geofence">
+
+	<!-- Inherit the core Web Toolkit stuff. -->
+	<inherits name='com.google.gwt.user.User' />
+	<inherits name='com.extjs.gxt.ui.GXT' />
+	<inherits name='it.geosolutions.geofence.gui.MAPSUI' />
+	<inherits name='it.geosolutions.geofence.gui.UserUI' />
+
+	<entry-point class='it.geosolutions.geofence.gui.client.Application' />
+	<source path="client" excludes="*/*Test*.java" />
+	
+	<script src="lib/proj4js-compressed.js" />
+	<script src="lib/projCode/tmerc.js" />
+	<script src="lib/projCode/merc.js" />
+	<script src="lib/projCode/utm.js" />
+	<script src="lib/defs/EPSG4326.js" />
+	<script src="lib/defs/EPSG900913.js" />
+
+	<!-- Servlet path -->
+	<servlet path="/ConfigurationRemote"
+		class="it.geosolutions.geofence.gui.server.gwt.ConfigurationRemoteImpl" />
+
+</module>

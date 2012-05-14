@@ -1,0 +1,13 @@
+  <!-- Inherit the core Web Toolkit stuff. -->
+<module>
+	<inherits name='com.google.gwt.user.User' />
+	<inherits name='com.extjs.gxt.ui.GXT' />
+	<!-- inherits name='com.google.gwt.widgetideas.WidgetIdeas'/ -->
+    <inherits name='it.geosolutions.geofence.gui.Resources' />
+	<inherits name='org.gwtopenmaps.openlayers.OpenLayers' />
+
+	<entry-point class='it.geosolutions.geofence.gui.client.MAPSUI' />
+
+	<source path="client" />
+
+</module>

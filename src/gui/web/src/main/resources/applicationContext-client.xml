@@ -1,0 +1,102 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+
+	   xmlns:cxf="http://cxf.apache.org/core"
+	   xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+
+       xmlns:geofence="http://geosolutions.it/geofence"
+
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context   http://www.springframework.org/schema/context/spring-context-3.0.xsd
+            http://cxf.apache.org/jaxws                     http://cxf.apache.org/schemas/jaxws.xsd
+            http://cxf.apache.org/jaxrs                     http://cxf.apache.org/schemas/jaxrs.xsd
+            http://cxf.apache.org/core                      http://cxf.apache.org/schemas/core.xsd"
+
+       default-autowire="byName">
+
+       <context:annotation-config />
+
+       <!-- ================================================================ -->
+       <!-- ================================================================ -->
+       <!-- === CLIENT ===================================================== -->
+       <!-- ================================================================ -->
+       <!-- ================================================================ -->
+
+       <context:component-scan base-package="it.geosolutions.geofence.gui" />
+
+       <import resource="applicationContext-Service.xml" />
+
+       <!-- ================================================================ -->
+       <!-- ================================================================ -->
+       <!-- === SERVICES =================================================== -->
+       <!-- ================================================================ -->
+       <!-- ================================================================ -->
+
+
+    <!-- ====================================================================-->
+    <!-- Some extra bean here: we're replacing some functionalities we do not need in test -->
+    <!-- ====================================================================-->
+
+	<!-- Load CXF modules from cxf.jar -->
+    <import resource="classpath:META-INF/cxf/cxf.xml"/>
+    <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+    <import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml" />
+
+
+    <!-- ====================================================================-->
+    <!-- GeoFence Global Config -->
+    <!-- ====================================================================-->
+	<bean id="geofenceGlobalConfiguration" class="it.geosolutions.geofence.gui.client.configuration.GeofenceGlobalConfiguration">
+		<property name="baseLayerURL" value="http://demo1.geo-solutions.it/geoserver-enterprise/wms"/>
+		<property name="baseLayerName" value="GeoSolutions:ne_shaded"/>
+		<property name="baseLayerTitle" value="GeoSolutions Natural Earth"/>
+		<property name="baseLayerFormat" value="image/jpeg"/>
+		<property name="baseLayerStyle" value=""/>
+	</bean>
+    
+    <!-- ====================================================================-->
+    <!-- Service endpoints -->
+    <!-- ====================================================================-->
+
+    <!-- ====================================================================-->
+    <!-- Spring Remoting for GeoServer -->
+
+    <bean id="remoteRuleReaderProxy" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean" lazy-init="true">
+
+        <property name="serviceUrl" value="http://localhost:9191/remoting/RuleReader"/>
+        <property name="serviceInterface" value="it.geosolutions.geofence.services.RuleReaderService"/>
+    </bean>
+
+    <!-- ====================================================================-->
+    <!-- WebGIS Services -->
+
+    <!-- bean id="webgisService" class="it.geosolutions.geofence.services.webgis.WGFuncServiceImpl">
+    </bean>
+
+    <bean id="tocService" class="it.geosolutions.geofence.services.webgis.WGTocServiceImpl">
+    </bean>
+
+    <jaxrs:server id="webgisREST" address="/webgis">
+        <jaxrs:serviceBeans>
+          <ref bean="webgisService"/>
+          <ref bean="tocService"/>
+        </jaxrs:serviceBeans>
+
+        <jaxrs:features>
+             <cxf:logging/>
+        </jaxrs:features>
+
+    </jaxrs:server -->
+
+    <!-- ====================================================================-->
+    <!-- Enable message logging using the CXF logging feature -->
+
+    <cxf:bus>
+    	<cxf:features>
+    		<cxf:logging/>
+	    </cxf:features>
+	</cxf:bus>
+
+</beans>

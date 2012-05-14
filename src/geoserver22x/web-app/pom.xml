@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>it.geosolutions.geofence</groupId>
+    <artifactId>geofence-geoserver22</artifactId>
+    <version>2.2-SNAPSHOT</version>
+  </parent>
+
+  <groupId>it.geosolutions.geofence.geoserver</groupId>
+  <artifactId>geofence-web-app22</artifactId>
+  <packaging>jar</packaging>
+  <name>GeoFence - GeoServer 2.2.x customized web app</name>
+
+  <properties>
+
+    <configId>minimal</configId>
+    <configDirectory>${basedir}</configDirectory>
+    <webappSourceDirectory>${basedir}/src/main/webapp</webappSourceDirectory>
+    <sde.version>9.3</sde.version>
+
+    <hibernate-version>3.3.2.GA</hibernate-version>
+    <hibernate-spatial-version>1.0</hibernate-spatial-version>
+    <hibernate-annotations-version>3.3.1.GA</hibernate-annotations-version>
+    <hibernate-commons-annotations-version>3.3.0.ga</hibernate-commons-annotations-version>
+    <hibernate-generic-dao-version>0.5.1</hibernate-generic-dao-version>
+
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <!-- GeoServer Trunk Artifact -->
+      <groupId>org.geoserver.web</groupId>
+      <artifactId>web-app</artifactId>
+
+      <!-- GeoServer Priv Artifact -->
+      <!-- groupId>it.geosolutions.geoserver</groupId>
+      <artifactId>webapp</artifactId -->
+
+      <version>${geoserver-version}</version>
+    </dependency>
+
+    <!-- common extension modules -->
+    <dependency>
+      <groupId>org.geoserver.extension</groupId>
+      <artifactId>control-flow</artifactId>
+      <version>${geoserver-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geoserver.extension</groupId>
+      <artifactId>oracle</artifactId>
+      <version>${geoserver-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geofence.geoserver</groupId>
+      <artifactId>geofence-security22</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+		<!-- =========================================================== -->
+		<!--     Hibernate                                               -->
+		<!-- =========================================================== -->
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-annotations</artifactId>
+			<version>${hibernate-annotations-version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>asm</groupId>
+                    <artifactId>asm</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>asm</groupId>
+                    <artifactId>asm-attrs</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>cglib</groupId>
+                    <artifactId>cglib</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-commons-annotations</artifactId>
+			<version>${hibernate-commons-annotations-version}</version>
+        </dependency>
+<!--        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+        </dependency>-->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+			<version>${hibernate-version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>asm</groupId>
+                    <artifactId>asm</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>asm</groupId>
+                    <artifactId>asm-attrs</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>cglib</groupId>
+                    <artifactId>cglib</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+		
+   <!-- Jetty test dependencies to start GeoServer from an IDE -->
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty</artifactId>
+      <scope>test</scope>
+      <version>${jetty-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty-naming</artifactId>
+      <scope>test</scope>
+      <version>${jetty-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty-plus</artifactId>
+      <scope>test</scope>
+      <version>${jetty-version}</version>
+    </dependency>
+  </dependencies>
+
+    <build>
+    <plugins>
+      <!-- Builds a valid data directory into the web app -->
+      <plugin>
+        <groupId>org.geoserver.maven</groupId>
+        <artifactId>config</artifactId>
+        <version>${geoserver-version}</version>
+        <executions>
+          <execution>
+            <id>configPackage</id>
+            <configuration>
+              <configDirectory>${configDirectory}</configDirectory>
+              <configId>${configId}</configId>
+            </configuration>
+            <phase>package</phase>
+            <goals>
+              <goal>config</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>configClean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>maven-jetty-plugin</artifactId>
+        <version>6.1.8</version>
+        <configuration>
+          <contextPath>geoserver</contextPath>
+          <connectors>
+            <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+              <port>8080</port>
+              <maxIdleTime>10000</maxIdleTime>
+            </connector>
+          </connectors>
+          <contextPath>geoserver</contextPath>
+          <!-- uncomment following to set a GEOSERVER_DATA_DIR -->
+          <!--
+            <systemProperties> <systemProperty> <name>GEOSERVER_DATA_DIR</name>
+            <value>/home/ak/geoserver_data</value> </systemProperty> </systemProperties>
+          -->
+        </configuration>
+      </plugin>
+      <plugin>
+        <inherited>true</inherited>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <warName>geoserver</warName>
+          <webappDirectory>${project.build.directory}/geoserver</webappDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>install</phase>
+            <goals>
+              <goal>war</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  
+  <profiles>
+
+    <profile>
+      <id>release</id>
+      <properties>
+        <configDirectory>${basedir}/../data</configDirectory>
+        <configId>release</configId>
+      </properties>
+    </profile>
+	
+	<profile>
+        <id>monitoring</id>
+        <activation>
+          <property>
+            <name>all</name>
+            <value>true</value>
+          </property>
+        </activation>
+        <dependencies>
+          <dependency>
+            <groupId>org.geoserver.community</groupId>
+            <artifactId>monitoring</artifactId>
+            <version>${geoserver-version}</version>
+          </dependency>
+        </dependencies>
+    </profile>
+	<profile>
+        <id>importer</id>
+        <activation>
+          <property>
+            <name>all</name>
+            <value>true</value>
+          </property>
+        </activation>
+        <dependencies>
+          <dependency>
+            <groupId>org.geoserver</groupId>
+            <artifactId>importer-web</artifactId>
+			<version>${geoserver-version}</version>
+          </dependency>
+        </dependencies>
+      </profile>
+<!-- ========================================-->
+<!-- Wicket ONE_PASS_REDIRECT Filter -->
+<!-- ========================================-->
+	<profile>
+        <id>1Prenderfilter</id>
+        <activation>
+          <property>
+            <name>all</name>
+            <value>true</value>
+          </property>
+        </activation>
+        <dependencies>
+          <dependency>
+            <groupId>it.geosolutions.geoserver</groupId>
+            <artifactId>1Prenderfilter</artifactId>
+            <version>${geoserver-version}</version>
+          </dependency>
+        </dependencies>
+      </profile>
+</profiles>
+
+</project>

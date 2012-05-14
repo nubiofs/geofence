@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+  http://maven.apache.org/maven-v4_0_0.xsd">
+
+ <modelVersion>4.0.0</modelVersion>
+
+ <groupId>it.geosolutions</groupId>
+ <artifactId>geofence</artifactId>
+ <version>2.2-SNAPSHOT</version>
+
+ <name>Master GeoFence POM</name>
+
+ <packaging>pom</packaging>
+
+ <modules>
+  <module>services</module>
+  <module>gui</module>
+  <module>geoserver21x</module>
+  <module>geoserver22x</module>
+  </modules>
+
+
+</project>

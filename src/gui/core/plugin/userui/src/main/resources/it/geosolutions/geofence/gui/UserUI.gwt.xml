@@ -1,0 +1,32 @@
+  <!-- Inherit the core Web Toolkit stuff. -->
+<module>
+	<inherits name='com.google.gwt.user.User' />
+	<inherits name='com.extjs.gxt.ui.GXT' />
+	<inherits name='it.geosolutions.geofence.gui.Resources' />
+
+	<entry-point class='it.geosolutions.geofence.gui.client.UserUI' />
+
+	  <!-- Specify the paths for translatable code                    -->
+	  <source path='client'/>
+	  <source path='shared'/>
+	  <inherits name="com.extjs.gxt.ui.GXT"/>
+
+	<servlet path="/LoginRemote"
+		class="it.geosolutions.geofence.gui.server.gwt.LoginRemoteImpl" />
+
+	<servlet path="/GsUsersManagerRemoteService"
+		class="it.geosolutions.geofence.gui.server.gwt.GsUsersManagerServiceImpl" />
+		
+	<servlet path="/ProfilesManagerRemoteService"
+		class="it.geosolutions.geofence.gui.server.gwt.ProfilesManagerServiceImpl" />
+	
+	<servlet path="/InstancesManagerRemoteService"
+		class="it.geosolutions.geofence.gui.server.gwt.InstancesManagerRemoteServiceImpl" />
+		
+	<servlet path="/RulesManagerRemoteService"
+		class="it.geosolutions.geofence.gui.server.gwt.RulesManagerServiceImpl" />
+	
+	<servlet path="/WorkspacesManagerRemoteService"
+		class="it.geosolutions.geofence.gui.server.gwt.WorkspacesManagerServiceImpl" />
+		
+</module>
