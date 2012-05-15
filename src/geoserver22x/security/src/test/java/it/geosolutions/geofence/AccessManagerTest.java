@@ -121,7 +121,7 @@ public class AccessManagerTest extends GeofenceBaseTest
         assertEquals(Filter.EXCLUDE, vl.getWriteFilter());
 
         // now fake a getmap request (using a service and request with a different case than the
-        // rules)
+        // geofenceService)
         request = new Request();
         request.setService("WmS");
         request.setRequest("gETmAP");
@@ -148,7 +148,7 @@ public class AccessManagerTest extends GeofenceBaseTest
         assertEquals(Filter.EXCLUDE, vl.getWriteFilter());
 
         // now fake a getmap request (using a service and request with a different case than the
-        // rules)
+        // geofenceService)
         request = new Request();
         request.setService("wms");
         Dispatcher.REQUEST.set(request);

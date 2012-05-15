@@ -8,24 +8,20 @@ import java.util.Properties;
 
 import it.geosolutions.geofence.services.RuleReaderService;
 
+import java.util.logging.Level;
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.geoserver.data.test.MockData;
 import org.geoserver.test.GeoServerTestSupport;
 
+public abstract class GeofenceBaseTest extends GeoServerTestSupport {
 
-public abstract class GeofenceBaseTest extends GeoServerTestSupport
-{
-
-    static Boolean RULES_AVAILABLE;
-
-    GeofenceAccessManager manager;
-
-    RuleReaderService rules;
+    private static Boolean IS_GEOFENCE_AVAILABLE;
+    protected GeofenceAccessManager manager;
+    protected RuleReaderService geofenceService;
 
     @Override
-    protected void oneTimeSetUp() throws Exception
-    {
+    protected void oneTimeSetUp() throws Exception {
         super.oneTimeSetUp();
 
         Map<String, String> namespaces = new HashMap<String, String>();
@@ -38,18 +34,16 @@ public abstract class GeofenceBaseTest extends GeoServerTestSupport
     }
 
     @Override
-    protected void setUpInternal() throws Exception
-    {
+    protected void setUpInternal() throws Exception {
         super.setUpInternal();
 
         // get the beans we use for testing
         manager = (GeofenceAccessManager) applicationContext.getBean("geofenceRuleAccessManager");
-        rules = (RuleReaderService) applicationContext.getBean("ruleReaderService");
+        geofenceService = (RuleReaderService) applicationContext.getBean("ruleReaderService");
     }
 
     @Override
-    protected void populateDataDirectory(MockData dataDirectory) throws Exception
-    {
+    protected void populateDataDirectory(MockData dataDirectory) throws Exception {
         super.populateDataDirectory(dataDirectory);
 
         // populate the users
@@ -66,33 +60,25 @@ public abstract class GeofenceBaseTest extends GeoServerTestSupport
     }
 
     @Override
-    protected void runTest() throws Throwable
-    {
+    protected void runTest() throws Throwable {
 
-        if (RULES_AVAILABLE == null)
-        {
-            try
-            {
-                rules.getMatchingRules(null, null, null, null, null, null, null);
-                RULES_AVAILABLE = true;
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-                RULES_AVAILABLE = false;
+        if (IS_GEOFENCE_AVAILABLE == null) {
+            try {
+                geofenceService.getMatchingRules(null, null, null, null, null, null, null);
+                IS_GEOFENCE_AVAILABLE = true;
+            } catch (Exception e) {
+                LOGGER.log(Level.WARNING, "Error connecting to GeoFence", e);
+                IS_GEOFENCE_AVAILABLE = false;
             }
         }
 
-        if (RULES_AVAILABLE)
-        {
+        if (IS_GEOFENCE_AVAILABLE) {
             super.runTest();
-        }
-        else
-        {
-            System.out.println("Skipping test as the rules service is down: " +
-                "in order to run this test you need the services to be running on port 9191");
+        } else {
+            System.out.println("Skipping test as GeoFence service is down: "
+                    + "in order to run this test you need the services to be running on port 9191");
+            // TODO: use Assume when using junit >=3
         }
 
     }
-
 }

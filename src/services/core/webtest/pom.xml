@@ -9,7 +9,7 @@
     </parent>
 
     <groupId>it.geosolutions.geofence</groupId>
-	<artifactId>geofence-fakeweb</artifactId>
+	<artifactId>geofence-webtest</artifactId>
 	<packaging>war</packaging>
 
 	<name>GeoFence - Core - Web Test Module</name>
