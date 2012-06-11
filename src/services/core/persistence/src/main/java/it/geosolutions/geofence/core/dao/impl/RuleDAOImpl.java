@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -19,13 +19,12 @@
  */
 package it.geosolutions.geofence.core.dao.impl;
 
-
 import java.util.List;
 
 import javax.persistence.Query;
 
-import com.trg.search.ISearch;
-import com.trg.search.Search;
+import com.googlecode.genericdao.search.ISearch;
+import com.googlecode.genericdao.search.Search;
 
 import it.geosolutions.geofence.core.dao.RuleDAO;
 import it.geosolutions.geofence.core.model.Rule;
@@ -35,30 +34,26 @@ import org.apache.log4j.Logger;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.transaction.annotation.Transactional;
 
-
 /**
  * Public implementation of the GSUserDAO interface
  *
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
 @Transactional(value = "geofenceTransactionManager")
-public class RuleDAOImpl extends BaseDAO<Rule, Long> implements RuleDAO
-{
+public class RuleDAOImpl extends BaseDAO<Rule, Long> implements RuleDAO {
 
     private static final Logger LOGGER = Logger.getLogger(RuleDAOImpl.class);
 
     @Override
-    public void persist(Rule... entities)
-    {
+    public void persist(Rule... entities) {
 
-        for (Rule rule : entities)
-        {
+        for (Rule rule : entities) {
             // check there are no dups for the rules received
-            if(rule.getAccess() != GrantType.LIMIT) { // there may be as many LIMIT rules as desired
+            if ( rule.getAccess() != GrantType.LIMIT ) { // there may be as many LIMIT rules as desired
                 Search search = getDupSearch(rule);
                 List<Rule> dups = search(search);
                 for (Rule dup : dups) {
-                    if(dup.getAccess() != GrantType.LIMIT) {
+                    if ( dup.getAccess() != GrantType.LIMIT ) {
                         LOGGER.warn(" ORIG: " + dup);
                         LOGGER.warn(" DUP : " + rule);
                         throw new DuplicateKeyException("Duplicate Rule " + rule);
@@ -73,12 +68,10 @@ public class RuleDAOImpl extends BaseDAO<Rule, Long> implements RuleDAO
         super.persist(entities);
     }
 
-
-    private Search getDupSearch(Rule rule)
-    {
+    private Search getDupSearch(Rule rule) {
         Search search = new Search(Rule.class);
         addSearchField(search, "gsuser", rule.getGsuser());
-        addSearchField(search, "profile", rule.getProfile());
+        addSearchField(search, "userGroup", rule.getUserGroup());
         addSearchField(search, "instance", rule.getInstance());
         addSearchField(search, "service", rule.getService());
         addSearchField(search, "request", rule.getRequest());
@@ -88,71 +81,58 @@ public class RuleDAOImpl extends BaseDAO<Rule, Long> implements RuleDAO
         return search;
     }
 
-    private void addSearchField(Search search, String field, Object o)
-    {
-        if (o == null)
-        {
+    private void addSearchField(Search search, String field, Object o) {
+        if ( o == null ) {
             search.addFilterNull(field);
-        }
-        else
-        {
+        } else {
             search.addFilterEqual(field, o);
         }
     }
 
-
     @Override
-    public List<Rule> findAll()
-    {
+    public List<Rule> findAll() {
         return super.findAll();
     }
 
     @Override
-    public List<Rule> search(ISearch search)
-    {
+    public List<Rule> search(ISearch search) {
         return super.search(search);
     }
 
     @Override
-    public Rule merge(Rule entity)
-    {
+    public Rule merge(Rule entity) {
         Search search = getDupSearch(entity);
 
         // check if we are dup'ing some other Rule.
         List<Rule> existent = search(search);
-        switch (existent.size())
-        {
-        case 0:
-            break;
+        switch (existent.size()) {
+            case 0:
+                break;
 
-        case 1:
-            // We may be updating some other fields in this Rule
-            if (!existent.get(0).getId().equals(entity.getId()))
-            {
-                throw new DuplicateKeyException("Duplicating Rule " + existent.get(0) + " with " + entity);
-            }
-            break;
+            case 1:
+                // We may be updating some other fields in this Rule
+                if ( !existent.get(0).getId().equals(entity.getId()) ) {
+                    throw new DuplicateKeyException("Duplicating Rule " + existent.get(0) + " with " + entity);
+                }
+                break;
 
-        default:
-            throw new IllegalStateException("Too many rules duplicating " + entity);
+            default:
+                throw new IllegalStateException("Too many rules duplicating " + entity);
         }
 
         return super.merge(entity);
     }
 
     @Override
-    public int shift(long priorityStart, long offset)
-    {
-        if (offset <= 0)
-        {
+    public int shift(long priorityStart, long offset) {
+        if ( offset <= 0 ) {
             throw new IllegalArgumentException("Positive offset required");
         }
 
         Search search = new Search(Rule.class);
         search.addFilterGreaterOrEqual("priority", priorityStart);
         search.addFilterLessThan("priority", priorityStart + offset);
-        if (super.count(search) == 0)
-        {
+        if ( super.count(search) == 0 ) {
             return -1;
         }
 
@@ -166,13 +146,11 @@ public class RuleDAOImpl extends BaseDAO<Rule, Long> implements RuleDAO
     }
 
     @Override
-    public void swap(long id1, long id2)
-    {
+    public void swap(long id1, long id2) {
         Rule rule1 = super.find(id1);
         Rule rule2 = super.find(id2);
 
-        if ((rule1 == null) || (rule2 == null))
-        {
+        if ( (rule1 == null) || (rule2 == null) ) {
             throw new IllegalArgumentException("Rule not found");
         }
 
@@ -183,16 +161,12 @@ public class RuleDAOImpl extends BaseDAO<Rule, Long> implements RuleDAO
     }
 
     @Override
-    public boolean remove(Rule entity)
-    {
+    public boolean remove(Rule entity) {
         return super.remove(entity);
     }
 
     @Override
-    public boolean removeById(Long id)
-    {
+    public boolean removeById(Long id) {
         return super.removeById(id);
     }
-
-
 }

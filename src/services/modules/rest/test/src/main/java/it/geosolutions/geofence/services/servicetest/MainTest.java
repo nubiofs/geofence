@@ -30,16 +30,16 @@ import it.geosolutions.geofence.core.model.GSInstance;
 import it.geosolutions.geofence.core.model.GSUser;
 import it.geosolutions.geofence.core.model.LayerAttribute;
 import it.geosolutions.geofence.core.model.LayerDetails;
-import it.geosolutions.geofence.core.model.Profile;
+import it.geosolutions.geofence.core.model.UserGroup;
 import it.geosolutions.geofence.core.model.Rule;
 import it.geosolutions.geofence.core.model.enums.AccessType;
 import it.geosolutions.geofence.core.model.enums.GrantType;
 import it.geosolutions.geofence.services.GFUserAdminService;
 import it.geosolutions.geofence.services.InstanceAdminService;
-import it.geosolutions.geofence.services.ProfileAdminService;
+import it.geosolutions.geofence.services.UserGroupAdminService;
 import it.geosolutions.geofence.services.RuleAdminService;
 import it.geosolutions.geofence.services.UserAdminService;
-import it.geosolutions.geofence.services.dto.ShortProfile;
+import it.geosolutions.geofence.services.dto.ShortGroup;
 import it.geosolutions.geofence.services.rest.utils.InstanceCleaner;
 
 import org.apache.log4j.Logger;
@@ -56,7 +56,7 @@ public class MainTest implements InitializingBean
     private static final Logger LOGGER = Logger.getLogger(MainTest.class);
 
     private RuleAdminService ruleAdminService;
-    private ProfileAdminService profileAdminService;
+    private UserGroupAdminService profileAdminService;
     private UserAdminService userAdminService;
     private GFUserAdminService grUserAdminService;
     private InstanceAdminService instanceAdminService;
@@ -77,16 +77,16 @@ public class MainTest implements InitializingBean
     private void setUpTestRule()
     {
 
-        ShortProfile sp1 = new ShortProfile();
+        ShortGroup sp1 = new ShortGroup();
         sp1.setName("test_profile");
 
         long p1id = profileAdminService.insert(sp1);
 
-        ShortProfile sp2 = new ShortProfile();
+        ShortGroup sp2 = new ShortGroup();
         sp2.setName("test_profile2");
 
         long p2id = profileAdminService.insert(sp2);
-        Profile p2 = profileAdminService.get(p2id);
+        UserGroup p2 = profileAdminService.get(p2id);
 
         Map<String, String> p2cp = new HashMap<String, String>();
         p2cp.put("k1", "v1");
@@ -207,7 +207,7 @@ public class MainTest implements InitializingBean
 
     // ==========================================================================
 
-    public void setProfileAdminService(ProfileAdminService profileAdminService)
+    public void setProfileAdminService(UserGroupAdminService profileAdminService)
     {
         this.profileAdminService = profileAdminService;
     }

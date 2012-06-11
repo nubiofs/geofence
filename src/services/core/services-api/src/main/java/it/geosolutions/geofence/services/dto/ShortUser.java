@@ -79,7 +79,7 @@ public class ShortUser implements Serializable
     @Override
     public String toString()
     {
-        return "ShortUser{" + "id=" + id + " name=" + name + '}';
+        return getClass().getSimpleName()+"[id:" + id + " name:" + name + ']';
     }
 
 }

@@ -1,11 +1,6 @@
-/*
- * $ Header: it.geosolutions.geofence.core.model.enums.ValueType,v. 0.1 4-gen-2011 16.49.11 created by afabiani <alessio.fabiani at geo-solutions.it> $
- * $ Revision: 0.1 $
- * $ Date: 4-gen-2011 16.49.11 $
+/* ====================================================================
  *
- * ====================================================================
- *
- * Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ * Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  * http://www.geo-solutions.it
  *
  * GPLv3 + Classpath exception
@@ -35,7 +30,9 @@ package it.geosolutions.geofence.core.model.enums;
 
 /**
  * The Enum AccessType.
- */
+ *
+ * @author ETj (etj at geo-solutions.it)
+*/
 public enum AccessType {
     
     /** No access to the resource. */

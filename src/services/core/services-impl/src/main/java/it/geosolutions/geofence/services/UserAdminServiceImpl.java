@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -19,8 +19,10 @@
  */
 package it.geosolutions.geofence.services;
 
+import com.googlecode.genericdao.search.Search;
 import it.geosolutions.geofence.core.dao.GSUserDAO;
 import it.geosolutions.geofence.core.model.GSUser;
+import it.geosolutions.geofence.core.model.UserGroup;
 import it.geosolutions.geofence.services.dto.ShortUser;
 
 import java.util.ArrayList;
@@ -28,9 +30,9 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.trg.search.Search;
 import it.geosolutions.geofence.services.exception.BadRequestServiceEx;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
+import java.util.Set;
 
 /**
  *
@@ -72,13 +74,72 @@ public class UserAdminServiceImpl implements UserAdminService {
     }
 
     @Override
+    public GSUser get(String name) {
+        Search search = new Search(GSUser.class);
+        search.addFilterEqual("name", name);
+        List<GSUser> users = userDAO.search(search);
+
+        if(users.isEmpty())
+            throw new NotFoundServiceEx("User not found  '"+ name + "'");
+        else if(users.size() > 1)
+            throw new IllegalStateException("Found more than one user with name '"+name+"'");
+        else
+            return users.get(0);
+    }
+
+
+    @Override
+    public GSUser getFull(long id) {
+
+        GSUser user = userDAO.getFull(id);
+        if(user == null)
+            throw new NotFoundServiceEx("User not found", id);
+        return user;
+    }
+//        Search search = new Search(GSUser.class);
+//        search.addFetch("userGroups");
+//        search.addFilterEqual("id", id);
+//        List<GSUser> users = userDAO.search(search);
+//        switch(users.size()) {
+//            case 0:
+//                throw new NotFoundServiceEx("User not found", id);
+//            case 1:
+//                return users.get(0);
+//            default:
+//                if(users.size() == users.get(0).getGroups().size()) { // normal hibernate behaviour
+//                    if(LOGGER.isDebugEnabled()) { // perform some more consistency tests only when debugging
+//                        for (GSUser user : users) {
+//                            if(user.getId() != users.get(0).getId() ||
+//                               user.getGroups().size() != users.get(0).getGroups().size()) {
+//                                LOGGER.error("Inconsistent userlist " + user);
+//                            }
+//                        }
+//                    }
+//
+//                    return users.get(0);
+//                } else {
+//                    LOGGER.error("Too many users with id " + id);
+//                    for (GSUser user : users) {
+//                        LOGGER.error("   " + user + " grp:"+user.getGroups().size());
+//                    }
+//                    throw new IllegalStateException("Found more than one user (id:"+id+")");
+//                }
+//        }
+//    }
+
+    @Override
+    public Set<UserGroup> getUserGroups(long id) {
+        return userDAO.getGroups(id);
+    }
+
+    @Override
     public boolean delete(long id) throws NotFoundServiceEx {
         // data on ancillary tables should be deleted by cascading
         return userDAO.removeById(id);
     }
 
     @Override
-    public List<GSUser> getFullList(String nameLike, Integer page, Integer entries) {
+    public List<GSUser> getFullList(String nameLike, Integer page, Integer entries) throws BadRequestServiceEx {
 
         if( (page != null && entries == null) || (page ==null && entries != null)) {
             throw new BadRequestServiceEx("Page and entries params should be declared together.");

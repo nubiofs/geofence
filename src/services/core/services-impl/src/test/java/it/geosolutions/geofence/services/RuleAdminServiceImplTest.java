@@ -22,7 +22,7 @@ package it.geosolutions.geofence.services;
 
 import it.geosolutions.geofence.core.model.LayerAttribute;
 import it.geosolutions.geofence.core.model.LayerDetails;
-import it.geosolutions.geofence.core.model.Profile;
+import it.geosolutions.geofence.core.model.UserGroup;
 import it.geosolutions.geofence.core.model.Rule;
 import it.geosolutions.geofence.core.model.RuleLimits;
 import it.geosolutions.geofence.core.model.enums.AccessType;
@@ -62,9 +62,9 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
     @Test
     public void testInsertDeleteRule() throws NotFoundServiceEx {
 
-        Profile profile = createProfile(getName());
+        UserGroup profile = createUserGroup(getName());
         Rule rule = new Rule();
-        rule.setProfile(profile);
+        rule.setUserGroup(profile);
         rule.setAccess(GrantType.ALLOW);
         ruleAdminService.insert(rule);
         ruleAdminService.get(rule.getId()); // will throw if not found
@@ -73,8 +73,8 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
 
     @Test
     public void testUpdateRule() throws Exception {
-        Profile p1 = createProfile("p1");
-        Profile p2 = createProfile("p2");
+        UserGroup p1 = createUserGroup("p1");
+        UserGroup p2 = createUserGroup("p2");
 
         Rule rule = new Rule(10, null, p1,null, "s1", "r1", "w1", "l1", GrantType.ALLOW);
         ruleAdminService.insert(rule);
@@ -83,11 +83,11 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
             Rule loaded = ruleAdminService.get(rule.getId());
             assertNotNull(loaded);
 
-            assertEquals("p1", loaded.getProfile().getName());
+            assertEquals("p1", loaded.getUserGroup().getName());
             assertEquals("S1", loaded.getService());
             assertEquals("l1", loaded.getLayer());
 
-            loaded.setProfile(p2);
+            loaded.setUserGroup(p2);
             loaded.setService("s2");
             loaded.setLayer("l2");
 
@@ -97,7 +97,7 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
             Rule loaded = ruleAdminService.get(rule.getId());
             assertNotNull(loaded);
 
-            assertEquals("p2", loaded.getProfile().getName());
+            assertEquals("p2", loaded.getUserGroup().getName());
             assertEquals("S2", loaded.getService());
             assertEquals("l2", loaded.getLayer());
         }
@@ -107,7 +107,7 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
     public void testGetAllRules() {
         assertEquals(0, ruleAdminService.getAll().size());
 
-        Profile p1 = createProfile("p1");
+        UserGroup p1 = createUserGroup("p1");
 
         Rule r1 = new Rule(10, null, p1, null, "s1", "r1", "w1", "l1", GrantType.ALLOW);
         Rule r2 = new Rule(20, null, p1, null, "s2", "r2", "w2", "l2", GrantType.ALLOW);
@@ -124,8 +124,8 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
     public void testGetRules() {
         assertEquals(0, ruleAdminService.getCount("*","*","*", "*","*", "*","*"));
 
-        Profile p1 = createProfile("p1");
-        Profile p2 = createProfile("p2");
+        UserGroup p1 = createUserGroup("p1");
+        UserGroup p2 = createUserGroup("p2");
 
         Rule r1 = new Rule(10, null, p1, null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
         Rule r2 = new Rule(20, null, p2, null,      "s1", "r2", "w2", "l2", GrantType.ALLOW);

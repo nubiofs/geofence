@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -20,7 +20,10 @@
 
 package it.geosolutions.geofence.core.dao;
 
+import com.googlecode.genericdao.search.Search;
 import it.geosolutions.geofence.core.model.GSUser;
+import it.geosolutions.geofence.core.model.UserGroup;
+import java.util.Set;
 
 /**
  * Public interface to define operations on GSUsers
@@ -29,4 +32,12 @@ import it.geosolutions.geofence.core.model.GSUser;
  */
 
 public interface GSUserDAO extends RestrictedGenericDAO<GSUser> {
+
+    Set<UserGroup> getGroups(Long id);
+
+    /** Fetch a GSUser with all of its related groups */
+    GSUser getFull(Long id);
+    /** Fetch a GSUser with all of its related groups */
+    GSUser getFull(String name);
+
 }

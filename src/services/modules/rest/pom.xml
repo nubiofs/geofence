@@ -37,7 +37,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>rest</module>
+        <module>api</module>
+        <module>impl</module>
         <module>test</module>
     </modules>
  

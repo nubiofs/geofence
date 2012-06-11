@@ -24,18 +24,18 @@ import it.geosolutions.geofence.core.model.GSInstance;
 import it.geosolutions.geofence.core.model.GSUser;
 import it.geosolutions.geofence.core.model.LayerAttribute;
 import it.geosolutions.geofence.core.model.LayerDetails;
-import it.geosolutions.geofence.core.model.Profile;
+import it.geosolutions.geofence.core.model.UserGroup;
 import it.geosolutions.geofence.core.model.Rule;
 import it.geosolutions.geofence.core.model.RuleLimits;
 import it.geosolutions.geofence.core.model.enums.AccessType;
 import it.geosolutions.geofence.core.model.enums.GrantType;
 import it.geosolutions.geofence.services.InstanceAdminService;
-import it.geosolutions.geofence.services.ProfileAdminService;
+import it.geosolutions.geofence.services.UserGroupAdminService;
 import it.geosolutions.geofence.services.RuleAdminService;
 import it.geosolutions.geofence.services.RuleReaderService;
 import it.geosolutions.geofence.services.UserAdminService;
 import it.geosolutions.geofence.services.dto.AccessInfo;
-import it.geosolutions.geofence.services.dto.ShortProfile;
+import it.geosolutions.geofence.services.dto.ShortGroup;
 import it.geosolutions.geofence.services.dto.ShortRule;
 import it.geosolutions.geofence.services.dto.ShortUser;
 
@@ -64,7 +64,7 @@ public class MainTest implements InitializingBean, ApplicationContextAware {
     private XmlWebApplicationContext applicationContext;
 
     private UserAdminService userAdminService;
-    private ProfileAdminService profileAdminService;
+    private UserGroupAdminService profileAdminService;
     private InstanceAdminService instanceAdminService;
     private RuleAdminService ruleAdminService;
     private RuleReaderService ruleReaderService;
@@ -92,32 +92,32 @@ public class MainTest implements InitializingBean, ApplicationContextAware {
         removeAll();
 
         LOGGER.info("===== Creating Profiles (not actually needed while testing GS) =====");
-        ShortProfile shortProfile = new ShortProfile();
+        ShortGroup shortProfile = new ShortGroup();
         shortProfile.setName("basic");
         long pid1 = profileAdminService.insert(shortProfile);
-        Profile p1 = profileAdminService.get(pid1);
+        UserGroup p1 = profileAdminService.get(pid1);
 
-        ShortProfile shortProfile2 = new ShortProfile();
+        ShortGroup shortProfile2 = new ShortGroup();
         shortProfile2.setName("advanced");
         long pid2 = profileAdminService.insert(shortProfile2);
-        Profile p2 = profileAdminService.get(pid2);
+        UserGroup p2 = profileAdminService.get(pid2);
 
 
         LOGGER.info("===== Creating Users =====");
         GSUser cite = createUser("cite");
-        cite.setProfile(p1);
+        cite.getGroups().add(p1);
         userAdminService.insert(cite);
 
         GSUser wmsUser = createUser("wmsuser");
-        wmsUser.setProfile(p1);
+        wmsUser.getGroups().add(p1);
         userAdminService.insert(wmsUser);
 
         GSUser areaUser = createUser("area");
-        areaUser.setProfile(p1);
+        areaUser.getGroups().add(p1);
         userAdminService.insert(areaUser);
 
         GSUser uStates = createUser("u-states");
-        uStates.setProfile(p1);
+        uStates.getGroups().add(p1);
         userAdminService.insert(uStates);
 
         LOGGER.info("===== Creating Rules =====");
@@ -256,8 +256,8 @@ public class MainTest implements InitializingBean, ApplicationContextAware {
     }
 
     protected void removeAllProfiles() throws NotFoundServiceEx {
-        List<ShortProfile> list = profileAdminService.getList(null,null,null);
-        for (ShortProfile item : list) {
+        List<ShortGroup> list = profileAdminService.getList(null,null,null);
+        for (ShortGroup item : list) {
             LOGGER.info("Removing " + item);
             boolean ret = profileAdminService.delete(item.getId());
             if(!ret)
@@ -288,7 +288,7 @@ public class MainTest implements InitializingBean, ApplicationContextAware {
         this.instanceAdminService = instanceAdminService;
     }
 
-    public void setProfileAdminService(ProfileAdminService profileAdminService) {
+    public void setProfileAdminService(UserGroupAdminService profileAdminService) {
         this.profileAdminService = profileAdminService;
     }
 

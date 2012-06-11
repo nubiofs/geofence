@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -19,10 +19,9 @@
  */
 package it.geosolutions.geofence.core.dao.impl;
 
-
 import java.util.List;
 
-import com.trg.search.ISearch;
+import com.googlecode.genericdao.search.ISearch;
 
 import it.geosolutions.geofence.core.dao.RuleLimitsDAO;
 import it.geosolutions.geofence.core.model.RuleLimits;

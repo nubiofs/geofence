@@ -22,6 +22,8 @@ package it.geosolutions.geofence.core.model;
 
 import it.geosolutions.geofence.core.model.enums.AccessType;
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
@@ -38,7 +40,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Embeddable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "LayerAttribute")
 @XmlRootElement(name = "LayerAttribute")
-public class LayerAttribute implements Serializable {
+public class LayerAttribute implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -4739817113509675752L;
 
@@ -146,5 +148,15 @@ public class LayerAttribute implements Serializable {
         return sb.toString();
 
     }
+
+    @Override
+    public LayerAttribute clone() {
+        try {
+            return (LayerAttribute) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            throw new IllegalStateException("Unexpected exception", ex);
+        }
+    }
+
 
 }

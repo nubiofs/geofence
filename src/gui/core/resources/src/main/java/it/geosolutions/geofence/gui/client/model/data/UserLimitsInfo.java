@@ -83,6 +83,7 @@ public class UserLimitsInfo extends BeanModel implements IsSerializable
 
     /**
      * @return the allowedArea
+     * @deprecated removed from base model
      */
     public String getAllowedArea()
     {
@@ -91,6 +92,7 @@ public class UserLimitsInfo extends BeanModel implements IsSerializable
 
     /**
      * @param allowedArea the allowedArea to set
+     * @deprecated removed from base model
      */
     public void setAllowedArea(String allowedArea)
     {
@@ -100,6 +102,7 @@ public class UserLimitsInfo extends BeanModel implements IsSerializable
 
     /**
      * @return the srid
+     * @deprecated removed from base model
      */
     public String getSrid()
     {
@@ -108,6 +111,7 @@ public class UserLimitsInfo extends BeanModel implements IsSerializable
 
     /**
      * @param srid the srid to set
+     * @deprecated removed from base model
      */
     public void setSrid(String srid)
     {

@@ -19,12 +19,12 @@
  */
 package it.geosolutions.geofence.services;
 
-import it.geosolutions.geofence.core.model.Profile;
+import it.geosolutions.geofence.core.model.UserGroup;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 
 
 /**
- * Operations on {@link Profile Profile}s.
+ * Operations on {@link UserGroup UserGroup}s.
  *
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */

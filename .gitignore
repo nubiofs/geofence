@@ -48,7 +48,8 @@ src/services/modules/login/api/target
 src/services/modules/login/impl/target
 src/services/modules/login/target
 src/services/modules/target
+src/services/modules/rest/api/target
+src/services/modules/rest/impl/target
 src/services/modules/rest/target
-src/services/modules/rest/rest/target
 src/services/modules/rest/test/target
 src/services/target

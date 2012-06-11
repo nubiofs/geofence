@@ -1,6 +1,6 @@
 /* ====================================================================
  *
- * Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ * Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  * http://www.geo-solutions.it
  *
  * GPLv3 + Classpath exception
@@ -29,19 +29,27 @@
 package it.geosolutions.geofence.core.model;
 
 import com.vividsolutions.jts.geom.MultiPolygon;
-import it.geosolutions.geofence.core.model.adapter.FK2ProfileAdapter;
+import it.geosolutions.geofence.core.model.adapter.FK2UserGroupAdapter;
+import it.geosolutions.geofence.core.model.adapter.FK2UserGroupSetAdapter;
 import it.geosolutions.geofence.core.model.adapter.MultiPolygonAdapter;
+import it.geosolutions.geofence.core.model.util.PwEncoder;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -49,7 +57,10 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.ForeignKey;
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Type;
 
 /**
@@ -57,12 +68,13 @@ import org.hibernate.annotations.Type;
  *
  * <P>A GSUser is <B>not</B> in the domain of the users which can log into Geofence.
  *
+ * @author ETj (etj at geo-solutions.it)
  */
 @Entity(name = "GSUser")
 @Table(name = "gf_gsuser")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "GSUser")
 @XmlRootElement(name = "GSUser")
-@XmlType(propOrder={"id","extId","name","fullName","password","emailAddress","dateCreation","profile","allowedArea"})
+@XmlType(propOrder={"id","extId","name","fullName","password","emailAddress","dateCreation","allowedArea","userGroups"})
 public class GSUser implements Identifiable, Serializable {
 
     private static final long serialVersionUID = 7718458156939088033L;
@@ -73,13 +85,15 @@ public class GSUser implements Identifiable, Serializable {
     @Column
     private Long id;
 
-    /** External Id. An ID used in an external systems.
+    /**
+     * External Id. An ID used in an external systems.
      * This field should simplify Geofence integration in complex systems.
      */
     @Column(nullable=true, updatable=false, unique=true)
     private String extId;
 
     /** The name. */
+    @Index(name = "idx_gsuser_name")
     @Column(nullable=false, unique=true)
     private String name;
 
@@ -108,14 +122,34 @@ public class GSUser implements Identifiable, Serializable {
     @Column(nullable=false)
     private boolean admin = false;
 
-    /** The user. */
-    @ManyToOne(optional = false)
-    @ForeignKey(name="fk_user_profile")
-    private Profile profile;
+//    /** The user. */
+//    @ManyToOne(optional = false)
+//    @ForeignKey(name="fk_user_profile")
+//    private UserGroup profile;
 
-	@Type(type = "org.hibernatespatial.GeometryUserType")
-	@Column(name = "allowedArea")
-	private MultiPolygon allowedArea;
+//	@Type(type = "org.hibernatespatial.GeometryUserType")
+//	@Column(name = "allowedArea")
+//	private MultiPolygon allowedArea;
+
+    /** Groups to which the user is associated */
+    @ManyToMany(fetch= FetchType.LAZY)
+    @JoinTable( name = "gf_user_usergroups",
+                joinColumns = @JoinColumn(name = "user_id"),
+                inverseJoinColumns=@JoinColumn(name = "group_id")
+              )
+    @Column(name = "u_id")
+    @ForeignKey(name="fk_uug_user", inverseName="fk_uug_group")
+    @Fetch(FetchMode.SUBSELECT) // without this, hibernate will duplicate results(!)
+    private Set<UserGroup> userGroups = new HashSet<UserGroup>();
+
+//    @org.hibernate.annotations.CollectionOfElements
+//    @JoinTable( name = "gf_user_usergroups",
+//                joinColumns = @JoinColumn(name = "gsuser_id"))
+////    @Column(name = "propvalue")
+//    @ForeignKey(name="fk_uug_group", inverseName="fk_uug_user")
+//    private Set<UserGroup> userGroups = new HashSet<UserGroup>();
+//
+
 
     /**
      * Instantiates a new user.
@@ -187,14 +221,14 @@ public class GSUser implements Identifiable, Serializable {
      * @param password the password to set
      */
     public void setPassword(String password) {
-        this.password = password;
+        this.password = password==null?null:PwEncoder.encode(password);
     }
 
     /**
      * @return the password
      */
     public String getPassword() {
-        return password;
+        return password==null?null:PwEncoder.decode(password);
     }
 
     /**
@@ -216,8 +250,9 @@ public class GSUser implements Identifiable, Serializable {
         return admin;
     }
 
-    public void setAdmin(boolean isAdmin) {
-        this.admin = isAdmin;
+    public void setAdmin(Boolean isAdmin) {
+        if(isAdmin != null)
+            this.admin = isAdmin;
     }
 
     /**
@@ -248,32 +283,41 @@ public class GSUser implements Identifiable, Serializable {
      *            the enabled to set
      */
     public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
+        if(enabled != null)
+            this.enabled = enabled;
     }
 
     /**
      * @return the profile
      */
-    @XmlJavaTypeAdapter(FK2ProfileAdapter.class)
-    public Profile getProfile() {
-        return profile;
+    @XmlJavaTypeAdapter(FK2UserGroupSetAdapter.class)
+    public Set<UserGroup> getGroups() {
+        return userGroups;
     }
 
     /**
      * @param profile the profile to set
      */
-    public void setProfile(Profile profile) {
-        this.profile = profile;
+    public void setGroups(Set<UserGroup> groups) {
+        this.userGroups = groups;
     }
 
-    @XmlJavaTypeAdapter(MultiPolygonAdapter.class)
-    public MultiPolygon getAllowedArea() {
-        return allowedArea;
-    }
-
-    public void setAllowedArea(MultiPolygon allowedArea) {
-        this.allowedArea = allowedArea;
-    }
+//    /**
+//     * @deprecated LIMIT rules should be used
+//     */
+//    @Deprecated
+//    @XmlJavaTypeAdapter(MultiPolygonAdapter.class)
+//    public MultiPolygon getAllowedArea() {
+//        return allowedArea;
+//    }
+//
+//    /**
+//     * @deprecated LIMIT rules should be used
+//     */
+//    @Deprecated
+//    public void setAllowedArea(MultiPolygon allowedArea) {
+//        this.allowedArea = allowedArea;
+//    }
 
 
     /* (non-Javadoc)
@@ -288,9 +332,9 @@ public class GSUser implements Identifiable, Serializable {
         result = prime * result + (Boolean.valueOf(admin).hashCode());
         result = prime * result + (int) (id ^ (id >>> 32));
         result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((profile == null) ? 0 : profile.hashCode());
-        result = prime * result + ((allowedArea == null) ? 0 : allowedArea.hashCode());
-        result = prime * result + ((allowedArea == null) ? 0 : allowedArea.getSRID());
+        result = prime * result + ((userGroups == null) ? 0 : userGroups.hashCode());
+//        result = prime * result + ((allowedArea == null) ? 0 : allowedArea.hashCode());
+//        result = prime * result + ((allowedArea == null) ? 0 : allowedArea.getSRID());
         return result;
     }
 
@@ -332,22 +376,21 @@ public class GSUser implements Identifiable, Serializable {
         } else if (!name.equals(other.name)) {
             return false;
         }
-        if (profile == null) {
-            if (other.profile != null) {
-                return false;
-            }
-        } else if (!profile.equals(other.profile)) {
+
+//        if (allowedArea == null) {
+//            if (other.allowedArea != null) {
+//                return false;
+//            }
+//        } else if (!allowedArea.equals(other.allowedArea)) {
+//            return false;
+//        } else if(other.allowedArea != null && other.allowedArea.getSRID() != allowedArea.getSRID()) {
+//            return false;
+//        }
+
+        if ( this.userGroups != other.userGroups && (this.userGroups == null || !this.userGroups.equals(other.userGroups)) ) {
             return false;
         }
-        if (allowedArea == null) {
-            if (other.allowedArea != null) {
-                return false;
-            }
-        } else if (!allowedArea.equals(other.allowedArea)) {
-            return false;
-        } else if(other.allowedArea != null && other.allowedArea.getSRID() != allowedArea.getSRID()) {
-            return false;
-        }
+
         return true;
     }
 
@@ -361,8 +404,8 @@ public class GSUser implements Identifiable, Serializable {
         builder.append("id=").append(id).append(", ");
         if (name != null)
             builder.append("name=").append(name).append(", ");
-        if (profile != null)
-            builder.append("profile=").append(profile);
+//        if (userGroups != null)
+//            builder.append("groups=").append(userGroups.size());
         builder.append("enabled=").append(enabled).append(", ");
         builder.append("admin=").append(admin).append(", ");
         if (dateCreation != null)

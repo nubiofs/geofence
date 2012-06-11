@@ -18,7 +18,7 @@
     <bean id="gfUserAdminService" class="it.geosolutions.geofence.services.GFUserAdminServiceImpl">
     </bean>
 
-    <bean id="profileAdminService" class="it.geosolutions.geofence.services.ProfileAdminServiceImpl">
+    <bean id="userGroupAdminService" class="it.geosolutions.geofence.services.UserGroupAdminServiceImpl">
     </bean>
 
     <bean id="instanceAdminService" class="it.geosolutions.geofence.services.InstanceAdminServiceImpl">

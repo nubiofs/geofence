@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -19,8 +19,7 @@
  */
 package it.geosolutions.geofence.services;
 
-import it.geosolutions.geofence.core.dao.GSUserDAO;
-import it.geosolutions.geofence.core.model.GSUser;
+import com.googlecode.genericdao.search.Search;
 import it.geosolutions.geofence.services.dto.ShortUser;
 
 import java.util.ArrayList;
@@ -28,7 +27,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.trg.search.Search;
 import it.geosolutions.geofence.core.dao.GFUserDAO;
 import it.geosolutions.geofence.core.model.GFUser;
 import it.geosolutions.geofence.services.exception.BadRequestServiceEx;

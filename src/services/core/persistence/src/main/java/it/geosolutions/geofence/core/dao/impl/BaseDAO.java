@@ -19,13 +19,16 @@
  */
 package it.geosolutions.geofence.core.dao.impl;
 
+import com.googlecode.genericdao.dao.jpa.GenericDAOImpl;
+import com.googlecode.genericdao.search.jpa.JPASearchProcessor;
+
 import java.io.Serializable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import com.trg.dao.jpa.GenericDAOImpl;
-import com.trg.search.jpa.JPASearchProcessor;
+//import com.trg.dao.jpa.GenericDAOImpl;
+//import com.trg.search.jpa.JPASearchProcessor;
 
 import org.springframework.stereotype.Repository;
 

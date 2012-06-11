@@ -25,11 +25,11 @@
 		(i.e. EntityManagerFactory). We're wiring these to the Generic DAOs
 		using an autowire annotation in BaseDAO.
 	-->
-	<bean id="geofenceSearchProcessor" class="com.trg.search.jpa.JPASearchProcessor">
+	<bean id="geofenceSearchProcessor" class="com.googlecode.genericdao.search.jpa.JPASearchProcessor">
 		<constructor-arg ref="geofenceMetadataUtil" />
 	</bean>
 
-	<bean id="geofenceMetadataUtil" class="com.trg.search.jpa.hibernate.HibernateMetadataUtil"
+	<bean id="geofenceMetadataUtil" class="com.googlecode.genericdao.search.jpa.hibernate.HibernateMetadataUtil"
 		factory-method="getInstanceForEntityManagerFactory">
 		<constructor-arg ref="geofenceEntityManagerFactory" />
 	</bean>
@@ -46,7 +46,7 @@
 		<property name="searchProcessor" ref="geofenceSearchProcessor" />
 	</bean>
 	
-	<bean id="profileDAO" class="it.geosolutions.geofence.core.dao.impl.ProfileDAOImpl" >
+	<bean id="userGroupDAO" class="it.geosolutions.geofence.core.dao.impl.UserGroupDAOImpl" >
 		<property name="searchProcessor" ref="geofenceSearchProcessor" />
 	</bean>
 	

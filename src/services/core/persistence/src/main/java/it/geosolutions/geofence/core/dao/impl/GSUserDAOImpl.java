@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -21,14 +21,19 @@ package it.geosolutions.geofence.core.dao.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
-import com.trg.search.ISearch;
+import com.googlecode.genericdao.search.ISearch;
+import com.googlecode.genericdao.search.Search;
+
 import com.vividsolutions.jts.geom.MultiPolygon;
 
 import it.geosolutions.geofence.core.dao.GSUserDAO;
 import it.geosolutions.geofence.core.model.GSUser;
+import it.geosolutions.geofence.core.model.UserGroup;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -66,19 +71,74 @@ public class GSUserDAOImpl extends BaseDAO<GSUser, Long> implements GSUserDAO
         return super.search(search);
     }
 
+
+    @Override
+    public GSUser getFull(Long id) {
+        Search search = new Search(GSUser.class);
+        search.addFilterEqual("id", id);
+        return searchFull(search);
+    }
+
+    @Override
+    public GSUser getFull(String name) {
+        Search search = new Search(GSUser.class);
+        search.addFilterEqual("name", name);
+        return searchFull(search);
+    }
+
+    /**
+     * Fetch a GSUser with all of its related groups
+     */
+    protected GSUser searchFull(Search search) {
+        search.addFetch("userGroups");
+        List<GSUser> users = super.search(search);
+
+        // When fetching users with multiple groups, the gsusers list id multiplied for the number of groups found.
+        // Next there is a workaround to this problem.
+        // Dunno if some annotations in the GSUser definition are wrong, some deeper checks have to be performed.
+
+
+        switch(users.size()) {
+            case 0:
+                return null;
+            case 1:
+                return users.get(0);
+            default:
+                if(users.size() == users.get(0).getGroups().size()) { // normal hibernate behaviour
+                    if(LOGGER.isDebugEnabled()) { // perform some more consistency tests only when debugging
+                        for (GSUser user : users) {
+                            if(user.getId() != users.get(0).getId() ||
+                               user.getGroups().size() != users.get(0).getGroups().size()) {
+                                LOGGER.error("Inconsistent userlist " + user);
+                            }
+                        }
+                    }
+
+                    return users.get(0);
+                } else {
+                    LOGGER.error("Too many users in unique search " + search);
+                    for (GSUser user : users) {
+                        LOGGER.error("   " + user + " grp:"+user.getGroups().size());
+                    }
+                    throw new IllegalStateException("Found more than one user (search:"+search+")");
+                }
+        }
+    }
+
+
     @Override
     public GSUser merge(GSUser entity)
     {
-        // Workaround: if area srid has changed (and vertices did not), the geometry will not be updated on db
-        // Check for test UserDAOTest.testUpdateSRID().
-        MultiPolygon oldMp = entity.getAllowedArea();
-        if (oldMp != null)
-        {
-            entity.setAllowedArea(null);
-            super.merge(entity);
-            em().flush();
-            entity.setAllowedArea(oldMp);
-        }
+//        // Workaround: if area srid has changed (and vertices did not), the geometry will not be updated on db
+//        // Check for test UserDAOTest.testUpdateSRID().
+//        MultiPolygon oldMp = entity.getAllowedArea();
+//        if (oldMp != null)
+//        {
+//            entity.setAllowedArea(null);
+//            super.merge(entity);
+//            em().flush();
+//            entity.setAllowedArea(oldMp);
+//        }
 
         // end workaround
         return super.merge(entity);
@@ -94,6 +154,20 @@ public class GSUserDAOImpl extends BaseDAO<GSUser, Long> implements GSUserDAO
     public boolean removeById(Long id)
     {
         return super.removeById(id);
+    }
+
+    @Override
+    public Set<UserGroup> getGroups(Long id) {
+        GSUser user = find(id);
+        if(user == null)
+            return null;
+
+        Set<UserGroup> groups = user.getGroups();
+        if ( (groups != null) && !Hibernate.isInitialized(groups) ) {
+            Hibernate.initialize(groups); // fetch the groups
+        }
+
+        return groups;
     }
 
 }

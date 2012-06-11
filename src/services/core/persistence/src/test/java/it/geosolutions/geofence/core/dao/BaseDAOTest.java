@@ -25,7 +25,7 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 import it.geosolutions.geofence.core.model.GFUser;
-import it.geosolutions.geofence.core.model.Profile;
+import it.geosolutions.geofence.core.model.UserGroup;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -46,7 +46,7 @@ public abstract class BaseDAOTest extends TestCase {
 
     protected static GSUserDAO userDAO;
     protected static GFUserDAO gfUserDAO;
-    protected static ProfileDAO profileDAO;
+    protected static UserGroupDAO userGroupDAO;
     protected static RuleDAO ruleDAO;
     protected static LayerDetailsDAO detailsDAO;
     protected static RuleLimitsDAO limitsDAO;
@@ -66,7 +66,7 @@ public abstract class BaseDAOTest extends TestCase {
 
                 userDAO = (GSUserDAO)ctx.getBean("gsUserDAO");
                 gfUserDAO = (GFUserDAO)ctx.getBean("gfUserDAO");
-                profileDAO = (ProfileDAO)ctx.getBean("profileDAO");
+                userGroupDAO = (UserGroupDAO)ctx.getBean("userGroupDAO");
                 ruleDAO = (RuleDAO)ctx.getBean("ruleDAO");
                 detailsDAO = (LayerDetailsDAO)ctx.getBean("layerDetailsDAO");
                 limitsDAO = (RuleLimitsDAO)ctx.getBean("ruleLimitsDAO");
@@ -88,7 +88,7 @@ public abstract class BaseDAOTest extends TestCase {
 
         assertNotNull(userDAO);
         assertNotNull(gfUserDAO);
-        assertNotNull(profileDAO);
+        assertNotNull(userGroupDAO);
         assertNotNull(ruleDAO);
         assertNotNull(detailsDAO);
     }
@@ -96,7 +96,7 @@ public abstract class BaseDAOTest extends TestCase {
     protected void removeAll() {
         removeAllRules();
         removeAllUsers(); 
-        removeAllProfiles();
+        removeAllUserGroups();
     }
 
     protected void removeAllUsers() {
@@ -132,37 +132,37 @@ public abstract class BaseDAOTest extends TestCase {
         assertEquals("Rules have not been properly deleted", 0, ruleDAO.count(null));
     }
 
-    protected void removeAllProfiles() {
-        List<Profile> list = profileDAO.findAll();
-        for (Profile item : list) {
+    protected void removeAllUserGroups() {
+        List<UserGroup> list = userGroupDAO.findAll();
+        for (UserGroup item : list) {
             LOGGER.info("Removing " + item);
-            boolean ret = profileDAO.remove(item);
-            assertTrue("Profile not removed", ret);
+            boolean ret = userGroupDAO.remove(item);
+            assertTrue("UserGroup not removed", ret);
         }
 
-        assertEquals("Profiles have not been properly deleted", 0, profileDAO.count(null));
+        assertEquals("UserGroups have not been properly deleted", 0, userGroupDAO.count(null));
     }
 
-    protected GSUser createUser(String base, Profile profile) {
+    protected GSUser createUser(String base, UserGroup userGroup) {
 
         GSUser user = new GSUser();
         user.setName( base );
-        user.setProfile(profile);
+        user.getGroups().add(userGroup);
         return user;
     }
 
-    protected Profile createProfile(String base) {
+    protected UserGroup createUserGroup(String base) {
 
-        Profile profile = new Profile();
-        profile.setName(base);
-        profileDAO.persist(profile);
-        return profile;
+        UserGroup group = new UserGroup();
+        group.setName(base);
+        userGroupDAO.persist(group);
+        return group;
     }
 
-    protected GSUser createUserAndProfile(String base) {
+    protected GSUser createUserAndGroup(String base) {
 
-        Profile profile = createProfile(base);
-        return createUser(base, profile);
+        UserGroup group = createUserGroup(base);
+        return createUser(base, group);
     }
 
 

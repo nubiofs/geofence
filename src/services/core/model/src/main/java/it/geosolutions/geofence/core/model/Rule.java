@@ -20,7 +20,7 @@
 package it.geosolutions.geofence.core.model;
 
 import it.geosolutions.geofence.core.model.adapter.FKGSInstanceAdapter;
-import it.geosolutions.geofence.core.model.adapter.FKProfileAdapter;
+import it.geosolutions.geofence.core.model.adapter.FKUserGroupAdapter;
 import it.geosolutions.geofence.core.model.adapter.FKUserAdapter;
 import it.geosolutions.geofence.core.model.enums.GrantType;
 import java.io.Serializable;
@@ -76,10 +76,10 @@ import org.hibernate.annotations.Index;
 @Entity(name = "Rule")
 @Table(name = "gf_rule",
     uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"gsuser_id", "profile_id", "instance_id", "service", "request", "workspace", "layer"})})
+        @UniqueConstraint(columnNames = {"gsuser_id", "usergroup_id", "instance_id", "service", "request", "workspace", "layer"})})
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Rule")
 @XmlRootElement(name = "Rule")
-@XmlType(propOrder={"id","priority","gsuser","profile","instance","service","request","workspace","layer","access","layerDetails","ruleLimits"})
+@XmlType(propOrder={"id","priority","gsuser","usergroup","instance","service","request","workspace","layer","access","layerDetails","ruleLimits"})
 public class Rule implements Identifiable, Serializable {
 
     private static final long serialVersionUID = -5127129225384707164L;
@@ -100,8 +100,8 @@ public class Rule implements Identifiable, Serializable {
     private GSUser gsuser;
 
     @ManyToOne(optional = true, fetch = FetchType.EAGER)
-    @ForeignKey(name = "fk_rule_profile")
-    private Profile profile;
+    @ForeignKey(name = "fk_rule_usergroup")
+    private UserGroup userGroup;
 
     @ManyToOne(optional = true, fetch = FetchType.EAGER)
     @ForeignKey(name = "fk_rule_instance")
@@ -138,10 +138,10 @@ public class Rule implements Identifiable, Serializable {
     public Rule() {
     }
 
-    public Rule(long priority, GSUser gsuser, Profile profile, GSInstance instance, String service, String request, String workspace, String layer, GrantType access) {
+    public Rule(long priority, GSUser gsuser, UserGroup userGroup, GSInstance instance, String service, String request, String workspace, String layer, GrantType access) {
         this.priority = priority;
         this.gsuser = gsuser;
-        this.profile = profile;
+        this.userGroup = userGroup;
         this.instance = instance;
         this.service = service;
         this.request = request;
@@ -175,13 +175,13 @@ public class Rule implements Identifiable, Serializable {
         this.gsuser = gsuser;
     }
 
-    @XmlJavaTypeAdapter(FKProfileAdapter.class)
-    public Profile getProfile() {
-        return profile;
+    @XmlJavaTypeAdapter(FKUserGroupAdapter.class)
+    public UserGroup getUserGroup() {
+        return userGroup;
     }
 
-    public void setProfile(Profile profile) {
-        this.profile = profile;
+    public void setUserGroup(UserGroup userGroup) {
+        this.userGroup = userGroup;
     }
 
     @XmlJavaTypeAdapter(FKGSInstanceAdapter.class)
@@ -264,17 +264,17 @@ public class Rule implements Identifiable, Serializable {
 
         if (gsuser != null) {
             sb.append(" uId:").append(gsuser.getId());
-            sb.append(" uName:").append(gsuser.getName());
+            sb.append(" uName:").append(prepare(gsuser.getName()));
         }
 
-        if (profile != null) {
-            sb.append(" pId:").append(profile.getId());
-            sb.append(" pName:").append(profile.getName());
+        if (userGroup != null) {
+            sb.append(" gId:").append(userGroup.getId());
+            sb.append(" gName:").append(prepare(userGroup.getName()));
         }
 
         if (instance != null) {
             sb.append(" iId:").append(instance.getId());
-            sb.append(" iName:").append(instance.getName());
+            sb.append(" iName:").append(prepare(instance.getName()));
         }
 
         if (service != null) {
@@ -296,5 +296,13 @@ public class Rule implements Identifiable, Serializable {
 
         return sb.toString();
 
+    }
+    private static String prepare(String s) {
+        if(s==null)
+            return "(null)";
+        else if (s.isEmpty())
+            return "(empty)";
+        else
+            return s;
     }
 }

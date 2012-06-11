@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -19,12 +19,11 @@
  */
 package it.geosolutions.geofence.core.dao.impl;
 
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.trg.search.ISearch;
+import com.googlecode.genericdao.search.ISearch;
 
 import it.geosolutions.geofence.core.dao.LayerDetailsDAO;
 import it.geosolutions.geofence.core.model.LayerAttribute;
@@ -34,33 +33,26 @@ import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.springframework.transaction.annotation.Transactional;
 
-
 /**
  * Public implementation of the RuleLimitsDAO interface
  *
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
 @Transactional(value = "geofenceTransactionManager")
-public class LayerDetailsDAOImpl extends BaseDAO<LayerDetails, Long> implements LayerDetailsDAO
-{
+public class LayerDetailsDAOImpl extends BaseDAO<LayerDetails, Long> implements LayerDetailsDAO {
 
     private static final Logger LOGGER = Logger.getLogger(LayerDetailsDAOImpl.class);
 
     @Override
-    public void persist(LayerDetails... entities)
-    {
-        for (LayerDetails details : entities)
-        {
-            if (details.getRule() == null)
-            {
+    public void persist(LayerDetails... entities) {
+        for (LayerDetails details : entities) {
+            if ( details.getRule() == null ) {
                 throw new NullPointerException("Rule is not set");
             }
             details.setId(details.getRule().getId());
 
-            for (LayerAttribute attr : details.getAttributes())
-            {
-                if (attr.getAccess() == null)
-                {
+            for (LayerAttribute attr : details.getAttributes()) {
+                if ( attr.getAccess() == null ) {
                     throw new NullPointerException("Null access type for attribute " + attr.getName() + " in " + details);
                 }
             }
@@ -72,105 +64,80 @@ public class LayerDetailsDAOImpl extends BaseDAO<LayerDetails, Long> implements 
 //    public LayerDetails find(Long id) {
 //        return super.find(id);
 //    }
-
     @Override
-    public List<LayerDetails> findAll()
-    {
+    public List<LayerDetails> findAll() {
         return super.findAll();
     }
 
     @Override
-    public List<LayerDetails> search(ISearch search)
-    {
+    public List<LayerDetails> search(ISearch search) {
         return super.search(search);
     }
 
     @Override
-    public LayerDetails merge(LayerDetails entity)
-    {
+    public LayerDetails merge(LayerDetails entity) {
         return super.merge(entity);
     }
 
     @Override
-    public boolean remove(LayerDetails entity)
-    {
+    public boolean remove(LayerDetails entity) {
         return super.remove(entity);
     }
 
     @Override
-    public boolean removeById(Long id)
-    {
+    public boolean removeById(Long id) {
         return super.removeById(id);
     }
 
     // ==========================================================================
-
     @Override
-    public Map<String, String> getCustomProps(Long id)
-    {
+    public Map<String, String> getCustomProps(Long id) {
         LayerDetails found = find(id);
-        if (found != null)
-        {
+        if ( found != null ) {
             Map<String, String> props = found.getCustomProps();
 
-            if ((props != null) && !Hibernate.isInitialized(props))
-            {
+            if ( (props != null) && !Hibernate.isInitialized(props) ) {
                 Hibernate.initialize(props); // fetch the props
             }
 
             return props;
-        }
-        else
-        {
+        } else {
             throw new IllegalArgumentException("LayerDetails not found");
         }
     }
 
     @Override
-    public void setCustomProps(Long id, Map<String, String> props)
-    {
+    public void setCustomProps(Long id, Map<String, String> props) {
         LayerDetails found = find(id);
-        if (found != null)
-        {
+        if ( found != null ) {
             found.setCustomProps(props);
-        }
-        else
-        {
+        } else {
             throw new IllegalArgumentException("LayerDetails not found");
         }
     }
 
     @Override
-    public Set<String> getAllowedStyles(Long id)
-    {
+    public Set<String> getAllowedStyles(Long id) {
         LayerDetails found = find(id);
-        if (found != null)
-        {
+        if ( found != null ) {
             Set<String> styles = found.getAllowedStyles();
 
-            if ((styles != null) && !Hibernate.isInitialized(styles))
-            {
+            if ( (styles != null) && !Hibernate.isInitialized(styles) ) {
                 Hibernate.initialize(styles); // fetch the props
             }
 
             return styles;
-        }
-        else
-        {
+        } else {
             throw new IllegalArgumentException("LayerDetails not found");
         }
     }
 
     @Override
-    public void setAllowedStyles(Long id, Set<String> styles)
-    {
+    public void setAllowedStyles(Long id, Set<String> styles) {
         LayerDetails found = find(id);
-        if (found != null)
-        {
+        if ( found != null ) {
             found.setAllowedStyles(styles);
-        }
-        else
-        {
+        } else {
             throw new IllegalArgumentException("LayerDetails not found");
         }
     }

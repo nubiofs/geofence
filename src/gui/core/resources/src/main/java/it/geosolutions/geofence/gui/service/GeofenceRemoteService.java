@@ -36,7 +36,7 @@ import it.geosolutions.geofence.api.UserRegistry;
 import it.geosolutions.geofence.login.LoginService;
 import it.geosolutions.geofence.services.GFUserAdminService;
 import it.geosolutions.geofence.services.InstanceAdminService;
-import it.geosolutions.geofence.services.ProfileAdminService;
+import it.geosolutions.geofence.services.UserGroupAdminService;
 import it.geosolutions.geofence.services.RuleAdminService;
 import it.geosolutions.geofence.services.UserAdminService;
 
@@ -59,7 +59,7 @@ public class GeofenceRemoteService {
     private UserRegistry userProvider;
 
     /** The profile admin service. */
-    private ProfileAdminService profileAdminService;
+    private UserGroupAdminService profileAdminService;
     
     /** The instance admin service. */
     private InstanceAdminService instanceAdminService;
@@ -144,7 +144,7 @@ public class GeofenceRemoteService {
      * @param profileAdminService
      *            the new profile admin service
      */
-    public void setProfileAdminService(ProfileAdminService profileAdminService) {
+    public void setProfileAdminService(UserGroupAdminService profileAdminService) {
         this.profileAdminService = profileAdminService;
     }
 
@@ -153,7 +153,7 @@ public class GeofenceRemoteService {
      * 
      * @return the profile admin service
      */
-    public ProfileAdminService getProfileAdminService() {
+    public UserGroupAdminService getProfileAdminService() {
         return profileAdminService;
     }
 

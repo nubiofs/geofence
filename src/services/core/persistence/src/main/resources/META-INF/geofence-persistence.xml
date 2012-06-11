@@ -21,21 +21,13 @@
 <persistence version="1.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd ">
   <persistence-unit name="geofence" transaction-type="RESOURCE_LOCAL">
     <!-- when adding/removing classes, please also keep aligned the src/test/resource/hibernate.cfg.xml file -->
-<!--    <class>it.geosolutions.geofence.core.model.ServiceFilter</class>-->
-<!--    <class>it.geosolutions.geofence.core.model.AttributePermission</class>-->
-<!--    <class>it.geosolutions.geofence.core.model.LayerPermission</class>-->
     <class>it.geosolutions.geofence.core.model.GSUser</class>
     <class>it.geosolutions.geofence.core.model.GFUser</class>
-    <class>it.geosolutions.geofence.core.model.Profile</class>
+    <class>it.geosolutions.geofence.core.model.UserGroup</class>
     <class>it.geosolutions.geofence.core.model.GSInstance</class>
     <class>it.geosolutions.geofence.core.model.Rule</class>
     <class>it.geosolutions.geofence.core.model.RuleLimits</class>
     <class>it.geosolutions.geofence.core.model.LayerDetails</class>
     <class>it.geosolutions.geofence.core.model.LayerAttribute</class>
-<!--    <class>it.geosolutions.geofence.core.model.RequestPermission</class>
-    <class>it.geosolutions.geofence.core.model.ServicePermission</class>
-    <class>it.geosolutions.geofence.core.model.StylePermission</class>
-    <class>it.geosolutions.geofence.core.model.WorkspacePermission</class>
-    <class>it.geosolutions.geofence.core.model.InstancePermission</class>-->
   </persistence-unit>
 </persistence>

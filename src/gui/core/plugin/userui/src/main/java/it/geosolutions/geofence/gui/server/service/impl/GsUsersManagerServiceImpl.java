@@ -36,9 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
 
 import it.geosolutions.geofence.gui.client.ApplicationException;
 import it.geosolutions.geofence.gui.client.model.GSUser;
@@ -137,10 +134,11 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
             local_user.setEnabled(remote_user.getEnabled());
             local_user.setAdmin(remote_user.isAdmin());
             local_user.setEmailAddress(remote_user.getEmailAddress());
-            local_user.setDateCreation(remote_user.getDateCreation());
+            local_user.setDateCreation(remote_user.getDateCreation());            
             local_user.setPassword(remote_user.getPassword());
 
-            it.geosolutions.geofence.core.model.Profile remote_profile = remote_user.getProfile();
+            logger.error("TODO: profile refactoring!!!");
+            it.geosolutions.geofence.core.model.UserGroup remote_profile = remote_user.getGroups().iterator().next();
 
             Profile local_profile = new Profile();
             local_profile.setId(remote_profile.getId());
@@ -208,8 +206,9 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
         remote_user.setDateCreation(user.getDateCreation());
         if ((user.getProfile() != null) && (user.getProfile().getId() >= 0))
         {
-            it.geosolutions.geofence.core.model.Profile remote_profile = geofenceRemoteService.getProfileAdminService().get(user.getProfile().getId());
-            remote_user.setProfile(remote_profile);
+            it.geosolutions.geofence.core.model.UserGroup remote_profile = geofenceRemoteService.getProfileAdminService().get(user.getProfile().getId());
+            logger.error("TODO: profile refactoring!!!");
+            remote_user.getGroups().add(remote_profile);
         }
     }
 
@@ -240,6 +239,8 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
         it.geosolutions.geofence.core.model.GSUser gsUser = null;
         UserLimitsInfo userLimitInfo = null;
 
+        logger.error("TODO: allowed area removed from base model!!!");
+
         try
         {
             gsUser = geofenceRemoteService.getUserAdminService().get(userId);
@@ -249,18 +250,18 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
                 userLimitInfo = new UserLimitsInfo();
                 userLimitInfo.setUserId(userId);
 
-                MultiPolygon the_geom = gsUser.getAllowedArea();
-
-                if (the_geom != null)
-                {
-                    userLimitInfo.setAllowedArea(the_geom.toText());
-                    userLimitInfo.setSrid(String.valueOf(the_geom.getSRID()));
-                }
-                else
-                {
+//                MultiPolygon the_geom = gsUser.getAllowedArea();
+//
+//                if (the_geom != null)
+//                {
+//                    userLimitInfo.setAllowedArea(the_geom.toText());
+//                    userLimitInfo.setSrid(String.valueOf(the_geom.getSRID()));
+//                }
+//                else
+//                {
                     userLimitInfo.setAllowedArea(null);
                     userLimitInfo.setSrid(null);
-                }
+//                }
             }
         }
         catch (NotFoundServiceEx e)
@@ -277,6 +278,7 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
      */
     public UserLimitsInfo saveUserLimitsInfo(UserLimitsInfo userLimitInfo) throws ApplicationException
     {
+        logger.error("TODO: allowed area removed from base model!!!");
 
         Long userId = userLimitInfo.getUserId();
         it.geosolutions.geofence.core.model.GSUser gsUser = null;
@@ -285,32 +287,32 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
         {
             gsUser = geofenceRemoteService.getUserAdminService().get(userId);
 
-            String allowedArea = userLimitInfo.getAllowedArea();
-
-            if (allowedArea != null)
-            {
-                WKTReader wktReader = new WKTReader();
-                MultiPolygon the_geom = (MultiPolygon) wktReader.read(allowedArea);
-                the_geom.setSRID(Integer.valueOf(userLimitInfo.getSrid()).intValue());
-                gsUser.setAllowedArea(the_geom);
-            }
-            else
-            {
-                gsUser.setAllowedArea(null);
-            }
-
-            geofenceRemoteService.getUserAdminService().update(gsUser);
+//            String allowedArea = userLimitInfo.getAllowedArea();
+//
+//            if (allowedArea != null)
+//            {
+//                WKTReader wktReader = new WKTReader();
+//                MultiPolygon the_geom = (MultiPolygon) wktReader.read(allowedArea);
+//                the_geom.setSRID(Integer.valueOf(userLimitInfo.getSrid()).intValue());
+//                gsUser.setAllowedArea(the_geom);
+//            }
+//            else
+//            {
+//                gsUser.setAllowedArea(null);
+//            }
+//
+//            geofenceRemoteService.getUserAdminService().update(gsUser);
         }
         catch (NotFoundServiceEx e)
         {
             logger.error(e.getMessage(), e);
             throw new ApplicationException(e.getMessage(), e);
         }
-        catch (ParseException e)
-        {
-            logger.error(e.getMessage(), e);
-            throw new ApplicationException(e.getMessage(), e);
-        }
+//        catch (ParseException e)
+//        {
+//            logger.error(e.getMessage(), e);
+//            throw new ApplicationException(e.getMessage(), e);
+//        }
 
         return userLimitInfo;
     }

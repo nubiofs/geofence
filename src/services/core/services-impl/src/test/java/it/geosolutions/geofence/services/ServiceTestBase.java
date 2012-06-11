@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -23,8 +23,9 @@ package it.geosolutions.geofence.services;
 import it.geosolutions.geofence.core.model.GFUser;
 import it.geosolutions.geofence.core.model.GSInstance;
 import it.geosolutions.geofence.core.model.GSUser;
-import it.geosolutions.geofence.core.model.Profile;
-import it.geosolutions.geofence.services.dto.ShortProfile;
+import it.geosolutions.geofence.core.model.UserGroup;
+import it.geosolutions.geofence.services.dto.RuleFilter.IdNameFilter;
+import it.geosolutions.geofence.services.dto.ShortGroup;
 import it.geosolutions.geofence.services.dto.ShortRule;
 import it.geosolutions.geofence.services.dto.ShortUser;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
@@ -43,7 +44,7 @@ public class ServiceTestBase extends TestCase {
 
     protected static UserAdminService userAdminService;
     protected static GFUserAdminService gfUserAdminService;
-    protected static ProfileAdminService profileAdminService;
+    protected static UserGroupAdminService userGroupAdminService;
     protected static InstanceAdminService instanceAdminService;
     protected static RuleAdminService ruleAdminService;
     protected static RuleReaderService ruleReaderService;
@@ -63,7 +64,7 @@ public class ServiceTestBase extends TestCase {
 
                 userAdminService     = (UserAdminService)ctx.getBean("userAdminService");
                 gfUserAdminService   = (GFUserAdminService)ctx.getBean("gfUserAdminService");
-                profileAdminService  = (ProfileAdminService)ctx.getBean("profileAdminService");
+                userGroupAdminService  = (UserGroupAdminService)ctx.getBean("userGroupAdminService");
                 instanceAdminService = (InstanceAdminService)ctx.getBean("instanceAdminService");
                 ruleAdminService     = (RuleAdminService)ctx.getBean("ruleAdminService");
                 ruleReaderService    = (RuleReaderService)ctx.getBean("ruleReaderService");
@@ -73,7 +74,7 @@ public class ServiceTestBase extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        LOGGER.info("################ Running " + getClass().getSimpleName() + "::" + getName() );
+        LOGGER.info("############################################ Running " + getClass().getSimpleName() + "::" + getName() );
         super.setUp();
         removeAll();
     }
@@ -81,7 +82,7 @@ public class ServiceTestBase extends TestCase {
     public void testCheckServices() {
         assertNotNull(userAdminService);
         assertNotNull(gfUserAdminService);
-        assertNotNull(profileAdminService);
+        assertNotNull(userGroupAdminService);
         assertNotNull(instanceAdminService);
         assertNotNull(ruleAdminService);
     }
@@ -91,7 +92,7 @@ public class ServiceTestBase extends TestCase {
         removeAllRules();
         removeAllUsers();
         removeAllGRUsers();
-        removeAllProfiles();
+        removeAllUserGroups();
         removeAllInstances();
     }
 
@@ -128,15 +129,15 @@ public class ServiceTestBase extends TestCase {
         assertEquals("GRUsers have not been properly deleted", 0, gfUserAdminService.getCount(null));
     }
 
-    protected void removeAllProfiles() throws NotFoundServiceEx {
-        List<ShortProfile> list = profileAdminService.getList(null,null,null);
-        for (ShortProfile item : list) {
+    protected void removeAllUserGroups() throws NotFoundServiceEx {
+        List<ShortGroup> list = userGroupAdminService.getList(null,null,null);
+        for (ShortGroup item : list) {
             LOGGER.info("Removing " + item);
-            boolean ret = profileAdminService.delete(item.getId());
-            assertTrue("Profile not removed", ret);
+            boolean ret = userGroupAdminService.delete(item.getId());
+            assertTrue("UserGroup not removed", ret);
         }
 
-        assertEquals("Profiles have not been properly deleted", 0, profileAdminService.getCount(null));
+        assertEquals("UserGroups have not been properly deleted", 0, userGroupAdminService.getCount(null));
     }
 
     protected void removeAllInstances() throws NotFoundServiceEx {
@@ -150,11 +151,11 @@ public class ServiceTestBase extends TestCase {
         assertEquals("Instances have not been properly deleted", 0, instanceAdminService.getCount(null));
     }
 
-    protected GSUser createUser(String base, Profile profile) {
+    protected GSUser createUser(String base, UserGroup group) {
 
         GSUser user = new GSUser();
         user.setName( base );
-        user.setProfile(profile);
+        user.getGroups().add(group);
         userAdminService.insert(user);
         return user;
     }
@@ -167,22 +168,22 @@ public class ServiceTestBase extends TestCase {
         return user;
     }
 
-    protected Profile createProfile(String base) {
+    protected UserGroup createUserGroup(String base) {
 
-        ShortProfile profile = new ShortProfile();
-        profile.setName(base);
-        long id = profileAdminService.insert(profile);
+        ShortGroup sgroup = new ShortGroup();
+        sgroup.setName(base);
+        long id = userGroupAdminService.insert(sgroup);
         try {
-            return profileAdminService.get(id);
+            return userGroupAdminService.get(id);
         } catch (NotFoundServiceEx ex) {
             throw new RuntimeException("Should never happen ("+id+")", ex);
         }
     }
 
-    protected GSUser createUserAndProfile(String base) {
+    protected GSUser createUserAndGroup(String base) {
 
-        Profile profile = createProfile(base);
-        return createUser(base, profile);
+        UserGroup group = createUserGroup(base);
+        return createUser(base, group);
     }
 
 }

@@ -19,7 +19,9 @@
  */
 package it.geosolutions.geofence.services;
 
-import com.trg.search.Filter;
+import com.googlecode.genericdao.search.Filter;
+import com.googlecode.genericdao.search.Search;
+
 import it.geosolutions.geofence.services.dto.AccessInfo;
 import it.geosolutions.geofence.services.dto.RuleFilter.IdNameFilter;
 
@@ -28,23 +30,33 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.trg.search.Search;
 import com.vividsolutions.jts.geom.Geometry;
 import it.geosolutions.geofence.core.dao.GSUserDAO;
 import it.geosolutions.geofence.core.dao.LayerDetailsDAO;
-import it.geosolutions.geofence.core.dao.ProfileDAO;
+import it.geosolutions.geofence.core.dao.UserGroupDAO;
 import it.geosolutions.geofence.core.dao.RuleDAO;
 import it.geosolutions.geofence.core.model.GSUser;
+import it.geosolutions.geofence.core.model.LayerAttribute;
 import it.geosolutions.geofence.core.model.LayerDetails;
-import it.geosolutions.geofence.core.model.Profile;
+import it.geosolutions.geofence.core.model.UserGroup;
 import it.geosolutions.geofence.core.model.Rule;
 import it.geosolutions.geofence.core.model.RuleLimits;
+import it.geosolutions.geofence.core.model.enums.AccessType;
 import it.geosolutions.geofence.core.model.enums.GrantType;
 import it.geosolutions.geofence.services.dto.RuleFilter;
+import it.geosolutions.geofence.services.dto.RuleFilter.FilterType;
 import it.geosolutions.geofence.services.dto.RuleFilter.NameFilter;
+import it.geosolutions.geofence.services.dto.RuleFilter.SpecialFilterType;
 import it.geosolutions.geofence.services.dto.ShortRule;
 import it.geosolutions.geofence.services.exception.BadRequestServiceEx;
+import it.geosolutions.geofence.services.util.AccessInfoInternal;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  *
@@ -62,7 +74,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
     private RuleDAO ruleDAO;
     private LayerDetailsDAO detailsDAO;
     private GSUserDAO userDAO;
-    private ProfileDAO profileDAO;
+    private UserGroupDAO userGroupDAO;
 
     /**
      * @deprecated
@@ -77,10 +89,29 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         return getMatchingRules(new RuleFilter(userName, profileName, instanceName, service, request, workspace, layer));
     }
 
+    /**
+     * <B>TODO: REFACTOR</B>
+     *
+     * @param filter
+     * @return a plain List of the grouped matching Rules.
+     */
     @Override
     public List<ShortRule> getMatchingRules(RuleFilter filter) {
-        List<Rule> found = getRules(filter);
-        return convertToShortList(found);
+        Map<UserGroup, List<Rule>> found = getRules(filter);
+
+        Map<Long, Rule> sorted = new TreeMap<Long, Rule>();
+        for (List<Rule> list : found.values()) {
+            for (Rule rule : list) {
+                sorted.put(rule.getId(), rule);
+            }
+        }
+
+        List<Rule> plainList = new ArrayList<Rule>();
+        for (Rule rule : sorted.values()) {
+            plainList.add(rule);
+        }
+
+        return convertToShortList(plainList);
     }
 
 
@@ -96,17 +127,139 @@ public class RuleReaderServiceImpl implements RuleReaderService {
     @Override
     public AccessInfo getAccessInfo(RuleFilter filter) {
         LOGGER.info("Requesting access for " + filter);
-        List<Rule> found = getRules(filter);
+        Map<UserGroup, List<Rule>> groupedRules = getRules(filter);
+
+        AccessInfoInternal currAccessInfo = null;
+        
+        for (Entry<UserGroup, List<Rule>> ruleGroup : groupedRules.entrySet()) {
+            UserGroup userGroup = ruleGroup.getKey();
+            List<Rule> rules = ruleGroup.getValue();
+
+            AccessInfoInternal accessInfo = resolveRuleset(rules);
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Filter " + filter + " on group " + userGroup + " has access " + accessInfo);
+            }
+
+            currAccessInfo = enlargeAccessInfo(currAccessInfo, accessInfo);
+        }
+
+        AccessInfo ret;
+
+        if(currAccessInfo == null) {
+            LOGGER.warn("No access for filter " + filter);
+            // Denying by default
+            ret = new AccessInfo(GrantType.DENY);
+        } else {
+            ret = currAccessInfo.toAccessInfo();
+        }
+
+        LOGGER.info("Returning " + ret + " for " + filter);
+        return ret;
+    }
+
+    private AccessInfoInternal enlargeAccessInfo(AccessInfoInternal baseAccess, AccessInfoInternal moreAccess) {
+        if(baseAccess == null) {
+            if(moreAccess == null)
+                return null;
+            else if(moreAccess.getGrant() == GrantType.ALLOW)
+                return moreAccess;            
+            else
+                return null;
+        } else {
+            if(moreAccess == null)
+                return baseAccess;
+            else if(moreAccess.getGrant() == GrantType.DENY)
+                return baseAccess;
+            else {
+                // ok: extending grants
+                AccessInfoInternal ret = new AccessInfoInternal(GrantType.ALLOW);
+
+                Set<String> allowedStyles = new HashSet<String>();
+                allowedStyles.addAll(baseAccess.getAllowedStyles());
+                allowedStyles.addAll(moreAccess.getAllowedStyles());
+                ret.setAllowedStyles(allowedStyles);
+
+                ret.setCqlFilterRead(unionCQL(baseAccess.getCqlFilterRead(), moreAccess.getCqlFilterRead()));
+                ret.setCqlFilterWrite(unionCQL(baseAccess.getCqlFilterWrite(), moreAccess.getCqlFilterWrite()));
+
+                if(baseAccess.getDefaultStyle() == null || moreAccess.getDefaultStyle()==null)
+                    ret.setDefaultStyle(null);
+                else
+                    ret.setDefaultStyle(baseAccess.getDefaultStyle()); // just pick one
+
+                ret.setAttributes(unionAttributes(baseAccess.getAttributes(), moreAccess.getAttributes()));
+                ret.setArea(unionGeometry(baseAccess.getArea(), moreAccess.getArea()));
+
+                return ret;
+            }
+        }        
+    }
+
+    private String unionCQL(String c1, String c2) {
+          if(c1 == null || c2 == null)
+              return null;
+
+          return "("+c1+") OR ("+c2+")";
+    }
+
+    private Geometry unionGeometry(Geometry g1, Geometry g2) {
+          if(g1 == null || g2 == null)
+              return null;
+
+          return union(g1, g2);
+    }
+
+    private static Set<LayerAttribute> unionAttributes(Set<LayerAttribute> a0, Set<LayerAttribute> a1) {
+        // TODO: check how geoserver deals with empty set
+
+        if(a0 == null)
+            return a1;
+        if(a1==null)
+            return a0;
+
+        Set<LayerAttribute> ret = new HashSet<LayerAttribute>();
+        // add both attributes only in a0, and enlarge common attributes
+        for (LayerAttribute attr0 : a0) {
+            LayerAttribute attr1 = getAttribute(attr0.getName(), a1);
+            if(attr1 == null) {
+                ret.add(attr0.clone());
+            } else {
+                LayerAttribute attr = attr0.clone();
+                if(attr0.getAccess()==AccessType.READWRITE || attr1.getAccess()==AccessType.READWRITE)
+                    attr.setAccess(AccessType.READWRITE);
+                else if(attr0.getAccess()==AccessType.READONLY || attr1.getAccess()==AccessType.READONLY)
+                    attr.setAccess(AccessType.READONLY);
+                ret.add(attr);
+            }
+        }
+        // now add attributes that are only in a1
+        for (LayerAttribute attr1 : a1) {
+            LayerAttribute attr0 = getAttribute(attr1.getName(), a0);
+            if(attr0 == null) {
+                ret.add(attr1.clone());
+
+            }
+        }
+
+        return ret;
+    }
+
+    private static LayerAttribute getAttribute(String name, Set<LayerAttribute> set) {
+        for (LayerAttribute layerAttribute : set) {
+            if(layerAttribute.getName().equals(name) )
+                return layerAttribute;
+        }
+        return null;
+    }
+
+    private AccessInfoInternal resolveRuleset(List<Rule> ruleList) {
 
         List<RuleLimits> limits = new ArrayList<RuleLimits>();
-        AccessInfo ret = null;
+        AccessInfoInternal ret = null;
 
-        for (Rule rule : found) {
+        for (Rule rule : ruleList) {
             if(ret != null)
                 break;
-
-            if(LOGGER.isDebugEnabled())
-                LOGGER.debug("Rule " + rule + " matches filter " + filter);
 
             switch(rule.getAccess()) {
                 case LIMIT:
@@ -120,11 +273,11 @@ public class RuleReaderServiceImpl implements RuleReaderService {
                     break;
 
                 case DENY:
-                    ret = new AccessInfo(GrantType.DENY);
+                    ret = new AccessInfoInternal(GrantType.DENY);
                     break;
 
                 case ALLOW:
-                    ret = buildAllowAccessInfo(rule, limits, filter.getUser());
+                    ret = buildAllowAccessInfo(rule, limits, null); 
                     break;
 
                 default:
@@ -132,27 +285,27 @@ public class RuleReaderServiceImpl implements RuleReaderService {
             }
         }
 
-        if(ret == null) {
-            LOGGER.warn("No rule matching filter " + filter);
-            // Denying by default
-            ret = new AccessInfo(GrantType.DENY);
-        }
+//        if(ret == null) {
+//            LOGGER.warn("No rule matching filter " + filter);
+//            // Denying by default
+//            ret = new AccessInfo(GrantType.DENY);
+//        }
 
-        LOGGER.info("Returning " + ret + " for " + filter);
+//        LOGGER.info("Returning " + ret + " for " + filter);
         return ret;
     }
 
-    private Geometry getUserArea(IdNameFilter userFilter) {
-        GSUser user = null;
-
-        if(userFilter.getType() == RuleFilter.FilterType.IDVALUE) {
-            user = userDAO.find(userFilter.getId());
-        } else if(userFilter.getType() == RuleFilter.FilterType.NAMEVALUE) {
-            user = getUserByName(userFilter.getName());
-        }
-
-        return user == null ? null :  user.getAllowedArea();
-    }
+//    private Geometry getUserArea(IdNameFilter userFilter) {
+//        GSUser user = null;
+//
+//        if(userFilter.getType() == RuleFilter.FilterType.IDVALUE) {
+//            user = userDAO.find(userFilter.getId());
+//        } else if(userFilter.getType() == RuleFilter.FilterType.NAMEVALUE) {
+//            user = getUserByName(userFilter.getName());
+//        }
+//
+//        return user == null ? null :  user.getAllowedArea();
+//    }
 
     private GSUser getUserByName(String userName) {
         Search search = new Search(GSUser.class);
@@ -164,8 +317,23 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         return users.isEmpty() ? null : users.get(0);
     }
 
-    private GSUser getUser(IdNameFilter filter) {
-        Search search = new Search(GSUser.class);
+    private GSUser getFullUser(IdNameFilter filter) {
+
+        switch(filter.getType()) {
+            case IDVALUE:
+                return userDAO.getFull(filter.getId());
+            case NAMEVALUE:
+                return userDAO.getFull(filter.getName());
+            case DEFAULT:
+            case ANY:
+                return null;
+            default:
+                throw new IllegalStateException("Unknown filter type '"+filter+"'");
+        }
+    }
+
+    private UserGroup getUserGroup(IdNameFilter filter) {
+        Search search = new Search(UserGroup.class);
 
         switch(filter.getType()) {
             case IDVALUE:
@@ -178,43 +346,22 @@ public class RuleReaderServiceImpl implements RuleReaderService {
                 return null;
         }
 
-        List<GSUser> users = userDAO.search(search);
-        if(users.size() > 1)
-            throw new IllegalStateException("Found more than one user '"+filter+"'");
+        List<UserGroup> groups = userGroupDAO.search(search);
+        if(groups.size() > 1)
+            throw new IllegalStateException("Found more than one userGroup '"+filter+"'");
 
-        return users.isEmpty() ? null : users.get(0);
-    }
-
-    private Profile getProfile(IdNameFilter filter) {
-        Search search = new Search(Profile.class);
-
-        switch(filter.getType()) {
-            case IDVALUE:
-                search.addFilterEqual("id", filter.getId());
-                break;
-            case NAMEVALUE:
-                search.addFilterEqual("name", filter.getName());
-                break;
-            default:
-                return null;
-        }
-
-        List<Profile> profiles = profileDAO.search(search);
-        if(profiles.size() > 1)
-            throw new IllegalStateException("Found more than one profile '"+filter+"'");
-
-        return profiles.isEmpty() ? null : profiles.get(0);
+        return groups.isEmpty() ? null : groups.get(0);
     }
 
 
 
-    private AccessInfo buildAllowAccessInfo(Rule rule, List<RuleLimits> limits, IdNameFilter userFilter) {
-        AccessInfo accessInfo = new AccessInfo(GrantType.ALLOW);
+    private AccessInfoInternal buildAllowAccessInfo(Rule rule, List<RuleLimits> limits, IdNameFilter userFilter) {
+        AccessInfoInternal accessInfo = new AccessInfoInternal(GrantType.ALLOW);
 
         Geometry area = intersect(limits);
 
-        Geometry userArea = getUserArea(userFilter);
-        area = intersect(area, userArea);
+//        Geometry userArea = getUserArea(userFilter);
+//        area = intersect(area, userArea);
 
         LayerDetails details = rule.getLayerDetails();
         if(details != null ) {
@@ -236,7 +383,8 @@ public class RuleReaderServiceImpl implements RuleReaderService {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Attaching an area to Accessinfo: " + area.getClass().getName() + " " + area.toString());
             }
-            accessInfo.setAreaWkt(area.toText());
+//            accessInfo.setAreaWkt(area.toText());
+            accessInfo.setArea(area);
         }
 
         return accessInfo;
@@ -268,6 +416,17 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         }
     }
 
+    private Geometry union(Geometry g1, Geometry g2) {
+        if(g1!=null) {
+            if(g2==null)
+                return g1;
+            else
+                return g1.union(g2);
+        } else {
+            return g2;
+        }
+    }
+
     //==========================================================================
 
 //    protected List<Rule> getRules(String userName, String profileName, String instanceName, String service, String request, String workspace, String layer) throws BadRequestServiceEx {
@@ -287,40 +446,110 @@ public class RuleReaderServiceImpl implements RuleReaderService {
 //        return found;
 //    }
 
-    protected List<Rule> getRules(RuleFilter filter) throws BadRequestServiceEx {
-        Search searchCriteria = new Search(Rule.class);
-        searchCriteria.addSortAsc("priority");
+    /**
+     * @deprecated Rewrite this method, accoring to the new N:N user:group relationship.
+     *
+     * @return a Map having UserGroups as keys, and the list of matching Rules as values. The NULL key holds the rules for the DEFAULT group.
+     */
+    protected Map<UserGroup, List<Rule>> getRules(RuleFilter filter) throws BadRequestServiceEx {
+        
+        // user can be null if
+        // 1) id or name are defined in the filter, but the user has not been found in the db
+        // 2) the user filter asks for ANY or DEFAULT 
+        GSUser filterUser = getFullUser(filter.getUser());
 
-        IdNameFilter profileFilter = filter.getProfile();
+        // group can be null if
+        // 1) id or name are defined in the filter, but the group has not been found in the db
+        // 2) the group filter asks for ANY or DEFAULT
+        UserGroup filterGroup = getUserGroup(filter.getUserGroup());
 
-        GSUser user = getUser(filter.getUser());
-        if(user != null) {
-            Profile profile = getProfile(profileFilter);
-            if(profile != null) {
-                if(user.getProfile().getId().longValue() != profile.getId().longValue()) {
-                    LOGGER.warn("User profile and given profile differ [User:"+filter.getUser()+"] [Profile:"+profileFilter+"].");
-                    return (List<Rule>)Collections.EMPTY_LIST;
+
+        Set<UserGroup> finalGroupFilter = new HashSet<UserGroup>();
+
+        // If both user and group are defined in filter
+        //   if user doensn't belong to group, no rule is returned
+        //   otherwise assigned or default rules are searched for
+        if(filterUser != null) {
+            Set<UserGroup> assignedGroups = filterUser.getGroups();
+            if(filterGroup != null) {
+                if( assignedGroups.contains(filterGroup)) {
+//                    IdNameFilter f = new IdNameFilter(filterGroup.getId());
+                    finalGroupFilter = Collections.singleton(filterGroup);
+                } else {
+                    LOGGER.warn("User does not belong to user group [FUser:"+filter.getUser()+"] [FGroup:"+filterGroup+"] [Grps:"+assignedGroups+"]");
+                    return Collections.EMPTY_MAP; // shortcut here, in rder to avoid loading the rules
                 }
+            } else { 
+                // User set and found, group (ANY, DEFAULT or notfound):
+
+                if(filter.getUserGroup().getType() == FilterType.ANY) {
+                    if( ! filterUser.getGroups().isEmpty()) {
+                        finalGroupFilter = filterUser.getGroups();
+                    } else {
+                        filter.setUserGroup(SpecialFilterType.DEFAULT);
+                    }
+                } else {
+                    // group is DEFAULT or not found:
+                    // no grouping, use requested filtering
+                }
+            }
+        } else {
+            // user is null: then either:
+            //  1) no filter on user was requested (ANY or DEFAULT)
+            //  2) user has not been found
+            if(filterGroup != null) {
+                finalGroupFilter.add(filterGroup);
             } else {
-                // Set user's profile
-                profileFilter = new IdNameFilter(RuleFilter.FilterType.IDVALUE);
-                profileFilter.setId(user.getProfile().getId());
+                // group is ANY, DEFAULT or not found:
+                // no grouping, use requested filtering
             }
         }
 
-        addCriteria(searchCriteria, "gsuser", filter.getUser());
-        addCriteria(searchCriteria, "profile", profileFilter);
-        addCriteria(searchCriteria, "instance", filter.getInstance());
+        Map<UserGroup, List<Rule>> ret = new HashMap<UserGroup, List<Rule>>();
 
+        if(finalGroupFilter.isEmpty()) {
+            List<Rule> found = getRuleAux(filter, filter.getUserGroup());
+            ret.put(null, found);
+        } else {
+            for (UserGroup userGroup : finalGroupFilter) {
+                IdNameFilter groupFilter = new IdNameFilter(userGroup.getId());
+                List<Rule> found = getRuleAux(filter, groupFilter);
+                ret.put(userGroup, found);
+            }
+        }
+
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Filter " + filter + " is matching the following Rules:");
+            boolean ruleFound = false;
+            for (Entry<UserGroup, List<Rule>> entry : ret.entrySet()) {
+                UserGroup ug = entry.getKey();
+                LOGGER.debug("    Group:"+ ug );
+                for (Rule rule : entry.getValue()) {
+                    LOGGER.debug("    Group:"+ ug + " ---> " + rule);
+                    ruleFound = true;
+                }
+            }
+            if( ! ruleFound)
+                LOGGER.debug("No rules matching filter " + filter);
+
+        }
+
+        return ret;
+    }
+
+    protected List<Rule> getRuleAux(RuleFilter filter, IdNameFilter groupFilter) {
+        Search searchCriteria = new Search(Rule.class);
+        searchCriteria.addSortAsc("priority");
+        addCriteria(searchCriteria, "gsuser", filter.getUser());
+        addCriteria(searchCriteria, "userGroup", groupFilter);
+        addCriteria(searchCriteria, "instance", filter.getInstance());
         addStringCriteria(searchCriteria, "service", filter.getService()); // see class' javadoc
         addStringCriteria(searchCriteria, "request", filter.getRequest()); // see class' javadoc
         addStringCriteria(searchCriteria, "workspace", filter.getWorkspace());
         addStringCriteria(searchCriteria, "layer", filter.getLayer());
-
         List<Rule> found = ruleDAO.search(searchCriteria);
         return found;
     }
-
 
     private void addCriteria(Search searchCriteria, String fieldName, IdNameFilter filter) {
         switch (filter.getType()) {
@@ -437,8 +666,8 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         this.userDAO = userDAO;
     }
 
-    public void setProfileDAO(ProfileDAO profileDAO) {
-        this.profileDAO = profileDAO;
+    public void setUserGroupDAO(UserGroupDAO profileDAO) {
+        this.userGroupDAO = profileDAO;
     }
 
 }

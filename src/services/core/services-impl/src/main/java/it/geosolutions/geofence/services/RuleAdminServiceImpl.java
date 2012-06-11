@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -19,6 +19,8 @@
  */
 package it.geosolutions.geofence.services;
 
+import com.googlecode.genericdao.search.Filter;
+import com.googlecode.genericdao.search.Search;
 import it.geosolutions.geofence.core.dao.LayerDetailsDAO;
 import it.geosolutions.geofence.core.dao.RuleDAO;
 import it.geosolutions.geofence.core.dao.RuleLimitsDAO;
@@ -40,8 +42,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import com.trg.search.Filter;
-import com.trg.search.Search;
 import it.geosolutions.geofence.services.exception.BadRequestServiceEx;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 
@@ -172,7 +172,7 @@ public class RuleAdminServiceImpl implements RuleAdminService {
         RuleFilter filter = new RuleFilter(0L, 0L, 0L, service, request, workspace, layer);
         // adjust IDs
         adjustFilterHeuristic(filter.getUser(), userId);
-        adjustFilterHeuristic(filter.getProfile(), profileId);
+        adjustFilterHeuristic(filter.getUserGroup(), profileId);
         adjustFilterHeuristic(filter.getInstance(), instanceId);
 
         return getList(filter, page, entries);
@@ -243,7 +243,7 @@ public class RuleAdminServiceImpl implements RuleAdminService {
         RuleFilter filter = new RuleFilter(0L, 0L, 0L, service, request, workspace, layer);
         // adjust IDs
         adjustFilterHeuristic(filter.getUser(), userId);
-        adjustFilterHeuristic(filter.getProfile(), profileId);
+        adjustFilterHeuristic(filter.getUserGroup(), profileId);
         adjustFilterHeuristic(filter.getInstance(), instanceId);
         return getCount(filter);
     }
@@ -262,7 +262,7 @@ public class RuleAdminServiceImpl implements RuleAdminService {
 
         if(filter != null) {
             addCriteria(searchCriteria, "gsuser", filter.getUser());
-            addCriteria(searchCriteria, "profile", filter.getProfile());
+            addCriteria(searchCriteria, "userGroup", filter.getUserGroup());
             addCriteria(searchCriteria, "instance", filter.getInstance());
 
             addStringCriteria(searchCriteria, "service", filter.getService()); // see class' javadoc

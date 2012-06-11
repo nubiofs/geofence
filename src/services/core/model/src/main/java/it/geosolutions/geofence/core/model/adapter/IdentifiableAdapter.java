@@ -49,12 +49,12 @@ public abstract class IdentifiableAdapter<I extends Identifiable> extends XmlAda
     @Override
     public I unmarshal(String val) throws ParseException {
 
+        I ret = createInstance();
         try {
-            I ret = createInstance();
             ret.setId(Long.valueOf(val));
             return ret;
         } catch (NumberFormatException e) {
-            throw new ParseException("Bad profile id " + val);
+            throw new ParseException("Bad "+ ret.getClass().getSimpleName()+" id " + val);
         }
     }
 
@@ -66,7 +66,7 @@ public abstract class IdentifiableAdapter<I extends Identifiable> extends XmlAda
         if (p != null) {
             return p.getId().toString();
         } else {
-            throw new ParseException("Profile obj is null.");
+            throw new ParseException("Obj is null");
         }
     }
 }

@@ -170,7 +170,7 @@ public class RulesManagerServiceImpl implements IRulesManagerService
                 local_rule.setUser(local_user);
             }
 
-            if (remote_rule.getProfile() == null)
+            if (remote_rule.getUserGroup() == null)
             {
                 Profile all = new Profile();
                 all.setId(-1);
@@ -179,7 +179,7 @@ public class RulesManagerServiceImpl implements IRulesManagerService
             }
             else
             {
-                it.geosolutions.geofence.core.model.Profile remote_profile = remote_rule.getProfile();
+                it.geosolutions.geofence.core.model.UserGroup remote_profile = remote_rule.getUserGroup();
                 Profile local_profile = new Profile();
                 local_profile.setId(remote_profile.getId());
                 local_profile.setName(remote_profile.getName());
@@ -280,11 +280,11 @@ public class RulesManagerServiceImpl implements IRulesManagerService
 
         if ((rule.getProfile() != null) && !rule.getProfile().getName().equalsIgnoreCase("*"))
         {
-            filter.setProfile(rule.getProfile().getId());
+            filter.setUserGroup(rule.getProfile().getId());
         }
         else
         {
-            filter.setProfile(SpecialFilterType.DEFAULT);
+            filter.setUserGroup(SpecialFilterType.DEFAULT);
         }
 
         if ((rule.getInstance() != null) && !rule.getInstance().getName().equalsIgnoreCase("*"))
@@ -477,9 +477,9 @@ public class RulesManagerServiceImpl implements IRulesManagerService
      *            the profile
      * @return the profile
      */
-    private it.geosolutions.geofence.core.model.Profile getProfile(Profile profile)
+    private it.geosolutions.geofence.core.model.UserGroup getProfile(Profile profile)
     {
-        it.geosolutions.geofence.core.model.Profile remote_profile = null;
+        it.geosolutions.geofence.core.model.UserGroup remote_profile = null;
         try
         {
             if ((profile != null) && (profile.getId() != -1))

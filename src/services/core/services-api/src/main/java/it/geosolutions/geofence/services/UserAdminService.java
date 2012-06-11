@@ -22,8 +22,11 @@ package it.geosolutions.geofence.services;
 import java.util.List;
 
 import it.geosolutions.geofence.core.model.GSUser;
+import it.geosolutions.geofence.core.model.UserGroup;
 import it.geosolutions.geofence.services.dto.ShortUser;
+import it.geosolutions.geofence.services.exception.BadRequestServiceEx;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
+import java.util.Set;
 
 
 /**
@@ -45,10 +48,14 @@ public interface UserAdminService extends GetProviderService<GSUser>
 
     @Override
     GSUser get(long id) throws NotFoundServiceEx;
+    GSUser get(String name) throws NotFoundServiceEx;
+    GSUser getFull(long id) throws NotFoundServiceEx;
+
+    Set<UserGroup> getUserGroups(long id);
 
     long getCount(String nameLike);
 
     List<ShortUser> getList(String nameLike, Integer page, Integer entries);
 
-    List<GSUser> getFullList(String nameLike, Integer page, Integer entries);
+    List<GSUser> getFullList(String nameLike, Integer page, Integer entries) throws BadRequestServiceEx;
 }

@@ -37,7 +37,7 @@ import org.apache.log4j.Logger;
  * <LI>only default rules (null value in a field) </LI>
  * </UL>
  *
- * For users, profiles, instances (i.e., classes represented by DB entities)
+ * For users, groups, instances (i.e., classes represented by DB entities)
  * you may specify either the ID or the name.
  *
  * @author ETj (etj at geo-solutions.it)
@@ -74,7 +74,7 @@ public class RuleFilter implements Serializable
     }
 
     private final IdNameFilter user;
-    private final IdNameFilter profile;
+    private final IdNameFilter userGroup;
     private final IdNameFilter instance;
 
     private final NameFilter service;
@@ -102,7 +102,7 @@ public class RuleFilter implements Serializable
         FilterType ft = type.getRelatedType();
 
         user = new IdNameFilter(ft);
-        profile = new IdNameFilter(ft);
+        userGroup = new IdNameFilter(ft);
         instance = new IdNameFilter(ft);
         service = new NameFilter(ft, true);
         request = new NameFilter(ft, true);
@@ -119,7 +119,7 @@ public class RuleFilter implements Serializable
      * </UL>
      * @deprecated Please use plain setters if you want to handle by hand special values or filter conditions.
      */
-    public RuleFilter(String userName, String profileName, String instanceName, String service, String request,
+    public RuleFilter(String userName, String groupName, String instanceName, String service, String request,
         String workspace, String layer)
     {
         this(SpecialFilterType.DEFAULT);
@@ -127,7 +127,7 @@ public class RuleFilter implements Serializable
         LOGGER.warn("Creating a RuleFilter heuristically");
 
         this.user.setHeuristically(userName);
-        this.profile.setHeuristically(profileName);
+        this.userGroup.setHeuristically(groupName);
         this.instance.setHeuristically(instanceName);
 
         this.service.setHeuristically(service);
@@ -145,7 +145,7 @@ public class RuleFilter implements Serializable
      * </UL>
      * @deprecated Please use plain setters if you want to handle by hand special values or filter conditions.
      */
-    public RuleFilter(Long userId, Long profileId, Long instanceId, String service, String request, String workspace,
+    public RuleFilter(Long userId, Long groupId, Long instanceId, String service, String request, String workspace,
         String layer)
     {
         this(SpecialFilterType.DEFAULT);
@@ -153,7 +153,7 @@ public class RuleFilter implements Serializable
         LOGGER.warn("Creating a RuleFilter heuristically");
 
         this.user.setHeuristically(userId);
-        this.profile.setHeuristically(profileId);
+        this.userGroup.setHeuristically(groupId);
         this.instance.setHeuristically(instanceId);
 
         this.service.setHeuristically(service);
@@ -177,19 +177,19 @@ public class RuleFilter implements Serializable
         user.setType(type);
     }
 
-    public void setProfile(Long id)
+    public void setUserGroup(Long id)
     {
-        profile.setId(id);
+        userGroup.setId(id);
     }
 
-    public void setProfile(String name)
+    public void setUserGroup(String name)
     {
-        profile.setName(name);
+        userGroup.setName(name);
     }
 
-    public void setProfile(SpecialFilterType type)
+    public void setUserGroup(SpecialFilterType type)
     {
-        profile.setType(type);
+        userGroup.setType(type);
     }
 
     public void setInstance(Long id)
@@ -257,9 +257,9 @@ public class RuleFilter implements Serializable
         return layer;
     }
 
-    public IdNameFilter getProfile()
+    public IdNameFilter getUserGroup()
     {
-        return profile;
+        return userGroup;
     }
 
     public NameFilter getRequest()
@@ -298,7 +298,7 @@ public class RuleFilter implements Serializable
         StringBuilder sb = new StringBuilder(getClass().getSimpleName());
         sb.append('[');
         sb.append("user:").append(user);
-        sb.append(" prof:").append(profile);
+        sb.append(" grp:").append(userGroup);
         sb.append(" inst:").append(instance);
         sb.append(" serv:").append(service);
         sb.append(" req:").append(request);
@@ -330,6 +330,11 @@ public class RuleFilter implements Serializable
         public IdNameFilter(FilterType type)
         {
             this.type = type;
+        }
+
+        public IdNameFilter(long id)
+        {
+            setId(id);
         }
 
         public void setHeuristically(String name)
@@ -407,7 +412,7 @@ public class RuleFilter implements Serializable
                 return new StringBuilder("id:").append(id.toString()).toString();
 
             case NAMEVALUE:
-                return name;
+                return name==null?"(null)":name.isEmpty()?"(empty)":name;
 
             default:
                 throw new AssertionError();
@@ -482,7 +487,7 @@ public class RuleFilter implements Serializable
                 return type.toString();
 
             case NAMEVALUE:
-                return name;
+                return name==null?"(null)":name.isEmpty()?"(empty)":name;
 
             case IDVALUE:
             default:

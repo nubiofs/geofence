@@ -23,7 +23,7 @@ package it.geosolutions.geofence.core.dao.impl;
 import java.util.Date;
 import java.util.List;
 
-import com.trg.search.ISearch;
+import com.googlecode.genericdao.search.ISearch;
 
 import it.geosolutions.geofence.core.dao.GFUserDAO;
 import it.geosolutions.geofence.core.model.GFUser;

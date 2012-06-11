@@ -192,6 +192,18 @@
 
             <dependency>
                 <groupId>it.geosolutions.geofence</groupId>
+                <artifactId>geofence-rest-api</artifactId>
+                <version>${geofence-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>it.geosolutions.geofence</groupId>
+                <artifactId>geofence-rest-impl</artifactId>
+                <version>${geofence-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>it.geosolutions.geofence</groupId>
                 <artifactId>geofence-rest-test</artifactId>
                 <version>${geofence-version}</version>
             </dependency>
@@ -589,21 +601,22 @@
 		    <!-- =========================================================== -->
 		    <!--     HIBERNATE-GENERIC-DAO                                   -->
 		    <!-- =========================================================== -->
+
             <dependency>
-                <groupId>com.trg</groupId>
-                <artifactId>trg-dao</artifactId>
-                <version>${hibernate-generic-dao-version}</version>
+                <groupId>com.googlecode.genericdao</groupId>
+                <artifactId>dao</artifactId>
+                <version>1.1.0</version>
             </dependency>
             <dependency>
-                <groupId>com.trg</groupId>
-                <artifactId>trg-search</artifactId>
-                <version>${hibernate-generic-dao-version}</version>
+                <groupId>com.googlecode.genericdao</groupId>
+                <artifactId>search-jpa-hibernate</artifactId>
+                <version>1.1.0</version>
             </dependency>
-            <dependency>
-                <groupId>com.trg</groupId>
-                <artifactId>trg-search-jpa-hibernate</artifactId>
+<!--            <dependency>
+                <groupId>com.googlecode.genericdao</groupId>
+                <artifactId>search</artifactId>
                 <version>${hibernate-generic-dao-version}</version>
-            </dependency>
+            </dependency>-->
 
 		    <!-- =========================================================== -->
 		    <!--     HIBERNATE                                               -->
@@ -841,14 +854,17 @@
         <repository>
             <id>Hibernate Spatial repo</id>
             <url>http://www.hibernatespatial.org/repository</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
 
-        <repository>
+<!--        <repository>
             <id>trg-dao-repo</id>
             <name>Repository for The Revere Group's Hibernate Generic DAO framework</name>
             <url>http://hibernate-generic-dao.googlecode.com/svn/trunk/maven-repo/</url>
         </repository>
-
+-->
 				<!-- Apache -->
         <repository>
             <id>maven2-repository.dev.java.net</id>
@@ -859,7 +875,7 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-
+<!--
         <repository>
             <id>apache.snapshots</id>
             <name>Apache Snapshots Repository</name>
@@ -871,7 +887,7 @@
                 <enabled>false</enabled>
             </releases>
         </repository>
-
+-->
         <repository>
             <id>apache.incubating</id>
             <name>Apache Incubating Repository</name>
@@ -910,11 +926,17 @@
             <id>spring-release</id>
             <name>Spring Portfolio Release Repository</name>
             <url>http://maven.springframework.org/release</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>spring-external</id>
             <name>Spring Portfolio External Repository</name>
             <url>http://maven.springframework.org/external</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
 
         <!-- Java.net -->
@@ -922,6 +944,9 @@
             <id>java.net</id>
             <url>http://download.java.net/maven/1</url>
             <layout>legacy</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
 
 				<!-- ServiceMix -->

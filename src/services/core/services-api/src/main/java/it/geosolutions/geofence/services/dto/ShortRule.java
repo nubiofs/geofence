@@ -68,10 +68,10 @@ public class ShortRule implements Serializable
             setUserId(rule.getGsuser().getId());
             setUserName(rule.getGsuser().getName());
         }
-        if (rule.getProfile() != null)
+        if (rule.getUserGroup() != null)
         {
-            setProfileId(rule.getProfile().getId());
-            setProfileName(rule.getProfile().getName());
+            setProfileId(rule.getUserGroup().getId());
+            setProfileName(rule.getUserGroup().getName());
         }
         if (rule.getInstance() != null)
         {
