@@ -17,7 +17,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.geosolutions.geofence.services.servicetest;
 
 import it.geosolutions.geofence.core.model.GFUser;
@@ -45,26 +44,21 @@ import it.geosolutions.geofence.services.rest.utils.InstanceCleaner;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 
-
 /**
  *
  * @author ETj (etj at geo-solutions.it)
  */
-public class MainTest implements InitializingBean
-{
+public class MainTest implements InitializingBean {
 
     private static final Logger LOGGER = Logger.getLogger(MainTest.class);
-
     private RuleAdminService ruleAdminService;
-    private UserGroupAdminService profileAdminService;
+    private UserGroupAdminService userGroupAdminService;
     private UserAdminService userAdminService;
     private GFUserAdminService grUserAdminService;
     private InstanceAdminService instanceAdminService;
-
     private InstanceCleaner instanceCleaner;
 
-    public void afterPropertiesSet() throws Exception
-    {
+    public void afterPropertiesSet() throws Exception {
         LOGGER.info("===== Starting Geofence REST test services =====");
 
         instanceCleaner.removeAll();
@@ -73,25 +67,18 @@ public class MainTest implements InitializingBean
         setUpTestRule();
     }
 
-
-    private void setUpTestRule()
-    {
+    private void setUpTestRule() {
 
         ShortGroup sp1 = new ShortGroup();
         sp1.setName("test_profile");
 
-        long p1id = profileAdminService.insert(sp1);
+        long p1id = userGroupAdminService.insert(sp1);
 
         ShortGroup sp2 = new ShortGroup();
         sp2.setName("test_profile2");
 
-        long p2id = profileAdminService.insert(sp2);
-        UserGroup p2 = profileAdminService.get(p2id);
-
-        Map<String, String> p2cp = new HashMap<String, String>();
-        p2cp.put("k1", "v1");
-        p2cp.put("k2", "v2");
-        profileAdminService.setCustomProps(p2id, p2cp);
+        long p2id = userGroupAdminService.insert(sp2);
+        UserGroup p2 = userGroupAdminService.get(p2id);
 
         GFUser u0 = new GFUser();
         u0.setName("admin");
@@ -106,7 +93,7 @@ public class MainTest implements InitializingBean
         u1.setAdmin(true);
         u1.setName("admin");
         u1.setPassword("password");
-        u1.setProfile(profileAdminService.get(p1id));
+        u1.getGroups().add(userGroupAdminService.get(p1id));
         u1.setEnabled(true);
         u1.setFullName("Sample G.S. Admin");
         u1.setEmailAddress("gs.admin@geofence.net");
@@ -181,8 +168,7 @@ public class MainTest implements InitializingBean
             Rule loaded = ruleAdminService.get(r1id);
             LayerDetails details = loaded.getLayerDetails();
             assert details != null;
-            for (LayerAttribute layerAttribute : details.getAttributes())
-            {
+            for (LayerAttribute layerAttribute : details.getAttributes()) {
                 LOGGER.error(layerAttribute);
             }
 
@@ -199,36 +185,28 @@ public class MainTest implements InitializingBean
     }
 
     // ==========================================================================
-
-    public void setInstanceCleaner(InstanceCleaner instanceCleaner)
-    {
+    public void setInstanceCleaner(InstanceCleaner instanceCleaner) {
         this.instanceCleaner = instanceCleaner;
     }
 
     // ==========================================================================
-
-    public void setProfileAdminService(UserGroupAdminService profileAdminService)
-    {
-        this.profileAdminService = profileAdminService;
+    public void setUserGroupAdminService(UserGroupAdminService userGroupAdminService) {
+        this.userGroupAdminService = userGroupAdminService;
     }
 
-    public void setUserAdminService(UserAdminService userAdminService)
-    {
+    public void setUserAdminService(UserAdminService userAdminService) {
         this.userAdminService = userAdminService;
     }
 
-    public void setInstanceAdminService(InstanceAdminService instanceAdminService)
-    {
+    public void setInstanceAdminService(InstanceAdminService instanceAdminService) {
         this.instanceAdminService = instanceAdminService;
     }
 
-    public void setRuleAdminService(RuleAdminService ruleAdminService)
-    {
+    public void setRuleAdminService(RuleAdminService ruleAdminService) {
         this.ruleAdminService = ruleAdminService;
     }
 
-    public void setGrUserAdminService(GFUserAdminService grUserAdminService)
-    {
+    public void setGrUserAdminService(GFUserAdminService grUserAdminService) {
         this.grUserAdminService = grUserAdminService;
     }
 }
