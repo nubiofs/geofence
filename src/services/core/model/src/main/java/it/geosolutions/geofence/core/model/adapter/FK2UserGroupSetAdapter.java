@@ -1,7 +1,6 @@
-/*
- * ====================================================================
+/* ====================================================================
  *
- * Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ * Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  * http://www.geo-solutions.it
  *
  * GPLv3 + Classpath exception
@@ -33,30 +32,47 @@ import it.geosolutions.geofence.core.model.adapter.dual.IdNameBundle;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import com.vividsolutions.jts.io.ParseException;
-import it.geosolutions.geofence.core.model.Profile;
+import it.geosolutions.geofence.core.model.UserGroup;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * Transform a Profile into its id.
+ * Transform a UserGroup into its id.
  *
  */
-public class FK2ProfileAdapter extends XmlAdapter<IdNameBundle, Profile> {
+public class FK2UserGroupSetAdapter extends XmlAdapter<Set<IdNameBundle>, Set<UserGroup>> {
 
     @Override
-    public Profile unmarshal(IdNameBundle in) throws ParseException {
+    public Set<UserGroup> unmarshal(Set<IdNameBundle> inSet) throws ParseException {
+        if(inSet == null)
+            return null;
 
-            Profile ret = new Profile();
-            ret.setId(in.getId());
-            ret.setName(in.getName());
-            return ret;
+        Set<UserGroup> ret = new HashSet<UserGroup>();
+        for (IdNameBundle in : inSet) {
+            UserGroup ug = new UserGroup();
+            ug.setId(in.getId());
+            ug.setName(in.getName());
+            ret.add(ug);
+        }
+
+        return ret;
     }
 
     @Override
-    public IdNameBundle marshal(Profile u) throws ParseException {
-        IdNameBundle in = new IdNameBundle();
-        if (u != null) {
-            in.setId(u.getId());
-            in.setName(u.getName());
+    public Set<IdNameBundle> marshal(Set<UserGroup> inSet) throws ParseException {
+        if(inSet == null)
+            return null;
+
+        Set<IdNameBundle> ret = new HashSet<IdNameBundle>();
+        for (UserGroup ug : inSet) {
+            if (ug != null) {
+                IdNameBundle in = new IdNameBundle();
+                in.setId(ug.getId());
+                in.setName(ug.getName());
+                ret.add(in);
+            }
         }
-        return in;
+
+        return ret;
     }
 }

@@ -25,8 +25,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import it.geosolutions.geofence.core.model.Profile;
-import it.geosolutions.geofence.services.dto.ShortProfile;
+import it.geosolutions.geofence.core.model.UserGroup;
+import it.geosolutions.geofence.services.dto.ShortGroup;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,9 +35,9 @@ import java.util.Map;
  *
  * @author ETj (etj at geo-solutions.it)
  */
-public class ProfileAdminServiceImplTest extends ServiceTestBase {
+public class UserGroupAdminServiceImplTest extends ServiceTestBase {
 
-    public ProfileAdminServiceImplTest() {
+    public UserGroupAdminServiceImplTest() {
     }
 
     @BeforeClass
@@ -51,32 +51,32 @@ public class ProfileAdminServiceImplTest extends ServiceTestBase {
     @Test
     public void testInsertDelete() throws NotFoundServiceEx {
 
-        Profile p = createProfile(getName());
-        profileAdminService.get(p.getId()); // will throw if not found
-        assertTrue("Could not delete profile", profileAdminService.delete(p.getId()));
+        UserGroup p = createUserGroup(getName());
+        userGroupAdminService.get(p.getId()); // will throw if not found
+        assertTrue("Could not delete group", userGroupAdminService.delete(p.getId()));
     }
 
     @Test
     public void testUpdate() throws Exception {
-        removeAllProfiles();
+        removeAllUserGroups();
 
-        Profile profile = createProfile("u1");
+        UserGroup group = createUserGroup("u1");
 
         final String NEWNAME = "NEWNAME";
 
         {
-            Profile loaded = profileAdminService.get(profile.getId());
+            UserGroup loaded = userGroupAdminService.get(group.getId());
             assertNotNull(loaded);
 
             assertEquals("u1", loaded.getName());
 
             loaded.setName(NEWNAME);
 
-            ShortProfile sp = new ShortProfile(loaded);
-            profileAdminService.update(sp);
+            ShortGroup sg = new ShortGroup(loaded);
+            userGroupAdminService.update(sg);
         }
         {
-            Profile loaded = profileAdminService.get(profile.getId());
+            UserGroup loaded = userGroupAdminService.get(group.getId());
             assertNotNull(loaded);
 
             assertEquals(NEWNAME, loaded.getName());
@@ -85,48 +85,48 @@ public class ProfileAdminServiceImplTest extends ServiceTestBase {
 
     @Test
     public void testGetAll() {
-        assertEquals(0, profileAdminService.getList(null,null,null).size());
+        assertEquals(0, userGroupAdminService.getList(null,null,null).size());
 
-        createProfile("u1");
-        createProfile("u2");
-        createProfile("u3");
+        createUserGroup("u1");
+        createUserGroup("u2");
+        createUserGroup("u3");
 
-        assertEquals(3, profileAdminService.getList(null,null,null).size());
+        assertEquals(3, userGroupAdminService.getList(null,null,null).size());
     }
 
     @Test
     public void testGetCount() {
-        assertEquals(0, profileAdminService.getCount(null));
+        assertEquals(0, userGroupAdminService.getCount(null));
 
-        createProfile("u10");
-        createProfile("u20");
-        createProfile("u30");
-        Profile u99 = createProfile("u99");
+        createUserGroup("u10");
+        createUserGroup("u20");
+        createUserGroup("u30");
+        UserGroup u99 = createUserGroup("u99");
 
-        assertEquals(4, profileAdminService.getCount(null));
-        assertEquals(4, profileAdminService.getCount("u%"));
-        assertEquals(3, profileAdminService.getCount("%0"));
+        assertEquals(4, userGroupAdminService.getCount(null));
+        assertEquals(4, userGroupAdminService.getCount("u%"));
+        assertEquals(3, userGroupAdminService.getCount("%0"));
 
-        List<ShortProfile> plist = profileAdminService.getList("%9",null,null);
-        assertEquals(1, plist.size());
-        assertEquals("u99", plist.get(0).getName());
-        assertEquals((Long)u99.getId(), (Long)plist.get(0).getId());
+        List<ShortGroup> glist = userGroupAdminService.getList("%9",null,null);
+        assertEquals(1, glist.size());
+        assertEquals("u99", glist.get(0).getName());
+        assertEquals((Long)u99.getId(), (Long)glist.get(0).getId());
     }
 
-    @Test
-    public void testGetProps() {
-
-        assertEquals(0, profileAdminService.getCount(null));
-
-        Profile p = createProfile(getName());
-        Map<String,String> props = new HashMap<String, String>();
-        props.put("k1", "v1");
-        props.put("k2", "v2");
-        profileAdminService.setCustomProps(p.getId(), props);
-
-        assertEquals(1, profileAdminService.getCount(null));
-        assertEquals(1, profileAdminService.getList(null, null, null).size());
-        assertEquals(1, profileAdminService.getFullList(null, null, null).size());
-    }
+//    @Test
+//    public void testGetProps() {
+//
+//        assertEquals(0, userGroupAdminService.getCount(null));
+//
+//        UserGroup p = createUserGroup(getName());
+//        Map<String,String> props = new HashMap<String, String>();
+//        props.put("k1", "v1");
+//        props.put("k2", "v2");
+//        userGroupAdminService.setCustomProps(p.getId(), props);
+//
+//        assertEquals(1, userGroupAdminService.getCount(null));
+//        assertEquals(1, userGroupAdminService.getList(null, null, null).size());
+//        assertEquals(1, userGroupAdminService.getFullList(null, null, null).size());
+//    }
 
 }

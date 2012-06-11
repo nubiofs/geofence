@@ -1,6 +1,6 @@
 /*
  */
-package it.geosolutions.geofence.core.dao.util;
+package it.geosolutions.geofence.core.model.util;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;

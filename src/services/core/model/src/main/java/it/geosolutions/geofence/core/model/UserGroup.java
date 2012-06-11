@@ -1,6 +1,6 @@
 /* ====================================================================
  *
- * Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ * Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  * http://www.geo-solutions.it
  *
  * GPLv3 + Classpath exception
@@ -54,13 +54,15 @@ import org.hibernate.annotations.ForeignKey;
 /**
  * A grouping for {@link GSUser}s.
  * <P>
+ *
+ * @author ETj (etj at geo-solutions.it)
  */
-@Entity(name = "Profile")
-@Table(name = "gf_profile")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "profile")
-@XmlRootElement(name = "Profile")
-@XmlType(propOrder={"id","extId","name","dateCreation","customProps"})
-public class Profile implements Identifiable, Serializable {
+@Entity(name = "UserGroup")
+@Table(name = "gf_usergroup")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "usergroup")
+@XmlRootElement(name = "UserGroup")
+@XmlType(propOrder={"id","extId","name","dateCreation"/*,"customProps"*/})
+public class UserGroup implements Identifiable, Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 8457036587275531556L;
@@ -90,19 +92,19 @@ public class Profile implements Identifiable, Serializable {
     @Column(nullable=false)
     private boolean enabled;
 
-    /** Custom properties associated to the profile */
-    @org.hibernate.annotations.CollectionOfElements
-    @JoinTable( name = "gf_profile_custom_props",
-                joinColumns = @JoinColumn(name = "profile_id"))
-    @org.hibernate.annotations.MapKey(columns =@Column(name = "propkey"))
-    @Column(name = "propvalue")
-    @ForeignKey(name="fk_custom_profile")
-    private Map<String, String> customProps = new HashMap<String, String>();
+//    /** Custom properties associated to the profile */
+//    @org.hibernate.annotations.CollectionOfElements
+//    @JoinTable( name = "gf_group_custom_props",
+//                joinColumns = @JoinColumn(name = "profile_id"))
+//    @org.hibernate.annotations.MapKey(columns =@Column(name = "propkey"))
+//    @Column(name = "propvalue")
+//    @ForeignKey(name="fk_custom_profile")
+//    private Map<String, String> customProps = new HashMap<String, String>();
 
     /**
      * Instantiates a new profile.
      */
-    public Profile() {
+    public UserGroup() {
     }
 
     /**
@@ -190,14 +192,14 @@ public class Profile implements Identifiable, Serializable {
         this.enabled = enabled;
     }
 
-    @XmlJavaTypeAdapter(MapAdapter.class)
-    public Map<String, String> getCustomProps() {
-        return customProps;
-    }
-
-    public void setCustomProps(Map<String, String> customProps) {
-        this.customProps = customProps;
-    }
+//    @XmlJavaTypeAdapter(MapAdapter.class)
+//    public Map<String, String> getCustomProps() {
+//        return customProps;
+//    }
+//
+//    public void setCustomProps(Map<String, String> customProps) {
+//        this.customProps = customProps;
+//    }
 
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
@@ -213,43 +215,70 @@ public class Profile implements Identifiable, Serializable {
         return result;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
+        if ( obj == null ) {
             return false;
         }
-        if (!(obj instanceof Profile)) {
+        if ( getClass() != obj.getClass() ) {
             return false;
         }
-        Profile other = (Profile) obj;
-        if (dateCreation == null) {
-            if (other.dateCreation != null) {
-                return false;
-            }
-        } else if (!dateCreation.equals(other.dateCreation)) {
+        final UserGroup other = (UserGroup) obj;
+        if ( this.id != other.id && (this.id == null || !this.id.equals(other.id)) ) {
             return false;
         }
-        if ( enabled != other.enabled) {
+        if ( (this.extId == null) ? (other.extId != null) : !this.extId.equals(other.extId) ) {
             return false;
         }
-        if (id != other.id) {
+        if ( (this.name == null) ? (other.name != null) : !this.name.equals(other.name) ) {
             return false;
         }
-        if (name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!name.equals(other.name)) {
+        if ( this.dateCreation != other.dateCreation && (this.dateCreation == null || !this.dateCreation.equals(other.dateCreation)) ) {
+            return false;
+        }
+        if ( this.enabled != other.enabled ) {
             return false;
         }
         return true;
     }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (this == obj) {
+//            return true;
+//        }
+//        if (obj == null) {
+//            return false;
+//        }
+//        if (!(obj instanceof UserGroup)) {
+//            return false;
+//        }
+//        UserGroup other = (UserGroup) obj;
+//        if (dateCreation == null) {
+//            if (other.dateCreation != null) {
+//                return false;
+//            }
+//        } else if (!dateCreation.equals(other.dateCreation)) {
+//            return false;
+//        }
+//        if ( enabled != other.enabled) {
+//            return false;
+//        }
+//        if (id != other.id) {
+//            return false;
+//        }
+//        if (name == null) {
+//            if (other.name != null) {
+//                return false;
+//            }
+//        } else if (!name.equals(other.name)) {
+//            return false;
+//        }
+//        return true;
+//    }
 
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
@@ -261,7 +290,8 @@ public class Profile implements Identifiable, Serializable {
         builder.append("id=").append(id);
         if (name != null)
             builder.append(" name=").append(name);
-        builder.append(" enabled=").append(enabled);
+        if( ! enabled )
+            builder.append(" enabled=").append(enabled);
         builder.append("]");
         return builder.toString();
     }

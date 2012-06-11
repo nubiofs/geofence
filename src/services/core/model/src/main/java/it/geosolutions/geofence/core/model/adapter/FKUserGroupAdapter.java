@@ -1,7 +1,6 @@
-/*
- * ====================================================================
+/* ====================================================================
  *
- * Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ * Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  * http://www.geo-solutions.it
  *
  * GPLv3 + Classpath exception
@@ -30,17 +29,18 @@
 package it.geosolutions.geofence.core.model.adapter;
 
 
-import it.geosolutions.geofence.core.model.Profile;
+import it.geosolutions.geofence.core.model.UserGroup;
 
 /**
- * Transform a Profile into its id.
+ * Transform a UserGroup into its id.
  *
+ * @author ETj (etj at geo-solutions.it)
  */
-public class FKProfileAdapter extends IdentifiableAdapter<Profile>  {
+public class FKUserGroupAdapter extends IdentifiableAdapter<UserGroup>  {
 
     @Override
-    protected Profile createInstance() {
-        return new Profile();
+    protected UserGroup createInstance() {
+        return new UserGroup();
     }
 
 }

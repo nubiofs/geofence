@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -22,41 +22,42 @@ package it.geosolutions.geofence.services;
 import java.util.List;
 import java.util.Map;
 
-import it.geosolutions.geofence.core.model.Profile;
-import it.geosolutions.geofence.services.dto.ShortProfile;
+import it.geosolutions.geofence.core.model.UserGroup;
+import it.geosolutions.geofence.services.dto.ShortGroup;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 
 
 /**
- * Operations on {@link Profile Profile}s.
+ * Operations on {@link UserGroup UserGroup}s.
  *
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
-public interface ProfileAdminService extends GetProviderService<Profile>
+public interface UserGroupAdminService extends GetProviderService<UserGroup>
 {
 
     // ==========================================================================
     // Basic operations
 
-    long insert(ShortProfile profile);
+    long insert(ShortGroup group);
 
-    long update(ShortProfile profile) throws NotFoundServiceEx;
+    long update(ShortGroup group) throws NotFoundServiceEx;
 
     boolean delete(long id) throws NotFoundServiceEx;
 
     @Override
-    Profile get(long id) throws NotFoundServiceEx;
+    UserGroup get(long id) throws NotFoundServiceEx;
+    UserGroup get(String name) throws NotFoundServiceEx;
 
     long getCount(String nameLike);
 
-    List<ShortProfile> getList(String nameLike, Integer page, Integer entries);
+    List<ShortGroup> getList(String nameLike, Integer page, Integer entries);
 
-    List<Profile> getFullList(String nameLike, Integer page, Integer entries);
+    List<UserGroup> getFullList(String nameLike, Integer page, Integer entries);
 
     // ==========================================================================
 
-    public Map<String, String> getCustomProps(Long id);
+//    public Map<String, String> getCustomProps(Long id);
 
-    public void setCustomProps(Long id, Map<String, String> props);
+//    public void setCustomProps(Long id, Map<String, String> props);
 
 }

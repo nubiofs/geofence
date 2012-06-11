@@ -23,15 +23,15 @@ package it.geosolutions.geofence.services.dto;
 import java.io.Serializable;
 import java.util.Date;
 
-import it.geosolutions.geofence.core.model.Profile;
+import it.geosolutions.geofence.core.model.UserGroup;
 
 
 /**
- * A compact representation of Profile useful in lists.
+ * A compact representation of UserGroup useful in lists.
  *
  * @author Etj (etj at geo-solutions.it)
  */
-public class ShortProfile implements Serializable
+public class ShortGroup implements Serializable
 {
 
     private static final long serialVersionUID = -8410646966443187827L;
@@ -41,11 +41,11 @@ public class ShortProfile implements Serializable
     private Date dateCreation;
     private boolean enabled;
 
-    public ShortProfile()
+    public ShortGroup()
     {
     }
 
-    public ShortProfile(Profile profile)
+    public ShortGroup(UserGroup profile)
     {
         this.id = profile.getId();
         this.name = profile.getName();

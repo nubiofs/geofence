@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -20,18 +20,14 @@
 
 package it.geosolutions.geofence.core.dao;
 
-import it.geosolutions.geofence.core.model.Profile;
-import java.util.List;
+import it.geosolutions.geofence.core.model.UserGroup;
 
 /**
- * Public interface to define operations on Profiles
+ * Public interface to define operations on UserGroups
  * 
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
 
-public interface ProfileDAO 
-        extends RestrictedGenericDAO<Profile>,
-                CustomPropsProvider {
-
-    public List<Profile> searchByCustomProp(String key, String value);
+public interface UserGroupDAO
+        extends RestrictedGenericDAO<UserGroup> {
 }

@@ -1,7 +1,6 @@
-/*
- * ====================================================================
+/* ====================================================================
  *
- * Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ * Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  * http://www.geo-solutions.it
  *
  * GPLv3 + Classpath exception
@@ -33,25 +32,25 @@ import it.geosolutions.geofence.core.model.adapter.dual.IdNameBundle;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import com.vividsolutions.jts.io.ParseException;
-import it.geosolutions.geofence.core.model.Profile;
+import it.geosolutions.geofence.core.model.UserGroup;
 
 /**
- * Transform a Profile into its id.
+ * Transform a UserGroup into its id.
  *
  */
-public class FK2ProfileAdapter extends XmlAdapter<IdNameBundle, Profile> {
+public class FK2UserGroupAdapter extends XmlAdapter<IdNameBundle, UserGroup> {
 
     @Override
-    public Profile unmarshal(IdNameBundle in) throws ParseException {
+    public UserGroup unmarshal(IdNameBundle in) throws ParseException {
 
-            Profile ret = new Profile();
+            UserGroup ret = new UserGroup();
             ret.setId(in.getId());
             ret.setName(in.getName());
             return ret;
     }
 
     @Override
-    public IdNameBundle marshal(Profile u) throws ParseException {
+    public IdNameBundle marshal(UserGroup u) throws ParseException {
         IdNameBundle in = new IdNameBundle();
         if (u != null) {
             in.setId(u.getId());

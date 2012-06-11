@@ -18,7 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package it.geosolutions.geofence.services.dto;
+package it.geosolutions.geofence.services.util;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -28,25 +28,27 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import it.geosolutions.geofence.core.model.LayerAttribute;
 import it.geosolutions.geofence.core.model.enums.GrantType;
+import it.geosolutions.geofence.services.dto.AccessInfo;
 
 
 /**
+ * This class is used internally when merging restrictedArea, because it deals with Geometries and not with WKT strings.
  *
  * @author ETj (etj at geo-solutions.it)
  */
-public class AccessInfo implements Serializable {
+public class AccessInfoInternal implements Serializable {
     
     private static final long serialVersionUID = -9108763358187355342L;
 
-    /**
-     * Default "allow everything" AccessInfo
-     */
-    public static final AccessInfo ALLOW_ALL = new AccessInfo(GrantType.ALLOW);
-    
-    /**
-     * Default "deny everything" AccessInfo
-     */
-    public static final AccessInfo DENY_ALL = new AccessInfo(GrantType.DENY);
+//    /**
+//     * Default "allow everything" AccessInfo
+//     */
+//    public static final AccessInfoInternal ALLOW_ALL = new AccessInfoInternal(GrantType.ALLOW);
+//
+//    /**
+//     * Default "deny everything" AccessInfo
+//     */
+//    public static final AccessInfoInternal DENY_ALL = new AccessInfoInternal(GrantType.DENY);
 
     /**
      * The resulting grant: allow or deny.
@@ -54,7 +56,7 @@ public class AccessInfo implements Serializable {
     private GrantType grant = GrantType.DENY;
 
 //    private Geometry area;
-    private String areaWkt;
+    private Geometry area;
 
     private String defaultStyle;
 
@@ -66,10 +68,10 @@ public class AccessInfo implements Serializable {
     private Set<String> allowedStyles;
 
 
-    public AccessInfo() {
+    public AccessInfoInternal() {
     }
 
-    public AccessInfo(GrantType grant) {
+    public AccessInfoInternal(GrantType grant) {
         this.grant = grant;
     }
 
@@ -81,12 +83,12 @@ public class AccessInfo implements Serializable {
 //        this.area = area;
 //    }
 
-    public String getAreaWkt() {
-        return areaWkt;
+    public Geometry getArea() {
+        return area;
     }
 
-    public void setAreaWkt(String areaWkt) {
-        this.areaWkt = areaWkt;
+    public void setArea(Geometry area) {
+        this.area = area;
     }
 
     public Set<LayerAttribute> getAttributes() {
@@ -147,6 +149,22 @@ public class AccessInfo implements Serializable {
         this.grant = grant;
     }
 
+    public AccessInfo toAccessInfo() {
+        AccessInfo ret = new AccessInfo();
+
+        ret.setGrant(grant);
+        ret.setDefaultStyle(defaultStyle);
+        ret.setAllowedStyles(allowedStyles);
+        ret.setAttributes(attributes);
+        ret.setCqlFilterRead(cqlFilterRead);
+        ret.setCqlFilterWrite(cqlFilterWrite);
+        ret.setCustomProps(customProps);
+        if(area != null)
+            ret.setAreaWkt(area.toText());
+
+        return ret;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getClass().getSimpleName())
@@ -166,8 +184,8 @@ public class AccessInfo implements Serializable {
 //                    .append(area.getNumPoints()).append(" vertices, (")
 //                    .append(area.getCoordinate().x).append(',').append(area.getCoordinate().y).append(')');
 //        }
-        if (areaWkt != null) {
-            sb.append(" areaWkt:defined");
+        if (area != null) {
+            sb.append(" area:defined");
         }
         if (allowedStyles != null && ! allowedStyles.isEmpty()) {
             sb.append(" allSty:").append(allowedStyles); // needs decoding?

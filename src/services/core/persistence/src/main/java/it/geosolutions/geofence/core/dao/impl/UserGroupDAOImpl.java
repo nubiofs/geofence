@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -21,65 +21,61 @@ package it.geosolutions.geofence.core.dao.impl;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-import javax.persistence.Query;
+import com.googlecode.genericdao.search.ISearch;
 
-import com.trg.search.ISearch;
-
-import it.geosolutions.geofence.core.dao.ProfileDAO;
-import it.geosolutions.geofence.core.model.Profile;
+import it.geosolutions.geofence.core.dao.UserGroupDAO;
+import it.geosolutions.geofence.core.model.UserGroup;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
 import org.springframework.transaction.annotation.Transactional;
 
 
 /**
- * Public implementation of the ProfileDAO interface
+ * Public implementation of the UserGroupDAO interface
  *
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
 @Transactional(value = "geofenceTransactionManager")
-public class ProfileDAOImpl extends BaseDAO<Profile, Long>
+public class UserGroupDAOImpl extends BaseDAO<UserGroup, Long>
     // extends GenericDAOImpl<User, Long>
-    implements ProfileDAO
+    implements UserGroupDAO
 {
 
-    private static final Logger LOGGER = Logger.getLogger(ProfileDAOImpl.class);
+    private static final Logger LOGGER = Logger.getLogger(UserGroupDAOImpl.class);
 
     @Override
-    public void persist(Profile... entities)
+    public void persist(UserGroup... entities)
     {
         Date now = new Date();
-        for (Profile profile : entities)
+        for (UserGroup e : entities)
         {
-            profile.setDateCreation(now);
+            e.setDateCreation(now);
         }
 
         super.persist(entities);
     }
 
     @Override
-    public List<Profile> findAll()
+    public List<UserGroup> findAll()
     {
         return super.findAll();
     }
 
     @Override
-    public List<Profile> search(ISearch search)
+    public List<UserGroup> search(ISearch search)
     {
         return super.search(search);
     }
 
     @Override
-    public Profile merge(Profile entity)
+    public UserGroup merge(UserGroup entity)
     {
         return super.merge(entity);
     }
 
     @Override
-    public boolean remove(Profile entity)
+    public boolean remove(UserGroup entity)
     {
         return super.remove(entity);
     }
@@ -90,50 +86,6 @@ public class ProfileDAOImpl extends BaseDAO<Profile, Long>
         return super.removeById(id);
     }
 
-    @Override
-    public List<Profile> searchByCustomProp(String key, String value)
-    {
-        Query q = em().createQuery("FROM Profile p WHERE p.customProps[:key] = :value");
-        q.setParameter("key", key);
-        q.setParameter("value", value);
-
-        return q.getResultList();
-    }
-
     // ==========================================================================
 
-    @Override
-    public Map<String, String> getCustomProps(Long id)
-    {
-        Profile found = find(id);
-        if (found != null)
-        {
-            Map<String, String> props = found.getCustomProps();
-
-            if ((props != null) && !Hibernate.isInitialized(props))
-            {
-                Hibernate.initialize(props); // fetch the props
-            }
-
-            return props;
-        }
-        else
-        {
-            throw new IllegalArgumentException("Profile not found");
-        }
-    }
-
-    @Override
-    public void setCustomProps(Long id, Map<String, String> props)
-    {
-        Profile profile = find(id);
-        if (profile != null)
-        {
-            profile.setCustomProps(props);
-        }
-        else
-        {
-            throw new IllegalArgumentException("Profile not found");
-        }
-    }
 }

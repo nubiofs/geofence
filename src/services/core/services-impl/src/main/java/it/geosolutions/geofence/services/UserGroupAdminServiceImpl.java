@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -19,45 +19,44 @@
  */
 package it.geosolutions.geofence.services;
 
-import it.geosolutions.geofence.core.dao.ProfileDAO;
-import it.geosolutions.geofence.core.model.Profile;
+import com.googlecode.genericdao.search.Search;
+import it.geosolutions.geofence.core.dao.UserGroupDAO;
+import it.geosolutions.geofence.core.model.GSUser;
+import it.geosolutions.geofence.core.model.UserGroup;
 
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.trg.search.Search;
-import it.geosolutions.geofence.services.dto.ShortProfile;
+import it.geosolutions.geofence.services.dto.ShortGroup;
 import it.geosolutions.geofence.services.exception.BadRequestServiceEx;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 import java.util.ArrayList;
-import java.util.Map;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
  * @author ETj (etj at geo-solutions.it)
  */
-public class ProfileAdminServiceImpl implements ProfileAdminService {
+public class UserGroupAdminServiceImpl implements UserGroupAdminService {
 
-    private final static Logger LOGGER = Logger.getLogger(ProfileAdminServiceImpl.class);
+    private final static Logger LOGGER = Logger.getLogger(UserGroupAdminServiceImpl.class);
 
-    private ProfileDAO profileDAO;
+    private UserGroupDAO userGroupDAO;
 
     // ==========================================================================
     @Override
-    public long insert(ShortProfile profile) {
-        Profile p = new Profile();
-        p.setName(profile.getName());
-        p.setEnabled(profile.isEnabled());
-        p.setDateCreation(profile.getDateCreation());
-        profileDAO.persist(p);
+    public long insert(ShortGroup group) {
+        UserGroup p = new UserGroup();
+        p.setName(group.getName());
+        p.setEnabled(group.isEnabled());
+        p.setDateCreation(group.getDateCreation());
+        userGroupDAO.persist(p);
         return p.getId();
     }
 
     @Override
-    public long update(ShortProfile profile) throws NotFoundServiceEx {
-        Profile orig = profileDAO.find(profile.getId());
+    public long update(ShortGroup profile) throws NotFoundServiceEx {
+        UserGroup orig = userGroupDAO.find(profile.getId());
         if (orig == null) {
             throw new NotFoundServiceEx("Profile not found", profile.getId());
         }
@@ -66,62 +65,75 @@ public class ProfileAdminServiceImpl implements ProfileAdminService {
         orig.setEnabled(profile.isEnabled());
         orig.setExtId(profile.getExtId());
 
-        profileDAO.merge(orig);
+        userGroupDAO.merge(orig);
         return orig.getId();
     }
 
     @Override
-    public Profile get(long id) throws NotFoundServiceEx {
-        Profile profile = profileDAO.find(id);
+    public UserGroup get(long id) throws NotFoundServiceEx {
+        UserGroup group = userGroupDAO.find(id);
 
-        if (profile == null) {
-            throw new NotFoundServiceEx("Profile not found", id);
+        if (group == null) {
+            throw new NotFoundServiceEx("Group not found", id);
         }
 
-//        return new ShortProfile(profile);
-        return profile;
+        return group;
+    }
+
+    @Override
+    public UserGroup get(String name) {
+        Search search = new Search(UserGroup.class);
+        search.addFilterEqual("name", name);
+        List<UserGroup> groups = userGroupDAO.search(search);
+
+        if(groups.isEmpty())
+            throw new NotFoundServiceEx("UserGroup not found  '"+ name + "'");
+        else if(groups.size() > 1)
+            throw new IllegalStateException("Found more than one UserGroup with name '"+name+"'");
+        else
+            return groups.get(0);
     }
 
     @Override
     public boolean delete(long id) throws NotFoundServiceEx {
-        Profile profile = profileDAO.find(id);
+        UserGroup group = userGroupDAO.find(id);
 
-        if (profile == null) {
-            throw new NotFoundServiceEx("Profile not found", id);
+        if (group == null) {
+            throw new NotFoundServiceEx("Group not found", id);
         }
 
         // data on ancillary tables should be deleted by cascading
-        return profileDAO.remove(profile);
+        return userGroupDAO.remove(group);
     }
 
     @Override
-    public List<Profile> getFullList(String nameLike, Integer page, Integer entries) {
+    public List<UserGroup> getFullList(String nameLike, Integer page, Integer entries) {
         Search searchCriteria = buildCriteria(page, entries, nameLike);
-        List<Profile> found = profileDAO.search(searchCriteria);
-        for (Profile profile : found) {
-            profile.setCustomProps(profileDAO.getCustomProps(profile.getId()));
-        }
+        List<UserGroup> found = userGroupDAO.search(searchCriteria);
+//        for (UserGroup group : found) {
+//            group.setCustomProps(userGroupDAO.getCustomProps(group.getId()));
+//        }
         return found;
     }
 
     @Override
-    public List<ShortProfile> getList(String nameLike, Integer page, Integer entries) {
+    public List<ShortGroup> getList(String nameLike, Integer page, Integer entries) {
         Search searchCriteria = buildCriteria(page, entries, nameLike);
-        List<Profile> found = profileDAO.search(searchCriteria);
+        List<UserGroup> found = userGroupDAO.search(searchCriteria);
         return convertToShortList(found);
     }
 
     @Override
     public long getCount(String nameLike) {
         Search searchCriteria = buildCriteria(null, null, nameLike);
-        return profileDAO.count(searchCriteria);
+        return userGroupDAO.count(searchCriteria);
     }
 
     protected Search buildCriteria(Integer page, Integer entries, String nameLike) throws BadRequestServiceEx {
         if( (page != null && entries == null) || (page ==null && entries != null)) {
             throw new BadRequestServiceEx("Page and entries params should be declared together.");
         }
-        Search searchCriteria = new Search(Profile.class);
+        Search searchCriteria = new Search(UserGroup.class);
         if(page != null) {
             searchCriteria.setMaxResults(entries);
             searchCriteria.setPage(page);
@@ -135,22 +147,22 @@ public class ProfileAdminServiceImpl implements ProfileAdminService {
 
     // ==========================================================================
 
-    @Override
-    public Map<String, String> getCustomProps(Long id) {
-        return profileDAO.getCustomProps(id);
-    }
-
-    @Override
-    public void setCustomProps(Long id, Map<String, String> props) {
-        profileDAO.setCustomProps(id, props);
-    }
+//    @Override
+//    public Map<String, String> getCustomProps(Long id) {
+//        return userGroupDAO.getCustomProps(id);
+//    }
+//
+//    @Override
+//    public void setCustomProps(Long id, Map<String, String> props) {
+//        userGroupDAO.setCustomProps(id, props);
+//    }
 
     // ==========================================================================
 
-    private List<ShortProfile> convertToShortList(List<Profile> list) {
-        List<ShortProfile> swList = new ArrayList<ShortProfile>(list.size());
-        for (Profile profile : list) {
-            swList.add(new ShortProfile(profile));
+    private List<ShortGroup> convertToShortList(List<UserGroup> list) {
+        List<ShortGroup> swList = new ArrayList<ShortGroup>(list.size());
+        for (UserGroup group : list) {
+            swList.add(new ShortGroup(group));
         }
 
         return swList;
@@ -158,8 +170,8 @@ public class ProfileAdminServiceImpl implements ProfileAdminService {
 
     // ==========================================================================
 
-    public void setProfileDAO(ProfileDAO profileDao) {
-        this.profileDAO = profileDao;
+    public void setUserGroupDAO(UserGroupDAO userGroupDAO) {
+        this.userGroupDAO = userGroupDAO;
     }
 
 }
