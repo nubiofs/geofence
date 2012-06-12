@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -30,29 +30,29 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author ETj (etj at geo-solutions.it)
  */
 @XmlRootElement(name = "UserGroupList")
-public class RESTShortProfileList {
+public class RESTShortUserGroupList {
 
     private List<RESTShortUserGroup> list;
 
-    public RESTShortProfileList() {
+    public RESTShortUserGroupList() {
         this(10);
     }
 
-    public RESTShortProfileList(int initialCapacity) {
+    public RESTShortUserGroupList(int initialCapacity) {
         list = new ArrayList<RESTShortUserGroup>(initialCapacity);
     }
 
-    @XmlElement(name = "User")
-    public List<RESTShortUserGroup> getUserList() {
+    @XmlElement(name = "userGroup")
+    public List<RESTShortUserGroup> getList() {
         return list;
     }
 
-    public void setUserList(List<RESTShortUserGroup> list) {
+    public void setList(List<RESTShortUserGroup> list) {
         this.list = list;
     }
 
-    public void add(RESTShortUserGroup profile) {
-        list.add(profile);
+    public void add(RESTShortUserGroup group) {
+        list.add(group);
     }
 
     @Override

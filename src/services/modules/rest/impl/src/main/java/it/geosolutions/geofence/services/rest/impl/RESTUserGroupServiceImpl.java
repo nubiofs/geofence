@@ -26,8 +26,9 @@ import it.geosolutions.geofence.services.UserGroupAdminService;
 import it.geosolutions.geofence.services.dto.ShortGroup;
 import it.geosolutions.geofence.services.exception.BadRequestServiceEx;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
-import it.geosolutions.geofence.services.rest.RESTProfileService;
+import it.geosolutions.geofence.services.rest.RESTUserGroupService;
 import it.geosolutions.geofence.services.rest.exception.BadRequestRestEx;
+import it.geosolutions.geofence.services.rest.exception.ConflictRestEx;
 import it.geosolutions.geofence.services.rest.exception.InternalErrorRestEx;
 import it.geosolutions.geofence.services.rest.exception.NotFoundRestEx;
 import it.geosolutions.geofence.services.rest.model.RESTInputGroup;
@@ -39,14 +40,14 @@ import org.apache.log4j.Logger;
  *
  * @author ETj (etj at geo-solutions.it)
  */
-public class RESTProfileServiceImpl implements RESTProfileService {
+public class RESTUserGroupServiceImpl implements RESTUserGroupService {
 
-    private static final Logger LOGGER = Logger.getLogger(RESTProfileServiceImpl.class);
+    private static final Logger LOGGER = Logger.getLogger(RESTUserGroupServiceImpl.class);
     private UserGroupAdminService userGroupAdminService;
 
     @Override
-    public RESTFullUserGroupList getProfiles(String nameLike, Integer page, Integer entries) {
-        List<UserGroup> profiles = userGroupAdminService.getFullList(nameLike, page, entries);
+    public RESTFullUserGroupList getUserGroups(String nameLike, Integer page, Integer entries) {
+        List<UserGroup> groups = userGroupAdminService.getFullList(nameLike, page, entries);
 
 //        // load lazy data
 //        for (UserGroup profile : profiles)
@@ -56,7 +57,7 @@ public class RESTProfileServiceImpl implements RESTProfileService {
 //        }
 
         RESTFullUserGroupList ret = new RESTFullUserGroupList();
-        ret.setList(profiles);
+        ret.setList(groups);
 
         return ret;
     }
@@ -72,7 +73,7 @@ public class RESTProfileServiceImpl implements RESTProfileService {
             userGroupAdminService.delete(id);
         } catch (NotFoundServiceEx ex) {
             LOGGER.warn(ex);
-            throw new NotFoundRestEx("Profile not found");
+            throw new NotFoundRestEx("UserGroup not found");
         } catch (Exception ex) {
             LOGGER.error(ex);
             throw new InternalErrorRestEx(ex.getMessage());
@@ -87,7 +88,7 @@ public class RESTProfileServiceImpl implements RESTProfileService {
             return ret;
         } catch (NotFoundServiceEx ex) {
             LOGGER.warn(ex);
-            throw new NotFoundRestEx("Profile not found");
+            throw new NotFoundRestEx("UserGroup not found");
         } catch (Exception ex) {
             LOGGER.error(ex);
             throw new InternalErrorRestEx(ex.getMessage());
@@ -95,32 +96,32 @@ public class RESTProfileServiceImpl implements RESTProfileService {
     }
 
     @Override
-    public Long insert(RESTInputGroup userGroup) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+    public Long insert(RESTInputGroup userGroup) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx, ConflictRestEx {
 
+        // check that no group with same name exists
+        boolean exists;
+        try {
+            userGroupAdminService.get(userGroup.getName());
+            exists = true;
+        } catch (NotFoundServiceEx ex) {
+            // well, ok, usergroup does not exist
+            exists = false;
+        } catch (Exception ex) {
+            // something went wrong
+            LOGGER.error(ex.getMessage(), ex);
+            throw new InternalErrorRestEx(ex.getMessage());
+        }
+
+        if(exists)
+            throw new ConflictRestEx("UserGroup '"+userGroup.getName()+"' already exists");
+
+        // ok: insert it
         ShortGroup insert = new ShortGroup();
         insert.setEnabled(userGroup.getEnabled());
         insert.setExtId(userGroup.getExtId());
         insert.setName(userGroup.getName());
 
         Long id = userGroupAdminService.insert(insert);
-
-//        if (profile.getCustomProps() != null)
-//        {
-//            LOGGER.info("examinig custom props: " + profile.getCustomProps().keySet());
-//            for (Map.Entry<String, String> entry : profile.getCustomProps().entrySet())
-//            {
-//                LOGGER.info(" --> prop " + entry.getKey() + ":" + entry.getValue());
-//            }
-//
-//            Map<String, String> props = profileService.getCustomProps(id);
-//            props.keySet().retainAll(profile.getCustomProps().keySet());
-//            props.putAll(profile.getCustomProps());
-//            profileService.setCustomProps(id, props);
-//        }
-//        else
-//        {
-//            LOGGER.info("No custom props to insert");
-//        }
 
         return id;
     }
@@ -141,10 +142,6 @@ public class RESTProfileServiceImpl implements RESTProfileService {
                 shortGroup.setEnabled(userGroup.getEnabled());
             }
 
-            if ( userGroup.getName() != null ) {
-                shortGroup.setName(userGroup.getName());
-            }
-
             userGroupAdminService.update(shortGroup);
 
 //            if ( userGroup.getCustomProps() != null ) {
@@ -158,35 +155,9 @@ public class RESTProfileServiceImpl implements RESTProfileService {
     }
 
     // ==========================================================================
-//    class ProfileCache {
-//        private final Map<String, UserGroup> cache = new HashMap<String, UserGroup>();
-//        private final ProfileDAO profileDAO;
-//
-//        public ProfileCache(ProfileDAO profileDAO) {
-//            this.profileDAO = profileDAO;
-//        }
-//
-//        public UserGroup get(String sguId) {
-//            UserGroup profile = cache.get(sguId);
-//            if(profile == null) {
-//                Search search = new Search(UserGroup.class).addFilterEqual("extId", sguId);
-//                List<Profile> profileList = profileDAO.search(search);
-//                if(profileList.isEmpty()) {
-//                    LOGGER.warn("UserGroup sgu:" + sguId + " not found in Geofence. Make sure the profiles are in synch.");
-//                    // should we put a null in the cache?
-//                } else {
-//                    profile = profileList.get(0);
-//                    cache.put(sguId, profile);
-//                }
-//            }
-//            return profile;
-//        }
-//    }
-
-    // ==========================================================================
     // ==========================================================================
     
-    public void setUserGroupAdminService(UserGroupAdminService userGroupAdminService) {
-        this.userGroupAdminService = userGroupAdminService;
+    public void setUserGroupAdminService(UserGroupAdminService service) {
+        this.userGroupAdminService = service;
     }
 }

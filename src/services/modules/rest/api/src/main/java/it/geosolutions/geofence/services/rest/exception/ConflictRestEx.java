@@ -26,14 +26,9 @@ import javax.ws.rs.core.Response.Status;
  *
  * @author ETj (etj at geo-solutions.it)
  */
-public class NotFoundRestEx extends GeoFenceRestEx {
+public class ConflictRestEx extends GeoFenceRestEx {
 
-    /**
-     * The Constant serialVersionUID.
-     */
-    private static final long serialVersionUID = 1263563388095079971L;
-
-    public NotFoundRestEx(String message) {
-        super(message, Response.status(Status.NOT_FOUND).type("text/plain").entity(message).build());
+    public ConflictRestEx(String message) {
+        super(message, Response.status(Status.CONFLICT).type("text/plain").entity(message).build());
     }
 }

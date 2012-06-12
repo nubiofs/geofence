@@ -38,7 +38,7 @@ import org.apache.cxf.jaxrs.ext.multipart.Multipart;
  */
 
 @Path("/")
-public interface RESTProfileService
+public interface RESTUserGroupService
 {
 
     /**
@@ -47,7 +47,7 @@ public interface RESTProfileService
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_XML)
-    RESTFullUserGroupList getProfiles(@QueryParam("nameLike") String nameLike,
+    RESTFullUserGroupList getUserGroups(@QueryParam("nameLike") String nameLike,
         @QueryParam("page") Integer page,
         @QueryParam("entries") Integer entries) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 
@@ -69,14 +69,14 @@ public interface RESTProfileService
     @POST
     @Path("/")
     @Produces(MediaType.APPLICATION_XML)
-    Long insert(@Multipart("profile") RESTInputGroup profile) throws BadRequestRestEx, NotFoundRestEx,
+    Long insert(@Multipart("userGroup") RESTInputGroup group) throws BadRequestRestEx, NotFoundRestEx,
         InternalErrorRestEx;
 
     @PUT
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_XML)
     void update(@PathParam("id") Long id,
-        @Multipart("profile") RESTInputGroup profile) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
+        @Multipart("userGroup") RESTInputGroup group) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 
     @DELETE
     @Path("/{id}")
