@@ -62,15 +62,16 @@ public class UserGroupAdminServiceImplTest extends ServiceTestBase {
 
         UserGroup group = createUserGroup("u1");
 
-        final String NEWNAME = "NEWNAME";
+        boolean oldEnabled;
 
         {
             UserGroup loaded = userGroupAdminService.get(group.getId());
             assertNotNull(loaded);
 
             assertEquals("u1", loaded.getName());
+            oldEnabled = loaded.getEnabled();
 
-            loaded.setName(NEWNAME);
+            loaded.setEnabled(!oldEnabled);
 
             ShortGroup sg = new ShortGroup(loaded);
             userGroupAdminService.update(sg);
@@ -79,7 +80,7 @@ public class UserGroupAdminServiceImplTest extends ServiceTestBase {
             UserGroup loaded = userGroupAdminService.get(group.getId());
             assertNotNull(loaded);
 
-            assertEquals(NEWNAME, loaded.getName());
+            assertEquals((boolean)!oldEnabled, (boolean)loaded.getEnabled());
         }
     }
 

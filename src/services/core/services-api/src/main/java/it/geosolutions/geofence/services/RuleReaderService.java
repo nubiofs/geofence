@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -35,7 +35,6 @@ import it.geosolutions.geofence.services.dto.ShortRule;
  *
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
-@WebService(name = "RuleReaderService", targetNamespace = "http://geosolutions.it/geofence")
 public interface RuleReaderService
 {
 

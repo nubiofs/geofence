@@ -24,6 +24,7 @@ import java.util.List;
 
 import it.geosolutions.geofence.core.model.GSUser;
 import it.geosolutions.geofence.core.model.UserGroup;
+import it.geosolutions.geofence.services.RuleAdminService;
 import it.geosolutions.geofence.services.UserGroupAdminService;
 import it.geosolutions.geofence.services.UserAdminService;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
@@ -44,23 +45,40 @@ public abstract class BaseRESTServiceImpl {
 
     private static final Logger LOGGER = Logger.getLogger(BaseRESTServiceImpl.class);
 
-    private UserAdminService userService;
-    private UserGroupAdminService userGroupService;
+    protected UserAdminService userAdminService;
+    protected UserGroupAdminService userGroupAdminService;
+    protected RuleAdminService ruleAdminService;
 
 
     protected UserGroup getUserGroup(IdName filter) throws BadRequestRestEx, NotFoundRestEx {
 
         try {
             if ( filter.getId() != null ) {
-                return userGroupService.get(filter.getId());
+                return userGroupAdminService.get(filter.getId());
             } else if ( filter.getName() != null ) {
-                return userGroupService.get(filter.getName());
+                return userGroupAdminService.get(filter.getName());
             } else {
                 throw new BadRequestRestEx("Bad UserGroup filter " + filter);
             }
         } catch (NotFoundServiceEx e) {
             LOGGER.warn("UserGroup not found " + filter);
             throw new NotFoundRestEx("UserGroup not found " + filter);
+        }
+    }
+
+    protected GSUser getUser(IdName filter) throws BadRequestRestEx, NotFoundRestEx {
+
+        try {
+            if ( filter.getId() != null ) {
+                return userAdminService.get(filter.getId());
+            } else if ( filter.getName() != null ) {
+                return userAdminService.get(filter.getName());
+            } else {
+                throw new BadRequestRestEx("Bad GSUser filter " + filter);
+            }
+        } catch (NotFoundServiceEx e) {
+            LOGGER.warn("GSUser not found " + filter);
+            throw new NotFoundRestEx("GSUser not found " + filter);
         }
     }
 
@@ -99,10 +117,15 @@ public abstract class BaseRESTServiceImpl {
 
     // ==========================================================================
     public void setUserAdminService(UserAdminService service) {
-        this.userService = service;
+        this.userAdminService = service;
     }
 
     public void setUserGroupAdminService(UserGroupAdminService service) {
-        this.userGroupService = service;
+        this.userGroupAdminService = service;
     }
+
+    public void setRuleAdminService(RuleAdminService service) {
+        this.ruleAdminService = service;
+    }
+
 }

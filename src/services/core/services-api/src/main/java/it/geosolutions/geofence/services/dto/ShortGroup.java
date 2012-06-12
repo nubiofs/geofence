@@ -39,19 +39,19 @@ public class ShortGroup implements Serializable
     private String name;
     private String extId;
     private Date dateCreation;
-    private boolean enabled;
+    private Boolean enabled;
 
     public ShortGroup()
     {
     }
 
-    public ShortGroup(UserGroup profile)
+    public ShortGroup(UserGroup group)
     {
-        this.id = profile.getId();
-        this.name = profile.getName();
-        this.dateCreation = profile.getDateCreation();
-        this.enabled = profile.getEnabled();
-        this.extId = profile.getExtId();
+        this.id = group.getId();
+        this.name = group.getName();
+        this.dateCreation = group.getDateCreation();
+        this.enabled = group.getEnabled();
+        this.extId = group.getExtId();
     }
 
     public long getId()
@@ -84,12 +84,12 @@ public class ShortGroup implements Serializable
         this.dateCreation = dateCreation;
     }
 
-    public boolean isEnabled()
+    public Boolean isEnabled()
     {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled)
+    public void setEnabled(Boolean enabled)
     {
         this.enabled = enabled;
     }

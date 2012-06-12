@@ -78,7 +78,7 @@ public class RESTShortUser {
                 + '['
                 + "id:" + id
                 + " name:" + userName
-                + " ext:" + extId
+                + (extId!=null? " ext:" + extId : "")
                 + (enabled ? " enabled" : " disabled")
                 + ']';
     }

@@ -40,7 +40,6 @@ import java.util.ArrayList;
 public class UserGroupAdminServiceImpl implements UserGroupAdminService {
 
     private final static Logger LOGGER = Logger.getLogger(UserGroupAdminServiceImpl.class);
-
     private UserGroupDAO userGroupDAO;
 
     // ==========================================================================
@@ -48,22 +47,30 @@ public class UserGroupAdminServiceImpl implements UserGroupAdminService {
     public long insert(ShortGroup group) {
         UserGroup p = new UserGroup();
         p.setName(group.getName());
-        p.setEnabled(group.isEnabled());
-        p.setDateCreation(group.getDateCreation());
+
+        if(group.isEnabled() !=null)
+            p.setEnabled(group.isEnabled());
+        
         userGroupDAO.persist(p);
         return p.getId();
     }
 
     @Override
-    public long update(ShortGroup profile) throws NotFoundServiceEx {
-        UserGroup orig = userGroupDAO.find(profile.getId());
-        if (orig == null) {
-            throw new NotFoundServiceEx("Profile not found", profile.getId());
+    public long update(ShortGroup group) throws NotFoundServiceEx {
+        UserGroup orig = userGroupDAO.find(group.getId());
+        if ( orig == null ) {
+            throw new NotFoundServiceEx("UserGroup not found", group.getId());
         }
 
-        orig.setName(profile.getName());
-        orig.setEnabled(profile.isEnabled());
-        orig.setExtId(profile.getExtId());
+//        orig.setName(group.getName());
+
+        if ( group.isEnabled() != null ) {
+            orig.setEnabled(group.isEnabled());
+        }
+
+        if ( group.getExtId() != null ) {
+            orig.setExtId(group.getExtId());
+        }
 
         userGroupDAO.merge(orig);
         return orig.getId();
@@ -73,8 +80,8 @@ public class UserGroupAdminServiceImpl implements UserGroupAdminService {
     public UserGroup get(long id) throws NotFoundServiceEx {
         UserGroup group = userGroupDAO.find(id);
 
-        if (group == null) {
-            throw new NotFoundServiceEx("Group not found", id);
+        if ( group == null ) {
+            throw new NotFoundServiceEx("UserGroup not found", id);
         }
 
         return group;
@@ -86,19 +93,20 @@ public class UserGroupAdminServiceImpl implements UserGroupAdminService {
         search.addFilterEqual("name", name);
         List<UserGroup> groups = userGroupDAO.search(search);
 
-        if(groups.isEmpty())
-            throw new NotFoundServiceEx("UserGroup not found  '"+ name + "'");
-        else if(groups.size() > 1)
-            throw new IllegalStateException("Found more than one UserGroup with name '"+name+"'");
-        else
+        if ( groups.isEmpty() ) {
+            throw new NotFoundServiceEx("UserGroup not found  '" + name + "'");
+        } else if ( groups.size() > 1 ) {
+            throw new IllegalStateException("Found more than one UserGroup with name '" + name + "'");
+        } else {
             return groups.get(0);
+        }
     }
 
     @Override
     public boolean delete(long id) throws NotFoundServiceEx {
         UserGroup group = userGroupDAO.find(id);
 
-        if (group == null) {
+        if ( group == null ) {
             throw new NotFoundServiceEx("Group not found", id);
         }
 
@@ -130,23 +138,22 @@ public class UserGroupAdminServiceImpl implements UserGroupAdminService {
     }
 
     protected Search buildCriteria(Integer page, Integer entries, String nameLike) throws BadRequestServiceEx {
-        if( (page != null && entries == null) || (page ==null && entries != null)) {
+        if ( (page != null && entries == null) || (page == null && entries != null) ) {
             throw new BadRequestServiceEx("Page and entries params should be declared together.");
         }
         Search searchCriteria = new Search(UserGroup.class);
-        if(page != null) {
+        if ( page != null ) {
             searchCriteria.setMaxResults(entries);
             searchCriteria.setPage(page);
         }
         searchCriteria.addSortAsc("name");
-        if (nameLike != null) {
+        if ( nameLike != null ) {
             searchCriteria.addFilterILike("name", nameLike);
         }
         return searchCriteria;
     }
 
     // ==========================================================================
-
 //    @Override
 //    public Map<String, String> getCustomProps(Long id) {
 //        return userGroupDAO.getCustomProps(id);
@@ -156,9 +163,7 @@ public class UserGroupAdminServiceImpl implements UserGroupAdminService {
 //    public void setCustomProps(Long id, Map<String, String> props) {
 //        userGroupDAO.setCustomProps(id, props);
 //    }
-
     // ==========================================================================
-
     private List<ShortGroup> convertToShortList(List<UserGroup> list) {
         List<ShortGroup> swList = new ArrayList<ShortGroup>(list.size());
         for (UserGroup group : list) {
@@ -169,9 +174,7 @@ public class UserGroupAdminServiceImpl implements UserGroupAdminService {
     }
 
     // ==========================================================================
-
     public void setUserGroupDAO(UserGroupDAO userGroupDAO) {
         this.userGroupDAO = userGroupDAO;
     }
-
 }

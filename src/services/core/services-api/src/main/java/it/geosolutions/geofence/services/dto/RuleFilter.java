@@ -17,7 +17,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.geosolutions.geofence.services.dto;
 
 import java.io.Serializable;
@@ -27,78 +26,62 @@ import it.geosolutions.geofence.core.model.Rule;
 
 import org.apache.log4j.Logger;
 
-
 /**
- * A Filter for selecting {@link Rule}s.
- * <P>
- * For every given field, you may choose to select
- * <LI>a given value</LI>
- * <LI>any values (no filtering)</LI>
- * <LI>only default rules (null value in a field) </LI>
- * </UL>
+ * A Filter for selecting {@link Rule}s. <P> For every given field, you may choose to select <LI>a given value</LI> <LI>any values
+ * (no filtering)</LI> <LI>only default rules (null value in a field) </LI> </UL>
  *
- * For users, groups, instances (i.e., classes represented by DB entities)
- * you may specify either the ID or the name.
+ * For users, groups, instances (i.e., classes represented by DB entities) you may specify either the ID or the name.
  *
  * @author ETj (etj at geo-solutions.it)
  */
-public class RuleFilter implements Serializable
-{
+public class RuleFilter implements Serializable {
+
     private static final long serialVersionUID = 5629211135629700041L;
     private static final Logger LOGGER = Logger.getLogger(RuleFilter.class);
 
-    public enum FilterType
-    {
+    public enum FilterType {
+
         NAMEVALUE,
         IDVALUE,
         ANY,
         DEFAULT;
     }
 
-    public enum SpecialFilterType
-    {
+    public enum SpecialFilterType {
+
         ANY(FilterType.ANY),
         DEFAULT(FilterType.DEFAULT);
-
         private FilterType relatedType;
 
-        private SpecialFilterType(FilterType relatedType)
-        {
+        private SpecialFilterType(FilterType relatedType) {
             this.relatedType = relatedType;
         }
 
-        public FilterType getRelatedType()
-        {
+        public FilterType getRelatedType() {
             return relatedType;
         }
     }
-
     private final IdNameFilter user;
     private final IdNameFilter userGroup;
     private final IdNameFilter instance;
-
     private final NameFilter service;
     private final NameFilter request;
     private final NameFilter workspace;
     private final NameFilter layer;
-
     private InetAddress sourceAddress;
 
-
-    public RuleFilter()
-    {
+    public RuleFilter() {
         this(SpecialFilterType.DEFAULT);
     }
 
     /**
-     * Creates a RuleFilter by setting all fields filtering either to ANY or DEFAULT.
-     * <BR>If no other field is set, you will get
+     * Creates a RuleFilter by setting all fields filtering either to ANY or DEFAULT. <BR>
+     * If no other field is set, you will get <UL>
      * <LI>with <B>ANY</B>, all Rules will be returned</LI>
      * <LI>with <B>DEFAULT</B>, only the default Rule will be returned</LI>
      * </UL>
      */
-    public RuleFilter(SpecialFilterType type)
-    {
+    public RuleFilter(SpecialFilterType type) {
         FilterType ft = type.getRelatedType();
 
         user = new IdNameFilter(ft);
@@ -110,18 +93,31 @@ public class RuleFilter implements Serializable
         layer = new NameFilter(ft);
     }
 
+    public RuleFilter(SpecialFilterType type, boolean includeDefault) {
+        FilterType ft = type.getRelatedType();
+
+        user = new IdNameFilter(ft, includeDefault);
+        userGroup = new IdNameFilter(ft, includeDefault);
+        instance = new IdNameFilter(ft, includeDefault);
+        service = new NameFilter(ft, true);
+        service.setIncludeDefault(includeDefault);
+        request = new NameFilter(ft, true);
+        request.setIncludeDefault(includeDefault);
+        workspace = new NameFilter(ft);
+        workspace.setIncludeDefault(includeDefault);
+        layer = new NameFilter(ft);
+        layer.setIncludeDefault(includeDefault);
+    }
+
     /**
-     * Creates a RuleFilter by heuristically converting special string values into
-     * Fitler behaviour:<UL>
-     * <LI>a null value will match only with null</LI>
-     * <LI>a '*' value will match everything (no filter condition on that given field)</LI>
-     * <LI>any other string will match literally</LI>
-     * </UL>
+     * Creates a RuleFilter by heuristically converting special string values into Fitler behaviour:<UL> <LI>a null value will
+     * match only with null</LI> <LI>a '*' value will match everything (no filter condition on that given field)</LI> <LI>any
+     * other string will match literally</LI> </UL>
+     *
      * @deprecated Please use plain setters if you want to handle by hand special values or filter conditions.
      */
     public RuleFilter(String userName, String groupName, String instanceName, String service, String request,
-        String workspace, String layer)
-    {
+            String workspace, String layer) {
         this(SpecialFilterType.DEFAULT);
 
         LOGGER.warn("Creating a RuleFilter heuristically");
@@ -137,17 +133,14 @@ public class RuleFilter implements Serializable
     }
 
     /**
-     * Creates a RuleFilter by heuristically converting special string values into
-     * Fitler behaviour:<UL>
-     * <LI>a null value will match only with null</LI>
-     * <LI>a '*' value will match everything (no filter condition on that given field)</LI>
-     * <LI>any other string will match literally</LI>
-     * </UL>
+     * Creates a RuleFilter by heuristically converting special string values into Fitler behaviour:<UL> <LI>a null value will
+     * match only with null</LI> <LI>a '*' value will match everything (no filter condition on that given field)</LI> <LI>any
+     * other string will match literally</LI> </UL>
+     *
      * @deprecated Please use plain setters if you want to handle by hand special values or filter conditions.
      */
     public RuleFilter(Long userId, Long groupId, Long instanceId, String service, String request, String workspace,
-        String layer)
-    {
+            String layer) {
         this(SpecialFilterType.DEFAULT);
 
         LOGGER.warn("Creating a RuleFilter heuristically");
@@ -162,139 +155,130 @@ public class RuleFilter implements Serializable
         this.layer.setHeuristically(layer);
     }
 
-    public void setUser(Long id)
-    {
+    public RuleFilter setUser(Long id) {
         user.setId(id);
+        return this;
     }
 
-    public void setUser(String name)
-    {
+    public RuleFilter setUser(String name) {
         user.setName(name);
+        return this;
     }
 
-    public void setUser(SpecialFilterType type)
-    {
+    public RuleFilter setUser(SpecialFilterType type) {
         user.setType(type);
+        return this;
     }
 
-    public void setUserGroup(Long id)
-    {
+    public RuleFilter setUserGroup(Long id) {
         userGroup.setId(id);
+        return this;
     }
 
-    public void setUserGroup(String name)
-    {
+    public RuleFilter setUserGroup(String name) {
         userGroup.setName(name);
+        return this;
     }
 
-    public void setUserGroup(SpecialFilterType type)
-    {
+    public RuleFilter setUserGroup(SpecialFilterType type) {
         userGroup.setType(type);
+        return this;
     }
 
-    public void setInstance(Long id)
-    {
+    public RuleFilter setInstance(Long id) {
         instance.setId(id);
+        return this;
     }
 
-    public void setInstance(String name)
-    {
+    public RuleFilter setInstance(String name) {
         instance.setName(name);
+        return this;
     }
 
-    public void setInstance(SpecialFilterType type)
-    {
+    public RuleFilter setInstance(SpecialFilterType type) {
         instance.setType(type);
+        return this;
     }
 
-    public void setService(String name)
-    {
+    public RuleFilter setService(String name) {
         service.setName(name);
+        return this;
     }
 
-    public void setService(SpecialFilterType type)
-    {
+    public RuleFilter setService(SpecialFilterType type) {
         service.setType(type);
+        return this;
     }
 
-    public void setRequest(String name)
-    {
+    public RuleFilter setRequest(String name) {
         request.setName(name);
+        return this;
     }
 
-    public void setRequest(SpecialFilterType type)
-    {
+    public RuleFilter setRequest(SpecialFilterType type) {
         request.setType(type);
+        return this;
     }
 
-    public void setWorkspace(String name)
-    {
+    public RuleFilter setWorkspace(String name) {
         workspace.setName(name);
+        return this;
     }
 
-    public void setWorkspace(SpecialFilterType type)
-    {
+    public RuleFilter setWorkspace(SpecialFilterType type) {
         workspace.setType(type);
+        return this;
     }
 
-    public void setLayer(String name)
-    {
+    public RuleFilter setLayer(String name) {
         layer.setName(name);
+        return this;
     }
 
-    public void setLayer(SpecialFilterType type)
-    {
+    public RuleFilter setLayer(SpecialFilterType type) {
         layer.setType(type);
+        return this;
     }
 
-    public IdNameFilter getInstance()
-    {
+    public IdNameFilter getInstance() {
         return instance;
     }
 
-    public NameFilter getLayer()
-    {
+    public NameFilter getLayer() {
         return layer;
     }
 
-    public IdNameFilter getUserGroup()
-    {
+    public IdNameFilter getUserGroup() {
         return userGroup;
     }
 
-    public NameFilter getRequest()
-    {
+    public NameFilter getRequest() {
         return request;
     }
 
-    public NameFilter getService()
-    {
+    public NameFilter getService() {
         return service;
     }
 
-    public IdNameFilter getUser()
-    {
+    public IdNameFilter getUser() {
         return user;
     }
 
-    public NameFilter getWorkspace()
-    {
+    public NameFilter getWorkspace() {
         return workspace;
     }
 
-    public InetAddress getSourceAddress()
-    {
+    public InetAddress getSourceAddress() {
         return sourceAddress;
     }
 
-    public void setSourceAddress(InetAddress sourceAddress)
-    {
+    public RuleFilter setSourceAddress(InetAddress sourceAddress) {
         this.sourceAddress = sourceAddress;
+        return this;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder sb = new StringBuilder(getClass().getSimpleName());
         sb.append('[');
         sb.append("user:").append(user);
@@ -305,12 +289,9 @@ public class RuleFilter implements Serializable
         sb.append(" ws:").append(workspace);
         sb.append(" layer:").append(layer);
         sb.append(" srcaddr:");
-        if (sourceAddress == null)
-        {
+        if ( sourceAddress == null ) {
             sb.append('-');
-        }
-        else
-        {
+        } else {
             sb.append(sourceAddress);
         }
         sb.append(']');
@@ -318,182 +299,179 @@ public class RuleFilter implements Serializable
         return sb.toString();
     }
 
+    public static class IdNameFilter implements Serializable {
 
-    public static class IdNameFilter implements Serializable
-    {
         private static final long serialVersionUID = -5984311150423659545L;
-
         private Long id;
         private String name;
         private FilterType type;
+        /**
+         * Only used in TYPE_ID and TYPE_NAME, tells if also default Rules should be matched. Old code automatically included
+         * default rules.
+         */
+        private boolean includeDefault = true;
 
-        public IdNameFilter(FilterType type)
-        {
+        public IdNameFilter(FilterType type) {
             this.type = type;
         }
 
-        public IdNameFilter(long id)
-        {
+        public IdNameFilter(FilterType type, boolean includeDefault) {
+            this.type = type;
+            this.includeDefault = includeDefault;
+        }
+
+        public IdNameFilter(long id) {
             setId(id);
         }
 
-        public void setHeuristically(String name)
-        {
-            if (name == null)
-            {
+        public IdNameFilter(long id, boolean includeDefault) {
+            setId(id);
+            this.includeDefault = includeDefault;
+        }
+
+        public void setHeuristically(String name) {
+            if ( name == null ) {
                 this.type = FilterType.DEFAULT;
-            }
-            else if (name.equals("*"))
-            {
+            } else if ( name.equals("*") ) {
                 this.type = FilterType.ANY;
-            }
-            else
-            {
+            } else {
                 this.type = FilterType.NAMEVALUE;
                 this.name = name;
             }
         }
 
-        public void setHeuristically(Long id)
-        {
-            if (id == null)
-            {
+        public void setHeuristically(Long id) {
+            if ( id == null ) {
                 this.type = FilterType.DEFAULT;
-            }
-            else
-            {
+            } else {
                 this.type = FilterType.IDVALUE;
                 this.id = id;
             }
         }
 
-        public void setId(Long id)
-        {
+        public void setId(Long id) {
             this.id = id;
             this.type = FilterType.IDVALUE;
         }
 
-        public void setName(String name)
-        {
+        public void setName(String name) {
             this.name = name;
             this.type = FilterType.NAMEVALUE;
         }
 
-        public void setType(SpecialFilterType type)
-        {
+        public void setType(SpecialFilterType type) {
             this.type = type.getRelatedType();
         }
 
-        public Long getId()
-        {
+        public Long getId() {
             return id;
         }
 
-        public String getName()
-        {
+        public String getName() {
             return name;
         }
 
-        public FilterType getType()
-        {
+        public FilterType getType() {
             return type;
         }
 
+        public boolean isIncludeDefault() {
+            return includeDefault;
+        }
+
+        public void setIncludeDefault(boolean includeDefault) {
+            this.includeDefault = includeDefault;
+        }
+
         @Override
-        public String toString()
-        {
-            switch (type)
-            {
-            case ANY:
-            case DEFAULT:
-                return type.toString();
+        public String toString() {
+            switch (type) {
+                case ANY:
+                case DEFAULT:
+                    return type.toString();
 
-            case IDVALUE:
-                return new StringBuilder("id:").append(id.toString()).toString();
+                case IDVALUE:
+                    return "id" + (includeDefault?"+:":":") + (id==null?"(null)":id.toString());
 
-            case NAMEVALUE:
-                return name==null?"(null)":name.isEmpty()?"(empty)":name;
+                case NAMEVALUE:
+                    return "name" + (includeDefault?"+:":":") + name == null ? "(null)" : name.isEmpty() ? "(empty)" : name;
 
-            default:
-                throw new AssertionError();
+                default:
+                    throw new AssertionError();
             }
         }
     }
 
+    public static class NameFilter implements Serializable {
 
-    public static class NameFilter implements Serializable
-    {
         private static final long serialVersionUID = 6565336016075974626L;
         private String name;
         private FilterType type;
         private boolean forceUppercase = false;
+        /**
+         * Only used in TYPE_NAME, tells if also default Rules should be matched. 
+         */
+        private boolean includeDefault = false;
 
-        public NameFilter(FilterType type)
-        {
+        public NameFilter(FilterType type) {
             this.type = type;
         }
 
-        public NameFilter(FilterType type, boolean forceUppercase)
-        {
+        public NameFilter(FilterType type, boolean forceUppercase) {
             this.type = type;
             this.forceUppercase = forceUppercase;
         }
 
-        public void setHeuristically(String name)
-        {
-            if (name == null)
-            {
+        public void setHeuristically(String name) {
+            if ( name == null ) {
                 this.type = FilterType.DEFAULT;
-            }
-            else if (name.equals("*"))
-            {
+            } else if ( name.equals("*") ) {
                 this.type = FilterType.ANY;
-            }
-            else
-            {
+            } else {
                 this.type = FilterType.NAMEVALUE;
                 this.name = forceUppercase ? name.toUpperCase() : name;
             }
         }
 
-        public void setName(String name)
-        {
+        public void setName(String name) {
             this.name = forceUppercase ? name.toUpperCase() : name;
             this.type = FilterType.NAMEVALUE;
         }
 
-        public void setType(SpecialFilterType type)
-        {
+        public void setType(SpecialFilterType type) {
             this.type = type.getRelatedType();
         }
 
-        public String getName()
-        {
+        public String getName() {
             return name;
         }
 
-        public FilterType getType()
-        {
+        public FilterType getType() {
             return type;
         }
 
-        @Override
-        public String toString()
-        {
-            switch (type)
-            {
-            case ANY:
-            case DEFAULT:
-                return type.toString();
-
-            case NAMEVALUE:
-                return name==null?"(null)":name.isEmpty()?"(empty)":name;
-
-            case IDVALUE:
-            default:
-                throw new AssertionError();
-            }
+        public boolean isIncludeDefault() {
+            return includeDefault;
         }
 
+        public void setIncludeDefault(boolean includeDefault) {
+            this.includeDefault = includeDefault;
+        }
+
+        @Override
+        public String toString() {
+            switch (type) {
+                case ANY:
+                case DEFAULT:
+                    return type.toString();
+
+                case NAMEVALUE:
+                    return "name" + (includeDefault?"+:":":") + name == null ? "(null)" : name.isEmpty() ? "(empty)" : name;
+
+                case IDVALUE:
+                default:
+                    throw new AssertionError();
+            }
+        }
     }
 }

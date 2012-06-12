@@ -144,6 +144,33 @@ public class RuleAdminServiceImpl implements RuleAdminService {
         return ruleDAO.remove(rule);
     }
 
+    public void deleteRulesByUser(long userId) throws NotFoundServiceEx {
+        Search searchCriteria = new Search(Rule.class);
+        searchCriteria.addFilter(Filter.equal("gsuser.id", userId));
+
+        List<Rule> list = ruleDAO.search(searchCriteria);
+        if(LOGGER.isInfoEnabled())
+            LOGGER.info("Removing "+list.size()+" rules for user " + userId);
+        for (Rule rule : list) {
+            if(LOGGER.isInfoEnabled())
+                LOGGER.info("Removing rule for user " + userId+": " + rule);
+            ruleDAO.remove(rule);
+        }
+    }
+
+    public void deleteRulesByGroup(long groupId) throws NotFoundServiceEx {
+        Search searchCriteria = new Search(Rule.class);
+        searchCriteria.addFilter(Filter.equal("usergroup.id", groupId));
+
+        List<Rule> list = ruleDAO.search(searchCriteria);
+        for (Rule rule : list) {
+            if(LOGGER.isInfoEnabled())
+                LOGGER.info("Removing rule for group " + groupId+": " + rule);
+            ruleDAO.remove(rule);
+        }
+    }
+
+
     @Override
     public List<ShortRule> getAll() {
         List<Rule> found = ruleDAO.findAll();
@@ -159,24 +186,24 @@ public class RuleAdminServiceImpl implements RuleAdminService {
 //     * </UL>
 //     */
 
-    /**
-     * @deprecated
-     */
-    @Override
-    @Deprecated
-    public List<ShortRule> getList(String userId, String profileId, String instanceId,
-            String service, String request,
-            String workspace, String layer,
-            Integer page, Integer entries) {
-
-        RuleFilter filter = new RuleFilter(0L, 0L, 0L, service, request, workspace, layer);
-        // adjust IDs
-        adjustFilterHeuristic(filter.getUser(), userId);
-        adjustFilterHeuristic(filter.getUserGroup(), profileId);
-        adjustFilterHeuristic(filter.getInstance(), instanceId);
-
-        return getList(filter, page, entries);
-    }
+//    /**
+//     * @deprecated
+//     */
+//    @Override
+//    @Deprecated
+//    public List<ShortRule> getList(String userId, String profileId, String instanceId,
+//            String service, String request,
+//            String workspace, String layer,
+//            Integer page, Integer entries) {
+//
+//        RuleFilter filter = new RuleFilter(0L, 0L, 0L, service, request, workspace, layer);
+//        // adjust IDs
+//        adjustFilterHeuristic(filter.getUser(), userId);
+//        adjustFilterHeuristic(filter.getUserGroup(), profileId);
+//        adjustFilterHeuristic(filter.getInstance(), instanceId);
+//
+//        return getList(filter, page, entries);
+//    }
 
     private void adjustFilterHeuristic(IdNameFilter filter, String id) {
         if (id == null) {
@@ -231,7 +258,7 @@ public class RuleAdminServiceImpl implements RuleAdminService {
 
     @Override
     public long getCountAll() {
-        return getCount(new RuleFilter(RuleFilter.SpecialFilterType.ANY));
+        return count(new RuleFilter(RuleFilter.SpecialFilterType.ANY));
     }
 
     /**
@@ -245,12 +272,17 @@ public class RuleAdminServiceImpl implements RuleAdminService {
         adjustFilterHeuristic(filter.getUser(), userId);
         adjustFilterHeuristic(filter.getUserGroup(), profileId);
         adjustFilterHeuristic(filter.getInstance(), instanceId);
-        return getCount(filter);
+        return count(filter);
     }
 
     @Override
-    public long getCount(RuleFilter filter) {
+    public long count(RuleFilter filter) {
+        if(LOGGER.isDebugEnabled())
+            LOGGER.debug("Counting rules: " + filter);
+
         Search searchCriteria = buildRuleSearch(filter);
+        if(LOGGER.isDebugEnabled())
+            LOGGER.debug("Counting rules: " + searchCriteria);
         return ruleDAO.count(searchCriteria);
     }
 
@@ -290,14 +322,25 @@ public class RuleAdminServiceImpl implements RuleAdminService {
                 break;
 
             case IDVALUE:
-                searchCriteria.addFilter(
-                        Filter.equal(fieldName + ".id", filter.getId()));
+                if(filter.isIncludeDefault()) {
+                    searchCriteria.addFilterOr(
+                            Filter.isNull(fieldName),
+                            Filter.equal(fieldName + ".id", filter.getId()));
+                } else {
+                    searchCriteria.addFilter(
+                            Filter.equal(fieldName + ".id", filter.getId()));
+                }
                 break;
 
             case NAMEVALUE:
-                searchCriteria.addFilterOr(
-                        Filter.isNull(fieldName),
-                        Filter.equal(fieldName + ".name", filter.getName()));
+                if(filter.isIncludeDefault()) {
+                    searchCriteria.addFilterOr(
+                            Filter.isNull(fieldName),
+                            Filter.equal(fieldName + ".name", filter.getName()));
+                } else {
+                    searchCriteria.addFilter(
+                            Filter.equal(fieldName + ".name", filter.getName()));
+                }
                 break;
 
             default:
@@ -315,8 +358,14 @@ public class RuleAdminServiceImpl implements RuleAdminService {
                 break;
 
             case NAMEVALUE:
-                searchCriteria.addFilter(
-                        Filter.equal(fieldName, filter.getName()));
+                if(filter.isIncludeDefault()) {
+                    searchCriteria.addFilterOr(
+                            Filter.isNull(fieldName),
+                            Filter.equal(fieldName, filter.getName()));
+                } else {
+                    searchCriteria.addFilter(
+                            Filter.equal(fieldName, filter.getName()));
+                }
                 break;
 
             case IDVALUE:

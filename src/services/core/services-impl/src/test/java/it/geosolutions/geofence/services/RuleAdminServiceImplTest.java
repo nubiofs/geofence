@@ -28,6 +28,7 @@ import it.geosolutions.geofence.core.model.RuleLimits;
 import it.geosolutions.geofence.core.model.enums.AccessType;
 import it.geosolutions.geofence.core.model.enums.GrantType;
 import it.geosolutions.geofence.services.dto.RuleFilter;
+import it.geosolutions.geofence.services.dto.RuleFilter.SpecialFilterType;
 import it.geosolutions.geofence.services.dto.ShortRule;
 import it.geosolutions.geofence.services.exception.BadRequestServiceEx;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
@@ -122,7 +123,7 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
 
     @Test
     public void testGetRules() {
-        assertEquals(0, ruleAdminService.getCount("*","*","*", "*","*", "*","*"));
+        assertEquals(0, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY)));
 
         UserGroup p1 = createUserGroup("p1");
         UserGroup p2 = createUserGroup("p2");
@@ -137,11 +138,20 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
         ruleAdminService.insert(r3);
         ruleAdminService.insert(r4);
 
-        assertEquals(4, ruleAdminService.getCount("*","*","*",              "*","*", "*","*"));
-        assertEquals(3, ruleAdminService.getCount("*",""+p1.getId(),"*",    "*","*", "*","*"));
-        assertEquals(1, ruleAdminService.getCount("*",""+p2.getId(),"*",    "*","*", "*","*"));
-        assertEquals(2, ruleAdminService.getCount("*","*","*",              "s1","*", "*","*"));
-        assertEquals(0, ruleAdminService.getCount("*","*","*",              "ZZ","*", "*","*"));
+       assertNotNull(p1.getId());
+       assertNotNull(p2.getId());
+
+        assertEquals(4, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY)));
+        assertEquals(3, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY).setUserGroup(p1.getId())));
+        assertEquals(3, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY).setUserGroup(p1.getName())));
+        assertEquals(1, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY).setUserGroup(p2.getId())));
+        assertEquals(2, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY).setService("s1")));
+        assertEquals(0, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY).setService("ZZ")));
+        RuleFilter f1 = new RuleFilter(SpecialFilterType.ANY).setService("s1");
+        f1.getService().setIncludeDefault(true);
+        assertEquals(3, ruleAdminService.count(f1));
+
+
     }
 
     public void testRuleLimits() throws NotFoundServiceEx {

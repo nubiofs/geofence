@@ -27,12 +27,12 @@
     <!-- ====================================================================-->
 
     <bean id="restUserService" class="it.geosolutions.geofence.services.rest.impl.RESTUserServiceImpl">
-<!--        <property name="userGroupAdminService" ref="userGroupAdminService"/>-->
-<!--        <property name="userAdminService" ref="userAdminService"/>-->
+        <property name="profileAdminService" ref="profileAdminService"/>
+        <property name="userAdminService" ref="userAdminService"/>
     </bean>
 
-    <bean id="restUserGroupService" class="it.geosolutions.geofence.services.rest.impl.RESTUserGroupServiceImpl">
-<!--        <property name="userGroupAdminService" ref="userGroupAdminService"/>-->
+    <bean id="restProfileService" class="it.geosolutions.geofence.services.rest.impl.RESTProfileServiceImpl">
+        <property name="profileAdminService" ref="profileAdminService"/>
     </bean>
 
     <bean id="restConfigService" class="it.geosolutions.geofence.services.rest.impl.RESTConfigServiceImpl">
@@ -66,9 +66,9 @@
         </jaxrs:inInterceptors-->
     </jaxrs:server>
 
-    <jaxrs:server id="geofenceRESTUserGroup" address="/groups">
+    <jaxrs:server id="geofenceRESTProfile" address="/profiles">
         <jaxrs:serviceBeans>
-          <ref bean="restUserGroupService"/>
+          <ref bean="restProfileService"/>
         </jaxrs:serviceBeans>
 
         <jaxrs:features>

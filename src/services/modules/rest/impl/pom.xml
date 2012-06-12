@@ -45,11 +45,6 @@
             <artifactId>geofence-model</artifactId>
         </dependency>
 
-<!--        <dependency>
-            <groupId>it.geosolutions.geofence</groupId>
-            <artifactId>geofence-persistence</artifactId>
-        </dependency>-->
-
         <dependency>
             <groupId>it.geosolutions.geofence</groupId>
             <artifactId>geofence-services-api</artifactId>
@@ -124,10 +119,25 @@
             <groupId>com.googlecode.jaitools</groupId>
             <artifactId>jt-utils</artifactId>
         </dependency>
+
+
+
+        <dependency>
+            <groupId>it.geosolutions.geofence</groupId>
+            <artifactId>geofence-services-impl</artifactId>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.10</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

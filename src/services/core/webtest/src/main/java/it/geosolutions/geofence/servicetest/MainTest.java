@@ -51,6 +51,8 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
 
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.io.WKTReader;
+import it.geosolutions.geofence.services.dto.RuleFilter;
+import it.geosolutions.geofence.services.dto.RuleFilter.SpecialFilterType;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 
 /**
@@ -205,9 +207,18 @@ public class MainTest implements InitializingBean, ApplicationContextAware {
         httpInvokerProxyFactoryBean.afterPropertiesSet();
         RuleReaderService rrs = (RuleReaderService) httpInvokerProxyFactoryBean.getObject();
 
-        AccessInfo accessInfo = rrs.getAccessInfo("pippo", null, "gs1", "WMS", null, null, null);
+        RuleFilter filter1 = new RuleFilter(SpecialFilterType.DEFAULT, true)
+                .setUser("pippo")
+                .setInstance("gs1")
+                .setService("WMS");
+        AccessInfo accessInfo = rrs.getAccessInfo(filter1);
         LOGGER.info(accessInfo);
-        AccessInfo accessInfo2 = rrs.getAccessInfo("pippo", null, "gs1", "WCS", null, null, null);
+
+        RuleFilter filter2 = new RuleFilter(SpecialFilterType.DEFAULT, true)
+                .setUser("pippo")
+                .setInstance("gs1")
+                .setService("WCS");
+        AccessInfo accessInfo2 = rrs.getAccessInfo(filter2);
         LOGGER.info(accessInfo2);
     }
 

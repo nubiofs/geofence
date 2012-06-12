@@ -23,11 +23,13 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 import it.geosolutions.geofence.services.rest.exception.BadRequestRestEx;
+import it.geosolutions.geofence.services.rest.exception.ConflictRestEx;
 import it.geosolutions.geofence.services.rest.exception.InternalErrorRestEx;
 import it.geosolutions.geofence.services.rest.exception.NotFoundRestEx;
 import it.geosolutions.geofence.services.rest.model.RESTInputUser;
 import it.geosolutions.geofence.services.rest.model.RESTOutputUser;
 import it.geosolutions.geofence.services.rest.model.RESTShortUserList;
+import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 
@@ -110,7 +112,7 @@ public interface RESTUserService {
     @POST
     @Path("/")
     @Produces(MediaType.TEXT_PLAIN)
-    Long insert(@Multipart("user") RESTInputUser user) throws BadRequestRestEx, NotFoundRestEx;
+    Response insert(@Multipart("user") RESTInputUser user) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx, ConflictRestEx;
 
     /**
      * Updates a GSUser.

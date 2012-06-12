@@ -69,7 +69,7 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
         RuleFilter filter;
 
         filter = new RuleFilter(RuleFilter.SpecialFilterType.ANY);
-        assertEquals(0, ruleAdminService.getCount(filter));
+        assertEquals(0, ruleAdminService.count(filter));
 
         UserGroup g1 = createUserGroup("p1");
         UserGroup g2 = createUserGroup("p2");
@@ -157,7 +157,7 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
 
         RuleFilter filter;
         filter = new RuleFilter(RuleFilter.SpecialFilterType.ANY);
-        assertEquals(0, ruleAdminService.getCount(filter));
+        assertEquals(0, ruleAdminService.count(filter));
 
         UserGroup g1 = createUserGroup("p1");
         UserGroup g2 = createUserGroup("p2");
@@ -194,7 +194,7 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
 
     @Test
     public void testGetInfo() {
-        assertEquals(0, ruleAdminService.getCount(new RuleFilter(RuleFilter.SpecialFilterType.ANY)));
+        assertEquals(0, ruleAdminService.count(new RuleFilter(RuleFilter.SpecialFilterType.ANY)));
 
         int pri = -1;
         List<Rule> rules = new ArrayList<Rule>();
@@ -209,7 +209,7 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
                 ruleAdminService.insert(rule);
         }
 
-        assertEquals(4, ruleAdminService.getCount(new RuleFilter(RuleFilter.SpecialFilterType.ANY)));
+        assertEquals(4, ruleAdminService.count(new RuleFilter(RuleFilter.SpecialFilterType.ANY)));
 
         AccessInfo accessInfo;
 
@@ -249,7 +249,7 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
 
     @Test
     public void testResolveLazy() {
-        assertEquals(0, ruleAdminService.getCount(new RuleFilter(RuleFilter.SpecialFilterType.ANY)));
+        assertEquals(0, ruleAdminService.count(new RuleFilter(RuleFilter.SpecialFilterType.ANY)));
 
         List<Rule> rules = new ArrayList<Rule>();
 
@@ -267,7 +267,7 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
         details.getCustomProps().put("k2", "v2");
         ruleAdminService.setDetails(rules.get(1).getId(), details);
 
-        assertEquals(2, ruleAdminService.getCount(new RuleFilter(RuleFilter.SpecialFilterType.ANY)));
+        assertEquals(2, ruleAdminService.count(new RuleFilter(RuleFilter.SpecialFilterType.ANY)));
 
         AccessInfo accessInfo;
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -22,9 +22,10 @@ package it.geosolutions.geofence.services.rest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
-import it.geosolutions.geofence.core.model.GSUser;
 import it.geosolutions.geofence.services.rest.exception.BadRequestRestEx;
 import it.geosolutions.geofence.services.rest.exception.NotFoundRestEx;
+import it.geosolutions.geofence.services.rest.model.RESTInputRule;
+import it.geosolutions.geofence.services.rest.model.RESTOutputRule;
 import it.geosolutions.geofence.services.rest.model.config.RESTFullRuleList;
 
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
@@ -39,37 +40,83 @@ import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 public interface RESTRuleService
 {
 
-    /**
-     * @return a sample user list
-     * */
-
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_XML)
-    RESTFullRuleList getRules(
+    RESTFullRuleList get(
         @QueryParam("page") Integer page,
-        @QueryParam("entries") Integer entries);
+        @QueryParam("entries") Integer entries,
+        @QueryParam("full")@DefaultValue("false")  boolean full,
+
+        @QueryParam("userId")   Integer userId,
+        @QueryParam("userName") String userName,
+        @QueryParam("userAny")  Boolean userAny,
+
+        @QueryParam("groupId")   Integer groupId,
+        @QueryParam("groupName") String groupName,
+        @QueryParam("groupAny")  Boolean groupAny,
+
+        @QueryParam("instanceId")   Integer instanceId,
+        @QueryParam("instanceName") String  instanceName,
+        @QueryParam("instanceAny")  Boolean instanceAny,
+
+        @QueryParam("service")     String  serviceName,
+        @QueryParam("serviceAny")  Boolean serviceAny,
+
+        @QueryParam("request")     String  requestName,
+        @QueryParam("requestAny")  Boolean requestAny,
+
+        @QueryParam("workspace") String  workspace,
+        @QueryParam("workspaceAny")  Boolean workspaceAny,
+
+        @QueryParam("layer") String  layer,
+        @QueryParam("layerAny")  Boolean layerAny
+    );
 
     @GET
-    @Path("/count/{nameLike}")
-    long getCount(@PathParam("nameLike") String nameLike);
+    @Path("/count")
+    long count(
+        @QueryParam("userId")   Integer userId,
+        @QueryParam("userName") String userName,
+        @QueryParam("userAny")  Boolean userAny,
+
+        @QueryParam("groupId")   Integer groupId,
+        @QueryParam("groupName") String groupName,
+        @QueryParam("groupAny")  Boolean groupAny,
+
+        @QueryParam("instanceId")   Integer instanceId,
+        @QueryParam("instanceName") String  instanceName,
+        @QueryParam("instanceAny")  Boolean instanceAny,
+
+        @QueryParam("service")     String  serviceName,
+        @QueryParam("serviceAny")  Boolean serviceAny,
+
+        @QueryParam("request")     String  requestName,
+        @QueryParam("requestAny")  Boolean requestAny,
+
+        @QueryParam("workspace") String  workspace,
+        @QueryParam("workspaceAny")  Boolean workspaceAny,
+
+        @QueryParam("layer") String  layer,
+        @QueryParam("layerAny")  Boolean layerAny
+    );
 
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_XML)
-    GSUser get(@PathParam("id") Long id) throws BadRequestRestEx, NotFoundRestEx;
+    RESTOutputRule get(@PathParam("id") Long id) throws BadRequestRestEx, NotFoundRestEx;
 
     @POST
     @Path("/")
     @Produces(MediaType.APPLICATION_XML)
-    Long insert(@Multipart("user") GSUser user) throws BadRequestRestEx, NotFoundRestEx;
+    Long insert(@Multipart("rule") RESTInputRule rule) throws BadRequestRestEx, NotFoundRestEx;
 
 
     @PUT
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_XML)
     void update(@PathParam("id") Long id,
-        @Multipart("user") GSUser user) throws BadRequestRestEx, NotFoundRestEx;
+        @Multipart("rule") RESTInputRule rule) throws BadRequestRestEx, NotFoundRestEx;
 
     @DELETE
     @Path("/{id}")

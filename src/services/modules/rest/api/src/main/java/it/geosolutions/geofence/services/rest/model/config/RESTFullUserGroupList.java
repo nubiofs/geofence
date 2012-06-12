@@ -26,13 +26,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import it.geosolutions.geofence.core.model.UserGroup;
+import java.util.Iterator;
 
 /**
  *
  * @author ETj (etj at geo-solutions.it)
  */
 @XmlRootElement(name = "UserGroupList")
-public class RESTFullUserGroupList {
+public class RESTFullUserGroupList implements Iterable<UserGroup> {
 
     private List<UserGroup> list;
 
@@ -60,5 +61,10 @@ public class RESTFullUserGroupList {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "[" + list.size() + " groups]";
+    }
+
+    @Override
+    public Iterator<UserGroup> iterator() {
+        return list.iterator();
     }
 }
