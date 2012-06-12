@@ -15,7 +15,7 @@ http://www.springframework.org/schema/context
 		<property name="loginService" ref="mainLoginService" />
         <property name="userAdminService" ref="userAdminService" />
         <property name="gfUserAdminService" ref="gfUserAdminService" />
-        <property name="profileAdminService" ref="profileAdminService" />
+        <property name="userGroupAdminService" ref="userGroupAdminService" />
         <property name="instanceAdminService" ref="instanceAdminService" />
         <property name="ruleAdminService" ref="ruleAdminService" />
 	</bean>

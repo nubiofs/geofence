@@ -59,7 +59,7 @@ public class GeofenceRemoteService {
     private UserRegistry userProvider;
 
     /** The profile admin service. */
-    private UserGroupAdminService profileAdminService;
+    private UserGroupAdminService userGroupAdminService;
     
     /** The instance admin service. */
     private InstanceAdminService instanceAdminService;
@@ -145,7 +145,7 @@ public class GeofenceRemoteService {
      *            the new profile admin service
      */
     public void setProfileAdminService(UserGroupAdminService profileAdminService) {
-        this.profileAdminService = profileAdminService;
+        this.userGroupAdminService = profileAdminService;
     }
 
     /**
@@ -153,8 +153,9 @@ public class GeofenceRemoteService {
      * 
      * @return the profile admin service
      */
-    public UserGroupAdminService getProfileAdminService() {
-        return profileAdminService;
+
+    public void setUserGroupAdminService(UserGroupAdminService userGroupAdminService) {
+        this.userGroupAdminService = userGroupAdminService;
     }
 
     /**
