@@ -32,6 +32,13 @@
  */
 package it.geosolutions.geofence.gui.client.widget;
 
+import it.geosolutions.geofence.gui.client.ApplicationException;
+import it.geosolutions.geofence.gui.client.GeofenceEvents;
+import it.geosolutions.geofence.gui.client.model.BeanKeyValue;
+import it.geosolutions.geofence.gui.client.model.User;
+import it.geosolutions.geofence.gui.client.service.LoginRemoteServiceAsync;
+import it.geosolutions.geofence.gui.client.widget.SearchStatus.EnumSearchStatus;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,13 +57,6 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import it.geosolutions.geofence.gui.client.ApplicationException;
-import it.geosolutions.geofence.gui.client.GeofenceEvents;
-import it.geosolutions.geofence.gui.client.model.BeanKeyValue;
-import it.geosolutions.geofence.gui.client.model.User;
-import it.geosolutions.geofence.gui.client.service.LoginRemoteAsync;
-import it.geosolutions.geofence.gui.client.widget.SearchStatus.EnumSearchStatus;
-
 
 // TODO: Auto-generated Javadoc
 /**
@@ -66,7 +66,7 @@ public class SearchPagUserWidget extends GeofenceSearchWidget<User>
 {
 
     /** The service. */
-    private LoginRemoteAsync service;
+    private LoginRemoteServiceAsync service;
 
     /**
      * Instantiates a new search pag user widget.
@@ -74,7 +74,7 @@ public class SearchPagUserWidget extends GeofenceSearchWidget<User>
      * @param service
      *            the service
      */
-    public SearchPagUserWidget(LoginRemoteAsync service)
+    public SearchPagUserWidget(LoginRemoteServiceAsync service)
     {
         super();
         this.service = service;

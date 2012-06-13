@@ -149,13 +149,24 @@ public class GeofenceRemoteService {
     }
 
     /**
-     * Gets the profile admin service.
+     * Sets the profile admin service.
      * 
      * @return the profile admin service
      */
 
     public void setUserGroupAdminService(UserGroupAdminService userGroupAdminService) {
         this.userGroupAdminService = userGroupAdminService;
+    }
+
+    /**
+     * Gets the profile admin service.
+     * @return 
+     * 
+     * @return the profile admin service
+     */
+
+    public UserGroupAdminService getUserGroupAdminService() {
+        return this.userGroupAdminService;
     }
 
     /**

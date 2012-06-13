@@ -32,16 +32,6 @@
  */
 package it.geosolutions.geofence.gui.server.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
-
 import it.geosolutions.geofence.gui.client.ApplicationException;
 import it.geosolutions.geofence.gui.client.model.Profile;
 import it.geosolutions.geofence.gui.client.model.data.ProfileCustomProps;
@@ -51,10 +41,20 @@ import it.geosolutions.geofence.gui.service.GeofenceRemoteService;
 import it.geosolutions.geofence.services.dto.ShortGroup;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
 
 // TODO: Auto-generated Javadoc
@@ -96,13 +96,13 @@ public class ProfilesManagerServiceImpl implements IProfilesManagerService
             profileListDTO.add(all_profile);
         }
 
-        long profilesCount = geofenceRemoteService.getProfileAdminService().getCount(null) + 1;
+        long profilesCount = geofenceRemoteService.getUserGroupAdminService().getCount(null) + 1;
 
         Long t = new Long(profilesCount);
 
         int page = (start == 0) ? start : (start / limit);
 
-        List<ShortGroup> profilesList = geofenceRemoteService.getProfileAdminService().getList(
+        List<ShortGroup> profilesList = geofenceRemoteService.getUserGroupAdminService().getList(
                 null, page, limit);
 
         if (profilesList == null)
@@ -123,7 +123,7 @@ public class ProfilesManagerServiceImpl implements IProfilesManagerService
             it.geosolutions.geofence.core.model.UserGroup remote_profile;
             try
             {
-                remote_profile = geofenceRemoteService.getProfileAdminService().get(
+                remote_profile = geofenceRemoteService.getUserGroupAdminService().get(
                         short_profile.getId());
             }
             catch (NotFoundServiceEx e)
@@ -160,8 +160,8 @@ public class ProfilesManagerServiceImpl implements IProfilesManagerService
         it.geosolutions.geofence.core.model.UserGroup remote_profile = null;
         try
         {
-            remote_profile = geofenceRemoteService.getProfileAdminService().get(profile.getId());
-            geofenceRemoteService.getProfileAdminService().delete(remote_profile.getId());
+            remote_profile = geofenceRemoteService.getUserGroupAdminService().get(profile.getId());
+            geofenceRemoteService.getUserGroupAdminService().delete(remote_profile.getId());
         }
         catch (NotFoundServiceEx e)
         {
@@ -180,13 +180,13 @@ public class ProfilesManagerServiceImpl implements IProfilesManagerService
         {
             try
             {
-                remote_profile = geofenceRemoteService.getProfileAdminService().get(profile.getId());
+                remote_profile = geofenceRemoteService.getUserGroupAdminService().get(profile.getId());
 
                 ShortGroup short_profile = new ShortGroup();
                 short_profile.setId(remote_profile.getId());
                 short_profile.setName(profile.getName());
                 short_profile.setEnabled(profile.isEnabled());
-                geofenceRemoteService.getProfileAdminService().update(short_profile);
+                geofenceRemoteService.getUserGroupAdminService().update(short_profile);
             }
             catch (NotFoundServiceEx e)
             {
@@ -204,7 +204,7 @@ public class ProfilesManagerServiceImpl implements IProfilesManagerService
                 short_profile.setName(profile.getName());
                 short_profile.setEnabled(profile.isEnabled());
                 short_profile.setDateCreation(profile.getDateCreation());
-                geofenceRemoteService.getProfileAdminService().insert(short_profile);
+                geofenceRemoteService.getUserGroupAdminService().insert(short_profile);
             }
             catch (Exception e)
             {
@@ -231,7 +231,7 @@ public class ProfilesManagerServiceImpl implements IProfilesManagerService
                 logger.error("TODO: profile refactoring!!! custom props have been removed");
                 Map<String, String> customProperties = new HashMap<String, String>();
                 customProperties.put("NOTE", "Custom properties are no longer supported. Code is unstable");
-//                Map<String, String> customProperties = geofenceRemoteService.getProfileAdminService().getCustomProps(profile.getId());
+//                Map<String, String> customProperties = geofenceRemoteService.getUserGroupAdminService().getCustomProps(profile.getId());
 
                 if (customProperties == null)
                 {
@@ -297,6 +297,6 @@ public class ProfilesManagerServiceImpl implements IProfilesManagerService
 //        }
 
         logger.error("TODO: profile refactoring!!! custom props have been removed");
-//        geofenceRemoteService.getProfileAdminService().setCustomProps(profileId, props);
+//        geofenceRemoteService.getUserGroupAdminService().setCustomProps(profileId, props);
     }
 }

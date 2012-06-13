@@ -32,22 +32,6 @@
  */
 package it.geosolutions.geofence.gui.server.service.impl;
 
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
-
 import it.geosolutions.geofence.core.model.LayerAttribute;
 import it.geosolutions.geofence.core.model.LayerDetails;
 import it.geosolutions.geofence.core.model.RuleLimits;
@@ -74,12 +58,27 @@ import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 import it.geosolutions.geoserver.rest.decoder.RESTFeatureType;
 import it.geosolutions.geoserver.rest.decoder.RESTLayer;
-import it.geosolutions.geoserver.rest.decoder.RESTLayerGroup;
+
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 
 
 /**
@@ -226,13 +225,19 @@ public class RulesManagerServiceImpl implements IRulesManagerService
     public void saveRule(Rule rule) throws ApplicationException
     {
 
+    	logger.info(rule.getRequest());
         long count = checkUniqueness(rule);
 
         if (count < 1)
         {
             it.geosolutions.geofence.core.model.Rule rule2 = new it.geosolutions.geofence.core.model.Rule(
-                    rule.getPriority(), getUser(rule.getUser()), getProfile(rule.getProfile()),
-                    getInstance(rule.getInstance()), "*".equals(rule.getService()) ? null : rule.getService(), "*".equals(rule.getRequest()) ? null : rule.getRequest(), "*".equals(rule.getWorkspace()) ? null : rule.getWorkspace(),
+                    rule.getPriority(), 
+                    getUser(rule.getUser()), 
+                    getProfile(rule.getProfile()),
+                    getInstance(rule.getInstance()), 
+                    "*".equals(rule.getService()) ? null : rule.getService(), 
+                    "*".equals(rule.getRequest()) ? null : rule.getRequest(), 
+                    "*".equals(rule.getWorkspace()) ? null : rule.getWorkspace(),
                     "*".equals(rule.getLayer()) ? null : rule.getLayer(),
                     getAccessType(rule.getGrant()));
             rule2.setId(rule.getId());
@@ -484,7 +489,7 @@ public class RulesManagerServiceImpl implements IRulesManagerService
         {
             if ((profile != null) && (profile.getId() != -1))
             {
-                remote_profile = geofenceRemoteService.getProfileAdminService().get(profile.getId());
+                remote_profile = geofenceRemoteService.getUserGroupAdminService().get(profile.getId());
             }
         }
         catch (Exception e)

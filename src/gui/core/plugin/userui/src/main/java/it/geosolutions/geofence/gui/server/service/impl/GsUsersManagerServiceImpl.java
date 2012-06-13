@@ -32,11 +32,6 @@
  */
 package it.geosolutions.geofence.gui.server.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
-
 import it.geosolutions.geofence.gui.client.ApplicationException;
 import it.geosolutions.geofence.gui.client.model.GSUser;
 import it.geosolutions.geofence.gui.client.model.Profile;
@@ -47,10 +42,15 @@ import it.geosolutions.geofence.gui.service.GeofenceRemoteService;
 import it.geosolutions.geofence.services.dto.ShortUser;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
 
 /**
@@ -206,7 +206,7 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
         remote_user.setDateCreation(user.getDateCreation());
         if ((user.getProfile() != null) && (user.getProfile().getId() >= 0))
         {
-            it.geosolutions.geofence.core.model.UserGroup remote_profile = geofenceRemoteService.getProfileAdminService().get(user.getProfile().getId());
+            it.geosolutions.geofence.core.model.UserGroup remote_profile = geofenceRemoteService.getUserGroupAdminService().get(user.getProfile().getId());
             logger.error("TODO: profile refactoring!!!");
             remote_user.getGroups().add(remote_profile);
         }

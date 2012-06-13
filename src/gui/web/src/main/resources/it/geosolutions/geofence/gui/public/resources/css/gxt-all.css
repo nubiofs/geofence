@@ -1057,6 +1057,7 @@ textarea {
   border-bottom: 1px solid;
   position: absolute;
   top: 0;
+  right: 0;
 }
 
 .ext-safari .x-form-field-wrap .x-form-trigger {

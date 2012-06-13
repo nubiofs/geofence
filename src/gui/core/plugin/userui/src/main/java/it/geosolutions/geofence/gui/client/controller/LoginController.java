@@ -32,19 +32,10 @@
  */
 package it.geosolutions.geofence.gui.client.controller;
 
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.WindowEvent;
-import com.extjs.gxt.ui.client.mvc.AppEvent;
-import com.extjs.gxt.ui.client.mvc.Controller;
-import com.extjs.gxt.ui.client.mvc.Dispatcher;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import it.geosolutions.geofence.gui.client.ApplicationException;
 import it.geosolutions.geofence.gui.client.GeofenceEvents;
 import it.geosolutions.geofence.gui.client.model.User;
-import it.geosolutions.geofence.gui.client.service.LoginRemote;
-import it.geosolutions.geofence.gui.client.service.LoginRemoteAsync;
+import it.geosolutions.geofence.gui.client.service.LoginRemoteServiceAsync;
 import it.geosolutions.geofence.gui.client.widget.GeofenceChooserWidget;
 import it.geosolutions.geofence.gui.client.widget.GeofenceSearchWidget;
 import it.geosolutions.geofence.gui.client.widget.GeofenceUpdateWidget;
@@ -55,6 +46,14 @@ import it.geosolutions.geofence.gui.client.widget.SearchStatus.EnumSearchStatus;
 import it.geosolutions.geofence.gui.client.widget.UpdateUserWidget;
 import it.geosolutions.geofence.gui.client.widget.UserManagementWidget;
 
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.WindowEvent;
+import com.extjs.gxt.ui.client.mvc.AppEvent;
+import com.extjs.gxt.ui.client.mvc.Controller;
+import com.extjs.gxt.ui.client.mvc.Dispatcher;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
 
 // TODO: Auto-generated Javadoc
 /**
@@ -64,7 +63,7 @@ public class LoginController extends Controller
 {
 
     /** The login remote. */
-    private LoginRemoteAsync loginRemote = LoginRemote.Util.getInstance();
+    private LoginRemoteServiceAsync loginRemote = LoginRemoteServiceAsync.Util.getInstance();
 
     /** The login widget. */
     private LoginWidget loginWidget;
@@ -187,7 +186,7 @@ public class LoginController extends Controller
      */
     private void onLogout()
     {
-        this.loginRemote.logout(new AsyncCallback<Object>()
+        this.loginRemote.logout(new AsyncCallback<Void>()
             {
 
                 public void onFailure(Throwable caught)
@@ -196,10 +195,10 @@ public class LoginController extends Controller
                         new String[] { "Logout Service", "There was an error in logout" });
                 }
 
-                public void onSuccess(Object result)
-                {
-                    Dispatcher.forwardEvent(GeofenceEvents.SESSION_EXPIRED);
-                }
+				public void onSuccess(Void result) {
+					Dispatcher.forwardEvent(GeofenceEvents.SESSION_EXPIRED);
+				}
+
             });
 
     }

@@ -685,7 +685,7 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule>
                     serviceRequestsCustomField.setName("ruleServicesRequestCombo");
                     serviceRequestsCustomField.setEmptyText("(No service request available)");
                     serviceRequestsCustomField.setFieldLabel(BeanKeyValue.REQUEST.getValue());
-                    serviceRequestsCustomField.setReadOnly(true);
+                    serviceRequestsCustomField.setReadOnly(false);
                     serviceRequestsCustomField.setWidth(COLUMN_SERVICE_WIDTH - 10);
 
                     if (model.getService() != null)

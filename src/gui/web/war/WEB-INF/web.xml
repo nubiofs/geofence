@@ -63,12 +63,12 @@
 
 
 	<servlet>
-		<servlet-name>LoginRemote</servlet-name>
-		<servlet-class>it.geosolutions.geofence.gui.server.gwt.LoginRemoteImpl</servlet-class>
+		<servlet-name>LoginRemoteService</servlet-name>
+		<servlet-class>it.geosolutions.geofence.gui.server.gwt.LoginRemoteServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>LoginRemote</servlet-name>
-		<url-pattern>/geofence/LoginRemote</url-pattern>
+		<servlet-name>LoginRemoteService</servlet-name>
+		<url-pattern>/geofence/LoginRemoteService</url-pattern>
 	</servlet-mapping>
 
 	<servlet>

@@ -11,8 +11,8 @@
 	  <source path='shared'/>
 	  <inherits name="com.extjs.gxt.ui.GXT"/>
 
-	<servlet path="/LoginRemote"
-		class="it.geosolutions.geofence.gui.server.gwt.LoginRemoteImpl" />
+	<servlet path="/LoginRemoteService"
+		class="it.geosolutions.geofence.gui.server.gwt.LoginRemoteServiceImpl" />
 
 	<servlet path="/GsUsersManagerRemoteService"
 		class="it.geosolutions.geofence.gui.server.gwt.GsUsersManagerServiceImpl" />

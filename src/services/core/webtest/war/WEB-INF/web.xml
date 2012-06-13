@@ -42,7 +42,7 @@
 
 <!--	<servlet>
 		<servlet-name>LoginRemote</servlet-name>
-		<servlet-class>it.geosolutions.geofence.gui.server.gwt.LoginRemoteImpl</servlet-class>
+		<servlet-class>it.geosolutions.geofence.gui.server.gwt.LoginRemoteServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>LoginRemote</servlet-name>
