@@ -15,6 +15,8 @@ src/gui/core/plugin/mapsui/gwt-unitCache/
 src/gui/core/plugin/mapsui/war/
 src/gui/core/plugin/userui/gwt-unitCache/
 src/gui/core/plugin/userui/war/
+src/gui/core/resources/bin/
+src/gui/core/resources/gwt-unitCache/
 src/gui/web/gwt-unitCache/
 src/gui/web/war/WEB-INF/deploy/
 src/gui/web/war/WEB-INF/classes/
