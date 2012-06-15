@@ -41,7 +41,7 @@ import it.geosolutions.geofence.core.model.enums.LayerType;
 import it.geosolutions.geofence.gui.client.ApplicationException;
 import it.geosolutions.geofence.gui.client.model.GSInstance;
 import it.geosolutions.geofence.gui.client.model.GSUser;
-import it.geosolutions.geofence.gui.client.model.Profile;
+import it.geosolutions.geofence.gui.client.model.UserGroup;
 import it.geosolutions.geofence.gui.client.model.Rule;
 import it.geosolutions.geofence.gui.client.model.data.LayerAttribUI;
 import it.geosolutions.geofence.gui.client.model.data.LayerCustomProps;
@@ -171,7 +171,7 @@ public class RulesManagerServiceImpl implements IRulesManagerService
 
             if (remote_rule.getUserGroup() == null)
             {
-                Profile all = new Profile();
+                UserGroup all = new UserGroup();
                 all.setId(-1);
                 all.setName("*");
                 local_rule.setProfile(all);
@@ -179,7 +179,7 @@ public class RulesManagerServiceImpl implements IRulesManagerService
             else
             {
                 it.geosolutions.geofence.core.model.UserGroup remote_profile = remote_rule.getUserGroup();
-                Profile local_profile = new Profile();
+                UserGroup local_profile = new UserGroup();
                 local_profile.setId(remote_profile.getId());
                 local_profile.setName(remote_profile.getName());
                 local_rule.setProfile(local_profile);
@@ -482,7 +482,7 @@ public class RulesManagerServiceImpl implements IRulesManagerService
      *            the profile
      * @return the profile
      */
-    private it.geosolutions.geofence.core.model.UserGroup getProfile(Profile profile)
+    private it.geosolutions.geofence.core.model.UserGroup getProfile(UserGroup profile)
     {
         it.geosolutions.geofence.core.model.UserGroup remote_profile = null;
         try

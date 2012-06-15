@@ -77,7 +77,7 @@ import it.geosolutions.geofence.gui.client.Resources;
 import it.geosolutions.geofence.gui.client.i18n.I18nProvider;
 import it.geosolutions.geofence.gui.client.model.BeanKeyValue;
 import it.geosolutions.geofence.gui.client.model.GSUser;
-import it.geosolutions.geofence.gui.client.model.Profile;
+//import it.geosolutions.geofence.gui.client.model.Profile;
 import it.geosolutions.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
 import it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
 
@@ -204,14 +204,14 @@ public class UserGridWidget extends GeofenceGridWidget<GSUser>
         passwordColumn.setSortable(false);
         configs.add(passwordColumn);
 
-        ColumnConfig userProfileColumn = new ColumnConfig();
+        /*ColumnConfig userProfileColumn = new ColumnConfig();
         userProfileColumn.setId(BeanKeyValue.PROFILE.getValue());
         userProfileColumn.setHeader("Profile");
         userProfileColumn.setWidth(160);
         userProfileColumn.setRenderer(this.createProfilesComboBox());
         userProfileColumn.setMenuDisabled(true);
         userProfileColumn.setSortable(false);
-        configs.add(userProfileColumn);
+        configs.add(userProfileColumn);*/
 
         ColumnConfig detailsUserColumn = new ColumnConfig();
         detailsUserColumn.setId("detailsUser");
@@ -651,109 +651,109 @@ public class UserGridWidget extends GeofenceGridWidget<GSUser>
         return buttonRendered;
     }
 
-    /**
-     * Creates the profiles combo box.
-     *
-     * @return the grid cell renderer
-     */
-    private GridCellRenderer<GSUser> createProfilesComboBox()
-    {
-
-        GridCellRenderer<GSUser> buttonRendered = new GridCellRenderer<GSUser>()
-            {
-
-                private boolean init;
-
-                public Object render(final GSUser model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<GSUser> store, Grid<GSUser> grid)
-                {
-
-                    if (!init)
-                    {
-                        init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSUser>>()
-                            {
-
-                                public void handleEvent(GridEvent<GSUser> be)
-                                {
-                                    for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
-                                    {
-                                        if ((be.getGrid().getView().getWidget(i, be.getColIndex()) != null) &&
-                                                (be.getGrid().getView().getWidget(i, be.getColIndex()) instanceof BoxComponent))
-                                        {
-                                            ((BoxComponent) be.getGrid().getView().getWidget(i,
-                                                    be.getColIndex())).setWidth(be.getWidth() - 10);
-                                        }
-                                    }
-                                }
-                            });
-                    }
-
-                    // TODO: generalize this!
-                    ComboBox<Profile> profilesComboBox = new ComboBox<Profile>();
-                    profilesComboBox.setId("userProfilesCombo");
-                    profilesComboBox.setName("userProfilesCombo");
-                    profilesComboBox.setEmptyText("(No profile available)");
-                    profilesComboBox.setDisplayField(BeanKeyValue.NAME.getValue());
-                    profilesComboBox.setEditable(false);
-                    profilesComboBox.setStore(getAvailableProfiles());
-                    profilesComboBox.setTypeAhead(true);
-                    profilesComboBox.setTriggerAction(TriggerAction.ALL);
-                    profilesComboBox.setWidth(150);
-
-                    if (model.getProfile() != null)
-                    {
-                        profilesComboBox.setValue(model.getProfile());
-                        profilesComboBox.setSelection(Arrays.asList(model.getProfile()));
-                    }
-
-                    profilesComboBox.addListener(Events.Select, new Listener<FieldEvent>()
-                        {
-
-                            public void handleEvent(FieldEvent be)
-                            {
-                                Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
-                                    new String[] { "GeoServer Users", "Profiles" });
-
-                                model.setProfile((Profile) be.getField().getValue());
-                                Dispatcher.forwardEvent(GeofenceEvents.UPDATE_USER, model);
-                            }
-                        });
-
-                    return profilesComboBox;
-                }
-
-                /**
-                 * TODO: Call Profile Service here!!
-                 *
-                 * @return
-                 */
-                private ListStore<Profile> getAvailableProfiles()
-                {
-                    ListStore<Profile> availableProfiles = new ListStore<Profile>();
-                    RpcProxy<PagingLoadResult<Profile>> profileProxy = new RpcProxy<PagingLoadResult<Profile>>()
-                        {
-
-                            @Override
-                            protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<Profile>> callback)
-                            {
-                                profilesService.getProfiles(((PagingLoadConfig) loadConfig).getOffset(), ((PagingLoadConfig) loadConfig).getLimit(), false, callback);
-                            }
-
-                        };
-
-                    BasePagingLoader<PagingLoadResult<ModelData>> profilesLoader =
-                        new BasePagingLoader<PagingLoadResult<ModelData>>(
-                            profileProxy);
-                    profilesLoader.setRemoteSort(false);
-                    availableProfiles = new ListStore<Profile>(profilesLoader);
-
-                    return availableProfiles;
-                }
-            };
-
-        return buttonRendered;
-    }
+//    /**
+//     * Creates the profiles combo box.
+//     *
+//     * @return the grid cell renderer
+//     */
+//    private GridCellRenderer<GSUser> createProfilesComboBox()
+//    {
+//
+//        GridCellRenderer<GSUser> buttonRendered = new GridCellRenderer<GSUser>()
+//            {
+//
+//                private boolean init;
+//
+//                public Object render(final GSUser model, String property, ColumnData config,
+//                    int rowIndex, int colIndex, ListStore<GSUser> store, Grid<GSUser> grid)
+//                {
+//
+//                    if (!init)
+//                    {
+//                        init = true;
+//                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSUser>>()
+//                            {
+//
+//                                public void handleEvent(GridEvent<GSUser> be)
+//                                {
+//                                    for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
+//                                    {
+//                                        if ((be.getGrid().getView().getWidget(i, be.getColIndex()) != null) &&
+//                                                (be.getGrid().getView().getWidget(i, be.getColIndex()) instanceof BoxComponent))
+//                                        {
+//                                            ((BoxComponent) be.getGrid().getView().getWidget(i,
+//                                                    be.getColIndex())).setWidth(be.getWidth() - 10);
+//                                        }
+//                                    }
+//                                }
+//                            });
+//                    }
+//
+//                    // TODO: generalize this!
+//                    ComboBox<Profile> profilesComboBox = new ComboBox<Profile>();
+//                    profilesComboBox.setId("userProfilesCombo");
+//                    profilesComboBox.setName("userProfilesCombo");
+//                    profilesComboBox.setEmptyText("(No profile available)");
+//                    profilesComboBox.setDisplayField(BeanKeyValue.NAME.getValue());
+//                    profilesComboBox.setEditable(false);
+//                    profilesComboBox.setStore(getAvailableProfiles());
+//                    profilesComboBox.setTypeAhead(true);
+//                    profilesComboBox.setTriggerAction(TriggerAction.ALL);
+//                    profilesComboBox.setWidth(150);
+//
+//                    if (model.getProfile() != null)
+//                    {
+//                        profilesComboBox.setValue(model.getProfile());
+//                        profilesComboBox.setSelection(Arrays.asList(model.getProfile()));
+//                    }
+//
+//                    profilesComboBox.addListener(Events.Select, new Listener<FieldEvent>()
+//                        {
+//
+//                            public void handleEvent(FieldEvent be)
+//                            {
+//                                Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
+//                                    new String[] { "GeoServer Users", "Profiles" });
+//
+//                                model.setProfile((Profile) be.getField().getValue());
+//                                Dispatcher.forwardEvent(GeofenceEvents.UPDATE_USER, model);
+//                            }
+//                        });
+//
+//                    return profilesComboBox;
+//                }
+//
+//                /**
+//                 * TODO: Call Profile Service here!!
+//                 *
+//                 * @return
+//                 */
+//                private ListStore<Profile> getAvailableProfiles()
+//                {
+//                    ListStore<Profile> availableProfiles = new ListStore<Profile>();
+//                    RpcProxy<PagingLoadResult<Profile>> profileProxy = new RpcProxy<PagingLoadResult<Profile>>()
+//                        {
+//
+//                            @Override
+//                            protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<Profile>> callback)
+//                            {
+//                                profilesService.getProfiles(((PagingLoadConfig) loadConfig).getOffset(), ((PagingLoadConfig) loadConfig).getLimit(), false, callback);
+//                            }
+//
+//                        };
+//
+//                    BasePagingLoader<PagingLoadResult<ModelData>> profilesLoader =
+//                        new BasePagingLoader<PagingLoadResult<ModelData>>(
+//                            profileProxy);
+//                    profilesLoader.setRemoteSort(false);
+//                    availableProfiles = new ListStore<Profile>(profilesLoader);
+//
+//                    return availableProfiles;
+//                }
+//            };
+//
+//        return buttonRendered;
+//    }
 
     /**
      * Creates the user delete button.

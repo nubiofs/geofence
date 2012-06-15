@@ -5,7 +5,7 @@ import java.util.List;
 
 import it.geosolutions.geofence.gui.client.model.GSInstance;
 import it.geosolutions.geofence.gui.client.model.GSUser;
-import it.geosolutions.geofence.gui.client.model.Profile;
+import it.geosolutions.geofence.gui.client.model.UserGroup;
 import it.geosolutions.geofence.gui.client.model.Rule;
 
 public class Constants {
@@ -46,7 +46,7 @@ public class Constants {
         all_user.setId(-1);
         all_user.setName("*");
         new_rule.setUser(all_user);
-        Profile all_profile = new Profile();
+        UserGroup all_profile = new UserGroup();
         all_profile.setId(-1);
         all_profile.setName("*");
         new_rule.setProfile(all_profile);

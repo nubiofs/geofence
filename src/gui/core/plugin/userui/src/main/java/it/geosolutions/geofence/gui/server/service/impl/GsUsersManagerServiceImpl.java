@@ -34,7 +34,7 @@ package it.geosolutions.geofence.gui.server.service.impl;
 
 import it.geosolutions.geofence.gui.client.ApplicationException;
 import it.geosolutions.geofence.gui.client.model.GSUser;
-import it.geosolutions.geofence.gui.client.model.Profile;
+import it.geosolutions.geofence.gui.client.model.UserGroup;
 import it.geosolutions.geofence.gui.client.model.data.UserLimitsInfo;
 import it.geosolutions.geofence.gui.client.model.data.rpc.RpcPageLoadResult;
 import it.geosolutions.geofence.gui.server.service.IGsUsersManagerService;
@@ -43,7 +43,9 @@ import it.geosolutions.geofence.services.dto.ShortUser;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +53,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
-
 
 /**
  * The Class GsUsersManagerServiceImpl.
@@ -105,9 +106,9 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
         {
             if (logger.isErrorEnabled())
             {
-                logger.error("No profile found on server");
+                logger.error("No user found on server");
             }
-            throw new ApplicationException("No profile found on server");
+            throw new ApplicationException("No user found on server");
         }
 
         for (ShortUser short_usr : usersList)
@@ -115,7 +116,7 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
             it.geosolutions.geofence.core.model.GSUser remote_user;
             try
             {
-                remote_user = geofenceRemoteService.getUserAdminService().get(short_usr.getId());
+                remote_user = geofenceRemoteService.getUserAdminService().getFull(short_usr.getId());
             }
             catch (NotFoundServiceEx e)
             {
@@ -137,15 +138,17 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
             local_user.setDateCreation(remote_user.getDateCreation());            
             local_user.setPassword(remote_user.getPassword());
 
-            logger.error("TODO: profile refactoring!!!");
-            it.geosolutions.geofence.core.model.UserGroup remote_profile = remote_user.getGroups().iterator().next();
-
-            Profile local_profile = new Profile();
-            local_profile.setId(remote_profile.getId());
-            local_profile.setName(remote_profile.getName());
-            local_profile.setDateCreation(remote_profile.getDateCreation());
-            local_profile.setEnabled(remote_profile.getEnabled());
-            local_user.setProfile(local_profile);
+            /*logger.error("TODO: profile refactoring!!!");*/
+            //it.geosolutions.geofence.core.model.UserGroup remote_profile = remote_user.getGroups().iterator().next();
+            for(it.geosolutions.geofence.core.model.UserGroup remote_profile : remote_user.getGroups())
+            {
+            	UserGroup local_group = new UserGroup();
+            	local_group.setId(remote_profile.getId());
+            	local_group.setName(remote_profile.getName());
+            	local_group.setDateCreation(remote_profile.getDateCreation());
+            	local_group.setEnabled(remote_profile.getEnabled());
+            	local_user.getUserGroups().add(local_group);
+            }
 
             usersListDTO.add(local_user);
         }
@@ -204,12 +207,16 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
         remote_user.setAdmin(user.isAdmin());
         remote_user.setPassword(user.getPassword());
         remote_user.setDateCreation(user.getDateCreation());
-        if ((user.getProfile() != null) && (user.getProfile().getId() >= 0))
+        
+        Set<it.geosolutions.geofence.core.model.UserGroup> remote_groups = new HashSet<it.geosolutions.geofence.core.model.UserGroup>();
+        for(UserGroup group : user.getUserGroups())
         {
-            it.geosolutions.geofence.core.model.UserGroup remote_profile = geofenceRemoteService.getUserGroupAdminService().get(user.getProfile().getId());
+            it.geosolutions.geofence.core.model.UserGroup remote_group = geofenceRemoteService.getUserGroupAdminService().get(group.getId());
             logger.error("TODO: profile refactoring!!!");
-            remote_user.getGroups().add(remote_profile);
+            remote_groups.add(remote_group);
         }
+        
+		remote_user.setGroups(remote_groups);
     }
 
     /* (non-Javadoc)

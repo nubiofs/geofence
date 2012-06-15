@@ -32,6 +32,21 @@
  */
 package it.geosolutions.geofence.gui.client.widget;
 
+import it.geosolutions.geofence.gui.client.Constants;
+import it.geosolutions.geofence.gui.client.GeofenceEvents;
+import it.geosolutions.geofence.gui.client.Resources;
+import it.geosolutions.geofence.gui.client.i18n.I18nProvider;
+import it.geosolutions.geofence.gui.client.model.BeanKeyValue;
+import it.geosolutions.geofence.gui.client.model.GSInstance;
+import it.geosolutions.geofence.gui.client.model.GSUser;
+import it.geosolutions.geofence.gui.client.model.UserGroup;
+import it.geosolutions.geofence.gui.client.model.Rule;
+import it.geosolutions.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
+import it.geosolutions.geofence.gui.client.service.InstancesManagerRemoteServiceAsync;
+import it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
+import it.geosolutions.geofence.gui.client.service.RulesManagerRemoteServiceAsync;
+import it.geosolutions.geofence.gui.client.service.WorkspacesManagerRemoteServiceAsync;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,21 +80,6 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
-import it.geosolutions.geofence.gui.client.Constants;
-import it.geosolutions.geofence.gui.client.GeofenceEvents;
-import it.geosolutions.geofence.gui.client.Resources;
-import it.geosolutions.geofence.gui.client.i18n.I18nProvider;
-import it.geosolutions.geofence.gui.client.model.BeanKeyValue;
-import it.geosolutions.geofence.gui.client.model.GSInstance;
-import it.geosolutions.geofence.gui.client.model.GSUser;
-import it.geosolutions.geofence.gui.client.model.Profile;
-import it.geosolutions.geofence.gui.client.model.Rule;
-import it.geosolutions.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
-import it.geosolutions.geofence.gui.client.service.InstancesManagerRemoteServiceAsync;
-import it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
-import it.geosolutions.geofence.gui.client.service.RulesManagerRemoteServiceAsync;
-import it.geosolutions.geofence.gui.client.service.WorkspacesManagerRemoteServiceAsync;
 
 
 // TODO: Auto-generated Javadoc
@@ -685,7 +685,7 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule>
                     serviceRequestsCustomField.setName("ruleServicesRequestCombo");
                     serviceRequestsCustomField.setEmptyText("(No service request available)");
                     serviceRequestsCustomField.setFieldLabel(BeanKeyValue.REQUEST.getValue());
-                    serviceRequestsCustomField.setReadOnly(false);
+                    serviceRequestsCustomField.setReadOnly(true);
                     serviceRequestsCustomField.setWidth(COLUMN_SERVICE_WIDTH - 10);
 
                     if (model.getService() != null)
@@ -1355,7 +1355,7 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule>
                         return true;
                     }
 
-                    field = ((Profile) parent.get(BeanKeyValue.PROFILE.getValue())).getName();
+                    field = ((UserGroup) parent.get(BeanKeyValue.PROFILE.getValue())).getName();
                     field = field.toLowerCase();
                     if (field.indexOf(filter.toLowerCase()) != -1)
                     {

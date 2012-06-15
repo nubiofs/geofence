@@ -32,6 +32,26 @@
  */
 package it.geosolutions.geofence.gui.client.widget;
 
+import it.geosolutions.geofence.gui.client.GeofenceEvents;
+import it.geosolutions.geofence.gui.client.form.GeofenceFormWidget;
+import it.geosolutions.geofence.gui.client.i18n.I18nProvider;
+import it.geosolutions.geofence.gui.client.model.BeanKeyValue;
+import it.geosolutions.geofence.gui.client.model.GSInstance;
+import it.geosolutions.geofence.gui.client.model.GSUser;
+import it.geosolutions.geofence.gui.client.model.UserGroup;
+import it.geosolutions.geofence.gui.client.model.Rule;
+import it.geosolutions.geofence.gui.client.model.data.Grant;
+import it.geosolutions.geofence.gui.client.model.data.Layer;
+import it.geosolutions.geofence.gui.client.model.data.Request;
+import it.geosolutions.geofence.gui.client.model.data.Service;
+import it.geosolutions.geofence.gui.client.model.data.Workspace;
+import it.geosolutions.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
+import it.geosolutions.geofence.gui.client.service.InstancesManagerRemoteServiceAsync;
+import it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
+import it.geosolutions.geofence.gui.client.service.RulesManagerRemoteServiceAsync;
+import it.geosolutions.geofence.gui.client.service.WorkspacesManagerRemoteServiceAsync;
+import it.geosolutions.geofence.gui.client.view.RulesView;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -70,26 +90,6 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
-import it.geosolutions.geofence.gui.client.GeofenceEvents;
-import it.geosolutions.geofence.gui.client.form.GeofenceFormWidget;
-import it.geosolutions.geofence.gui.client.i18n.I18nProvider;
-import it.geosolutions.geofence.gui.client.model.BeanKeyValue;
-import it.geosolutions.geofence.gui.client.model.GSInstance;
-import it.geosolutions.geofence.gui.client.model.GSUser;
-import it.geosolutions.geofence.gui.client.model.Profile;
-import it.geosolutions.geofence.gui.client.model.Rule;
-import it.geosolutions.geofence.gui.client.model.data.Grant;
-import it.geosolutions.geofence.gui.client.model.data.Layer;
-import it.geosolutions.geofence.gui.client.model.data.Request;
-import it.geosolutions.geofence.gui.client.model.data.Service;
-import it.geosolutions.geofence.gui.client.model.data.Workspace;
-import it.geosolutions.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
-import it.geosolutions.geofence.gui.client.service.InstancesManagerRemoteServiceAsync;
-import it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
-import it.geosolutions.geofence.gui.client.service.RulesManagerRemoteServiceAsync;
-import it.geosolutions.geofence.gui.client.service.WorkspacesManagerRemoteServiceAsync;
-import it.geosolutions.geofence.gui.client.view.RulesView;
 
 
 // TODO: Auto-generated Javadoc
@@ -478,6 +478,33 @@ public class EditRuleWidget extends GeofenceFormWidget
 
                     priorityCustomField.addKeyListener(keyListener);
 
+                    priorityCustomField.addListener(Events.Blur, new Listener<FieldEvent>()
+                        {
+
+                            public void handleEvent(FieldEvent be)
+                            {
+                            	priorityEdited = true;
+                                try
+                                {
+                                    model.setPriority(Long.parseLong((String) priorityCustomField.getRawValue()));
+                                }
+                                catch (Exception e)
+                                {
+                                    Dispatcher.forwardEvent(GeofenceEvents.SEND_ALERT_MESSAGE,
+                                        new String[]
+                                        {
+                                            I18nProvider.getMessages().remoteServiceName(),
+                                            e.getMessage()
+                                        });
+                                }
+                                Dispatcher.forwardEvent(GeofenceEvents.RULE_UPDATE_EDIT_GRID_COMBO,
+                                    model);
+                            }
+
+                        });
+                    
+                    
+                    
                     return priorityCustomField;
                 }
 
@@ -732,7 +759,7 @@ public class EditRuleWidget extends GeofenceFormWidget
                     }
 
                     // TODO: generalize this!
-                    ComboBox<Profile> profilesComboBox = new ComboBox<Profile>();
+                    ComboBox<UserGroup> profilesComboBox = new ComboBox<UserGroup>();
                     profilesComboBox.setId("ruleProfilesCombo");
                     profilesComboBox.setName("ruleProfilesCombo");
                     profilesComboBox.setEmptyText("(No profile available)");
@@ -754,7 +781,7 @@ public class EditRuleWidget extends GeofenceFormWidget
 
                             public void handleEvent(FieldEvent be)
                             {
-                                model.setProfile((Profile) be.getField().getValue());
+                                model.setProfile((UserGroup) be.getField().getValue());
                                 Dispatcher.forwardEvent(GeofenceEvents.RULE_UPDATE_EDIT_GRID_COMBO, model);
                             }
                         });
@@ -767,14 +794,14 @@ public class EditRuleWidget extends GeofenceFormWidget
                  *
                  * @return
                  */
-                private ListStore<Profile> getAvailableProfiles()
+                private ListStore<UserGroup> getAvailableProfiles()
                 {
-                    ListStore<Profile> availableProfiles = new ListStore<Profile>();
-                    RpcProxy<PagingLoadResult<Profile>> profileProxy = new RpcProxy<PagingLoadResult<Profile>>()
+                    ListStore<UserGroup> availableProfiles = new ListStore<UserGroup>();
+                    RpcProxy<PagingLoadResult<UserGroup>> profileProxy = new RpcProxy<PagingLoadResult<UserGroup>>()
                         {
 
                             @Override
-                            protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<Profile>> callback)
+                            protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<UserGroup>> callback)
                             {
                                 profilesService.getProfiles(((PagingLoadConfig) loadConfig).getOffset(), ((PagingLoadConfig) loadConfig).getLimit(), true, callback);
                             }
@@ -785,7 +812,7 @@ public class EditRuleWidget extends GeofenceFormWidget
                         new BasePagingLoader<PagingLoadResult<ModelData>>(
                             profileProxy);
                     profilesLoader.setRemoteSort(false);
-                    availableProfiles = new ListStore<Profile>(profilesLoader);
+                    availableProfiles = new ListStore<UserGroup>(profilesLoader);
 
                     return availableProfiles;
                 }
@@ -955,7 +982,7 @@ public class EditRuleWidget extends GeofenceFormWidget
                     servicesComboBox.setEmptyText("(No service available)");
                     servicesComboBox.setDisplayField(BeanKeyValue.SERVICE.getValue());
                     servicesComboBox.setStore(getAvailableServices(model.getInstance()));
-                    servicesComboBox.setEditable(false);
+                    servicesComboBox.setEditable(true);
                     servicesComboBox.setTypeAhead(true);
                     servicesComboBox.setTriggerAction(TriggerAction.ALL);
                     servicesComboBox.setWidth(90);
@@ -971,7 +998,7 @@ public class EditRuleWidget extends GeofenceFormWidget
                                     event.cancelBubble();
 
                                     model.setService(servicesComboBox.getRawValue());
-                                    model.setRequest("*");
+                                    //model.setRequest("*");
                                     Dispatcher.forwardEvent(GeofenceEvents.RULE_UPDATE_EDIT_GRID_COMBO,
                                         model);
                                 }
@@ -980,6 +1007,19 @@ public class EditRuleWidget extends GeofenceFormWidget
 
                     servicesComboBox.addKeyListener(keyListener);
 
+                    servicesComboBox.addListener(Events.Blur, new Listener<FieldEvent>()
+                            {
+
+                                public void handleEvent(FieldEvent be)
+                                {
+                                	model.setService(servicesComboBox.getRawValue());
+                                    //model.setRequest("*");
+                                    Dispatcher.forwardEvent(GeofenceEvents.RULE_UPDATE_EDIT_GRID_COMBO,
+                                        model);
+                                }
+
+                            });
+                    
                     if (model.getService() != null)
                     {
                         servicesComboBox.setValue(new Service(model.getService()));
@@ -1108,6 +1148,16 @@ public class EditRuleWidget extends GeofenceFormWidget
                         };
 
                     serviceRequestsComboBox.addKeyListener(keyListener);
+
+                    serviceRequestsComboBox.addListener(Events.Blur, new Listener<FieldEvent>()
+                            {
+
+                                public void handleEvent(FieldEvent be)
+                                {
+                                    model.setRequest(serviceRequestsComboBox.getRawValue());
+                                    Dispatcher.forwardEvent(GeofenceEvents.RULE_UPDATE_EDIT_GRID_COMBO, model);
+                                }
+                            });
 
                     if (model.getService() != null)
                     {

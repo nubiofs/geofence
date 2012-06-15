@@ -41,7 +41,7 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 
 import it.geosolutions.geofence.gui.client.form.GeofenceFormWidget;
-import it.geosolutions.geofence.gui.client.model.Profile;
+import it.geosolutions.geofence.gui.client.model.UserGroup;
 import it.geosolutions.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
 import it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
 
@@ -60,7 +60,7 @@ public class AddProfileWidget extends GeofenceFormWidget
     private boolean closeOnSubmit;
 
     /** The profile. */
-    protected Profile profile = new Profile();
+    protected UserGroup profile = new UserGroup();
 
     /** The gs manager service remote. */
     private GsUsersManagerRemoteServiceAsync gsManagerServiceRemote;
@@ -214,7 +214,7 @@ public class AddProfileWidget extends GeofenceFormWidget
      *
      * @return the profile
      */
-    public Profile getProfile()
+    public UserGroup getProfile()
     {
         return profile;
     }

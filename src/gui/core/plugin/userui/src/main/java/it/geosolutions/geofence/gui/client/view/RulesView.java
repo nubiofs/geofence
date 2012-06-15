@@ -32,20 +32,11 @@
  */
 package it.geosolutions.geofence.gui.client.view;
 
-import java.util.Map;
-
-import com.extjs.gxt.ui.client.mvc.AppEvent;
-import com.extjs.gxt.ui.client.mvc.Controller;
-import com.extjs.gxt.ui.client.mvc.Dispatcher;
-import com.extjs.gxt.ui.client.mvc.View;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import it.geosolutions.geofence.gui.client.GeofenceEvents;
 import it.geosolutions.geofence.gui.client.i18n.I18nProvider;
 import it.geosolutions.geofence.gui.client.model.GSUser;
-import it.geosolutions.geofence.gui.client.model.Profile;
 import it.geosolutions.geofence.gui.client.model.Rule;
+import it.geosolutions.geofence.gui.client.model.UserGroup;
 import it.geosolutions.geofence.gui.client.model.data.LayerCustomProps;
 import it.geosolutions.geofence.gui.client.model.data.LayerDetailsInfo;
 import it.geosolutions.geofence.gui.client.model.data.LayerLimitsInfo;
@@ -74,6 +65,15 @@ import it.geosolutions.geofence.gui.client.widget.rule.detail.RuleLimitsInfoWidg
 import it.geosolutions.geofence.gui.client.widget.rule.detail.RuleLimitsTabItem;
 import it.geosolutions.geofence.gui.client.widget.rule.detail.UserDetailsInfoWidget;
 import it.geosolutions.geofence.gui.client.widget.rule.detail.UserDetailsTabItem;
+
+import java.util.Map;
+
+import com.extjs.gxt.ui.client.mvc.AppEvent;
+import com.extjs.gxt.ui.client.mvc.Controller;
+import com.extjs.gxt.ui.client.mvc.Dispatcher;
+import com.extjs.gxt.ui.client.mvc.View;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 
 // TODO: Auto-generated Javadoc
@@ -131,7 +131,7 @@ public class RulesView extends View
         this.profileEditorDialog = new ProfileDetailsEditDialog(profilesManagerServiceRemote);
         profileEditorDialog.setClosable(false);
 
-        this.userDetailsEditDialog = new UserDetailsEditDialog(usersManagerServiceRemote);
+        this.userDetailsEditDialog = new UserDetailsEditDialog(usersManagerServiceRemote, profilesManagerServiceRemote);
         userDetailsEditDialog.setClosable(false);
 
         this.ruleRowEditor = new EditRuleWidget(GeofenceEvents.SAVE_USER, true,
@@ -264,6 +264,11 @@ public class RulesView extends View
             onSaveUserLimits(event);
         }
 
+        if (event.getType() == GeofenceEvents.SAVE_USER_GROUPS)
+        {
+            onSaveUserGroups(event);
+        }
+
     }
 
     /**
@@ -306,6 +311,38 @@ public class RulesView extends View
             });
     }
 
+    /**
+     * @param event
+     */
+    private void onSaveUserGroups(AppEvent event)
+    {
+    	GSUser user = event.getData();
+
+        this.usersManagerServiceRemote.saveGsUser(user, new AsyncCallback<Void>()
+            {
+
+                public void onFailure(Throwable caught)
+                {
+                    Dispatcher.forwardEvent(GeofenceEvents.SEND_ERROR_MESSAGE,
+                        new String[]
+                        {
+                            I18nProvider.getMessages().ruleServiceName(),
+                            "Error occurred while saving User Details!"
+                        });
+                }
+
+                public void onSuccess(Void result)
+                {
+                    Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
+                        new String[]
+                        {
+                            I18nProvider.getMessages().userServiceName(),
+                            I18nProvider.getMessages().userFetchSuccessMessage()
+                        });
+                }
+            });
+    }
+    
     /**
      * @param event
      */
@@ -455,10 +492,10 @@ public class RulesView extends View
      */
     private void onEditProfileDetails(AppEvent event)
     {
-        if ((event.getData() != null) && (event.getData() instanceof Profile))
+        if ((event.getData() != null) && (event.getData() instanceof UserGroup))
         {
             this.profileEditorDialog.reset();
-            this.profileEditorDialog.setModel((Profile) event.getData());
+            this.profileEditorDialog.setModel((UserGroup) event.getData());
             this.profileEditorDialog.show();
         }
         else

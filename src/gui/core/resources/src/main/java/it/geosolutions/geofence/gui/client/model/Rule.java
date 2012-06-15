@@ -57,7 +57,7 @@ public class Rule extends BeanModel implements IsSerializable
     private GSUser user;
 
     /** The profile. */
-    private Profile profile;
+    private UserGroup profile;
 
     /** The instance. */
     private GSInstance instance;
@@ -158,7 +158,7 @@ public class Rule extends BeanModel implements IsSerializable
      *
      * @return the profile
      */
-    public Profile getProfile()
+    public UserGroup getProfile()
     {
         return profile;
     }
@@ -169,7 +169,7 @@ public class Rule extends BeanModel implements IsSerializable
      * @param profile
      *            the new profile
      */
-    public void setProfile(Profile profile)
+    public void setProfile(UserGroup profile)
     {
         this.profile = profile;
         set(BeanKeyValue.PROFILE.getValue(), this.profile);

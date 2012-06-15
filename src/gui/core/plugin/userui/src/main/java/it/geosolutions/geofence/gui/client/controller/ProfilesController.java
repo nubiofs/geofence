@@ -39,7 +39,7 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import it.geosolutions.geofence.gui.client.GeofenceEvents;
-import it.geosolutions.geofence.gui.client.model.Profile;
+import it.geosolutions.geofence.gui.client.model.UserGroup;
 import it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
 import it.geosolutions.geofence.gui.client.view.ProfilesView;
 import it.geosolutions.geofence.gui.client.widget.ProfileGridWidget;
@@ -166,12 +166,12 @@ public class ProfilesController extends Controller
 
             ProfilesTabItem profilesTabItem = (ProfilesTabItem) tabWidget.getItemByItemId(PROFILES_TAB_ITEM_ID);
             final ProfileGridWidget profilesInfoWidget = profilesTabItem.getProfileManagementWidget().getProfilesInfo();
-            final Grid<Profile> grid = profilesInfoWidget.getGrid();
+            final Grid<UserGroup> grid = profilesInfoWidget.getGrid();
 
-            if ((grid != null) && (grid.getStore() != null) && (event.getData() != null) && (event.getData() instanceof Profile))
+            if ((grid != null) && (grid.getStore() != null) && (event.getData() != null) && (event.getData() instanceof UserGroup))
             {
 
-                Profile profile = event.getData();
+                UserGroup profile = event.getData();
 
                 profilesManagerServiceRemote.saveProfile(profile, new AsyncCallback<Void>()
                     {
@@ -214,12 +214,12 @@ public class ProfilesController extends Controller
 
             ProfilesTabItem profilesTabItem = (ProfilesTabItem) tabWidget.getItemByItemId(PROFILES_TAB_ITEM_ID);
             final ProfileGridWidget profilesInfoWidget = profilesTabItem.getProfileManagementWidget().getProfilesInfo();
-            final Grid<Profile> grid = profilesInfoWidget.getGrid();
+            final Grid<UserGroup> grid = profilesInfoWidget.getGrid();
 
-            if ((grid != null) && (grid.getStore() != null) && (event.getData() != null) && (event.getData() instanceof Profile))
+            if ((grid != null) && (grid.getStore() != null) && (event.getData() != null) && (event.getData() instanceof UserGroup))
             {
 
-                Profile profile = event.getData();
+                UserGroup profile = event.getData();
 
                 profilesManagerServiceRemote.deleteProfile(profile, new AsyncCallback<Void>()
                     {

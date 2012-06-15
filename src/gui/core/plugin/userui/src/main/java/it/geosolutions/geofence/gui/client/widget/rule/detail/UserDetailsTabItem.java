@@ -32,17 +32,18 @@
  */
 package it.geosolutions.geofence.gui.client.widget.rule.detail;
 
+import it.geosolutions.geofence.gui.client.GeofenceEvents;
+import it.geosolutions.geofence.gui.client.Resources;
+import it.geosolutions.geofence.gui.client.model.GSUser;
+import it.geosolutions.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
+import it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
+
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.mvc.Dispatcher;
 import com.extjs.gxt.ui.client.widget.TabItem;
-
-import it.geosolutions.geofence.gui.client.GeofenceEvents;
-import it.geosolutions.geofence.gui.client.Resources;
-import it.geosolutions.geofence.gui.client.model.GSUser;
-import it.geosolutions.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
 
 
 /**
@@ -67,7 +68,7 @@ public class UserDetailsTabItem extends TabItem
     {
         // TODO: add I18n message
         // super(I18nProvider.getMessages().profiles());
-        super("User Details");
+        super("User Groups");
         setId(tabItemId);
         setIcon(Resources.ICONS.addAOI());
     }
@@ -79,15 +80,16 @@ public class UserDetailsTabItem extends TabItem
      *            the tab item id
      * @param model
      *            the model
+     * @param profilesManagerServiceRemote 
      * @param workspacesService
      *            the workspaces service
      */
-    public UserDetailsTabItem(String tabItemId, GSUser model, GsUsersManagerRemoteServiceAsync usersService)
+    public UserDetailsTabItem(String tabItemId, GSUser model, GsUsersManagerRemoteServiceAsync usersService, ProfilesManagerRemoteServiceAsync profilesManagerServiceRemote)
     {
         this(tabItemId);
         this.user = model;
 
-        setUserDetailsWidget(new UserDetailsWidget(this.user, usersService));
+        setUserDetailsWidget(new UserDetailsWidget(this.user, usersService, profilesManagerServiceRemote));
         add(getUserDetailsWidget());
 
         setScrollMode(Scroll.NONE);
@@ -100,6 +102,11 @@ public class UserDetailsTabItem extends TabItem
                     if (userDetailsWidget.getUserDetailsInfo().getModel() == null)
                     {
                         Dispatcher.forwardEvent(GeofenceEvents.LOAD_USER_LIMITS, user);
+                    }
+                    
+                    if (userDetailsWidget.getProfilesInfo().getStore().getCount() < 1)
+                    {
+                    	userDetailsWidget.getProfilesInfo().getLoader().load();
                     }
                 }
 

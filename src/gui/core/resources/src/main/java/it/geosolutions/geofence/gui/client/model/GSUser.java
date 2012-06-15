@@ -33,6 +33,8 @@
 package it.geosolutions.geofence.gui.client.model;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.extjs.gxt.ui.client.data.BeanModel;
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -72,8 +74,8 @@ public class GSUser extends BeanModel implements IsSerializable
     /** The admin. */
     private boolean admin;
 
-    /** The profile. */
-    private Profile profile;
+    /** The user groups. */
+    private Set<UserGroup> userGroups = new HashSet<UserGroup>();
 
     /** The path. */
     private String path;
@@ -263,23 +265,37 @@ public class GSUser extends BeanModel implements IsSerializable
      * @param profile
      *            the new profile
      */
-    public void setProfile(Profile profile)
-    {
-        this.profile = profile;
-        set(BeanKeyValue.PROFILE.getValue(), profile);
-    }
+//    public void setProfile(Profile profile)
+//    {
+//        this.profile = profile;
+//        set(BeanKeyValue.PROFILE.getValue(), profile);
+//    }
 
     /**
      * Gets the profile.
      *
      * @return the profile
      */
-    public Profile getProfile()
-    {
-        return profile;
-    }
+//    public Profile getProfile()
+//    {
+//        return profile;
+//    }
 
     /**
+	 * @param userGroups the userGroups to set
+	 */
+	public void setUserGroups(Set<UserGroup> userGroups) {
+		this.userGroups = userGroups;
+	}
+
+	/**
+	 * @return the userGroups
+	 */
+	public Set<UserGroup> getUserGroups() {
+		return userGroups;
+	}
+
+	/**
      * Gets the path.
      *
      * @return the path

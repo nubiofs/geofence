@@ -32,14 +32,14 @@
  */
 package it.geosolutions.geofence.gui.client.view;
 
-import com.extjs.gxt.ui.client.mvc.AppEvent;
-import com.extjs.gxt.ui.client.mvc.Controller;
-import com.extjs.gxt.ui.client.mvc.View;
-
 import it.geosolutions.geofence.gui.client.GeofenceEvents;
 import it.geosolutions.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
 import it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
 import it.geosolutions.geofence.gui.client.widget.AddGsUserWidget;
+
+import com.extjs.gxt.ui.client.mvc.AppEvent;
+import com.extjs.gxt.ui.client.mvc.Controller;
+import com.extjs.gxt.ui.client.mvc.View;
 
 
 // TODO: Auto-generated Javadoc
@@ -69,9 +69,7 @@ public class UsersView extends View
     {
         super(controller);
 
-        this.addGsUser = new AddGsUserWidget(GeofenceEvents.SAVE_USER, true);
-        this.addGsUser.setGsUserService(gsManagerServiceRemote);
-        this.addGsUser.setProfileService(profilesManagerServiceRemote);
+        this.addGsUser = new AddGsUserWidget(GeofenceEvents.SAVE_USER, true,gsManagerServiceRemote,profilesManagerServiceRemote);
     }
 
     /*

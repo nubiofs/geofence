@@ -94,20 +94,18 @@ public class UserDetailsInfoWidget extends GeofenceFormBindingWidget<UserLimitsI
         FormPanel fp = new FormPanel();
         fp.setFrame(true);
         fp.setHeaderVisible(false);
-        fp.setHeight(400);
-        fp.setWidth(650);
+        fp.setAutoHeight(true);
 
         FieldSet fieldSet = new FieldSet();
         fieldSet.setHeading("User Limits");
         fieldSet.setCheckboxToggle(false);
-        fieldSet.setCollapsible(false);
+        fieldSet.setCollapsible(true);
 
         FormLayout layout = new FormLayout();
         fieldSet.setLayout(layout);
 
         allowedArea = new TextArea();
         allowedArea.setFieldLabel("Allowed Area");
-        allowedArea.setWidth(400);
         allowedArea.setPreventScrollbars(true);
         allowedArea.addListener(Events.Change, new Listener<FieldEvent>()
             {

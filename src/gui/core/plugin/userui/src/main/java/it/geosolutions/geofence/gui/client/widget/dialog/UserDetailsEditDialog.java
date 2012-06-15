@@ -1,14 +1,15 @@
 package it.geosolutions.geofence.gui.client.widget.dialog;
 
-import com.extjs.gxt.ui.client.widget.Dialog;
-import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
-
 import it.geosolutions.geofence.gui.client.i18n.I18nProvider;
 import it.geosolutions.geofence.gui.client.model.GSUser;
 import it.geosolutions.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
+import it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
 import it.geosolutions.geofence.gui.client.widget.SaveStaus;
 import it.geosolutions.geofence.gui.client.widget.rule.detail.UserDetailsTabItem;
 import it.geosolutions.geofence.gui.client.widget.tab.TabWidget;
+
+import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 
 
 /**
@@ -32,6 +33,9 @@ public class UserDetailsEditDialog extends Dialog
     /** The user manager service remote. */
     private GsUsersManagerRemoteServiceAsync usersManagerServiceRemoteAsync;
 
+    /** The profiles manager service remote. */
+    private ProfilesManagerRemoteServiceAsync profilesManagerServiceRemote;
+    
     /** The tab widget. */
     private TabWidget tabWidget;
 
@@ -41,9 +45,10 @@ public class UserDetailsEditDialog extends Dialog
      * @param rulesManagerServiceRemote
      *            the rules manager service remote
      */
-    public UserDetailsEditDialog(GsUsersManagerRemoteServiceAsync usersManagerServiceRemoteAsync)
+    public UserDetailsEditDialog(GsUsersManagerRemoteServiceAsync usersManagerServiceRemoteAsync, ProfilesManagerRemoteServiceAsync profilesManagerServiceRemote)
     {
         this.usersManagerServiceRemoteAsync = usersManagerServiceRemoteAsync;
+        this.profilesManagerServiceRemote = profilesManagerServiceRemote;
 
         setTabWidget(new TabWidget());
 
@@ -86,8 +91,10 @@ public class UserDetailsEditDialog extends Dialog
         if (getModel() != null)
         {
             setHeading("Editing User Details for User #" + user.getId());
-            this.tabWidget.add(new UserDetailsTabItem(USER_DETAILS_DIALOG_ID, user,
-                    usersManagerServiceRemoteAsync));
+            UserDetailsTabItem usersDetailsTabItem = new UserDetailsTabItem(USER_DETAILS_DIALOG_ID, user,
+                    usersManagerServiceRemoteAsync, profilesManagerServiceRemote);
+            this.tabWidget.add(usersDetailsTabItem);
+            this.tabWidget.setSelection(usersDetailsTabItem);
         }
 
     }

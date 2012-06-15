@@ -36,7 +36,7 @@ import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.widget.TabItem;
 
 import it.geosolutions.geofence.gui.client.Resources;
-import it.geosolutions.geofence.gui.client.model.Profile;
+import it.geosolutions.geofence.gui.client.model.UserGroup;
 import it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
 
 
@@ -49,7 +49,7 @@ public class ProfileDetailsTabItem extends TabItem
     /** The profile details widget. */
     private ProfileDetailsWidget profileDetailsWidget;
 
-    private Profile profile;
+    private UserGroup profile;
 
     /**
      * Instantiates a new profile details tab item.
@@ -75,7 +75,7 @@ public class ProfileDetailsTabItem extends TabItem
      * @param rulesService
      *            the rules service
      */
-    public ProfileDetailsTabItem(String tabItemId, Profile profile, ProfilesManagerRemoteServiceAsync profilesService)
+    public ProfileDetailsTabItem(String tabItemId, UserGroup profile, ProfilesManagerRemoteServiceAsync profilesService)
     {
         this(tabItemId);
         this.profile = profile;

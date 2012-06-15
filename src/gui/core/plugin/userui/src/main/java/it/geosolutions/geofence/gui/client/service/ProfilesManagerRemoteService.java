@@ -39,7 +39,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import it.geosolutions.geofence.gui.client.ApplicationException;
-import it.geosolutions.geofence.gui.client.model.Profile;
+import it.geosolutions.geofence.gui.client.model.UserGroup;
 import it.geosolutions.geofence.gui.client.model.data.ProfileCustomProps;
 
 
@@ -61,7 +61,7 @@ public interface ProfilesManagerRemoteService extends RemoteService
      * @throws ApplicationException
      *             the application exception
      */
-    public PagingLoadResult<Profile> getProfiles(int offset, int limit, boolean full) throws ApplicationException;
+    public PagingLoadResult<UserGroup> getProfiles(int offset, int limit, boolean full) throws ApplicationException;
 
     /**
      * Save profile.
@@ -71,7 +71,7 @@ public interface ProfilesManagerRemoteService extends RemoteService
      * @throws ApplicationException
      *             the application exception
      */
-    public void saveProfile(Profile profile) throws ApplicationException;
+    public void saveProfile(UserGroup profile) throws ApplicationException;
 
     /**
      * Delete profile.
@@ -81,14 +81,14 @@ public interface ProfilesManagerRemoteService extends RemoteService
      * @throws ApplicationException
      *             the application exception
      */
-    public void deleteProfile(Profile profile) throws ApplicationException;
+    public void deleteProfile(UserGroup profile) throws ApplicationException;
 
     /**
      * @param ruleId
      * @param customProps
      * @throws ApplicationException
      */
-    public PagingLoadResult<ProfileCustomProps> getProfileCustomProps(int offset, int limit, Profile profile)
+    public PagingLoadResult<ProfileCustomProps> getProfileCustomProps(int offset, int limit, UserGroup profile)
         throws ApplicationException;
 
     /**

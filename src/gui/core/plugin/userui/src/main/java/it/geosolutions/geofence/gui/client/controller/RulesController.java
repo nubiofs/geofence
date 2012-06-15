@@ -164,7 +164,7 @@ public class RulesController extends Controller
 
 
             GeofenceEvents.EDIT_USER_DETAILS, GeofenceEvents.LOAD_USER_LIMITS,
-            GeofenceEvents.SAVE_USER_LIMITS);
+            GeofenceEvents.SAVE_USER_LIMITS, GeofenceEvents.SAVE_USER_GROUPS);
 
     }
 

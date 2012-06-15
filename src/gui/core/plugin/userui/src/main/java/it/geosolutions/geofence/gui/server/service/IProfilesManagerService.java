@@ -37,7 +37,7 @@ import java.util.List;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
 import it.geosolutions.geofence.gui.client.ApplicationException;
-import it.geosolutions.geofence.gui.client.model.Profile;
+import it.geosolutions.geofence.gui.client.model.UserGroup;
 import it.geosolutions.geofence.gui.client.model.data.ProfileCustomProps;
 
 
@@ -59,7 +59,7 @@ public interface IProfilesManagerService
      * @throws ApplicationException
      *             the application exception
      */
-    public PagingLoadResult<Profile> getProfiles(int offset, int limit, boolean full) throws ApplicationException;
+    public PagingLoadResult<UserGroup> getProfiles(int offset, int limit, boolean full) throws ApplicationException;
 
     /**
      * Delete profile.
@@ -67,7 +67,7 @@ public interface IProfilesManagerService
      * @param profile
      *            the profile
      */
-    public void deleteProfile(Profile profile);
+    public void deleteProfile(UserGroup profile);
 
     /**
      * Save profile.
@@ -75,14 +75,14 @@ public interface IProfilesManagerService
      * @param profile
      *            the profile
      */
-    public void saveProfile(Profile profile);
+    public void saveProfile(UserGroup profile);
 
     /**
      * @param config
      * @param rule
      * @return
      */
-    public PagingLoadResult<ProfileCustomProps> getProfileCustomProps(int offset, int limit, Profile profile);
+    public PagingLoadResult<ProfileCustomProps> getProfileCustomProps(int offset, int limit, UserGroup profile);
 
     /**
      * @param ruleId

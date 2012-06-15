@@ -32,6 +32,13 @@
  */
 package it.geosolutions.geofence.gui.client.widget;
 
+import it.geosolutions.geofence.gui.client.form.GeofenceFormWidget;
+import it.geosolutions.geofence.gui.client.model.BeanKeyValue;
+import it.geosolutions.geofence.gui.client.model.GSUser;
+import it.geosolutions.geofence.gui.client.model.UserGroup;
+import it.geosolutions.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
+import it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
+
 import java.util.Date;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
@@ -52,13 +59,6 @@ import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
-import it.geosolutions.geofence.gui.client.form.GeofenceFormWidget;
-import it.geosolutions.geofence.gui.client.model.BeanKeyValue;
-import it.geosolutions.geofence.gui.client.model.GSUser;
-import it.geosolutions.geofence.gui.client.model.Profile;
-import it.geosolutions.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
-import it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
 
 
 // TODO: Auto-generated Javadoc
@@ -92,13 +92,13 @@ public class AddGsUserWidget extends GeofenceFormWidget
     private CheckBox isAdmin;
 
     /** The profiles combo box. */
-    private ComboBox<Profile> profilesComboBox;
+    private ComboBox<UserGroup> profilesComboBox;
 
     /** The gs manager service remote. */
-    private GsUsersManagerRemoteServiceAsync gsManagerServiceRemote;
+    private final GsUsersManagerRemoteServiceAsync gsManagerServiceRemote;
 
     /** The profiles manager service remote. */
-    private ProfilesManagerRemoteServiceAsync profilesManagerServiceRemote;
+    private final ProfilesManagerRemoteServiceAsync profilesManagerServiceRemote;
 
     /**
      * Instantiates a new adds the gs user widget.
@@ -107,11 +107,16 @@ public class AddGsUserWidget extends GeofenceFormWidget
      *            the submit event
      * @param closeOnSubmit
      *            the close on submit
+     * @param profilesManagerServiceRemote
+     * @param gsManagerServiceRemote
      */
-    public AddGsUserWidget(EventType submitEvent, boolean closeOnSubmit)
+    public AddGsUserWidget(EventType submitEvent, boolean closeOnSubmit, 
+    		GsUsersManagerRemoteServiceAsync gsManagerServiceRemote, ProfilesManagerRemoteServiceAsync profilesManagerServiceRemote)
     {
         this.submitEvent = submitEvent;
         this.closeOnSubmit = closeOnSubmit;
+        this.gsManagerServiceRemote = gsManagerServiceRemote;
+        this.profilesManagerServiceRemote = profilesManagerServiceRemote;
     }
 
     /**
@@ -140,7 +145,7 @@ public class AddGsUserWidget extends GeofenceFormWidget
         this.user.setDateCreation(new Date());
         this.user.setEnabled(true);
         this.user.setAdmin(isAdmin.getValue());
-        this.user.setProfile(profilesComboBox.getValue());
+        //this.user.setProfile(profilesComboBox.getValue());
 
         if (this.closeOnSubmit)
         {
@@ -190,7 +195,7 @@ public class AddGsUserWidget extends GeofenceFormWidget
         isAdmin.setFieldLabel("Admin");
         fieldSet.add(isAdmin);
 
-        createProfilesComboBox();
+        //createProfilesComboBox();
 
         this.formPanel.add(fieldSet);
 
@@ -202,7 +207,7 @@ public class AddGsUserWidget extends GeofenceFormWidget
      */
     private void createProfilesComboBox()
     {
-        profilesComboBox = new ComboBox<Profile>();
+        profilesComboBox = new ComboBox<UserGroup>();
         profilesComboBox.setFieldLabel("Profile");
         profilesComboBox.setEmptyText("(No profile available)");
         profilesComboBox.setDisplayField(BeanKeyValue.NAME.getValue());
@@ -231,14 +236,14 @@ public class AddGsUserWidget extends GeofenceFormWidget
      *
      * @return the available profiles
      */
-    private ListStore<Profile> getAvailableProfiles()
+    private ListStore<UserGroup> getAvailableProfiles()
     {
-        ListStore<Profile> availableProfiles = new ListStore<Profile>();
-        RpcProxy<PagingLoadResult<Profile>> profileProxy = new RpcProxy<PagingLoadResult<Profile>>()
+        ListStore<UserGroup> availableProfiles = new ListStore<UserGroup>();
+        RpcProxy<PagingLoadResult<UserGroup>> profileProxy = new RpcProxy<PagingLoadResult<UserGroup>>()
             {
 
                 @Override
-                protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<Profile>> callback)
+                protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<UserGroup>> callback)
                 {
                     profilesManagerServiceRemote.getProfiles(
                         ((PagingLoadConfig) loadConfig).getOffset(), ((PagingLoadConfig) loadConfig).getLimit(),
@@ -251,7 +256,7 @@ public class AddGsUserWidget extends GeofenceFormWidget
             new BasePagingLoader<PagingLoadResult<ModelData>>(
                 profileProxy);
         profilesLoader.setRemoteSort(false);
-        availableProfiles = new ListStore<Profile>(profilesLoader);
+        availableProfiles = new ListStore<UserGroup>(profilesLoader);
 
         return availableProfiles;
     }
@@ -280,8 +285,9 @@ public class AddGsUserWidget extends GeofenceFormWidget
         this.fullName.reset();
         this.eMail.reset();
         this.isAdmin.reset();
-        this.profilesComboBox.reset();
-        this.profilesComboBox.getStore().getLoader().load();
+        //this.profilesComboBox.reset();
+        //this.profilesComboBox.getStore().getLoader().load();
+        //this.profiles.getProfilesInfo().getLoader().load();
         this.saveStatus.clearStatus("");
     }
 
@@ -338,28 +344,6 @@ public class AddGsUserWidget extends GeofenceFormWidget
     public GSUser getUser()
     {
         return user;
-    }
-
-    /**
-     * Sets the gs user service.
-     *
-     * @param gsManagerServiceRemote
-     *            the new gs user service
-     */
-    public void setGsUserService(GsUsersManagerRemoteServiceAsync gsManagerServiceRemote)
-    {
-        this.gsManagerServiceRemote = gsManagerServiceRemote;
-    }
-
-    /**
-     * Sets the profile service.
-     *
-     * @param profilesManagerServiceRemote
-     *            the new profile service
-     */
-    public void setProfileService(ProfilesManagerRemoteServiceAsync profilesManagerServiceRemote)
-    {
-        this.profilesManagerServiceRemote = profilesManagerServiceRemote;
     }
 
 }

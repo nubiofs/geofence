@@ -72,7 +72,7 @@ import it.geosolutions.geofence.gui.client.GeofenceEvents;
 import it.geosolutions.geofence.gui.client.Resources;
 import it.geosolutions.geofence.gui.client.i18n.I18nProvider;
 import it.geosolutions.geofence.gui.client.model.BeanKeyValue;
-import it.geosolutions.geofence.gui.client.model.Profile;
+import it.geosolutions.geofence.gui.client.model.UserGroup;
 import it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
 
 
@@ -80,14 +80,14 @@ import it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteServiceA
 /**
  * The Class ProfileGridWidget.
  */
-public class ProfileGridWidget extends GeofenceGridWidget<Profile>
+public class ProfileGridWidget extends GeofenceGridWidget<UserGroup>
 {
 
     /** The service. */
     private ProfilesManagerRemoteServiceAsync service;
 
     /** The proxy. */
-    private RpcProxy<PagingLoadResult<Profile>> proxy;
+    private RpcProxy<PagingLoadResult<UserGroup>> proxy;
 
     /** The loader. */
     private PagingLoader<PagingLoadResult<ModelData>> loader;
@@ -113,7 +113,7 @@ public class ProfileGridWidget extends GeofenceGridWidget<Profile>
      * @param models
      *            the models
      */
-    public ProfileGridWidget(List<Profile> models)
+    public ProfileGridWidget(List<UserGroup> models)
     {
         super(models);
     }
@@ -192,11 +192,11 @@ public class ProfileGridWidget extends GeofenceGridWidget<Profile>
                 it.geosolutions.geofence.gui.client.Constants.DEFAULT_PAGESIZE);
 
         // Loader fro service
-        this.proxy = new RpcProxy<PagingLoadResult<Profile>>()
+        this.proxy = new RpcProxy<PagingLoadResult<UserGroup>>()
             {
 
                 @Override
-                protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<Profile>> callback)
+                protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<UserGroup>> callback)
                 {
                     service.getProfiles(((PagingLoadConfig) loadConfig).getOffset(), ((PagingLoadConfig) loadConfig).getLimit(), false, callback);
                 }
@@ -204,15 +204,15 @@ public class ProfileGridWidget extends GeofenceGridWidget<Profile>
             };
         loader = new BasePagingLoader<PagingLoadResult<ModelData>>(proxy);
         loader.setRemoteSort(false);
-        store = new ListStore<Profile>(loader);
+        store = new ListStore<UserGroup>(loader);
         // store.sort(BeanKeyValue.NAME.getValue(), SortDir.ASC);
 
         // Search tool
-        SearchFilterField<Profile> filter = new SearchFilterField<Profile>()
+        SearchFilterField<UserGroup> filter = new SearchFilterField<UserGroup>()
             {
 
                 @Override
-                protected boolean doSelect(Store<Profile> store, Profile parent, Profile record,
+                protected boolean doSelect(Store<UserGroup> store, UserGroup parent, UserGroup record,
                     String property, String filter)
                 {
 
@@ -354,24 +354,24 @@ public class ProfileGridWidget extends GeofenceGridWidget<Profile>
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<Profile> createProfileNameTextBox()
+    private GridCellRenderer<UserGroup> createProfileNameTextBox()
     {
-        GridCellRenderer<Profile> buttonRendered = new GridCellRenderer<Profile>()
+        GridCellRenderer<UserGroup> buttonRendered = new GridCellRenderer<UserGroup>()
             {
 
                 private boolean init;
 
-                public Object render(final Profile model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<Profile> store, Grid<Profile> grid)
+                public Object render(final UserGroup model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<UserGroup> store, Grid<UserGroup> grid)
                 {
 
                     if (!init)
                     {
                         init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<Profile>>()
+                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<UserGroup>>()
                             {
 
-                                public void handleEvent(GridEvent<Profile> be)
+                                public void handleEvent(GridEvent<UserGroup> be)
                                 {
                                     for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
                                     {
@@ -422,25 +422,25 @@ public class ProfileGridWidget extends GeofenceGridWidget<Profile>
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<Profile> createEnableCheckBox()
+    private GridCellRenderer<UserGroup> createEnableCheckBox()
     {
 
-        GridCellRenderer<Profile> buttonRendered = new GridCellRenderer<Profile>()
+        GridCellRenderer<UserGroup> buttonRendered = new GridCellRenderer<UserGroup>()
             {
 
                 private boolean init;
 
-                public Object render(final Profile model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<Profile> store, Grid<Profile> grid)
+                public Object render(final UserGroup model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<UserGroup> store, Grid<UserGroup> grid)
                 {
 
                     if (!init)
                     {
                         init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<Profile>>()
+                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<UserGroup>>()
                             {
 
-                                public void handleEvent(GridEvent<Profile> be)
+                                public void handleEvent(GridEvent<UserGroup> be)
                                 {
                                     for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
                                     {
@@ -486,24 +486,24 @@ public class ProfileGridWidget extends GeofenceGridWidget<Profile>
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<Profile> createProfileDeleteButton()
+    private GridCellRenderer<UserGroup> createProfileDeleteButton()
     {
-        GridCellRenderer<Profile> buttonRendered = new GridCellRenderer<Profile>()
+        GridCellRenderer<UserGroup> buttonRendered = new GridCellRenderer<UserGroup>()
             {
 
                 private boolean init;
 
-                public Object render(final Profile model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<Profile> store, Grid<Profile> grid)
+                public Object render(final UserGroup model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<UserGroup> store, Grid<UserGroup> grid)
                 {
 
                     if (!init)
                     {
                         init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<Profile>>()
+                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<UserGroup>>()
                             {
 
-                                public void handleEvent(GridEvent<Profile> be)
+                                public void handleEvent(GridEvent<UserGroup> be)
                                 {
                                     for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
                                     {
@@ -563,24 +563,24 @@ public class ProfileGridWidget extends GeofenceGridWidget<Profile>
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<Profile> createProfileDetailsButton()
+    private GridCellRenderer<UserGroup> createProfileDetailsButton()
     {
-        GridCellRenderer<Profile> buttonRendered = new GridCellRenderer<Profile>()
+        GridCellRenderer<UserGroup> buttonRendered = new GridCellRenderer<UserGroup>()
             {
 
                 private boolean init;
 
-                public Object render(final Profile model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<Profile> store, Grid<Profile> grid)
+                public Object render(final UserGroup model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<UserGroup> store, Grid<UserGroup> grid)
                 {
 
                     if (!init)
                     {
                         init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<Profile>>()
+                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<UserGroup>>()
                             {
 
-                                public void handleEvent(GridEvent<Profile> be)
+                                public void handleEvent(GridEvent<UserGroup> be)
                                 {
                                     for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
                                     {

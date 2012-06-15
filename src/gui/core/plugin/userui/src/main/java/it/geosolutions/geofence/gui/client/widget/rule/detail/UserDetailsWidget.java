@@ -32,6 +32,14 @@
  */
 package it.geosolutions.geofence.gui.client.widget.rule.detail;
 
+import it.geosolutions.geofence.gui.client.GeofenceEvents;
+import it.geosolutions.geofence.gui.client.Resources;
+import it.geosolutions.geofence.gui.client.i18n.I18nProvider;
+import it.geosolutions.geofence.gui.client.model.GSUser;
+import it.geosolutions.geofence.gui.client.model.data.UserLimitsInfo;
+import it.geosolutions.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
+import it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
+
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -43,13 +51,6 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-
-import it.geosolutions.geofence.gui.client.GeofenceEvents;
-import it.geosolutions.geofence.gui.client.Resources;
-import it.geosolutions.geofence.gui.client.i18n.I18nProvider;
-import it.geosolutions.geofence.gui.client.model.GSUser;
-import it.geosolutions.geofence.gui.client.model.data.UserLimitsInfo;
-import it.geosolutions.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
 
 
 /**
@@ -64,6 +65,9 @@ public class UserDetailsWidget extends ContentPanel
 
     /** The user details info. */
     private UserDetailsInfoWidget userDeatilsInfo;
+    
+    /** The profiles info. */
+    private ProfilesGridWidget profilesInfo;
 
     /** The tool bar. */
     private ToolBar toolBar;
@@ -80,8 +84,9 @@ public class UserDetailsWidget extends ContentPanel
      *            the model
      * @param usersService
      *            the user service
+     * @param profilesManagerServiceRemote 
      */
-    public UserDetailsWidget(GSUser model, GsUsersManagerRemoteServiceAsync usersService)
+    public UserDetailsWidget(GSUser model, GsUsersManagerRemoteServiceAsync usersService, ProfilesManagerRemoteServiceAsync profilesManagerServiceRemote)
     {
         this.user = model;
 
@@ -92,8 +97,11 @@ public class UserDetailsWidget extends ContentPanel
         setLayout(new FitLayout());
 
         userDeatilsInfo = new UserDetailsInfoWidget(this.user, usersService, this);
-        add(userDeatilsInfo.getFormPanel());
+        //add(userDeatilsInfo.getFormPanel());
 
+        profilesInfo = new ProfilesGridWidget(this.user, usersService, profilesManagerServiceRemote, this);
+        add(profilesInfo.getGrid());
+        
         super.setMonitorWindowResize(true);
 
         setScrollMode(Scroll.AUTOY);
@@ -112,9 +120,12 @@ public class UserDetailsWidget extends ContentPanel
 
                     disableSaveButton();
 
-                    UserLimitsInfo userInfoModel = userDeatilsInfo.getModelData();
-                    Dispatcher.forwardEvent(GeofenceEvents.SAVE_USER_LIMITS, userInfoModel);
+                    /*UserLimitsInfo userInfoModel = userDeatilsInfo.getModelData();
+                    Dispatcher.forwardEvent(GeofenceEvents.SAVE_USER_LIMITS, userInfoModel);*/
 
+                    user.setUserGroups(profilesInfo.getSelectedGroups());
+                    Dispatcher.forwardEvent(GeofenceEvents.SAVE_USER_GROUPS, user);
+                    
                     Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
                         new String[] { "GeoServer Users: Users Limits", "Apply Changes" });
 
@@ -192,5 +203,19 @@ public class UserDetailsWidget extends ContentPanel
             this.saveUserDetailsButton.enable();
         }
     }
+
+	/**
+	 * @param profilesInfo the profilesInfo to set
+	 */
+	public void setProfilesInfo(ProfilesGridWidget profilesInfo) {
+		this.profilesInfo = profilesInfo;
+	}
+
+	/**
+	 * @return the profilesInfo
+	 */
+	public ProfilesGridWidget getProfilesInfo() {
+		return profilesInfo;
+	}
 
 }
