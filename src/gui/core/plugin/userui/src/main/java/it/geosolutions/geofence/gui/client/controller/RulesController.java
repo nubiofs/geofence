@@ -57,6 +57,7 @@ import it.geosolutions.geofence.gui.client.view.RulesView;
 import it.geosolutions.geofence.gui.client.widget.RuleGridWidget;
 import it.geosolutions.geofence.gui.client.widget.tab.RulesTabItem;
 import it.geosolutions.geofence.gui.client.widget.tab.TabWidget;
+import it.geosolutions.geogwt.gui.client.GeoGWTEvents;
 
 
 /**
@@ -119,13 +120,14 @@ public class RulesController extends Controller
             GeofenceEvents.RULE_CUSTOM_PROP_DEL, GeofenceEvents.RULE_CUSTOM_PROP_UPDATE_KEY,
             GeofenceEvents.RULE_CUSTOM_PROP_UPDATE_VALUE,
             GeofenceEvents.RULE_CUSTOM_PROP_APPLY_CHANGES,
+            
+            GeofenceEvents.RULE_EDITOR_DIALOG_HIDE,GeofenceEvents.RULE_EDITOR_DIALOG_SHOW,
 
 
 
 
             GeofenceEvents.INJECT_WKT,
-
-
+            GeoGWTEvents.INJECT_WKT,
 
 
             GeofenceEvents.ATTRIBUTE_UPDATE_GRID_COMBO,
@@ -243,7 +245,7 @@ public class RulesController extends Controller
             onRulePriorityDown(event);
         }
 
-        if (event.getType() == GeofenceEvents.INJECT_WKT)
+        if (event.getType() == GeofenceEvents.INJECT_WKT || event.getType() == GeoGWTEvents.INJECT_WKT)
         {
             onInjectWKT(event);
         }

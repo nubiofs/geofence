@@ -36,6 +36,7 @@ import com.extjs.gxt.ui.client.mvc.AppEvent;
 import com.extjs.gxt.ui.client.mvc.Controller;
 
 import it.geosolutions.geofence.gui.client.GeofenceEvents;
+import it.geosolutions.geogwt.gui.client.GeoGWTEvents;
 
 
 // TODO: Auto-generated Javadoc
@@ -66,7 +67,8 @@ public class MapController extends Controller
             GeofenceEvents.DRAW_AOI_ON_MAP,
             GeofenceEvents.ZOOM_TO_CENTER,
             GeofenceEvents.ADMIN_MODE_CHANGE,
-            GeofenceEvents.LOGIN_SUCCESS);
+            GeofenceEvents.LOGIN_SUCCESS,
+            GeoGWTEvents.INJECT_WKT);
     }
 
     /*

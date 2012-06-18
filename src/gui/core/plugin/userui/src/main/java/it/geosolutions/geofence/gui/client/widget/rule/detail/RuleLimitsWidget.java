@@ -39,6 +39,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.mvc.Dispatcher;
 import com.extjs.gxt.ui.client.widget.ComponentManager;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
@@ -84,6 +85,7 @@ public class RuleLimitsWidget extends ContentPanel
     public RuleLimitsWidget(Rule model, RulesManagerRemoteServiceAsync rulesService)
     {
         this.theRule = model;
+        this.toolBar = new ToolBar();
 
         setHeaderVisible(false);
         setFrame(true);
@@ -97,8 +99,6 @@ public class RuleLimitsWidget extends ContentPanel
         super.setMonitorWindowResize(true);
 
         setScrollMode(Scroll.AUTOY);
-
-        this.toolBar = new ToolBar();
 
         this.saveLayerDetailsButton = new Button("Save");
         saveLayerDetailsButton.setIcon(Resources.ICONS.save());
@@ -192,5 +192,12 @@ public class RuleLimitsWidget extends ContentPanel
             this.saveLayerDetailsButton.enable();
         }
     }
+
+    /**
+	 * @return the toolBar
+	 */
+	public ToolBar getToolBar() {
+		return this.toolBar;
+	}
 
 }

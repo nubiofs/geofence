@@ -409,6 +409,12 @@ public class AppView extends View
         zoomOut.setType("button");
         zoomOut.setOrder(40);
 
+        ActionClientTool drawFeature = new ActionClientTool();
+        drawFeature.setId("drawFeature");
+        drawFeature.setEnabled(true);
+        drawFeature.setType("toggle");
+        drawFeature.setOrder(50);
+        
         GenericClientTool toolbarSeparator2 = new GenericClientTool();
         toolbarSeparator2.setId(ButtonBar.TOOLBAR_SEPARATOR);
         toolbarSeparator2.setOrder(300);
@@ -461,6 +467,7 @@ public class AppView extends View
         clientTools.add(zoomBox);
         clientTools.add(zoomIn);
         clientTools.add(zoomOut);
+        clientTools.add(drawFeature);
         clientTools.add(toolbarSeparator2);
 //        clientTools.add(synchUsers);
         clientTools.add(fillItem);

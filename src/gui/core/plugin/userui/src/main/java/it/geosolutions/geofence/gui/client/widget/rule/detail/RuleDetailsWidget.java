@@ -87,6 +87,7 @@ public class RuleDetailsWidget extends ContentPanel
     public RuleDetailsWidget(Rule model, WorkspacesManagerRemoteServiceAsync workspacesService)
     {
         this.theRule = model;
+        this.toolBar = new ToolBar();
 
         setHeaderVisible(false);
         setFrame(true);
@@ -103,8 +104,6 @@ public class RuleDetailsWidget extends ContentPanel
         super.setMonitorWindowResize(true);
 
         setScrollMode(Scroll.AUTOY);
-
-        this.toolBar = new ToolBar();
 
         this.saveLayerDetailsButton = new Button("Save");
         saveLayerDetailsButton.setIcon(Resources.ICONS.save());
@@ -199,7 +198,14 @@ public class RuleDetailsWidget extends ContentPanel
         this.ruleDetailsGrid = ruleDetailsGrid;
     }
 
-    /**
+	/**
+	 * @return the toolBar
+	 */
+	public ToolBar getToolBar() {
+		return toolBar;
+	}
+
+	/**
      * Disable save button.
      */
     public void disableSaveButton()

@@ -60,12 +60,12 @@
 		<dependency>
 			<groupId>org.gwtopenmaps.openlayers</groupId>
 			<artifactId>gwt-openlayers-client</artifactId>
-			<version>0.7</version>
+			<version>0.8</version>
 		</dependency>
 		<dependency>
 			<groupId>org.gwtopenmaps.openlayers</groupId>
 			<artifactId>gwt-openlayers-server</artifactId>
-			<version>0.7</version>
+			<version>0.8</version>
 		</dependency>
 
 		<!-- SCOPE TEST -->

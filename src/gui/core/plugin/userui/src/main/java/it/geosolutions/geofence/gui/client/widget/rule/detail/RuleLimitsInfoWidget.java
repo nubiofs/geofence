@@ -32,18 +32,25 @@
  */
 package it.geosolutions.geofence.gui.client.widget.rule.detail;
 
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.FieldEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.TextArea;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
-
+import it.geosolutions.geofence.gui.client.GeofenceEvents;
+import it.geosolutions.geofence.gui.client.i18n.I18nProvider;
 import it.geosolutions.geofence.gui.client.model.Rule;
 import it.geosolutions.geofence.gui.client.model.data.LayerLimitsInfo;
 import it.geosolutions.geofence.gui.client.service.RulesManagerRemoteServiceAsync;
 import it.geosolutions.geofence.gui.client.widget.GeofenceFormBindingWidget;
+import it.geosolutions.geogwt.gui.client.Resources;
+
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FieldEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.mvc.Dispatcher;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.TextArea;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 
 
 /**
@@ -63,6 +70,8 @@ public class RuleLimitsInfoWidget extends GeofenceFormBindingWidget<LayerLimitsI
 
     /** The allowed area. */
     private TextArea allowedArea;
+    
+    private Button draw;
 
     /**
      * Instantiates a new rule details info widget.
@@ -121,7 +130,23 @@ public class RuleLimitsInfoWidget extends GeofenceFormBindingWidget<LayerLimitsI
 
         fieldSet.add(allowedArea);
 
+        draw = new Button(I18nProvider.getMessages().drawAoiButton(),
+                new SelectionListener<ButtonEvent>()
+                {
+                    @Override
+                    public void componentSelected(ButtonEvent ce)
+                    {
+                        Dispatcher.forwardEvent(GeofenceEvents.ACTIVATE_DRAW_FEATURES,
+                                RuleLimitsInfoWidget.this);
+                    	Dispatcher.forwardEvent(GeofenceEvents.RULE_EDITOR_DIALOG_HIDE);
+                    }
+                });
+
+        draw.setIcon(Resources.ICONS.drawFeature());
+
+        
         fp.add(fieldSet);
+        ruleLimitsWidget.getToolBar().add(draw);
 
         return fp;
     }
@@ -167,6 +192,34 @@ public class RuleLimitsInfoWidget extends GeofenceFormBindingWidget<LayerLimitsI
     }
 
     /**
+	 * @param ruleLimitsWidget the ruleLimitsWidget to set
+	 */
+	public void setRuleLimitsWidget(RuleLimitsWidget ruleLimitsWidget) {
+		this.ruleLimitsWidget = ruleLimitsWidget;
+	}
+
+	/**
+	 * @return the ruleLimitsWidget
+	 */
+	public RuleLimitsWidget getRuleLimitsWidget() {
+		return ruleLimitsWidget;
+	}
+
+	/**
+	 * @param allowedArea the allowedArea to set
+	 */
+	public void setAllowedArea(TextArea allowedArea) {
+		this.allowedArea = allowedArea;
+	}
+
+	/**
+	 * @return the allowedArea
+	 */
+	public TextArea getAllowedArea() {
+		return allowedArea;
+	}
+
+	/**
      * Bind model data.
      *
      * @param layerDetailsInfo

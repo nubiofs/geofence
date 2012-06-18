@@ -44,96 +44,95 @@ import it.geosolutions.geofence.gui.client.Resources;
 import it.geosolutions.geofence.gui.client.model.Rule;
 import it.geosolutions.geofence.gui.client.service.WorkspacesManagerRemoteServiceAsync;
 
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class RuleDetailsTabItem.
  */
-public class RuleDetailsTabItem extends TabItem
-{
+public class RuleDetailsTabItem extends TabItem {
 
-    /** The rule details widget. */
-    private RuleDetailsWidget ruleDetailsWidget;
+	/** The rule details widget. */
+	private RuleDetailsWidget ruleDetailsWidget;
 
-    /** The rule. */
-    private Rule theRule;
+	/** The rule. */
+	private Rule theRule;
 
-    /**
-     * Instantiates a new rule details tab item.
-     *
-     * @param tabItemId
-     *            the tab item id
-     */
-    private RuleDetailsTabItem(String tabItemId)
-    {
-        // TODO: add I18n message
-        // super(I18nProvider.getMessages().profiles());
-        super("Layer Details");
-        setId(tabItemId);
-        setIcon(Resources.ICONS.addAOI());
-    }
+	/**
+	 * Instantiates a new rule details tab item.
+	 * 
+	 * @param tabItemId
+	 *            the tab item id
+	 */
+	private RuleDetailsTabItem(String tabItemId) {
+		// TODO: add I18n message
+		// super(I18nProvider.getMessages().profiles());
+		super("Layer Details");
+		setId(tabItemId);
+		setIcon(Resources.ICONS.addAOI());
+	}
 
-    /**
-     * Instantiates a new rule details tab item.
-     *
-     * @param tabItemId
-     *            the tab item id
-     * @param model
-     *            the model
-     * @param workspacesService
-     *            the workspaces service
-     */
-    public RuleDetailsTabItem(String tabItemId, Rule model, WorkspacesManagerRemoteServiceAsync workspacesService)
-    {
-        this(tabItemId);
-        this.theRule = model;
+	/**
+	 * Instantiates a new rule details tab item.
+	 * 
+	 * @param tabItemId
+	 *            the tab item id
+	 * @param model
+	 *            the model
+	 * @param workspacesService
+	 *            the workspaces service
+	 * @param loadModel
+	 */
+	public RuleDetailsTabItem(String tabItemId, Rule model,
+			WorkspacesManagerRemoteServiceAsync workspacesService,
+			boolean loadModel) {
+		this(tabItemId);
+		this.theRule = model;
 
-        setRuleDetailsWidget(new RuleDetailsWidget(this.theRule, workspacesService));
-        add(getRuleDetailsWidget());
+		setRuleDetailsWidget(new RuleDetailsWidget(this.theRule,
+				workspacesService));
+		add(getRuleDetailsWidget());
 
-        setScrollMode(Scroll.NONE);
+		setScrollMode(Scroll.NONE);
 
-        this.addListener(Events.Select, new Listener<BaseEvent>()
-            {
+		if (loadModel) {
+			this.addListener(Events.Select, new Listener<BaseEvent>() {
 
-                public void handleEvent(BaseEvent be)
-                {
-                    if (ruleDetailsWidget.getRuleDetailsInfo().getModel() == null)
-                    {
-                        Dispatcher.forwardEvent(GeofenceEvents.LOAD_LAYER_DETAILS, theRule);
-                    }
+				public void handleEvent(BaseEvent be) {
+					if (ruleDetailsWidget.getRuleDetailsInfo().getModel() == null) {
+						Dispatcher.forwardEvent(
+								GeofenceEvents.LOAD_LAYER_DETAILS, theRule);
+					}
 
-                    if (ruleDetailsWidget.getRuleDetailsGrid().getStore().getCount() < 1)
-                    {
-                        ruleDetailsWidget.getRuleDetailsGrid().getLoader().load();
-                    }
-                }
+					if (ruleDetailsWidget.getRuleDetailsGrid().getStore()
+							.getCount() < 1) {
+						ruleDetailsWidget.getRuleDetailsGrid().getLoader()
+								.load();
+					}
+				}
 
-            });
+			});
+		}
+		// getLayerCustomPropsWidget().getLayerCustomPropsInfo().getLoader().load(0,
+		// it.geosolutions.geofence.gui.client.Constants.DEFAULT_PAGESIZE);
 
-        // getLayerCustomPropsWidget().getLayerCustomPropsInfo().getLoader().load(0, it.geosolutions.geofence.gui.client.Constants.DEFAULT_PAGESIZE);
+	}
 
-    }
+	/**
+	 * Sets the rule details widget.
+	 * 
+	 * @param ruleDetailsWidget
+	 *            the new rule details widget
+	 */
+	public void setRuleDetailsWidget(RuleDetailsWidget ruleDetailsWidget) {
+		this.ruleDetailsWidget = ruleDetailsWidget;
+	}
 
-    /**
-     * Sets the rule details widget.
-     *
-     * @param ruleDetailsWidget
-     *            the new rule details widget
-     */
-    public void setRuleDetailsWidget(RuleDetailsWidget ruleDetailsWidget)
-    {
-        this.ruleDetailsWidget = ruleDetailsWidget;
-    }
-
-    /**
-     * Gets the rule details widget.
-     *
-     * @return the rule details widget
-     */
-    public RuleDetailsWidget getRuleDetailsWidget()
-    {
-        return ruleDetailsWidget;
-    }
+	/**
+	 * Gets the rule details widget.
+	 * 
+	 * @return the rule details widget
+	 */
+	public RuleDetailsWidget getRuleDetailsWidget() {
+		return ruleDetailsWidget;
+	}
 
 }

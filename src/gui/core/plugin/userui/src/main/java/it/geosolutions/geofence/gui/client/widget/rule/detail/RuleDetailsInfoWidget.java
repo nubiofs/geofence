@@ -32,16 +32,30 @@
  */
 package it.geosolutions.geofence.gui.client.widget.rule.detail;
 
+import it.geosolutions.geofence.gui.client.GeofenceEvents;
+import it.geosolutions.geofence.gui.client.i18n.I18nProvider;
+import it.geosolutions.geofence.gui.client.model.BeanKeyValue;
+import it.geosolutions.geofence.gui.client.model.Rule;
+import it.geosolutions.geofence.gui.client.model.data.LayerDetailsInfo;
+import it.geosolutions.geofence.gui.client.model.data.LayerStyle;
+import it.geosolutions.geofence.gui.client.service.WorkspacesManagerRemoteServiceAsync;
+import it.geosolutions.geofence.gui.client.widget.GeofenceFormBindingWidget;
+import it.geosolutions.geogwt.gui.client.Resources;
+
 import java.util.List;
 
 import com.extjs.gxt.ui.client.data.BaseListLoader;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.mvc.Dispatcher;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
@@ -49,13 +63,6 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
-import it.geosolutions.geofence.gui.client.model.BeanKeyValue;
-import it.geosolutions.geofence.gui.client.model.Rule;
-import it.geosolutions.geofence.gui.client.model.data.LayerDetailsInfo;
-import it.geosolutions.geofence.gui.client.model.data.LayerStyle;
-import it.geosolutions.geofence.gui.client.service.WorkspacesManagerRemoteServiceAsync;
-import it.geosolutions.geofence.gui.client.widget.GeofenceFormBindingWidget;
 
 
 /**
@@ -87,6 +94,8 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
 
     /** The allowed area. */
     private TextArea allowedArea;
+
+	private Button draw;
 
     /**
      * Instantiates a new rule details info widget.
@@ -201,8 +210,24 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
 
         fieldSet.add(allowedArea);
 
-        fp.add(fieldSet);
+        draw = new Button(I18nProvider.getMessages().drawAoiButton(),
+                new SelectionListener<ButtonEvent>()
+                {
+                    @Override
+                    public void componentSelected(ButtonEvent ce)
+                    {
+                        Dispatcher.forwardEvent(GeofenceEvents.ACTIVATE_DRAW_FEATURES,
+                                RuleDetailsInfoWidget.this);
+                    	Dispatcher.forwardEvent(GeofenceEvents.RULE_EDITOR_DIALOG_HIDE);
+                    }
+                });
 
+        draw.setIcon(Resources.ICONS.drawFeature());
+
+        
+        fp.add(fieldSet);
+        ruleDetailsWidget.getToolBar().add(draw);
+        
         return fp;
     }
 
@@ -259,7 +284,14 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
         return layerDetailsForm;
     }
 
-    /**
+	/**
+	 * @return the ruleDetailsWidget
+	 */
+	public RuleDetailsWidget getRuleDetailsWidget() {
+		return ruleDetailsWidget;
+	}
+
+	/**
      * Bind model data.
      *
      * @param layerDetailsInfo
@@ -326,6 +358,20 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
     }
 
     /**
+	 * @param allowedArea the allowedArea to set
+	 */
+	public void setAllowedArea(TextArea allowedArea) {
+		this.allowedArea = allowedArea;
+	}
+
+	/**
+	 * @return the allowedArea
+	 */
+	public TextArea getAllowedArea() {
+		return allowedArea;
+	}
+
+	/**
     * Disable cql filter buttons.
     */
     public void disableCQLFilterButtons()

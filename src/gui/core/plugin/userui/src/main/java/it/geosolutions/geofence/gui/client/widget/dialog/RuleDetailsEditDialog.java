@@ -173,6 +173,11 @@ public class RuleDetailsEditDialog extends Dialog
     @Override
     public void show()
     {
+        this.show(true);
+    }
+    
+    public void show(boolean loadModel)
+    {
         super.show();
 
         if (getModel() != null)
@@ -188,26 +193,28 @@ public class RuleDetailsEditDialog extends Dialog
 
                 if (workspace.equals("*") && !layer.equalsIgnoreCase("*"))
                 {
-                    TabItem layersCustomPropsItem = new LayerCustomPropsTabItem(RULE_LAYER_CUSTOM_PROPS_DIALOG_ID,
+                    // AF: Refactor ... remove layer custom props
+                	/*TabItem layersCustomPropsItem = new LayerCustomPropsTabItem(RULE_LAYER_CUSTOM_PROPS_DIALOG_ID,
                             model, rulesManagerServiceRemote);
                     this.tabWidget.add(layersCustomPropsItem);
-                    this.tabWidget.setSelection(layersCustomPropsItem);
+                    this.tabWidget.setSelection(layersCustomPropsItem);*/
                 }
                 else
                 {
                     TabItem ruleDetailsTabItem = new RuleDetailsTabItem(RULE_DETAILS_DIALOG_ID, model,
-                            workspacesManagerServiceRemote);
+                            workspacesManagerServiceRemote, loadModel);
                     this.tabWidget.add(ruleDetailsTabItem);
 
                     if ((model.getLayer() != null) && !model.getLayer().equalsIgnoreCase("*"))
                     {
                         TabItem layerAttributesItem = new LayerAttributesTabItem(RULE_LAYER_ATTRIBUTES_DIALOG_ID, model,
                                 rulesManagerServiceRemote);
-                        TabItem layersCustomPropsItem = new LayerCustomPropsTabItem(RULE_LAYER_CUSTOM_PROPS_DIALOG_ID,
-                                model, rulesManagerServiceRemote);
-
                         this.tabWidget.add(layerAttributesItem);
-                        this.tabWidget.add(layersCustomPropsItem);
+
+                        // AF: Refactor ... remove layer custom props
+                        /*TabItem layersCustomPropsItem = new LayerCustomPropsTabItem(RULE_LAYER_CUSTOM_PROPS_DIALOG_ID,
+                        model, rulesManagerServiceRemote);
+                        this.tabWidget.add(layersCustomPropsItem);*/
 
                         this.tabWidget.setSelection(ruleDetailsTabItem);
                     }
@@ -218,8 +225,10 @@ public class RuleDetailsEditDialog extends Dialog
                 setHeading("Editing Limits for Rule #" + model.getPriority());
 
                 TabItem ruleLimitsTabItem = new RuleLimitsTabItem(RULE_LIMITS_DIALOG_ID, model,
-                        rulesManagerServiceRemote);
+                        rulesManagerServiceRemote, loadModel);
                 this.tabWidget.add(ruleLimitsTabItem);
+                
+                this.tabWidget.setSelection(ruleLimitsTabItem);
             }
             else
             {

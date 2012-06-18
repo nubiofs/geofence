@@ -44,88 +44,84 @@ import it.geosolutions.geofence.gui.client.Resources;
 import it.geosolutions.geofence.gui.client.model.Rule;
 import it.geosolutions.geofence.gui.client.service.RulesManagerRemoteServiceAsync;
 
-
 /**
  * The Class RuleLimitsTabItem.
  */
-public class RuleLimitsTabItem extends TabItem
-{
+public class RuleLimitsTabItem extends TabItem {
 
-    /** The rule details widget. */
-    private RuleLimitsWidget ruleLimitsWidget;
+	/** The rule details widget. */
+	private RuleLimitsWidget ruleLimitsWidget;
 
-    /** The rule. */
-    private Rule theRule;
+	/** The rule. */
+	private Rule theRule;
 
-    /**
-     * Instantiates a new rule limits tab item.
-     *
-     * @param tabItemId
-     *            the tab item id
-     */
-    private RuleLimitsTabItem(String tabItemId)
-    {
-        // TODO: add I18n message
-        // super(I18nProvider.getMessages().profiles());
-        super("Layer Limits");
-        setId(tabItemId);
-        setIcon(Resources.ICONS.addAOI());
-    }
+	/**
+	 * Instantiates a new rule limits tab item.
+	 * 
+	 * @param tabItemId
+	 *            the tab item id
+	 */
+	private RuleLimitsTabItem(String tabItemId) {
+		// TODO: add I18n message
+		// super(I18nProvider.getMessages().profiles());
+		super("Layer Limits");
+		setId(tabItemId);
+		setIcon(Resources.ICONS.addAOI());
+	}
 
-    /**
-     * Instantiates a new rule details tab item.
-     *
-     * @param tabItemId
-     *            the tab item id
-     * @param model
-     *            the model
-     * @param workspacesService
-     *            the workspaces service
-     */
-    public RuleLimitsTabItem(String tabItemId, Rule model, RulesManagerRemoteServiceAsync rulesService)
-    {
-        this(tabItemId);
-        this.theRule = model;
+	/**
+	 * Instantiates a new rule details tab item.
+	 * 
+	 * @param tabItemId
+	 *            the tab item id
+	 * @param model
+	 *            the model
+	 * @param loadModel
+	 * @param workspacesService
+	 *            the workspaces service
+	 */
+	public RuleLimitsTabItem(String tabItemId, Rule model,
+			RulesManagerRemoteServiceAsync rulesService, boolean loadModel) {
+		this(tabItemId);
+		this.theRule = model;
 
-        setRuleLimitsWidget(new RuleLimitsWidget(this.theRule, rulesService));
-        add(getRuleLimitsWidget());
+		setRuleLimitsWidget(new RuleLimitsWidget(this.theRule, rulesService));
+		add(getRuleLimitsWidget());
 
-        setScrollMode(Scroll.NONE);
+		setScrollMode(Scroll.NONE);
 
-        this.addListener(Events.Select, new Listener<BaseEvent>()
-            {
+		if (loadModel) {
+			this.addListener(Events.Select, new Listener<BaseEvent>() {
 
-                public void handleEvent(BaseEvent be)
-                {
-                    if (ruleLimitsWidget.getRuleLimitsInfo().getModel() == null)
-                    {
-                        Dispatcher.forwardEvent(GeofenceEvents.LOAD_LAYER_LIMITS, theRule);
-                    }
-                }
+				public void handleEvent(BaseEvent be) {
+					if (ruleLimitsWidget.getRuleLimitsInfo().getModel() == null) {
+						Dispatcher.forwardEvent(
+								GeofenceEvents.LOAD_LAYER_LIMITS, theRule);
+					}
+				}
 
-            });
+			});
+		}
 
-    }
+	}
 
-    /**
-     * Sets the rule details widget.
-     *
-     * @param ruleLimitsWidget
-     *            the new rule details widget
-     */
-    public void setRuleLimitsWidget(RuleLimitsWidget ruleDetailsWidget)
-    {
-        this.ruleLimitsWidget = ruleDetailsWidget;
-    }
+	/**
+	 * Sets the rule details widget.
+	 * 
+	 * @param ruleLimitsWidget
+	 *            the new rule details widget
+	 */
+	public void setRuleLimitsWidget(RuleLimitsWidget ruleDetailsWidget) {
+		this.ruleLimitsWidget = ruleDetailsWidget;
+	}
 
-    /**
-     * Gets the rule limits widget.
-     *
-     * @return the rule limits widget
-     */
-    public RuleLimitsWidget getRuleLimitsWidget()
-    {
-        return ruleLimitsWidget;
-    }
+	/**
+	 * Gets the rule limits widget.
+	 * 
+	 * @return the rule limits widget
+	 */
+	public RuleLimitsWidget getRuleLimitsWidget() {
+		return ruleLimitsWidget;
+	}
 
 }
