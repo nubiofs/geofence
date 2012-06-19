@@ -43,6 +43,7 @@ import it.geosolutions.geofence.gui.client.model.GSInstance;
 import it.geosolutions.geofence.gui.client.model.data.rpc.RpcPageLoadResult;
 import it.geosolutions.geofence.gui.server.service.IInstancesManagerService;
 import it.geosolutions.geofence.gui.service.GeofenceRemoteService;
+import it.geosolutions.geofence.services.dto.ShortInstance;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 
 import org.slf4j.Logger;
@@ -91,7 +92,7 @@ public class InstancesManagerServiceImpl implements IInstancesManagerService {
 
 		int page = (start == 0) ? start : (start / limit);
 
-		List<it.geosolutions.geofence.core.model.GSInstance> instancesList = geofenceRemoteService
+		List<ShortInstance> instancesList = geofenceRemoteService
 				.getInstanceAdminService().getList(null, page, limit);
 
 		if (instancesList == null) {
@@ -101,21 +102,22 @@ public class InstancesManagerServiceImpl implements IInstancesManagerService {
 			throw new ApplicationException("No server instance found on server");
 		}
 
-		Iterator<it.geosolutions.geofence.core.model.GSInstance> it = instancesList
-				.iterator();
+		Iterator<ShortInstance> it = instancesList.iterator();
 
 		while (it.hasNext()) {
-			it.geosolutions.geofence.core.model.GSInstance remote_instance = it
-					.next();
-			GSInstance local_instance = new GSInstance();
-			local_instance.setId(remote_instance.getId());
-			local_instance.setName(remote_instance.getName());
-			local_instance.setDescription(remote_instance.getDescription());
-			local_instance.setDateCreation(remote_instance.getDateCreation());
-			local_instance.setBaseURL(remote_instance.getBaseURL());
-			local_instance.setUsername(remote_instance.getUsername());
-			local_instance.setPassword(remote_instance.getPassword());
-			instancesListDTO.add(local_instance);
+            long id = it.next().getId();
+			it.geosolutions.geofence.core.model.GSInstance remote =
+                    geofenceRemoteService.getInstanceAdminService().get(id);
+
+			GSInstance local = new GSInstance();
+			local.setId(remote.getId());
+			local.setName(remote.getName());
+			local.setDescription(remote.getDescription());
+			local.setDateCreation(remote.getDateCreation());
+			local.setBaseURL(remote.getBaseURL());
+			local.setUsername(remote.getUsername());
+			local.setPassword(remote.getPassword());
+			instancesListDTO.add(local);
 		}
 
 		return new RpcPageLoadResult<GSInstance>(instancesListDTO, offset,

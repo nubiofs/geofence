@@ -23,10 +23,12 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 import it.geosolutions.geofence.services.rest.exception.BadRequestRestEx;
+import it.geosolutions.geofence.services.rest.exception.InternalErrorRestEx;
 import it.geosolutions.geofence.services.rest.exception.NotFoundRestEx;
 import it.geosolutions.geofence.services.rest.model.RESTInputRule;
 import it.geosolutions.geofence.services.rest.model.RESTOutputRule;
 import it.geosolutions.geofence.services.rest.model.config.RESTFullRuleList;
+import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 
@@ -48,15 +50,15 @@ public interface RESTRuleService
         @QueryParam("entries") Integer entries,
         @QueryParam("full")@DefaultValue("false")  boolean full,
 
-        @QueryParam("userId")   Integer userId,
+        @QueryParam("userId")   Long userId,
         @QueryParam("userName") String userName,
         @QueryParam("userAny")  Boolean userAny,
 
-        @QueryParam("groupId")   Integer groupId,
+        @QueryParam("groupId")   Long groupId,
         @QueryParam("groupName") String groupName,
         @QueryParam("groupAny")  Boolean groupAny,
 
-        @QueryParam("instanceId")   Integer instanceId,
+        @QueryParam("instanceId")   Long instanceId,
         @QueryParam("instanceName") String  instanceName,
         @QueryParam("instanceAny")  Boolean instanceAny,
 
@@ -71,20 +73,20 @@ public interface RESTRuleService
 
         @QueryParam("layer") String  layer,
         @QueryParam("layerAny")  Boolean layerAny
-    );
+    ) throws BadRequestRestEx, InternalErrorRestEx;
 
     @GET
     @Path("/count")
     long count(
-        @QueryParam("userId")   Integer userId,
+        @QueryParam("userId")   Long userId,
         @QueryParam("userName") String userName,
         @QueryParam("userAny")  Boolean userAny,
 
-        @QueryParam("groupId")   Integer groupId,
+        @QueryParam("groupId")   Long groupId,
         @QueryParam("groupName") String groupName,
         @QueryParam("groupAny")  Boolean groupAny,
 
-        @QueryParam("instanceId")   Integer instanceId,
+        @QueryParam("instanceId")   Long instanceId,
         @QueryParam("instanceName") String  instanceName,
         @QueryParam("instanceAny")  Boolean instanceAny,
 
@@ -109,7 +111,7 @@ public interface RESTRuleService
     @POST
     @Path("/")
     @Produces(MediaType.APPLICATION_XML)
-    Long insert(@Multipart("rule") RESTInputRule rule) throws BadRequestRestEx, NotFoundRestEx;
+    Response insert(@Multipart("rule") RESTInputRule rule) throws BadRequestRestEx, NotFoundRestEx;
 
 
     @PUT
@@ -121,6 +123,6 @@ public interface RESTRuleService
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_XML)
-    void delete(@PathParam("id") Long id) throws BadRequestRestEx, NotFoundRestEx;
+    Response delete(@PathParam("id") Long id) throws BadRequestRestEx, NotFoundRestEx;
 
 }

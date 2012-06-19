@@ -111,11 +111,11 @@
 			<artifactId>log4j-over-slf4j</artifactId>
 			<version>1.5.8</version>
 		</dependency>
-		<dependency>
+<!--		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>0.9.9</version>
-		</dependency>
+		</dependency>-->
 
 		<dependency>
 			<groupId>junit</groupId>
@@ -132,7 +132,6 @@
 		<dependency>
 			<groupId>com.vividsolutions</groupId>
 			<artifactId>jts</artifactId>
-			<version>1.10</version>
 		</dependency>
 
 		<!-- SCOPE TEST -->

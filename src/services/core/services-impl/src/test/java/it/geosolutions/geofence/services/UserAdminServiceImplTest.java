@@ -29,6 +29,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -159,6 +160,61 @@ public class UserAdminServiceImplTest extends ServiceTestBase {
 //            assertNotNull(loaded.getAllowedArea());
 //            assertEquals(4326, loaded.getAllowedArea().getSRID());
         }
+    }
+
+    @Test
+    public void testUpdateUserGroups() throws Exception {
+
+        UserGroup ug1 = createUserGroup("g1");
+        UserGroup ug2 = createUserGroup("g2");
+        UserGroup ug3 = createUserGroup("g3");
+
+
+        Long id;        
+        {
+            id = createUser("u1", ug1).getId();
+        }
+
+
+        {
+            GSUser loaded = userAdminService.getFull(id);
+            assertNotNull(loaded);
+
+            assertEquals("u1", loaded.getName());
+            assertEquals(1, loaded.getGroups().size());
+            assertEquals("g1", loaded.getGroups().iterator().next().getName());
+
+            loaded.getGroups().add(ug2);
+
+            userAdminService.update(loaded);
+        }
+        {
+            GSUser loaded = userAdminService.getFull(id);
+            assertNotNull(loaded);
+
+            assertEquals(2, loaded.getGroups().size());
+            assertTrue(hasGroups(loaded, "g1","g2"));
+
+            loaded.getGroups().remove(ug1);
+            loaded.getGroups().add(ug3);
+            userAdminService.update(loaded);
+        }
+        {
+            GSUser loaded = userAdminService.getFull(id);
+            assertNotNull(loaded);
+
+            assertEquals(2, loaded.getGroups().size());
+            assertTrue(hasGroups(loaded, "g2","g3"));
+        }
+    }
+
+    protected boolean hasGroups(GSUser user, String ... groupName) {
+        Set<String> names = new HashSet<String>();
+        for (UserGroup userGroup : user.getGroups()) {
+            names.add(userGroup.getName());
+        }
+        
+        return names.containsAll(Arrays.asList(groupName));
     }
 
     @Test

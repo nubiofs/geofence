@@ -87,11 +87,11 @@
             <artifactId>spring-beans</artifactId>
         </dependency>
 
-        <dependency>
+<!--        <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-api</artifactId>
             <type>jar</type>
-        </dependency>
+        </dependency>-->
 <!--        <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-main</artifactId>

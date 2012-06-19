@@ -17,53 +17,57 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.geofence.services.rest.model.config;
+package it.geosolutions.geofence.services.rest.model;
 
+import it.geosolutions.geofence.services.dto.ShortInstance;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import it.geosolutions.geofence.core.model.GSInstance;
-import it.geosolutions.geofence.core.model.Rule;
-
 /**
  *
  * @author ETj (etj at geo-solutions.it)
  */
-@XmlRootElement(name = "RuleList")
-public class RESTFullRuleList {
+@XmlRootElement(name = "GSInstanceList")
+public class RESTShortInstanceList implements Iterable<ShortInstance> {
 
-    private List<Rule> list;
+    private List<ShortInstance> list;
 
-    public RESTFullRuleList() {
+    public RESTShortInstanceList() {
         this(10);
     }
 
-    public RESTFullRuleList(List<Rule> list) {
+    public RESTShortInstanceList(List<ShortInstance> list) {
         this.list = list;
     }
 
-    public RESTFullRuleList(int initialCapacity) {
-        list = new ArrayList<Rule>(initialCapacity);
+    public RESTShortInstanceList(int initialCapacity) {
+        list = new ArrayList<ShortInstance>(initialCapacity);
     }
 
-    @XmlElement(name = "Rule")
-    public List<Rule> getList() {
+    @XmlElement(name = "Instance")
+    public List<ShortInstance> getList() {
         return list;
     }
 
-    public void setList(List<Rule> list) {
+    public void setList(List<ShortInstance> list) {
         this.list = list;
     }
 
-    public void add(Rule rule) {
-        list.add(rule);
+    public void add(ShortInstance instance) {
+        list.add(instance);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[" + list.size() + " items]";
+        return getClass().getSimpleName() + "[" + list.size() + " gs instances]";
+    }
+
+    @Override
+    public Iterator<ShortInstance> iterator() {
+        return list.iterator();
     }
 }

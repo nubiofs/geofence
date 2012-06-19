@@ -23,13 +23,16 @@ import it.geosolutions.geofence.core.model.LayerAttribute;
 import it.geosolutions.geofence.core.model.enums.AccessType;
 import it.geosolutions.geofence.core.model.enums.GrantType;
 import it.geosolutions.geofence.core.model.enums.LayerType;
-import it.geosolutions.geofence.services.rest.model.RESTInputRule.RESTLayerConstraints;
+import it.geosolutions.geofence.services.dto.ShortGroup;
+import it.geosolutions.geofence.services.dto.ShortInstance;
 import it.geosolutions.geofence.services.rest.model.RESTInputRule.RESTRulePosition;
 import it.geosolutions.geofence.services.rest.model.RESTInputRule.RESTRulePosition.RulePosition;
+import it.geosolutions.geofence.services.rest.model.config.RESTFullUserGroupList;
 import it.geosolutions.geofence.services.rest.model.util.IdName;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -63,18 +66,82 @@ public class ModelPrintoutFakeTest {
         RESTInputRule inputRule = createInputRule("02");
         LOGGER.info(marshal(inputRule));
 
-        LOGGER.info("RESTInputRuleList sample");
-        RESTRuleList ruleList = new RESTRuleList();
-        RESTOutputRule r1 = createOutputRule("01");
-        r1.setConstraints(null);
-        ruleList.add(r1);
-        r1 = createOutputRule("02");
-        r1.setGrant(GrantType.DENY);
-        r1.setConstraints(null);
-        ruleList.add(r1);
+        {
+            LOGGER.info("RESTRuleList sample");
+            RESTRuleList ruleList = new RESTRuleList();
 
-        LOGGER.info(marshal(ruleList));
+            RESTOutputRule r1 = createOutputRule("01");
+            r1.setConstraints(null);
+            ruleList.add(r1);
 
+            r1 = createOutputRule("02");
+            r1.setGrant(GrantType.DENY);
+            r1.setConstraints(null);
+            ruleList.add(r1);
+
+            LOGGER.info(marshal(ruleList));
+        }
+
+        {
+            LOGGER.info("RESTInputGroup sample");
+            RESTInputGroup inputGroup = new RESTInputGroup();
+            inputGroup.setEnabled(Boolean.TRUE);
+            inputGroup.setName("sample group");
+            inputGroup.setExtId("external_id_here");
+            LOGGER.info(marshal(inputGroup));
+        }
+        {
+            LOGGER.info("RESTInputGroup sample (field enable not set)");
+            RESTInputGroup inputGroup = new RESTInputGroup();
+            inputGroup.setName("sample group");
+            LOGGER.info(marshal(inputGroup));
+        }
+        {
+            LOGGER.info("RESTFullUserGroupList sample");
+            RESTFullUserGroupList list = new RESTFullUserGroupList();
+            list.add(createShortGroup("group1"));
+            list.add(createShortGroup("group2"));
+            LOGGER.info(marshal(list));
+        }
+        {
+            LOGGER.info("RESTInputInstance sample");
+            RESTInputInstance i = new RESTInputInstance();
+            i.setName("sample instance");
+            i.setDescription("sample descr");
+            i.setBaseURL("http://yourgeoserver/geoserver");
+            i.setUsername("admin");
+            i.setPassword("clearpw");
+            LOGGER.info(marshal(i));
+        }
+
+        {
+            LOGGER.info("RESTShortInstanceList sample");
+            RESTShortInstanceList list = new RESTShortInstanceList();
+            {
+                ShortInstance i1 = new ShortInstance();
+                i1.setName("instance_01");
+                i1.setId(100);
+                i1.setUrl("http://test/geoserver");
+                list.add(i1);
+            }
+            {
+                ShortInstance i1 = new ShortInstance();
+                i1.setName("instance_02");
+                i1.setId(101);
+                i1.setUrl("http://othertest/geoserver");
+                list.add(i1);
+            }
+            LOGGER.info(marshal(list));
+        }
+    }
+
+    protected ShortGroup createShortGroup(String base) {
+        ShortGroup g1 = new ShortGroup();
+        g1.setName(base);
+        g1.setId(base.hashCode());
+        g1.setExtId("ext_"+base);
+        g1.setEnabled(Boolean.TRUE);
+        return g1;
     }
 
     private String marshal(Object o) {

@@ -91,12 +91,13 @@ public class GSUserDAOImpl extends BaseDAO<GSUser, Long> implements GSUserDAO
      */
     protected GSUser searchFull(Search search) {
         search.addFetch("userGroups");
+        search.setDistinct(true);
         List<GSUser> users = super.search(search);
 
         // When fetching users with multiple groups, the gsusers list id multiplied for the number of groups found.
-        // Next there is a workaround to this problem.
+        // Next there is a workaround to this problem; maybe this:
+        //    search.setDistinct(true);
         // Dunno if some annotations in the GSUser definition are wrong, some deeper checks have to be performed.
-
 
         switch(users.size()) {
             case 0:
@@ -104,24 +105,24 @@ public class GSUserDAOImpl extends BaseDAO<GSUser, Long> implements GSUserDAO
             case 1:
                 return users.get(0);
             default:
-                if(users.size() == users.get(0).getGroups().size()) { // normal hibernate behaviour
-                    if(LOGGER.isDebugEnabled()) { // perform some more consistency tests only when debugging
-                        for (GSUser user : users) {
-                            if(user.getId() != users.get(0).getId() ||
-                               user.getGroups().size() != users.get(0).getGroups().size()) {
-                                LOGGER.error("Inconsistent userlist " + user);
-                            }
-                        }
-                    }
-
-                    return users.get(0);
-                } else {
-                    LOGGER.error("Too many users in unique search " + search);
-                    for (GSUser user : users) {
-                        LOGGER.error("   " + user + " grp:"+user.getGroups().size());
-                    }
+//                if(users.size() == users.get(0).getGroups().size()) { // normal hibernate behaviour
+//                    if(LOGGER.isDebugEnabled()) { // perform some more consistency tests only when debugging
+//                        for (GSUser user : users) {
+//                            if(user.getId() != users.get(0).getId() ||
+//                               user.getGroups().size() != users.get(0).getGroups().size()) {
+//                                LOGGER.error("Inconsistent userlist " + user);
+//                            }
+//                        }
+//                    }
+//
+//                    return users.get(0);
+//                } else {
+//                    LOGGER.error("Too many users in unique search " + search);
+//                    for (GSUser user : users) {
+//                        LOGGER.error("   " + user + " grp:"+user.getGroups().size());
+//                    }
                     throw new IllegalStateException("Found more than one user (search:"+search+")");
-                }
+//                }
         }
     }
 

@@ -19,30 +19,35 @@
  */
 package it.geosolutions.geofence.services.rest.model;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 
 /**
  * A compact representation of UserGroup holding only the insertable/updatadable fields
  *
  * @author Etj (etj at geo-solutions.it)
  */
-@XmlRootElement(name = "userGroup")
-@XmlType(name="Group", propOrder = {"extId", "name"})
-public class RESTInputGroup extends AbstractRESTPayload {
+@XmlRootElement(name = "UserGroup")
+public class RESTOutputGroup implements Serializable {
 
-    private static final long serialVersionUID = -8410646966443187827L;
+    private Long id;
     private String name;
     private String extId;
     private Boolean enabled;
 
-    public RESTInputGroup() {
+    public RESTOutputGroup() {
     }
 
-    @XmlAttribute(name = "enabled")
-    public Boolean isEnabled() {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Boolean getEnabled() {
         return enabled;
     }
 
@@ -69,10 +74,10 @@ public class RESTInputGroup extends AbstractRESTPayload {
     @Override
     public String toString() {
         return getClass().getSimpleName()
-                + "["
+                + "[id:" + id
                 + (extId!=null? " extid=" + extId : "")
-                + (name != null? " name=" + name : "")
-                + (enabled != null? (enabled? " enabled" : " disabled") : "")
+                + " name=" + name
+                + (enabled? "" : "disabled")
                 + ']';
     }
 }

@@ -54,7 +54,7 @@ public class MainTest implements InitializingBean {
     private RuleAdminService ruleAdminService;
     private UserGroupAdminService userGroupAdminService;
     private UserAdminService userAdminService;
-    private GFUserAdminService grUserAdminService;
+    private GFUserAdminService gfUserAdminService;
     private InstanceAdminService instanceAdminService;
     private InstanceCleaner instanceCleaner;
 
@@ -62,7 +62,7 @@ public class MainTest implements InitializingBean {
         LOGGER.info("===== Starting Geofence REST test services =====");
 
         instanceCleaner.removeAll();
-        instanceCleaner.removeAllGRUsers();
+        instanceCleaner.removeAllGFUsers();
 
         setUpTestRule();
     }
@@ -87,7 +87,7 @@ public class MainTest implements InitializingBean {
         u0.setFullName("Sample G.F. Admin");
         u0.setEmailAddress("gf.admin@geofence.net");
         u0.setExtId("sample_geoserver_user");
-        grUserAdminService.insert(u0);
+        gfUserAdminService.insert(u0);
 
         GSUser u1 = new GSUser();
         u1.setAdmin(true);
@@ -177,11 +177,6 @@ public class MainTest implements InitializingBean {
             assert details.getAllowedStyles().contains("style1");
         }
 
-        Map<String, String> ldcp = new HashMap<String, String>();
-        ldcp.put("a", "x");
-        ldcp.put("b", "y");
-        ruleAdminService.setDetailsProps(r1id, ldcp);
-
     }
 
     // ==========================================================================
@@ -190,23 +185,23 @@ public class MainTest implements InitializingBean {
     }
 
     // ==========================================================================
-    public void setUserGroupAdminService(UserGroupAdminService userGroupAdminService) {
-        this.userGroupAdminService = userGroupAdminService;
+    public void setUserGroupAdminService(UserGroupAdminService service) {
+        this.userGroupAdminService = service;
     }
 
-    public void setUserAdminService(UserAdminService userAdminService) {
-        this.userAdminService = userAdminService;
+    public void setUserAdminService(UserAdminService service) {
+        this.userAdminService = service;
     }
 
-    public void setInstanceAdminService(InstanceAdminService instanceAdminService) {
-        this.instanceAdminService = instanceAdminService;
+    public void setInstanceAdminService(InstanceAdminService service) {
+        this.instanceAdminService = service;
     }
 
-    public void setRuleAdminService(RuleAdminService ruleAdminService) {
-        this.ruleAdminService = ruleAdminService;
+    public void setRuleAdminService(RuleAdminService service) {
+        this.ruleAdminService = service;
     }
 
-    public void setGrUserAdminService(GFUserAdminService grUserAdminService) {
-        this.grUserAdminService = grUserAdminService;
+    public void setGfUserAdminService(GFUserAdminService service) {
+        this.gfUserAdminService = service;
     }
 }

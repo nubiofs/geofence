@@ -20,12 +20,14 @@
 
 package it.geosolutions.geofence.services;
 
+import it.geosolutions.geofence.core.model.Rule;
 import java.util.List;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import it.geosolutions.geofence.core.model.UserGroup;
+import it.geosolutions.geofence.core.model.enums.GrantType;
 import it.geosolutions.geofence.services.dto.ShortGroup;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 import java.util.HashMap;
@@ -55,6 +57,32 @@ public class UserGroupAdminServiceImplTest extends ServiceTestBase {
         userGroupAdminService.get(p.getId()); // will throw if not found
         assertTrue("Could not delete group", userGroupAdminService.delete(p.getId()));
     }
+
+    @Test
+    public void testDeleteCascadeGroup() throws NotFoundServiceEx {
+
+        UserGroup group = createUserGroup(getName());
+        Rule rule = new Rule();
+        rule.setUserGroup(group);
+        rule.setAccess(GrantType.ALLOW);
+        ruleAdminService.insert(rule);
+
+        {
+            Rule loaded = ruleAdminService.get(rule.getId()); // will throw if not found
+            assertNotNull(loaded);
+        }
+
+        try {
+            userGroupAdminService.delete(group.getId());
+            fail("Group reference not trapped");
+        } catch (Exception e) {
+            LOGGER.info("Exception properly trapped ("+e.getClass().getSimpleName()+")");
+        }
+
+        ruleAdminService.delete(rule.getId());
+        userGroupAdminService.delete(group.getId());
+    }
+
 
     @Test
     public void testUpdate() throws Exception {

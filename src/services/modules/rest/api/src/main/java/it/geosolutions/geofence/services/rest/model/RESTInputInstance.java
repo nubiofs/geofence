@@ -19,7 +19,6 @@
  */
 package it.geosolutions.geofence.services.rest.model;
 
-import javax.xml.bind.annotation.XmlAttribute;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -29,33 +28,34 @@ import javax.xml.bind.annotation.XmlType;
  *
  * @author Etj (etj at geo-solutions.it)
  */
-@XmlRootElement(name = "userGroup")
-@XmlType(name="Group", propOrder = {"extId", "name"})
-public class RESTInputGroup extends AbstractRESTPayload {
+@XmlRootElement(name = "instance")
+@XmlType(name="Instance", propOrder={"name","description","baseURL","username","password"})
+public class RESTInputInstance extends AbstractRESTPayload {
 
-    private static final long serialVersionUID = -8410646966443187827L;
     private String name;
-    private String extId;
-    private Boolean enabled;
+    private String description;
 
-    public RESTInputGroup() {
+    private String baseURL;
+    private String username;
+    private String password;
+
+    public RESTInputInstance() {
     }
 
-    @XmlAttribute(name = "enabled")
-    public Boolean isEnabled() {
-        return enabled;
+    public String getBaseURL() {
+        return baseURL;
     }
 
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
+    public void setBaseURL(String baseURL) {
+        this.baseURL = baseURL;
     }
 
-    public String getExtId() {
-        return extId;
+    public String getDescription() {
+        return description;
     }
 
-    public void setExtId(String extId) {
-        this.extId = extId;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getName() {
@@ -66,13 +66,29 @@ public class RESTInputGroup extends AbstractRESTPayload {
         this.name = name;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName()
-                + "["
-                + (extId!=null? " extid=" + extId : "")
-                + (name != null? " name=" + name : "")
-                + (enabled != null? (enabled? " enabled" : " disabled") : "")
+                + "[name:" + name
+                + (username!=null? " user:" + username : "")
+                + (password!=null? " pw" : "")
+                + (baseURL!=null? " url:" + baseURL : "")
                 + ']';
     }
 }

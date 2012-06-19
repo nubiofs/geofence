@@ -15,129 +15,13 @@
             http://www.springframework.org/schema/context   http://www.springframework.org/schema/context/spring-context-3.0.xsd"
        default-autowire="byName">
 
-   <!-- === CXF ======================================================== -->
-
-	<!-- Load CXF modules from cxf.jar -->
-    <import resource="classpath:META-INF/cxf/cxf.xml"/>
-    <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
-    <import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml" />
-
-    <!-- ====================================================================-->
-    <!-- === Service providers ==============================================-->
     <!-- ====================================================================-->
 
-    <bean id="restUserService" class="it.geosolutions.geofence.services.rest.impl.RESTUserServiceImpl">
-        <property name="profileAdminService" ref="profileAdminService"/>
+<!--    <bean id="userGroupTest" class="it.geosolutions.geofence.services.rest.impl.RESTUserServiceImplTest">
+        <property name="userGroupAdminService" ref="userGroupAdminService"/>
         <property name="userAdminService" ref="userAdminService"/>
-    </bean>
-
-    <bean id="restProfileService" class="it.geosolutions.geofence.services.rest.impl.RESTProfileServiceImpl">
-        <property name="profileAdminService" ref="profileAdminService"/>
-    </bean>
-
-    <bean id="restConfigService" class="it.geosolutions.geofence.services.rest.impl.RESTConfigServiceImpl">
-    </bean>
-
-    <bean id="instanceCleaner" class="it.geosolutions.geofence.services.rest.utils.InstanceCleaner">
-    </bean>
-
-
-    <!-- ====================================================================-->
-    <!-- === REST Services ==================================================-->
-    <!-- ====================================================================-->
-
-    <jaxrs:server id="geofenceRESTUser" address="/users">
-        <jaxrs:serviceBeans>
-          <ref bean="restUserService"/>
-        </jaxrs:serviceBeans>
-
-        <jaxrs:features>
-             <cxf:logging/>
-        </jaxrs:features>
-
-<!--        <jaxrs:providers>
-           <ref bean="jaxbXmlProvider"/>
-           <ref bean="jsonProvider"/>
-        </jaxrs:providers>-->
-
-        <!--jaxrs:inInterceptors>
-           <ref bean="securityInterceptor"/>
-           <<ref bean="authorizationInterceptor"/>>
-        </jaxrs:inInterceptors-->
-    </jaxrs:server>
-
-    <jaxrs:server id="geofenceRESTProfile" address="/profiles">
-        <jaxrs:serviceBeans>
-          <ref bean="restProfileService"/>
-        </jaxrs:serviceBeans>
-
-        <jaxrs:features>
-             <cxf:logging/>
-        </jaxrs:features>
-
-        <jaxrs:providers>
-           <ref bean="jaxbXmlProvider"/>
-           <ref bean="jsonProvider"/>
-<!--           <ref bean="jaxbContextResolver"/>-->
-        </jaxrs:providers>
-
-        <jaxrs:inInterceptors>
-<!--            <bean class="it.geosolutions.geostore.services.rest.utils.GeoStoreAuthenticationInterceptor"/>
-            <bean class="org.apache.cxf.interceptor.security.SecureAnnotationsInterceptor">
-               <property name="securedObject" ref="restResourceService"/>
-            </bean>-->
-        </jaxrs:inInterceptors>
-    </jaxrs:server>
-
-    <jaxrs:server id="geofenceRESTConfig" address="/config">
-        <jaxrs:serviceBeans>
-          <ref bean="restConfigService"/>
-        </jaxrs:serviceBeans>
-
-        <jaxrs:features>
-             <cxf:logging/>
-        </jaxrs:features>
-
-        <jaxrs:providers>
-           <ref bean="jaxbXmlProvider"/>
-           <ref bean="jsonProvider"/>
-        </jaxrs:providers>
-
-<!--        <jaxrs:inInterceptors>
-            <bean class="org.apache.cxf.interceptor.security.SecureAnnotationsInterceptor">
-               <property name="securedObject" ref="restCategoryService"/>
-            </bean>
-        </jaxrs:inInterceptors>-->
-    </jaxrs:server>
-
-    <!-- ====================================================================-->
-    <!-- === CXF Providers ==================================================-->
-    <!-- ====================================================================-->
-
-    <bean id="jaxbXmlProvider" class="org.apache.cxf.jaxrs.provider.JAXBElementProvider"/>
-    <bean id="jsonProvider" class="org.apache.cxf.jaxrs.provider.JSONProvider"/>
-<!--    <bean id="jaxbContextResolver" class="it.geosolutions.geostore.services.rest.auth.JAXBContextResolver" />-->
-
-    <!-- ====================================================================-->
-    <!-- === CXF Interceptors ===============================================-->
-    <!-- ====================================================================-->
-
-<!--    <bean id="securityInterceptor" class="it.geosolutions.geostore.services.rest.auth.AuthenticationHandler">
-    	<property name="realm" value="GeoStore REST Service"/>
     </bean>-->
 
-<!--    <bean id="authorizationInterceptor2" class="org.apache.cxf.interceptor.security.SecureAnnotationsInterceptor">
-       <property name="securedObject" ref="secureBean"/>
-    </bean>-->
 
-    <!--bean id="authorizationInterceptor" class="org.apache.cxf.interceptor.security.SimpleAuthorizingInterceptor">
-	   <property name="methodRolesMap">
-	      <map>
-	        <entry key="insert" value="ADMIN"/>
-	        <entry key="update" value="ADMIN USER"/>
-	        <entry key="delete" value="ADMIN USER"/>
-	      </map>
-	   </property>
-	</bean-->
 
 </beans>

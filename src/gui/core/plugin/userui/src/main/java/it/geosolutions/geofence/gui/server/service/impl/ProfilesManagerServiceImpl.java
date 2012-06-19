@@ -203,7 +203,8 @@ public class ProfilesManagerServiceImpl implements IProfilesManagerService
                 ShortGroup short_profile = new ShortGroup();
                 short_profile.setName(profile.getName());
                 short_profile.setEnabled(profile.isEnabled());
-                short_profile.setDateCreation(profile.getDateCreation());
+                // removed by ETj
+//                short_profile.setDateCreation(profile.getDateCreation());
                 geofenceRemoteService.getUserGroupAdminService().insert(short_profile);
             }
             catch (Exception e)

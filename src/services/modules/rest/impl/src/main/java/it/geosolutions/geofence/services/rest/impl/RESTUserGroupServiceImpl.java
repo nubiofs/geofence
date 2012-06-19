@@ -19,20 +19,32 @@
  */
 package it.geosolutions.geofence.services.rest.impl;
 
+import it.geosolutions.geofence.core.model.GSUser;
 import java.util.List;
 
 import it.geosolutions.geofence.core.model.UserGroup;
 import it.geosolutions.geofence.services.UserGroupAdminService;
+import it.geosolutions.geofence.services.dto.RuleFilter;
+import it.geosolutions.geofence.services.dto.RuleFilter.SpecialFilterType;
 import it.geosolutions.geofence.services.dto.ShortGroup;
 import it.geosolutions.geofence.services.exception.BadRequestServiceEx;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 import it.geosolutions.geofence.services.rest.RESTUserGroupService;
 import it.geosolutions.geofence.services.rest.exception.BadRequestRestEx;
 import it.geosolutions.geofence.services.rest.exception.ConflictRestEx;
+import it.geosolutions.geofence.services.rest.exception.GeoFenceRestEx;
 import it.geosolutions.geofence.services.rest.exception.InternalErrorRestEx;
 import it.geosolutions.geofence.services.rest.exception.NotFoundRestEx;
 import it.geosolutions.geofence.services.rest.model.RESTInputGroup;
+import it.geosolutions.geofence.services.rest.model.RESTInputUser;
+import it.geosolutions.geofence.services.rest.model.RESTOutputGroup;
+import it.geosolutions.geofence.services.rest.model.RESTOutputUser;
 import it.geosolutions.geofence.services.rest.model.config.RESTFullUserGroupList;
+import it.geosolutions.geofence.services.rest.model.util.IdName;
+import java.util.HashSet;
+import java.util.Set;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.log4j.Logger;
 
@@ -40,55 +52,32 @@ import org.apache.log4j.Logger;
  *
  * @author ETj (etj at geo-solutions.it)
  */
-public class RESTUserGroupServiceImpl implements RESTUserGroupService {
+public class RESTUserGroupServiceImpl
+        extends BaseRESTServiceImpl
+        implements RESTUserGroupService {
 
     private static final Logger LOGGER = Logger.getLogger(RESTUserGroupServiceImpl.class);
-    private UserGroupAdminService userGroupAdminService;
+//    private UserGroupAdminService userGroupAdminService;
 
     @Override
-    public RESTFullUserGroupList getUserGroups(String nameLike, Integer page, Integer entries) {
-        List<UserGroup> groups = userGroupAdminService.getFullList(nameLike, page, entries);
-
-//        // load lazy data
-//        for (UserGroup profile : profiles)
-//        {
-//            Map<String, String> props = profileService.getCustomProps(profile.getId());
-//            profile.setCustomProps(props);
-//        }
-
-        RESTFullUserGroupList ret = new RESTFullUserGroupList();
-        ret.setList(groups);
-
-        return ret;
+    public RESTFullUserGroupList getList(String nameLike, Integer page, Integer entries) {
+        List<ShortGroup> groups = userGroupAdminService.getList(nameLike, page, entries);
+        return new RESTFullUserGroupList(groups);
     }
 
     @Override
-    public long getCount(String nameLike) {
+    public long count(String nameLike) {
         return userGroupAdminService.getCount(nameLike);
     }
 
     @Override
-    public void delete(Long id) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
-        try {
-            userGroupAdminService.delete(id);
-        } catch (NotFoundServiceEx ex) {
-            LOGGER.warn(ex);
-            throw new NotFoundRestEx("UserGroup not found");
-        } catch (Exception ex) {
-            LOGGER.error(ex);
-            throw new InternalErrorRestEx(ex.getMessage());
-        }
-    }
-
-    @Override
-    public UserGroup get(Long id) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+    public ShortGroup get(Long id) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
         try {
             UserGroup ret = userGroupAdminService.get(id);
-
-            return ret;
+            return new ShortGroup(ret);
         } catch (NotFoundServiceEx ex) {
-            LOGGER.warn(ex);
-            throw new NotFoundRestEx("UserGroup not found");
+            LOGGER.warn("UserGroup not found: " + id);
+            throw new NotFoundRestEx("UserGroup not found: " + id);
         } catch (Exception ex) {
             LOGGER.error(ex);
             throw new InternalErrorRestEx(ex.getMessage());
@@ -96,7 +85,21 @@ public class RESTUserGroupServiceImpl implements RESTUserGroupService {
     }
 
     @Override
-    public Long insert(RESTInputGroup userGroup) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx, ConflictRestEx {
+    public ShortGroup get(String name) throws NotFoundRestEx, InternalErrorRestEx {
+        try {
+            UserGroup ret = userGroupAdminService.get(name);
+            return new ShortGroup(ret);
+        } catch (NotFoundServiceEx ex) {
+            LOGGER.warn("UserGroup not found: " + name);
+            throw new NotFoundRestEx("UserGroup not found: " + name);
+        } catch (Exception ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            throw new InternalErrorRestEx(ex.getMessage());
+        }
+    }
+
+    @Override
+    public Response insert(RESTInputGroup userGroup) throws NotFoundRestEx, InternalErrorRestEx, ConflictRestEx {
 
         // check that no group with same name exists
         boolean exists;
@@ -116,48 +119,123 @@ public class RESTUserGroupServiceImpl implements RESTUserGroupService {
             throw new ConflictRestEx("UserGroup '"+userGroup.getName()+"' already exists");
 
         // ok: insert it
-        ShortGroup insert = new ShortGroup();
-        insert.setEnabled(userGroup.getEnabled());
-        insert.setExtId(userGroup.getExtId());
-        insert.setName(userGroup.getName());
+        try {
+            ShortGroup insert = new ShortGroup();
+            insert.setEnabled(userGroup.isEnabled());
+            insert.setExtId(userGroup.getExtId());
+            insert.setName(userGroup.getName());
 
-        Long id = userGroupAdminService.insert(insert);
+            Long id = userGroupAdminService.insert(insert);
+            return Response.status(Status.CREATED).tag(id.toString()).entity(id).build();
 
-        return id;
+        } catch (Exception ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            throw new InternalErrorRestEx(ex.getMessage());
+        }
     }
 
     @Override
-    public void update(Long id, RESTInputGroup userGroup) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+    public void update(String name, RESTInputGroup group) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+        try {
+            UserGroup old = userGroupAdminService.get(name);
+            update(old.getId(), group);
+        } catch (NotFoundServiceEx ex) {
+            LOGGER.warn("UserGroup not found: " + name);
+            throw new NotFoundRestEx("UserGroup not found: " + name);
+        }
+    }
+
+    @Override
+    public void update(Long id, RESTInputGroup group) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
 
         try {
-            UserGroup old = userGroupAdminService.get(id);
+            ShortGroup newGroup = new ShortGroup();
+            newGroup.setId(id);
 
-            if ( (userGroup.getExtId() != null) && !userGroup.getExtId().equals(old.getExtId()) ) {
-                throw new BadRequestServiceEx("ExtId can't be updated");
+            if ( (group.getExtId() != null) ) {
+                throw new BadRequestRestEx("ExtId can't be updated");
             }
 
-            ShortGroup shortGroup = new ShortGroup(old);
-
-            if ( userGroup.getEnabled() != null ) {
-                shortGroup.setEnabled(userGroup.getEnabled());
+            if ( (group.getName() != null) ) {
+                throw new BadRequestRestEx("Name can't be updated");
             }
 
-            userGroupAdminService.update(shortGroup);
+            if ( group.isEnabled() != null ) {
+                newGroup.setEnabled(group.isEnabled());
+            }
 
-//            if ( userGroup.getCustomProps() != null ) {
-//                profileService.setCustomProps(id, userGroup.getCustomProps());
-//            }
+            userGroupAdminService.update(newGroup);
 
+        } catch (GeoFenceRestEx ex) {
+            // already handled
+            throw ex;
         } catch (NotFoundServiceEx ex) {
-            LOGGER.warn("UserGroup not found: " + id);
-            throw new NotFoundRestEx("UserGroup not found: " + id);
+            LOGGER.warn("Group not found id: " + id + ": " + ex.getMessage(), ex);
+            throw new NotFoundRestEx(ex.getMessage());
+        } catch (BadRequestServiceEx ex) {
+            LOGGER.warn("Problems updating group id:" + id + ": " + ex.getMessage(), ex);
+            throw new BadRequestRestEx(ex.getMessage());
+        } catch (Exception ex) {
+            LOGGER.error(ex);
+            throw new InternalErrorRestEx(ex.getMessage());
         }
+    }
+
+    @Override
+    public Response delete(Long id, boolean cascade) throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx {
+        try {
+            if ( cascade ) {
+                ruleAdminService.deleteRulesByGroup(id);
+            } else {
+                RuleFilter filter = new RuleFilter(SpecialFilterType.ANY);
+                filter.setUserGroup(id);
+                filter.getUser().setIncludeDefault(false);
+                long cnt = ruleAdminService.count(filter);
+                if ( cnt > 0 ) {
+                    throw new ConflictRestEx("Existing rules reference the group " + id);
+                }
+            }
+
+            if ( ! userGroupAdminService.delete(id)) {
+                LOGGER.warn("Group not found: " + id);
+                throw new NotFoundRestEx("Group not found: " + id);
+            }
+
+            return Response.status(Status.OK).entity("OK\n").build();
+
+        } catch (GeoFenceRestEx ex) { // already handled
+            throw ex;
+        } catch (NotFoundServiceEx ex) {
+            LOGGER.warn("Group not found: " + id);
+            throw new NotFoundRestEx("Group not found: " + id);
+        } catch (Exception ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            throw new InternalErrorRestEx(ex.getMessage());
+        }
+    }
+
+    @Override
+    public Response delete(String name, boolean cascade) throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx {
+        try {
+            long id = userGroupAdminService.get(name).getId();
+            return this.delete(id, cascade);
+        } catch (NotFoundServiceEx ex) {
+            LOGGER.warn("Group not found: " + name);
+            throw new NotFoundRestEx("Group not found: " + name);
+        } catch (GeoFenceRestEx ex) { // already handled
+            throw ex;
+        } catch (Exception ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            throw new InternalErrorRestEx(ex.getMessage());
+        }
+
     }
 
     // ==========================================================================
     // ==========================================================================
     
-    public void setUserGroupAdminService(UserGroupAdminService service) {
-        this.userGroupAdminService = service;
-    }
+//    public void setUserGroupAdminService(UserGroupAdminService service) {
+//        this.userGroupAdminService = service;
+//    }
+
 }

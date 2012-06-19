@@ -21,6 +21,7 @@
 package it.geosolutions.geofence.core.dao;
 
 import it.geosolutions.geofence.core.model.Rule;
+import it.geosolutions.geofence.core.model.enums.InsertPosition;
 
 /**
  * Public interface to define operations on Rule
@@ -45,5 +46,7 @@ public interface RuleDAO extends RestrictedGenericDAO<Rule> {
      * Swaps the priorities of the two rules.
      */
     public void swap(long id1, long id2);
+
+    long persist(Rule entity, InsertPosition position);
 
 }

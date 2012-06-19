@@ -199,6 +199,12 @@
                 <version>${geofence-version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>it.geosolutions.geofence</groupId>
+                <artifactId>geofence-rest-impl</artifactId>
+                <version>${geofence-version}</version>
+            </dependency>
+
 		<!-- =========================================================== -->
 		<!--     GeoServer Manager                                       -->
 		<!-- =========================================================== -->

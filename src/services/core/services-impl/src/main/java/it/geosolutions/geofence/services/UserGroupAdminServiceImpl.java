@@ -115,16 +115,6 @@ public class UserGroupAdminServiceImpl implements UserGroupAdminService {
     }
 
     @Override
-    public List<UserGroup> getFullList(String nameLike, Integer page, Integer entries) {
-        Search searchCriteria = buildCriteria(page, entries, nameLike);
-        List<UserGroup> found = userGroupDAO.search(searchCriteria);
-//        for (UserGroup group : found) {
-//            group.setCustomProps(userGroupDAO.getCustomProps(group.getId()));
-//        }
-        return found;
-    }
-
-    @Override
     public List<ShortGroup> getList(String nameLike, Integer page, Integer entries) {
         Search searchCriteria = buildCriteria(page, entries, nameLike);
         List<UserGroup> found = userGroupDAO.search(searchCriteria);

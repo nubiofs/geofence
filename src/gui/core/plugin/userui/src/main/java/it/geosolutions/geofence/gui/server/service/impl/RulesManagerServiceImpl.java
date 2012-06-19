@@ -82,6 +82,7 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
+import java.util.Collections;
 
 /**
  * The Class RulesManagerServiceImpl.
@@ -547,6 +548,9 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 	 * it.geosolutions.geofence.gui.client.model.data.LayerCustomProps)
 	 */
 	public void setDetailsProps(Long ruleId, List<LayerCustomProps> customProps) {
+
+        logger.error("TODO: rule refactoring!!! custom props have been removed");
+
 		Map<String, String> props = new HashMap<String, String>();
 
 		for (LayerCustomProps prop : customProps) {
@@ -584,12 +588,13 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 					}
 				}
 
-				details.setCustomProps(props);
-				geofenceRemoteService.getRuleAdminService().setDetails(ruleId,
-						details);
+                // REMOVED BY ETj
+//				details.setCustomProps(props); 
+//				geofenceRemoteService.getRuleAdminService().setDetails(ruleId,
+//						details);
 			} else {
-				geofenceRemoteService.getRuleAdminService().setDetailsProps(
-						ruleId, props);
+//				geofenceRemoteService.getRuleAdminService().setDetailsProps(
+//						ruleId, props);
 			}
 
 		} catch (Exception e) {

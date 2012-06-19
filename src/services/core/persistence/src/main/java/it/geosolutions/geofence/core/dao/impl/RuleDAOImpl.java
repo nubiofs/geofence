@@ -19,6 +19,7 @@
  */
 package it.geosolutions.geofence.core.dao.impl;
 
+import com.googlecode.genericdao.search.Field;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -30,6 +31,7 @@ import it.geosolutions.geofence.core.dao.RuleDAO;
 import it.geosolutions.geofence.core.model.Rule;
 
 import it.geosolutions.geofence.core.model.enums.GrantType;
+import it.geosolutions.geofence.core.model.enums.InsertPosition;
 import org.apache.log4j.Logger;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,6 +69,92 @@ public class RuleDAOImpl extends BaseDAO<Rule, Long> implements RuleDAO {
         }
         super.persist(entities);
     }
+
+    @Override
+    public long persist(Rule entity, InsertPosition position) {
+        switch(position) {
+            case FIXED:
+                // priority is already set
+                break;
+            case FROM_START:
+                Search search = new Search(Rule.class);
+                search.setFirstResult((int)entity.getPriority());
+                search.setMaxResults(1);
+                search.addSortAsc("priority");
+                List<Rule> list = super._search(search);
+                if(list.isEmpty()) { // no rule found at given position: let's find out why
+                    int count = count(new Search(Rule.class));
+                    if(LOGGER.isDebugEnabled())
+                        LOGGER.debug("No rule found at position " + entity.getPriority() + " -- rules count:"+count);
+
+                    if(count == 0) { // this is the first rule inserted
+                        if(LOGGER.isDebugEnabled())
+                            LOGGER.debug("Inserting first rule");
+                        entity.setPriority(1); // this is the only rule so far, let's put in an arbitrary value
+                    } else { // some rules in, the requested postion is at bottom
+                        Search s1 = new Search(Rule.class);
+                        s1.addField("priority", Field.OP_MAX);
+                        long maxPri = (Long)searchUnique(s1);
+                        entity.setPriority(maxPri+1);
+                        if(LOGGER.isDebugEnabled())
+                            LOGGER.debug("Inserting rule in last position");
+                    }
+                } else {
+                    long basepri = list.get(0).getPriority();
+                    if(LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("shifting rules from priority " + basepri + " downward");
+                    }
+                    int i = shift(basepri, 1);
+                    if(LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("shifted "+i+" rules from priority " + basepri + " downward");
+                    }
+                    entity.setPriority(basepri);
+                }
+                break;
+
+            case FROM_END:
+                long posFromEnd = entity.getPriority();
+                int count = count(new Search(Rule.class));
+                long posFromStart = count - posFromEnd -1;
+
+                if(LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Inserting rule -- count:"+count+" pos:-"+posFromEnd+"+"+posFromStart);
+                }
+
+                if(posFromStart < 0 ) {
+                    throw new IllegalArgumentException("Bad position from end ("+posFromEnd+") with count="+count);
+                }
+
+
+                Search searchEnd = new Search(Rule.class);
+                searchEnd.setFirstResult((int)posFromStart);
+                searchEnd.setMaxResults(1);
+                searchEnd.addSortAsc("priority");
+                List<Rule> list1 = super._search(searchEnd);
+                if(list1.isEmpty()) { // no rule found at given position: let's find out why
+                    throw new IllegalArgumentException("Bad position from end ("+posFromEnd+") with count="+count);
+                } else {
+                    long basepri = list1.get(0).getPriority()+1;
+                    if(LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("shifting rules from priority " + basepri + " downward");
+                    }
+                    int i = shift(basepri, 1);
+                    if(LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("shifted "+i+" rules from priority " + basepri + " downward");
+                    }
+                    entity.setPriority(basepri);
+                }
+                break;
+
+            default:
+                throw new IllegalArgumentException("Bad position type " + position);
+
+        }
+
+        this.persist(entity);
+        return entity.getPriority();
+    }
+
 
     private Search getDupSearch(Rule rule) {
         Search search = new Search(Rule.class);

@@ -35,8 +35,21 @@
 <!--        <property name="userGroupAdminService" ref="userGroupAdminService"/>-->
     </bean>
 
+    <bean id="restInstanceService" class="it.geosolutions.geofence.services.rest.impl.RESTInstanceServiceImpl">
+<!--        <property name="userGroupAdminService" ref="userGroupAdminService"/>-->
+    </bean>
+
+    <bean id="restRuleService" class="it.geosolutions.geofence.services.rest.impl.RESTRuleServiceImpl">
+    </bean>
+
     <bean id="restConfigService" class="it.geosolutions.geofence.services.rest.impl.RESTConfigServiceImpl">
     </bean>
+
+    <bean id="restBatchService" class="it.geosolutions.geofence.services.rest.impl.RESTBatchServiceImpl">
+    </bean>
+
+    <!-- ====================================================================-->
+
 
     <bean id="instanceCleaner" class="it.geosolutions.geofence.services.rest.utils.InstanceCleaner">
     </bean>
@@ -89,6 +102,52 @@
         </jaxrs:inInterceptors>
     </jaxrs:server>
 
+    <jaxrs:server id="geofenceRESTInstances" address="/instances">
+        <jaxrs:serviceBeans>
+          <ref bean="restInstanceService"/>
+        </jaxrs:serviceBeans>
+
+        <jaxrs:features>
+             <cxf:logging/>
+        </jaxrs:features>
+
+        <jaxrs:providers>
+           <ref bean="jaxbXmlProvider"/>
+           <ref bean="jsonProvider"/>
+<!--           <ref bean="jaxbContextResolver"/>-->
+        </jaxrs:providers>
+
+        <jaxrs:inInterceptors>
+<!--            <bean class="it.geosolutions.geostore.services.rest.utils.GeoStoreAuthenticationInterceptor"/>
+            <bean class="org.apache.cxf.interceptor.security.SecureAnnotationsInterceptor">
+               <property name="securedObject" ref="restResourceService"/>
+            </bean>-->
+        </jaxrs:inInterceptors>
+    </jaxrs:server>
+
+    <jaxrs:server id="geofenceRESTRules" address="/rules">
+        <jaxrs:serviceBeans>
+          <ref bean="restRuleService"/>
+        </jaxrs:serviceBeans>
+
+        <jaxrs:features>
+             <cxf:logging/>
+        </jaxrs:features>
+
+        <jaxrs:providers>
+           <ref bean="jaxbXmlProvider"/>
+           <ref bean="jsonProvider"/>
+<!--           <ref bean="jaxbContextResolver"/>-->
+        </jaxrs:providers>
+
+        <jaxrs:inInterceptors>
+<!--            <bean class="it.geosolutions.geostore.services.rest.utils.GeoStoreAuthenticationInterceptor"/>
+            <bean class="org.apache.cxf.interceptor.security.SecureAnnotationsInterceptor">
+               <property name="securedObject" ref="restResourceService"/>
+            </bean>-->
+        </jaxrs:inInterceptors>
+    </jaxrs:server>
+
     <jaxrs:server id="geofenceRESTConfig" address="/config">
         <jaxrs:serviceBeans>
           <ref bean="restConfigService"/>
@@ -101,6 +160,26 @@
         <jaxrs:providers>
            <ref bean="jaxbXmlProvider"/>
            <ref bean="jsonProvider"/>
+        </jaxrs:providers>
+
+<!--        <jaxrs:inInterceptors>
+            <bean class="org.apache.cxf.interceptor.security.SecureAnnotationsInterceptor">
+               <property name="securedObject" ref="restCategoryService"/>
+            </bean>
+        </jaxrs:inInterceptors>-->
+    </jaxrs:server>
+
+    <jaxrs:server id="geofenceRESTBatch" address="/batch">
+        <jaxrs:serviceBeans>
+          <ref bean="restBatchService"/>
+        </jaxrs:serviceBeans>
+
+        <jaxrs:features>
+             <cxf:logging/>
+        </jaxrs:features>
+
+        <jaxrs:providers>
+           <ref bean="jaxbXmlProvider"/>
         </jaxrs:providers>
 
 <!--        <jaxrs:inInterceptors>

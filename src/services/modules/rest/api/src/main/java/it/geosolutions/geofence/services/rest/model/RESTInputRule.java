@@ -19,29 +19,21 @@
  */
 package it.geosolutions.geofence.services.rest.model;
 
-import it.geosolutions.geofence.core.model.LayerAttribute;
 import it.geosolutions.geofence.core.model.enums.GrantType;
-import it.geosolutions.geofence.core.model.enums.LayerType;
 import it.geosolutions.geofence.services.rest.model.util.IdName;
-import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.HashSet;
-import java.util.Set;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
-import org.springframework.expression.spel.ast.Identifier;
 
 /**
  * A compact representation of Rule
  *
  * @author Etj (etj at geo-solutions.it)
  */
-@XmlRootElement(name = "Rule")
-@XmlType(propOrder={"position","grant","user","group","instance","service","request","workspace","layer","constraints"})
-public class RESTInputRule implements Serializable {
+@XmlRootElement(name = "rule")
+@XmlType(name="Rule", propOrder={"position","grant","user","group","instance","service","request","workspace","layer","constraints"})
+public class RESTInputRule extends AbstractRESTPayload {
 
     private RESTRulePosition position;
 
@@ -170,80 +162,7 @@ public class RESTInputRule implements Serializable {
         this.grant = grant;
     }
 
-
-    @XmlType(propOrder={"type","defaultStyle","cqlFilterRead","cqlFilterWrite","restrictedAreaWkt",
-        "allowedStyles","attributes"})
-    public static class RESTLayerConstraints {
-
-        private LayerType type;
-        private String defaultStyle;
-        private String cqlFilterRead;
-        private String cqlFilterWrite;
-        private String restrictedAreaWkt;
-        private Set<String> allowedStyles = new HashSet<String>();
-        private Set<LayerAttribute> attributes = new HashSet<LayerAttribute>();
-
-        @XmlElementWrapper(name="allowedStyles")
-        @XmlElement(name="style")
-        public Set<String> getAllowedStyles() {
-            return allowedStyles;
-        }
-
-        public void setAllowedStyles(Set<String> allowedStyles) {
-            this.allowedStyles = allowedStyles;
-        }
-
-        @XmlElementWrapper(name="attributes")
-        @XmlElement(name="attribute")
-        public Set<LayerAttribute> getAttributes() {
-            return attributes;
-        }
-
-        public void setAttributes(Set<LayerAttribute> attributes) {
-            this.attributes = attributes;
-        }
-
-        public String getCqlFilterRead() {
-            return cqlFilterRead;
-        }
-
-        public void setCqlFilterRead(String cqlFilterRead) {
-            this.cqlFilterRead = cqlFilterRead;
-        }
-
-        public String getCqlFilterWrite() {
-            return cqlFilterWrite;
-        }
-
-        public void setCqlFilterWrite(String cqlFilterWrite) {
-            this.cqlFilterWrite = cqlFilterWrite;
-        }
-
-        public String getDefaultStyle() {
-            return defaultStyle;
-        }
-
-        public void setDefaultStyle(String defaultStyle) {
-            this.defaultStyle = defaultStyle;
-        }
-
-        public String getRestrictedAreaWkt() {
-            return restrictedAreaWkt;
-        }
-
-        public void setRestrictedAreaWkt(String restrictedAreaWkt) {
-            this.restrictedAreaWkt = restrictedAreaWkt;
-        }
-
-        public LayerType getType() {
-            return type;
-        }
-
-        public void setType(LayerType type) {
-            this.type = type;
-        }
-        
-    }
+    //=========================================================================
 
     public static class RESTRulePosition {
 

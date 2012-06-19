@@ -90,31 +90,6 @@ public class LayerDetailsDAOImpl extends BaseDAO<LayerDetails, Long> implements 
     }
 
     // ==========================================================================
-    @Override
-    public Map<String, String> getCustomProps(Long id) {
-        LayerDetails found = find(id);
-        if ( found != null ) {
-            Map<String, String> props = found.getCustomProps();
-
-            if ( (props != null) && !Hibernate.isInitialized(props) ) {
-                Hibernate.initialize(props); // fetch the props
-            }
-
-            return props;
-        } else {
-            throw new IllegalArgumentException("LayerDetails not found");
-        }
-    }
-
-    @Override
-    public void setCustomProps(Long id, Map<String, String> props) {
-        LayerDetails found = find(id);
-        if ( found != null ) {
-            found.setCustomProps(props);
-        } else {
-            throw new IllegalArgumentException("LayerDetails not found");
-        }
-    }
 
     @Override
     public Set<String> getAllowedStyles(Long id) {

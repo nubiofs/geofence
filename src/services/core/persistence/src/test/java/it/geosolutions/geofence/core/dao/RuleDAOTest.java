@@ -27,6 +27,7 @@ import it.geosolutions.geofence.core.model.LayerDetails;
 import it.geosolutions.geofence.core.model.Rule;
 import it.geosolutions.geofence.core.model.enums.AccessType;
 import it.geosolutions.geofence.core.model.enums.GrantType;
+import it.geosolutions.geofence.core.model.enums.InsertPosition;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,11 +109,6 @@ public class RuleDAOTest extends BaseDAOTest {
             details.getAttributes().add(new LayerAttribute("a4", AccessType.READWRITE));
 
             detailsDAO.persist(details);
-
-            Map<String, String> props = new HashMap<String, String>();
-            props.put("k1","v1");
-            props.put("k2","v2");
-            detailsDAO.setCustomProps(details.getId(), props);
         }
 
         // check everything's fine
@@ -124,7 +120,6 @@ public class RuleDAOTest extends BaseDAOTest {
             assertEquals("default", details.getDefaultStyle());
             assertEquals(4, details.getAttributes().size());
 
-            assertEquals(2, detailsDAO.getCustomProps(details.getId()).size());
         }
 
         // try removing the details
@@ -177,11 +172,6 @@ public class RuleDAOTest extends BaseDAOTest {
             details.getAllowedStyles().add("s1");
             details.getAttributes().add(new LayerAttribute("a1", AccessType.NONE));
             detailsDAO.persist(details);
-
-            Map<String, String> props = new HashMap<String, String>();
-            props.put("k1","v1");
-            props.put("k2","v2");
-            detailsDAO.setCustomProps(details.getId(), props);
         }
 
         {
@@ -206,12 +196,6 @@ public class RuleDAOTest extends BaseDAOTest {
             details.getAttributes().add(new LayerAttribute("z2", AccessType.READONLY));
             details.getAttributes().add(new LayerAttribute("z3", AccessType.READWRITE));
             detailsDAO.persist(details);
-
-            Map<String, String> props = new HashMap<String, String>();
-            props.put("zk1","zv1");
-            props.put("k2","v2");
-            detailsDAO.setCustomProps(details.getId(), props);
-
         }
 
     }
@@ -358,18 +342,9 @@ public class RuleDAOTest extends BaseDAOTest {
         if(rule.getAccess() != GrantType.ALLOW && details != null)
             throw new RuntimeException("Rule is not of ALLOW type");
 
-        final Map<String, String> oldProps = new HashMap<String, String>();
 
         // remove old details if any
         if(rule.getLayerDetails() != null) {
-
-            // save old props
-            Map<String,String> props = detailsDAO.getCustomProps(ruleId);
-            //cannot reuse the same Map returned by Hibernate, since they will be detached
-            if(props != null) {
-                oldProps.putAll(oldProps);
-            }
-
             detailsDAO.remove(rule.getLayerDetails());
         }
 
@@ -388,18 +363,17 @@ public class RuleDAOTest extends BaseDAOTest {
 
         if(details != null) {
             LOGGER.info("Setting details " + details
-                    + (oldProps.isEmpty()?"":"and " + oldProps + " props ")
                     + "for " + rule);
             details.setRule(rule);
             detailsDAO.persist(details);
             // restore old properties
-            if(oldProps != null) { // always it is, add a size check
-                LOGGER.info("Restoring " + oldProps.size() + " props from older LayerDetails (id:"+ruleId+")");
-                detailsDAO.setCustomProps(ruleId, oldProps);
-            }
+//            if(oldProps != null) { // always it is, add a size check
+//                LOGGER.info("Restoring " + oldProps.size() + " props from older LayerDetails (id:"+ruleId+")");
+//                detailsDAO.setCustomProps(ruleId, oldProps);
+//            }
         } else {
             LOGGER.info("Removing details "
-                    + (oldProps.isEmpty()?"":"and " + oldProps + " props ")
+//                    + (oldProps.isEmpty()?"":"and " + oldProps + " props ")
                     + "for " + rule);
         }
     }
@@ -472,5 +446,55 @@ public class RuleDAOTest extends BaseDAOTest {
         assertEquals(10, ruleDAO.find(r2.getId()).getPriority());
         assertEquals(30, ruleDAO.find(r3.getId()).getPriority());
     }
+
+    @Test
+    public void testPersistRulePosition() throws Exception {
+
+        long id1;
+        {
+            assertEquals(0, ruleDAO.count(new Search(Rule.class)));
+            Rule rule1 = new Rule(1000, null, null, null, "s", null, null, null, GrantType.ALLOW);
+            ruleDAO.persist(rule1, InsertPosition.FROM_START);
+            id1 = rule1.getId();
+        }
+
+        {
+            Rule loaded = ruleDAO.find(id1);
+            assertNotNull(loaded);
+            assertEquals(1, loaded.getPriority());
+        }
+
+
+        ruleDAO.persist(new Rule(10, null, null, null, "s10", null, null, null, GrantType.ALLOW));
+        ruleDAO.persist(new Rule(20, null, null, null, "s20", null, null, null, GrantType.ALLOW));
+
+        {
+            assertEquals(3, ruleDAO.count(new Search(Rule.class)));
+            Rule rule1 = new Rule(1000, null, null, null, "sZ", null, null, null, GrantType.ALLOW);
+            long pri = ruleDAO.persist(rule1, InsertPosition.FROM_START);
+            assertEquals(21, pri);
+        }
+
+        {
+            Rule rule1 = new Rule(1, null, null, null, "second", null, null, null, GrantType.ALLOW);
+            long pri = ruleDAO.persist(rule1, InsertPosition.FROM_START);
+            assertEquals(10, pri);
+        }
+
+        {
+            Rule rule1 = new Rule(0, null, null, null, "last", null, null, null, GrantType.ALLOW);
+            long pri = ruleDAO.persist(rule1, InsertPosition.FROM_END);
+            assertEquals(23, pri);
+        }
+
+        {
+            Rule rule1 = new Rule(1, null, null, null, "last2", null, null, null, GrantType.ALLOW);
+            long pri = ruleDAO.persist(rule1, InsertPosition.FROM_END);
+            assertEquals(23, pri);
+        }
+
+
+    }
+
 }
 
