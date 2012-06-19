@@ -135,8 +135,8 @@ public interface RulesManagerRemoteService extends RemoteService
      * @throws ApplicationException
      *             the application exception
      */
-    public PagingLoadResult<LayerCustomProps> getLayerCustomProps(int offset, int limit, Rule rule)
-        throws ApplicationException;
+//    public PagingLoadResult<LayerCustomProps> getLayerCustomProps(int offset, int limit, Rule rule)
+//        throws ApplicationException;
 
     /**
      * Sets the details props.

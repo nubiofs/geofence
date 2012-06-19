@@ -444,7 +444,7 @@ public class LayerCustomPropsGridWidget extends GeofenceGridWidget<LayerCustomPr
                 @Override
                 protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<LayerCustomProps>> callback)
                 {
-                    rulesService.getLayerCustomProps(((PagingLoadConfig) loadConfig).getOffset(), ((PagingLoadConfig) loadConfig).getLimit(), theRule, callback);
+//                    rulesService.getLayerCustomProps(((PagingLoadConfig) loadConfig).getOffset(), ((PagingLoadConfig) loadConfig).getLimit(), theRule, callback);
                 }
 
             };

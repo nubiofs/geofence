@@ -486,58 +486,58 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 	 * getLayerCustomProps(com.extjs .gxt.ui.client.data.PagingLoadConfig,
 	 * it.geosolutions.geofence.gui.client.model.Rule)
 	 */
-	public PagingLoadResult<LayerCustomProps> getLayerCustomProps(int offset,
-			int limit, Rule rule) {
-		int start = offset;
-		Long t = new Long(0);
-
-		List<LayerCustomProps> customPropsDTO = new ArrayList<LayerCustomProps>();
-
-		if ((rule != null) && (rule.getId() >= 0)) {
-			try {
-				Map<String, String> customProperties = geofenceRemoteService
-						.getRuleAdminService().getDetailsProps(rule.getId());
-
-				if (customProperties == null) {
-					if (logger.isErrorEnabled()) {
-						logger.error("No property found on server");
-					}
-					throw new ApplicationException("No rule found on server");
-				}
-
-				long rulesCount = customProperties.size();
-
-				t = new Long(rulesCount);
-
-				int page = (start == 0) ? start : (start / limit);
-
-				SortedSet<String> sortedset = new TreeSet<String>(
-						customProperties.keySet());
-				Iterator<String> it = sortedset.iterator();
-
-				while (it.hasNext()) {
-					String key = it.next();
-					LayerCustomProps property = new LayerCustomProps();
-					property.setPropKey(key);
-					property.setPropValue(customProperties.get(key));
-					customPropsDTO.add(property);
-				}
-
-				// for (String key : customProperties.keySet()) {
-				//
-				// LayerCustomProps property = new LayerCustomProps();
-				// property.setPropKey(key);
-				// property.setPropValue(customProperties.get(key));
-				// customPropsDTO.add(property);
-				// }
-			} catch (Exception e) {
-				// do nothing!
-			}
-		}
-
-		return new RpcPageLoadResult<LayerCustomProps>(customPropsDTO, offset,
-				t.intValue());
-	}
+//	public PagingLoadResult<LayerCustomProps> getLayerCustomProps(int offset,
+//			int limit, Rule rule) {
+//		int start = offset;
+//		Long t = new Long(0);
+//
+//		List<LayerCustomProps> customPropsDTO = new ArrayList<LayerCustomProps>();
+//
+//		if ((rule != null) && (rule.getId() >= 0)) {
+//			try {
+//				Map<String, String> customProperties = geofenceRemoteService
+//						.getRuleAdminService().getDetailsProps(rule.getId());
+//
+//				if (customProperties == null) {
+//					if (logger.isErrorEnabled()) {
+//						logger.error("No property found on server");
+//					}
+//					throw new ApplicationException("No rule found on server");
+//				}
+//
+//				long rulesCount = customProperties.size();
+//
+//				t = new Long(rulesCount);
+//
+//				int page = (start == 0) ? start : (start / limit);
+//
+//				SortedSet<String> sortedset = new TreeSet<String>(
+//						customProperties.keySet());
+//				Iterator<String> it = sortedset.iterator();
+//
+//				while (it.hasNext()) {
+//					String key = it.next();
+//					LayerCustomProps property = new LayerCustomProps();
+//					property.setPropKey(key);
+//					property.setPropValue(customProperties.get(key));
+//					customPropsDTO.add(property);
+//				}
+//
+//				// for (String key : customProperties.keySet()) {
+//				//
+//				// LayerCustomProps property = new LayerCustomProps();
+//				// property.setPropKey(key);
+//				// property.setPropValue(customProperties.get(key));
+//				// customPropsDTO.add(property);
+//				// }
+//			} catch (Exception e) {
+//				// do nothing!
+//			}
+//		}
+//
+//		return new RpcPageLoadResult<LayerCustomProps>(customPropsDTO, offset,
+//				t.intValue());
+//	}
 
 	/*
 	 * (non-Javadoc)

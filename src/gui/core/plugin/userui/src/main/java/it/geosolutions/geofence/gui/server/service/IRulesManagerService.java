@@ -84,7 +84,7 @@ public interface IRulesManagerService
      *            the rule
      * @return the layer custom props
      */
-    public PagingLoadResult<LayerCustomProps> getLayerCustomProps(int offset, int limit, Rule rule);
+//    public PagingLoadResult<LayerCustomProps> getLayerCustomProps(int offset, int limit, Rule rule);
 
     /**
      * Sets the details props.

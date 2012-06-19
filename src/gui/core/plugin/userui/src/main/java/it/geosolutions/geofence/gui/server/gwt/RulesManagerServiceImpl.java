@@ -133,11 +133,11 @@ public class RulesManagerServiceImpl extends RemoteServiceServlet implements Rul
      * it.geosolutions.geofence.gui.client.service.RulesManagerRemoteService#getLayerCustomProps(
      * com.extjs.gxt.ui.client.data.PagingLoadConfig, it.geosolutions.geofence.gui.client.model.Rule)
      */
-    public PagingLoadResult<LayerCustomProps> getLayerCustomProps(int offset, int limit, Rule rule)
-        throws ApplicationException
-    {
-        return rulesManagerService.getLayerCustomProps(offset, limit, rule);
-    }
+//    public PagingLoadResult<LayerCustomProps> getLayerCustomProps(int offset, int limit, Rule rule)
+//        throws ApplicationException
+//    {
+//        return rulesManagerService.getLayerCustomProps(offset, limit, rule);
+//    }
 
     /*
      * (non-Javadoc)

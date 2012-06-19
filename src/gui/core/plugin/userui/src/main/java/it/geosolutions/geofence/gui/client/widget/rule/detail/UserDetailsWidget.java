@@ -36,11 +36,15 @@ import it.geosolutions.geofence.gui.client.GeofenceEvents;
 import it.geosolutions.geofence.gui.client.Resources;
 import it.geosolutions.geofence.gui.client.i18n.I18nProvider;
 import it.geosolutions.geofence.gui.client.model.GSUser;
-import it.geosolutions.geofence.gui.client.model.data.UserLimitsInfo;
+import it.geosolutions.geofence.gui.client.model.UserGroup;
 import it.geosolutions.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
 import it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -51,6 +55,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 
 /**
@@ -77,6 +82,10 @@ public class UserDetailsWidget extends ContentPanel
 
     private Button cancelButton;
 
+	private GsUsersManagerRemoteServiceAsync usersService;
+
+	private ProfilesManagerRemoteServiceAsync profilesManagerServiceRemote;
+
     /**
      * Instantiates a new user limits widget.
      *
@@ -86,10 +95,13 @@ public class UserDetailsWidget extends ContentPanel
      *            the user service
      * @param profilesManagerServiceRemote 
      */
-    public UserDetailsWidget(GSUser model, GsUsersManagerRemoteServiceAsync usersService, ProfilesManagerRemoteServiceAsync profilesManagerServiceRemote)
+    public UserDetailsWidget(GSUser model, 
+    		GsUsersManagerRemoteServiceAsync usersService, 
+    		final ProfilesManagerRemoteServiceAsync profilesManagerServiceRemote)
     {
         this.user = model;
-
+        this.usersService = usersService;
+        this.profilesManagerServiceRemote = profilesManagerServiceRemote;
         setHeaderVisible(false);
         setFrame(true);
         setHeight(330);
@@ -123,11 +135,32 @@ public class UserDetailsWidget extends ContentPanel
                     /*UserLimitsInfo userInfoModel = userDeatilsInfo.getModelData();
                     Dispatcher.forwardEvent(GeofenceEvents.SAVE_USER_LIMITS, userInfoModel);*/
 
-                    user.setUserGroups(profilesInfo.getSelectedGroups());
-                    Dispatcher.forwardEvent(GeofenceEvents.SAVE_USER_GROUPS, user);
-                    
-                    Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
-                        new String[] { "GeoServer Users: Users Limits", "Apply Changes" });
+                    profilesManagerServiceRemote.getProfiles(-1, -1, true, new AsyncCallback<PagingLoadResult<UserGroup>>() {
+						
+						public void onSuccess(PagingLoadResult<UserGroup> result) {
+		                    Set<UserGroup> groups = new HashSet<UserGroup>();
+		                    for (UserGroup gg : profilesInfo.getStore().getModels())
+		                    {
+		                    	for(UserGroup gg_r : result.getData()){
+			                    	if(gg.getName().equals(gg_r.getName()) && gg.isEnabled()){
+			                    		groups.add(gg_r);
+			                    	}
+		                    		
+		                    	}
+		                    }
+							user.setUserGroups(groups);
+		                    Dispatcher.forwardEvent(GeofenceEvents.SAVE_USER_GROUPS, user);
+		                    
+		                    Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
+		                        new String[] { "GeoServer Users: Users Groups", "Apply Changes Successfull!" });
+
+						}
+						
+						public void onFailure(Throwable caught) {
+		                    Dispatcher.forwardEvent(GeofenceEvents.SEND_ERROR_MESSAGE,
+			                        new String[] { "GeoServer Users: Users Groups", "Error Occurred while assigning groups to the User!" });
+						}
+					});
 
                 }
             });

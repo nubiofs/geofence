@@ -868,22 +868,22 @@ public class UserGridWidget extends GeofenceGridWidget<GSUser>
                             });
                     }
 
-                    Button detailsUserButton = new Button("Details");
-                    detailsUserButton.setIcon(Resources.ICONS.table());
+                    Button groupsUserButton = new Button("Groups");
+                    groupsUserButton.setIcon(Resources.ICONS.table());
 
-                    detailsUserButton.addListener(Events.OnClick, new Listener<ButtonEvent>()
+                    groupsUserButton.addListener(Events.OnClick, new Listener<ButtonEvent>()
                         {
 
                             public void handleEvent(ButtonEvent be)
                             {
                                 Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
-                                    new String[] { "GeoServer User", "User Details: " + model.getName() });
+                                    new String[] { "GeoServer User", "User Groups: " + model.getName() });
 
                                 Dispatcher.forwardEvent(GeofenceEvents.EDIT_USER_DETAILS, model);
                             }
                         });
 
-                    return detailsUserButton;
+                    return groupsUserButton;
                 }
 
             };

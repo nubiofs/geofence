@@ -42,9 +42,7 @@ import it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteServiceA
 import it.geosolutions.geofence.gui.client.widget.GeofenceGridWidget;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.BaseListLoader;
@@ -94,7 +92,6 @@ public class ProfilesGridWidget extends GeofenceGridWidget<UserGroup>
     private BaseListLoader<ListLoadResult<ModelData>> loader;
 
 	private GSUser user;
-	private Set<UserGroup> selectedGroups = new HashSet<UserGroup>();
 
     /**
      * Instantiates a new rule details grid widget.
@@ -229,7 +226,7 @@ public class ProfilesGridWidget extends GeofenceGridWidget<UserGroup>
 
         ColumnConfig attributeProfileColumn = new ColumnConfig();
         attributeProfileColumn.setId(BeanKeyValue.STYLES_COMBO.getValue());
-        attributeProfileColumn.setHeader("Profile");
+        attributeProfileColumn.setHeader("Group");
         attributeProfileColumn.setWidth(180);
         attributeProfileColumn.setRenderer(this.createProfileTextBox());
         attributeProfileColumn.setMenuDisabled(true);
@@ -338,9 +335,11 @@ public class ProfilesGridWidget extends GeofenceGridWidget<UserGroup>
                     }
 
                     CheckBox available = new CheckBox();
+                    model.setEnabled(false);
                     for( UserGroup group : user.getUserGroups()) {
                     	if (group.getName().equals(model.getName())) {
                     		available.setValue(true);
+                    		model.setEnabled(true);
                     		break;
                     	}
                     }
@@ -355,22 +354,9 @@ public class ProfilesGridWidget extends GeofenceGridWidget<UserGroup>
                                 if (enable.booleanValue())
                                 {
                                     Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
-                                        new String[] { "User Details", "Group " + model.getName() + ": enabled" });
+                                        new String[] { "User Groups", "Group " + model.getName() + ": enabled" });
 
                                     model.setEnabled(enable);
-
-                                    boolean groupAllowed = false;
-                                    for( UserGroup group : selectedGroups) {
-                                    	if (group.getName().equals(model.getName())) {
-                                    		groupAllowed = true;
-                                    		break;
-                                    	}
-                                    }
-                                    if (!groupAllowed)
-                                    {
-                                    	//user.getUserGroups().add(model);
-                                    	selectedGroups.add(model);
-                                    }
 
                                     /*logger.error("TODO: profile refactoring!!!");*/
                                     userDetailsWidget.enableSaveButton();
@@ -379,17 +365,9 @@ public class ProfilesGridWidget extends GeofenceGridWidget<UserGroup>
                                 else
                                 {
                                     Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
-                                        new String[] { "User Details", "Group " + model.getName() + ": disabled" });
+                                        new String[] { "User Groups", "Group " + model.getName() + ": disabled" });
 
                                     model.setEnabled(enable);
-
-                                    for( UserGroup group : selectedGroups) {
-                                    	if (group.getName().equals(model.getName())) {
-                                    		//user.getUserGroups().remove(group);
-                                    		selectedGroups.remove(group);
-                                    		break;
-                                    	}
-                                    }
 
                                     /*logger.error("TODO: profile refactoring!!!");*/
                                     userDetailsWidget.enableSaveButton();
@@ -413,12 +391,5 @@ public class ProfilesGridWidget extends GeofenceGridWidget<UserGroup>
     {
         return loader;
     }
-
-	/**
-	 * @return the selectedGroups
-	 */
-	public Set<UserGroup> getSelectedGroups() {
-		return selectedGroups;
-	}
 
 }
