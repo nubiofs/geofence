@@ -50,181 +50,168 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-
 /**
  * The Class InstancesManagerServiceImpl.
  */
 @Component("instancesManagerServiceGWT")
-public class InstancesManagerServiceImpl implements IInstancesManagerService
-{
+public class InstancesManagerServiceImpl implements IInstancesManagerService {
 
-    /** The logger. */
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	/** The logger. */
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    /** The geofence remote service. */
-    @Autowired
-    private GeofenceRemoteService geofenceRemoteService;
+	/** The geofence remote service. */
+	@Autowired
+	private GeofenceRemoteService geofenceRemoteService;
 
-    /* (non-Javadoc)
-     * @see it.geosolutions.geofence.gui.server.service.IInstancesManagerService#getInstances(com.extjs.gxt.ui.client.data.PagingLoadConfig)
-     */
-    public PagingLoadResult<GSInstance> getInstances(int offset, int limit, boolean full) throws ApplicationException
-    {
-        int start = offset;
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * it.geosolutions.geofence.gui.server.service.IInstancesManagerService#
+	 * getInstances(com.extjs.gxt.ui.client.data.PagingLoadConfig)
+	 */
+	public PagingLoadResult<GSInstance> getInstances(int offset, int limit,
+			boolean full) throws ApplicationException {
+		int start = offset;
 
-        List<GSInstance> instancesListDTO = new ArrayList<GSInstance>();
+		List<GSInstance> instancesListDTO = new ArrayList<GSInstance>();
 
-        if (full)
-        {
-            GSInstance all = new GSInstance();
-            all.setId(-1);
-            all.setName("*");
-            all.setBaseURL("*");
-            instancesListDTO.add(all);
-        }
+		if (full) {
+			GSInstance all = new GSInstance();
+			all.setId(-1);
+			all.setName("*");
+			all.setBaseURL("*");
+			instancesListDTO.add(all);
+		}
 
-        long instancesCount = geofenceRemoteService.getInstanceAdminService().getCount(null) + 1;
+		long instancesCount = geofenceRemoteService.getInstanceAdminService()
+				.getCount(null) + 1;
 
-        Long t = new Long(instancesCount);
+		Long t = new Long(instancesCount);
 
-        int page = (start == 0) ? start : (start / limit);
+		int page = (start == 0) ? start : (start / limit);
 
-        List<it.geosolutions.geofence.core.model.GSInstance> instancesList =
-            geofenceRemoteService.getInstanceAdminService().getList(null, page, limit);
+		List<it.geosolutions.geofence.core.model.GSInstance> instancesList = geofenceRemoteService
+				.getInstanceAdminService().getList(null, page, limit);
 
-        if (instancesList == null)
-        {
-            if (logger.isErrorEnabled())
-            {
-                logger.error("No server instace found on server");
-            }
-            throw new ApplicationException("No server instance found on server");
-        }
+		if (instancesList == null) {
+			if (logger.isErrorEnabled()) {
+				logger.error("No server instace found on server");
+			}
+			throw new ApplicationException("No server instance found on server");
+		}
 
-        Iterator<it.geosolutions.geofence.core.model.GSInstance> it = instancesList.iterator();
+		Iterator<it.geosolutions.geofence.core.model.GSInstance> it = instancesList
+				.iterator();
 
-        while (it.hasNext())
-        {
-            it.geosolutions.geofence.core.model.GSInstance remote_instance = it.next();
-            GSInstance local_instance = new GSInstance();
-            local_instance.setId(remote_instance.getId());
-            local_instance.setName(remote_instance.getName());
-            local_instance.setDescription(remote_instance.getDescription());
-            local_instance.setDateCreation(remote_instance.getDateCreation());
-            local_instance.setBaseURL(remote_instance.getBaseURL());
-            local_instance.setUsername(remote_instance.getUsername());
-            local_instance.setPassword(remote_instance.getPassword());
-            instancesListDTO.add(local_instance);
-        }
+		while (it.hasNext()) {
+			it.geosolutions.geofence.core.model.GSInstance remote_instance = it
+					.next();
+			GSInstance local_instance = new GSInstance();
+			local_instance.setId(remote_instance.getId());
+			local_instance.setName(remote_instance.getName());
+			local_instance.setDescription(remote_instance.getDescription());
+			local_instance.setDateCreation(remote_instance.getDateCreation());
+			local_instance.setBaseURL(remote_instance.getBaseURL());
+			local_instance.setUsername(remote_instance.getUsername());
+			local_instance.setPassword(remote_instance.getPassword());
+			instancesListDTO.add(local_instance);
+		}
 
-        return new RpcPageLoadResult<GSInstance>(instancesListDTO, offset, t.intValue());
-    }
+		return new RpcPageLoadResult<GSInstance>(instancesListDTO, offset,
+				t.intValue());
+	}
 
-    /**
-     *
-     * @param config
-     * @param name
-     * @return
-     */
-    public GSInstance getInstance(int offset, int limit, long id)
-    {
-        GSInstance inst = null;
-        List<it.geosolutions.geofence.core.model.GSInstance> instancesList =
-            geofenceRemoteService.getInstanceAdminService().getAll();
-        if (instancesList == null)
-        {
-            if (logger.isErrorEnabled())
-            {
-                logger.error("No server instace found on server");
-            }
-            throw new ApplicationException("No server instance found on server");
-        }
+	/**
+	 * 
+	 * @param config
+	 * @param name
+	 * @return
+	 */
+	public GSInstance getInstance(int offset, int limit, long id) {
+		it.geosolutions.geofence.core.model.GSInstance remote_instance = geofenceRemoteService
+				.getInstanceAdminService().get(id);
+		if (remote_instance == null) {
+			if (logger.isErrorEnabled()) {
+				logger.error("No server instaces have been found!");
+			}
+			throw new ApplicationException("No server instance found on server");
+		}
 
-        Iterator<it.geosolutions.geofence.core.model.GSInstance> it = instancesList.iterator();
-        boolean exit = false;
-        while (!exit && it.hasNext())
-        {
-            it.geosolutions.geofence.core.model.GSInstance remote_instance = it.next();
-            if (remote_instance.getId() == id)
-            {
-                GSInstance local_instance = new GSInstance();
-                local_instance.setId(remote_instance.getId());
-                local_instance.setName(remote_instance.getName());
-                local_instance.setDescription(remote_instance.getDescription());
-                local_instance.setDateCreation(remote_instance.getDateCreation());
-                local_instance.setBaseURL(remote_instance.getBaseURL());
-                local_instance.setUsername(remote_instance.getUsername());
-                local_instance.setPassword(remote_instance.getPassword());
-                inst = local_instance;
-                exit = true;
-            }
+		GSInstance local_instance = new GSInstance();
+		local_instance.setId(remote_instance.getId());
+		local_instance.setName(remote_instance.getName());
+		local_instance.setDescription(remote_instance.getDescription());
+		local_instance.setDateCreation(remote_instance.getDateCreation());
+		local_instance.setBaseURL(remote_instance.getBaseURL());
+		local_instance.setUsername(remote_instance.getUsername());
+		local_instance.setPassword(remote_instance.getPassword());
+		return local_instance;
+	}
 
-        }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * it.geosolutions.geofence.gui.server.service.IInstancesManagerService#
+	 * deleteInstance(it.geosolutions.geofence.gui.client.model.Instance)
+	 */
+	public void deleteInstance(GSInstance instance) {
+		it.geosolutions.geofence.core.model.GSInstance remote_instance = null;
+		try {
+			remote_instance = geofenceRemoteService.getInstanceAdminService()
+					.get(instance.getId());
+			geofenceRemoteService.getInstanceAdminService().delete(
+					remote_instance.getId());
+		} catch (NotFoundServiceEx e) {
+			logger.error(e.getLocalizedMessage(), e.getCause());
+			throw new ApplicationException(e.getLocalizedMessage(),
+					e.getCause());
+		}
+	}
 
-        return inst;
-    }
-
-    /* (non-Javadoc)
-     * @see it.geosolutions.geofence.gui.server.service.IInstancesManagerService#deleteInstance(it.geosolutions.geofence.gui.client.model.Instance)
-     */
-    public void deleteInstance(GSInstance instance)
-    {
-        it.geosolutions.geofence.core.model.GSInstance remote_instance = null;
-        try
-        {
-            remote_instance = geofenceRemoteService.getInstanceAdminService().get(instance.getId());
-            geofenceRemoteService.getInstanceAdminService().delete(remote_instance.getId());
-        }
-        catch (NotFoundServiceEx e)
-        {
-            logger.error(e.getLocalizedMessage(), e.getCause());
-            throw new ApplicationException(e.getLocalizedMessage(), e.getCause());
-        }
-    }
-
-    /* (non-Javadoc)
-     * @see it.geosolutions.geofence.gui.server.service.IInstancesManagerService#saveInstance(it.geosolutions.geofence.gui.client.model.Instance)
-     */
-    public void saveInstance(GSInstance instance)
-    {
-        it.geosolutions.geofence.core.model.GSInstance remote_instance = null;
-        if (instance.getId() >= 0)
-        {
-            try
-            {
-                remote_instance = geofenceRemoteService.getInstanceAdminService().get(instance.getId());
-                remote_instance.setName(instance.getName());
-                remote_instance.setDateCreation(instance.getDateCreation());
-                remote_instance.setDescription(instance.getDescription());
-                remote_instance.setBaseURL(instance.getBaseURL());
-                remote_instance.setPassword(instance.getPassword());
-                remote_instance.setUsername(instance.getUsername());
-                geofenceRemoteService.getInstanceAdminService().update(remote_instance);
-            }
-            catch (NotFoundServiceEx e)
-            {
-                logger.error(e.getLocalizedMessage(), e.getCause());
-                throw new ApplicationException(e.getLocalizedMessage(), e.getCause());
-            }
-        }
-        else
-        {
-            try
-            {
-                remote_instance = new it.geosolutions.geofence.core.model.GSInstance();
-                remote_instance.setName(instance.getName());
-                remote_instance.setDateCreation(instance.getDateCreation());
-                remote_instance.setDescription(instance.getDescription());
-                remote_instance.setBaseURL(instance.getBaseURL());
-                remote_instance.setPassword(instance.getPassword());
-                remote_instance.setUsername(instance.getUsername());
-                geofenceRemoteService.getInstanceAdminService().insert(remote_instance);
-            }
-            catch (Exception e)
-            {
-                logger.error(e.getLocalizedMessage(), e.getCause());
-                throw new ApplicationException(e.getLocalizedMessage(), e.getCause());
-            }
-        }
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * it.geosolutions.geofence.gui.server.service.IInstancesManagerService#
+	 * saveInstance(it.geosolutions.geofence.gui.client.model.Instance)
+	 */
+	public void saveInstance(GSInstance instance) {
+		it.geosolutions.geofence.core.model.GSInstance remote_instance = null;
+		if (instance.getId() >= 0) {
+			try {
+				remote_instance = geofenceRemoteService
+						.getInstanceAdminService().get(instance.getId());
+				remote_instance.setName(instance.getName());
+				remote_instance.setDateCreation(instance.getDateCreation());
+				remote_instance.setDescription(instance.getDescription());
+				remote_instance.setBaseURL(instance.getBaseURL());
+				remote_instance.setPassword(instance.getPassword());
+				remote_instance.setUsername(instance.getUsername());
+				geofenceRemoteService.getInstanceAdminService().update(
+						remote_instance);
+			} catch (NotFoundServiceEx e) {
+				logger.error(e.getLocalizedMessage(), e.getCause());
+				throw new ApplicationException(e.getLocalizedMessage(),
+						e.getCause());
+			}
+		} else {
+			try {
+				remote_instance = new it.geosolutions.geofence.core.model.GSInstance();
+				remote_instance.setName(instance.getName());
+				remote_instance.setDateCreation(instance.getDateCreation());
+				remote_instance.setDescription(instance.getDescription());
+				remote_instance.setBaseURL(instance.getBaseURL());
+				remote_instance.setPassword(instance.getPassword());
+				remote_instance.setUsername(instance.getUsername());
+				geofenceRemoteService.getInstanceAdminService().insert(
+						remote_instance);
+			} catch (Exception e) {
+				logger.error(e.getLocalizedMessage(), e.getCause());
+				throw new ApplicationException(e.getLocalizedMessage(),
+						e.getCause());
+			}
+		}
+	}
 }
