@@ -44,6 +44,7 @@
 			<artifactId>commons-codec</artifactId>
 		</dependency>
 		<!-- HIBERNATE-GENERIC-DAO -->
+<!--
 	        <dependency>
 	            <groupId>com.trg</groupId>
 	            <artifactId>trg-dao</artifactId>
@@ -59,7 +60,7 @@
 	        <dependency>
 	            <groupId>com.trg</groupId>
 	            <artifactId>trg-search-jpa-hibernate</artifactId>
-	        </dependency>
+	        </dependency>-->
 
 	        <dependency>
 	            <groupId>org.slf4j</groupId>
@@ -67,7 +68,7 @@
 	        </dependency>
 
 		<!-- POSTGRES - POSTGIS -->
-	        <dependency>
+<!--	        <dependency>
 	            <groupId>commons-dbcp</groupId>
 	            <artifactId>commons-dbcp</artifactId>
 	        </dependency>
@@ -79,7 +80,7 @@
 	            <groupId>postgresql</groupId>
 	            <artifactId>postgresql</artifactId>
 	        </dependency>
-
+-->
 
 		<!-- =============================================================== -->
 		<!-- GeoFence -->
@@ -103,7 +104,12 @@
 			<groupId>it.geosolutions.geofence</groupId>
 			<artifactId>geofence-login-impl</artifactId>
 		</dependency>     
-        
+
+		<dependency>
+			<groupId>it.geosolutions.geofence</groupId>
+			<artifactId>geofence-rest-impl</artifactId>
+		</dependency>
+
 		<!-- =============================================================== -->
 		<!-- 4J UTILS -->
 		<!-- =============================================================== -->

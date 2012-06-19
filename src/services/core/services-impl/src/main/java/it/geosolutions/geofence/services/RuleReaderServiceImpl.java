@@ -372,9 +372,6 @@ public class RuleReaderServiceImpl implements RuleReaderService {
             accessInfo.setCqlFilterWrite(details.getCqlFilterWrite());
             accessInfo.setDefaultStyle(details.getDefaultStyle());
             accessInfo.setAllowedStyles(details.getAllowedStyles());
-
-            accessInfo.setCustomProps(detailsDAO.getCustomProps(rule.getId()));
-
         }
 
 
@@ -447,7 +444,6 @@ public class RuleReaderServiceImpl implements RuleReaderService {
 //    }
 
     /**
-     * @deprecated Rewrite this method, accoring to the new N:N user:group relationship.
      *
      * @return a Map having UserGroups as keys, and the list of matching Rules as values. The NULL key holds the rules for the DEFAULT group.
      */
@@ -513,6 +509,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         } else {
             for (UserGroup userGroup : finalGroupFilter) {
                 IdNameFilter groupFilter = new IdNameFilter(userGroup.getId());
+                groupFilter.setIncludeDefault(true);
                 List<Rule> found = getRuleAux(filter, groupFilter);
                 ret.put(userGroup, found);
             }

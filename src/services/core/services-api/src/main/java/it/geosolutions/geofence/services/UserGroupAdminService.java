@@ -52,7 +52,7 @@ public interface UserGroupAdminService extends GetProviderService<UserGroup>
 
     List<ShortGroup> getList(String nameLike, Integer page, Integer entries);
 
-    List<UserGroup> getFullList(String nameLike, Integer page, Integer entries);
+//    List<UserGroup> getFullList(String nameLike, Integer page, Integer entries);
 
     // ==========================================================================
 

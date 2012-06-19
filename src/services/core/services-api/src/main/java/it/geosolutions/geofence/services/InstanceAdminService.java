@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -22,6 +22,7 @@ package it.geosolutions.geofence.services;
 import java.util.List;
 
 import it.geosolutions.geofence.core.model.GSInstance;
+import it.geosolutions.geofence.services.dto.ShortInstance;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 
 
@@ -42,11 +43,14 @@ public interface InstanceAdminService extends GetProviderService<GSInstance>
 
     boolean delete(long id) throws NotFoundServiceEx;
 
+    @Override
     GSInstance get(long id) throws NotFoundServiceEx;
+    GSInstance get(String name) throws NotFoundServiceEx;
 
     List<GSInstance> getAll();
 
-    List<GSInstance> getList(String nameLike, Integer page, Integer entries);
+    List<GSInstance> getFullList(String nameLike, Integer page, Integer entries);
+    List<ShortInstance> getList(String nameLike, Integer page, Integer entries);
 
     long getCount(String nameLike);
 

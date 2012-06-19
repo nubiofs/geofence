@@ -89,7 +89,7 @@ public class UserAdminServiceImpl implements UserAdminService {
 
 
     @Override
-    public GSUser getFull(long id) {
+    public GSUser getFull(long id) throws NotFoundServiceEx {
 
         GSUser user = userDAO.getFull(id);
         if(user == null)

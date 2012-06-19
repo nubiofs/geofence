@@ -19,7 +19,6 @@
  */
 package it.geosolutions.geofence.services.rest;
 
-import it.geosolutions.geofence.services.dto.ShortGroup;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
@@ -27,9 +26,9 @@ import it.geosolutions.geofence.services.rest.exception.BadRequestRestEx;
 import it.geosolutions.geofence.services.rest.exception.ConflictRestEx;
 import it.geosolutions.geofence.services.rest.exception.InternalErrorRestEx;
 import it.geosolutions.geofence.services.rest.exception.NotFoundRestEx;
-import it.geosolutions.geofence.services.rest.model.RESTInputGroup;
-import it.geosolutions.geofence.services.rest.model.RESTOutputGroup;
-import it.geosolutions.geofence.services.rest.model.config.RESTFullUserGroupList;
+import it.geosolutions.geofence.services.rest.model.RESTInputInstance;
+import it.geosolutions.geofence.services.rest.model.RESTOutputInstance;
+import it.geosolutions.geofence.services.rest.model.RESTShortInstanceList;
 import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
@@ -41,7 +40,7 @@ import org.apache.cxf.jaxrs.ext.multipart.Multipart;
  */
 
 @Path("/")
-public interface RESTUserGroupService
+public interface RESTGSInstanceService
 {
 
     /**
@@ -50,7 +49,7 @@ public interface RESTUserGroupService
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_XML)
-    RESTFullUserGroupList getList(@QueryParam("nameLike") String nameLike,
+    RESTShortInstanceList getList(@QueryParam("nameLike") String nameLike,
         @QueryParam("page") Integer page,
         @QueryParam("entries") Integer entries) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 
@@ -61,39 +60,39 @@ public interface RESTUserGroupService
     @GET
     @Path("/id/{id}")
     @Produces(MediaType.APPLICATION_XML)
-    ShortGroup get(@PathParam("id") Long id) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
+    RESTOutputInstance get(@PathParam("id") Long id) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 
     @GET
-    @Path("/name/{name}")
+    @Path("/name/{name")
     @Produces(MediaType.APPLICATION_XML)
-    ShortGroup get(@PathParam("name") String name) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
+    RESTOutputInstance get(@PathParam("name") String name) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 
     @POST
     @Path("/")
     @Produces(MediaType.APPLICATION_XML)
-    Response insert(@Multipart("userGroup") RESTInputGroup group) throws BadRequestRestEx, ConflictRestEx, InternalErrorRestEx;
+    Response insert(@Multipart("userGroup") RESTInputInstance instance) throws BadRequestRestEx, ConflictRestEx, InternalErrorRestEx;
 
     @PUT
     @Path("/id/{id}")
     @Produces(MediaType.APPLICATION_XML)
     void update(@PathParam("id") Long id,
-        @Multipart("userGroup") RESTInputGroup group) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
+        @Multipart("instance") RESTInputInstance instance) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 
     @PUT
     @Path("/name/{name}")
     @Produces(MediaType.APPLICATION_XML)
     void update(@PathParam("name") String name,
-        @Multipart("userGroup") RESTInputGroup group) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
+        @Multipart("instance") RESTInputInstance instance) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 
     /**
-     * Deletes a UserGroup.
+     * Deletes a GSInstance.
      *
-     * @param id The id of the group to delete
-     * @param cascade When true, also delete all the Rules referring to that group
+     * @param id The id of the instance to delete
+     * @param cascade When true, also delete all the Rules referring to that instance
      *
      * @throws BadRequestRestEx (HTTP code 400) if parameters are illegal
-     * @throws NotFoundRestEx (HTTP code 404) if the group is not found
-     * @throws ConflictRestEx (HTTP code 409) if any rule refers to the group and cascade is false
+     * @throws NotFoundRestEx (HTTP code 404) if the instance is not found
+     * @throws ConflictRestEx (HTTP code 409) if any rule refers to the instance and cascade is false
      * @throws InternalErrorRestEx (HTTP code 500)
      */
     @DELETE
@@ -103,14 +102,14 @@ public interface RESTUserGroupService
             @QueryParam("cascade") @DefaultValue("false") boolean cascade) throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx;
 
     /**
-     * Deletes a UserGroup.
+     * Deletes a GSInstance.
      *
-     * @param name The name of the group to delete
-     * @param cascade When true, also delete all the Rules referring to that group
+     * @param name The name of the instance to delete
+     * @param cascade When true, also delete all the Rules referring to that instance
      *
      * @throws BadRequestRestEx (HTTP code 400) if parameters are illegal
-     * @throws NotFoundRestEx (HTTP code 404) if the group is not found
-     * @throws ConflictRestEx (HTTP code 409) if any rule refers to the group and cascade is false
+     * @throws NotFoundRestEx (HTTP code 404) if the instance is not found
+     * @throws ConflictRestEx (HTTP code 409) if any rule refers to the instance and cascade is false
      * @throws InternalErrorRestEx (HTTP code 500)
      */
     @DELETE
@@ -118,6 +117,5 @@ public interface RESTUserGroupService
     Response delete(
             @PathParam("name") String name,
             @QueryParam("cascade") @DefaultValue("false") boolean cascade) throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx;
-
 
 }

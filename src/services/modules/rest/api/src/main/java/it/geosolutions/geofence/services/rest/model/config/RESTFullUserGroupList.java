@@ -25,7 +25,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import it.geosolutions.geofence.core.model.UserGroup;
+import it.geosolutions.geofence.services.dto.ShortGroup;
 import java.util.Iterator;
 
 /**
@@ -33,28 +33,32 @@ import java.util.Iterator;
  * @author ETj (etj at geo-solutions.it)
  */
 @XmlRootElement(name = "UserGroupList")
-public class RESTFullUserGroupList implements Iterable<UserGroup> {
+public class RESTFullUserGroupList implements Iterable<ShortGroup> {
 
-    private List<UserGroup> list;
+    private List<ShortGroup> list;
 
     public RESTFullUserGroupList() {
         this(10);
     }
 
-    public RESTFullUserGroupList(int initialCapacity) {
-        list = new ArrayList<UserGroup>(initialCapacity);
-    }
-
-    @XmlElement(name = "UserGroup")
-    public List<UserGroup> getList() {
-        return list;
-    }
-
-    public void setList(List<UserGroup> list) {
+    public RESTFullUserGroupList(List<ShortGroup> list) {
         this.list = list;
     }
 
-    public void add(UserGroup group) {
+    public RESTFullUserGroupList(int initialCapacity) {
+        list = new ArrayList<ShortGroup>(initialCapacity);
+    }
+
+    @XmlElement(name = "UserGroup")
+    public List<ShortGroup> getList() {
+        return list;
+    }
+
+    public void setList(List<ShortGroup> list) {
+        this.list = list;
+    }
+
+    public void add(ShortGroup group) {
         list.add(group);
     }
 
@@ -64,7 +68,7 @@ public class RESTFullUserGroupList implements Iterable<UserGroup> {
     }
 
     @Override
-    public Iterator<UserGroup> iterator() {
+    public Iterator<ShortGroup> iterator() {
         return list.iterator();
     }
 }

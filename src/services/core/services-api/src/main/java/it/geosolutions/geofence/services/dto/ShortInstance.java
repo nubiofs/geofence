@@ -17,45 +17,43 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.geofence.services.rest.model;
+package it.geosolutions.geofence.services.dto;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
+import it.geosolutions.geofence.core.model.GSInstance;
+import java.io.Serializable;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * A compact representation of UserGroup holding only the insertable/updatadable fields
+ * A compact representation of GSInstance useful in lists.
  *
  * @author Etj (etj at geo-solutions.it)
  */
-@XmlRootElement(name = "userGroup")
-@XmlType(name="Group", propOrder = {"extId", "name"})
-public class RESTInputGroup extends AbstractRESTPayload {
+@XmlRootElement(name = "GSInstance")
+@XmlType(propOrder = {"id", "name", "url", "description"})
+public class ShortInstance implements Serializable {
 
-    private static final long serialVersionUID = -8410646966443187827L;
+    private long id;
     private String name;
-    private String extId;
-    private Boolean enabled;
+    private String url;
+    private String description;
 
-    public RESTInputGroup() {
+    public ShortInstance() {
     }
 
-    @XmlAttribute(name = "enabled")
-    public Boolean isEnabled() {
-        return enabled;
+    public ShortInstance(GSInstance i) {
+        this.id = i.getId();
+        this.name = i.getName();
+        this.url = i.getBaseURL();
+        this.description = i.getDescription();
     }
 
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
+    public long getId() {
+        return id;
     }
 
-    public String getExtId() {
-        return extId;
-    }
-
-    public void setExtId(String extId) {
-        this.extId = extId;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -66,13 +64,29 @@ public class RESTInputGroup extends AbstractRESTPayload {
         this.name = name;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+
     @Override
     public String toString() {
         return getClass().getSimpleName()
-                + "["
-                + (extId!=null? " extid=" + extId : "")
-                + (name != null? " name=" + name : "")
-                + (enabled != null? (enabled? " enabled" : " disabled") : "")
+                + "[id:" + id
+                + " name:" + name
+                + " url:" + url
                 + ']';
     }
 }

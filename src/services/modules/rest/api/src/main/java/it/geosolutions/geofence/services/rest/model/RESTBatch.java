@@ -17,53 +17,44 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.geofence.services.rest.model.config;
+package it.geosolutions.geofence.services.rest.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import it.geosolutions.geofence.core.model.GSInstance;
-import it.geosolutions.geofence.core.model.Rule;
-
 /**
  *
  * @author ETj (etj at geo-solutions.it)
  */
-@XmlRootElement(name = "RuleList")
-public class RESTFullRuleList {
+@XmlRootElement(name = "batch")
+public class RESTBatch {
 
-    private List<Rule> list;
+    private List<RESTBatchOperation> list;
 
-    public RESTFullRuleList() {
+    public RESTBatch() {
         this(10);
     }
 
-    public RESTFullRuleList(List<Rule> list) {
-        this.list = list;
+    public RESTBatch(int initialCapacity) {
     }
 
-    public RESTFullRuleList(int initialCapacity) {
-        list = new ArrayList<Rule>(initialCapacity);
-    }
-
-    @XmlElement(name = "Rule")
-    public List<Rule> getList() {
+    @XmlElement(name = "operation")
+    public List<RESTBatchOperation> getList() {
         return list;
     }
 
-    public void setList(List<Rule> list) {
+    public void setList(List<RESTBatchOperation> list) {
         this.list = list;
     }
 
-    public void add(Rule rule) {
-        list.add(rule);
+    public void add(RESTBatchOperation op) {
+        list.add(op);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[" + list.size() + " items]";
+        return getClass().getSimpleName() + "[" + list.size() + " ops]";
     }
 }

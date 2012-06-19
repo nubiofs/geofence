@@ -19,11 +19,13 @@
  */
 package it.geosolutions.geofence.services.rest.impl;
 
+import it.geosolutions.geofence.core.model.GSInstance;
 import java.util.List;
 
 
 import it.geosolutions.geofence.core.model.GSUser;
 import it.geosolutions.geofence.core.model.UserGroup;
+import it.geosolutions.geofence.services.InstanceAdminService;
 import it.geosolutions.geofence.services.RuleAdminService;
 import it.geosolutions.geofence.services.UserGroupAdminService;
 import it.geosolutions.geofence.services.UserAdminService;
@@ -47,6 +49,7 @@ public abstract class BaseRESTServiceImpl {
 
     protected UserAdminService userAdminService;
     protected UserGroupAdminService userGroupAdminService;
+    protected InstanceAdminService instanceAdminService;
     protected RuleAdminService ruleAdminService;
 
 
@@ -79,6 +82,22 @@ public abstract class BaseRESTServiceImpl {
         } catch (NotFoundServiceEx e) {
             LOGGER.warn("GSUser not found " + filter);
             throw new NotFoundRestEx("GSUser not found " + filter);
+        }
+    }
+
+    protected GSInstance getInstance(IdName filter) throws BadRequestRestEx, NotFoundRestEx {
+
+        try {
+            if ( filter.getId() != null ) {
+                return instanceAdminService.get(filter.getId());
+            } else if ( filter.getName() != null ) {
+                return instanceAdminService.get(filter.getName());
+            } else {
+                throw new BadRequestRestEx("Bad GSInstance filter " + filter);
+            }
+        } catch (NotFoundServiceEx e) {
+            LOGGER.warn("GSInstance not found " + filter);
+            throw new NotFoundRestEx("GSInstance not found " + filter);
         }
     }
 
@@ -126,6 +145,10 @@ public abstract class BaseRESTServiceImpl {
 
     public void setRuleAdminService(RuleAdminService service) {
         this.ruleAdminService = service;
+    }
+
+    public void setInstanceAdminService(InstanceAdminService instanceAdminService) {
+        this.instanceAdminService = instanceAdminService;
     }
 
 }

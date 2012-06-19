@@ -27,8 +27,10 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import it.geosolutions.geofence.core.dao.GSInstanceDAO;
+import it.geosolutions.geofence.services.dto.ShortInstance;
 import it.geosolutions.geofence.services.exception.BadRequestServiceEx;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
+import java.util.ArrayList;
 
 /**
  *
@@ -71,6 +73,21 @@ public class InstanceAdminServiceImpl implements InstanceAdminService {
     }
 
     @Override
+    public GSInstance get(String name) {
+        Search search = new Search(GSInstance.class);
+        search.addFilterEqual("name", name);
+        List<GSInstance> groups = instanceDAO.search(search);
+
+        if ( groups.isEmpty() ) {
+            throw new NotFoundServiceEx("GSInstance not found  '" + name + "'");
+        } else if ( groups.size() > 1 ) {
+            throw new IllegalStateException("Found more than one GSInstance with name '" + name + "'");
+        } else {
+            return groups.get(0);
+        }
+    }
+
+    @Override
     public boolean delete(long id) throws NotFoundServiceEx {
         GSInstance instance = instanceDAO.find(id);
 
@@ -90,7 +107,7 @@ public class InstanceAdminServiceImpl implements InstanceAdminService {
     }
 
     @Override
-    public List<GSInstance> getList(String nameLike, Integer page, Integer entries) {
+    public List<GSInstance> getFullList(String nameLike, Integer page, Integer entries) {
 
         if( (page != null && entries == null) || (page ==null && entries != null)) {
             throw new BadRequestServiceEx("Page and entries params should be declared together.");
@@ -111,6 +128,20 @@ public class InstanceAdminServiceImpl implements InstanceAdminService {
         List<GSInstance> found = instanceDAO.search(searchCriteria);
         return found;
 //        return convertToShortList(found);
+    }
+
+    @Override
+    public List<ShortInstance> getList(String nameLike, Integer page, Integer entries) {
+        return convertToShortList(getFullList(nameLike, page, entries));
+    }
+
+    private List<ShortInstance> convertToShortList(List<GSInstance> list) {
+        List<ShortInstance> swList = new ArrayList<ShortInstance>(list.size());
+        for (GSInstance item : list) {
+            swList.add(new ShortInstance(item));
+        }
+
+        return swList;
     }
 
     @Override

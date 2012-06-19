@@ -119,16 +119,6 @@ public class LayerDetails implements Serializable {
     @Fetch(FetchMode.SELECT) // without this, hibernate will duplicate results(!)
     private Set<LayerAttribute> attributes = new HashSet<LayerAttribute>();
 
-    /** Custom properties associated to the Layer */
-    @org.hibernate.annotations.CollectionOfElements
-    @JoinTable( name = "gf_layer_custom_props",
-                joinColumns = @JoinColumn(name = "details_id"))
-    @org.hibernate.annotations.MapKey(columns =@Column(name = "propkey"))
-    @Column(name = "propvalue")
-    @ForeignKey(name="fk_custom_layer")
-    private Map<String, String> customProps = new HashMap<String, String>();
-
-
     @XmlJavaTypeAdapter(MultiPolygonAdapter.class)
     public MultiPolygon getArea() {
         return area;
@@ -179,15 +169,6 @@ public class LayerDetails implements Serializable {
         this.id = id;
     }
 
-    @XmlJavaTypeAdapter(MapAdapter.class)
-    public Map<String, String> getCustomProps() {
-        return customProps;
-    }
-
-    public void setCustomProps(Map<String, String> customProps) {
-        this.customProps = customProps;
-    }
-
     @XmlTransient
     public Rule getRule() {
         return rule;
@@ -224,7 +205,6 @@ public class LayerDetails implements Serializable {
                 + " cqlw=" + cqlFilterWrite
                 + " area=" + area
                 + " rule=" + rule
-//                + " cProps=" + customProps // failed to lazily initialize a collection of role:
                 + '}';
     }
 

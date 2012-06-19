@@ -21,12 +21,14 @@ package it.geosolutions.geofence.services.rest.model.util;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  *
  * @author ETj (etj at geo-solutions.it)
  */
 @XmlRootElement(name = "identifier")
+@XmlType(propOrder={"id", "name"})
 public class IdName {
     private  String name;
     private  Long id;

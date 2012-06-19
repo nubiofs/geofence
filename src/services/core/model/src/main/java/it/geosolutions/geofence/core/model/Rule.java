@@ -79,7 +79,7 @@ import org.hibernate.annotations.Index;
         @UniqueConstraint(columnNames = {"gsuser_id", "usergroup_id", "instance_id", "service", "request", "workspace", "layer"})})
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Rule")
 @XmlRootElement(name = "Rule")
-@XmlType(propOrder={"id","priority","gsuser","usergroup","instance","service","request","workspace","layer","access","layerDetails","ruleLimits"})
+@XmlType(propOrder={"id","priority","gsuser","userGroup","instance","service","request","workspace","layer","access","layerDetails","ruleLimits"})
 public class Rule implements Identifiable, Serializable {
 
     private static final long serialVersionUID = -5127129225384707164L;

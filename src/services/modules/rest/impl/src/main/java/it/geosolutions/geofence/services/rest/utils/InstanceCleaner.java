@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -34,162 +34,132 @@ import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 
 import org.apache.log4j.Logger;
 
-
 /**
  *
  * @author ETj (etj at geo-solutions.it)
  */
-public class InstanceCleaner
-{
-    private static final Logger LOGGER = Logger.getLogger(InstanceCleaner.class.toString());
+public class InstanceCleaner {
+
+    private static final Logger LOGGER = Logger.getLogger(InstanceCleaner.class);
 
     private RuleAdminService ruleAdminService;
-    private UserGroupAdminService profileAdminService;
+    private UserGroupAdminService userGroupAdminService;
     private UserAdminService userAdminService;
-    private GFUserAdminService grUserAdminService;
+    private GFUserAdminService gfUserAdminService;
     private InstanceAdminService instanceAdminService;
 
-    public void removeAll() throws NotFoundServiceEx
-    {
+    public void removeAll() throws NotFoundServiceEx {
         LOGGER.warn("***** removeAll()");
         removeAllRules();
         removeAllUsers();
-//        removeAllGRUsers();
+//        removeAllGFUsers();
         removeAllProfiles();
         removeAllInstances();
     }
 
-    public void removeAllRules() throws NotFoundServiceEx
-    {
+    public void removeAllRules() throws NotFoundServiceEx {
         List<ShortRule> list = ruleAdminService.getAll();
-        for (ShortRule item : list)
-        {
+        for (ShortRule item : list) {
             LOGGER.warn("Removing " + item);
 
             boolean ret = ruleAdminService.delete(item.getId());
-            if (!ret)
-            {
+            if ( !ret ) {
                 LOGGER.error("Could not remove " + item);
             }
         }
 
         long count = ruleAdminService.getCountAll();
-        if (count > 0)
-        {
+        if ( count > 0 ) {
             LOGGER.error("Items not removed");
         }
     }
 
-    public void removeAllUsers() throws NotFoundServiceEx
-    {
+    public void removeAllUsers() throws NotFoundServiceEx {
         List<ShortUser> list = userAdminService.getList(null, null, null);
-        for (ShortUser item : list)
-        {
+        for (ShortUser item : list) {
             LOGGER.warn("Removing " + item);
 
             boolean ret = userAdminService.delete(item.getId());
-            if (!ret)
-            {
+            if ( !ret ) {
                 LOGGER.error("Could not remove " + item);
             }
         }
 
         long count = userAdminService.getCount(null);
-        if (count > 0)
-        {
+        if ( count > 0 ) {
             LOGGER.error("Items not removed");
         }
     }
 
-    public void removeAllGRUsers() throws NotFoundServiceEx
-    {
-        List<ShortUser> list = grUserAdminService.getList(null, null, null);
-        for (ShortUser item : list)
-        {
+    public void removeAllGFUsers() throws NotFoundServiceEx {
+        List<ShortUser> list = gfUserAdminService.getList(null, null, null);
+        for (ShortUser item : list) {
             LOGGER.warn("Removing " + item);
 
-            boolean ret = grUserAdminService.delete(item.getId());
-            if (!ret)
-            {
+            boolean ret = gfUserAdminService.delete(item.getId());
+            if ( !ret ) {
                 LOGGER.error("Could not remove " + item);
             }
         }
 
-        long count = grUserAdminService.getCount(null);
-        if (count > 0)
-        {
+        long count = gfUserAdminService.getCount(null);
+        if ( count > 0 ) {
             LOGGER.error("Items not removed");
         }
     }
 
-    public void removeAllProfiles() throws NotFoundServiceEx
-    {
-        List<ShortGroup> list = profileAdminService.getList(null, null, null);
-        for (ShortGroup item : list)
-        {
+    public void removeAllProfiles() throws NotFoundServiceEx {
+        List<ShortGroup> list = userGroupAdminService.getList(null, null, null);
+        for (ShortGroup item : list) {
             LOGGER.warn("Removing " + item);
 
-            boolean ret = profileAdminService.delete(item.getId());
-            if (!ret)
-            {
+            boolean ret = userGroupAdminService.delete(item.getId());
+            if ( !ret ) {
                 LOGGER.error("Could not remove " + item);
             }
         }
 
-        long count = profileAdminService.getCount(null);
-        if (count > 0)
-        {
+        long count = userGroupAdminService.getCount(null);
+        if ( count > 0 ) {
             LOGGER.error("Items not removed");
         }
     }
 
-    public void removeAllInstances() throws NotFoundServiceEx
-    {
+    public void removeAllInstances() throws NotFoundServiceEx {
         List<GSInstance> list = instanceAdminService.getAll();
-        for (GSInstance item : list)
-        {
+        for (GSInstance item : list) {
             LOGGER.warn("Removing " + item);
 
             boolean ret = instanceAdminService.delete(item.getId());
-            if (!ret)
-            {
+            if ( !ret ) {
                 LOGGER.error("Could not remove " + item);
             }
         }
 
         long count = instanceAdminService.getCount(null);
-        if (count > 0)
-        {
+        if ( count > 0 ) {
             LOGGER.error("Items not removed");
         }
     }
 
     // ==========================================================================
-
-    public void setGrUserAdminService(GFUserAdminService grUserAdminService)
-    {
-        this.grUserAdminService = grUserAdminService;
+    public void setGfUserAdminService(GFUserAdminService service) {
+        this.gfUserAdminService = service;
     }
 
-    public void setInstanceAdminService(InstanceAdminService instanceAdminService)
-    {
-        this.instanceAdminService = instanceAdminService;
+    public void setInstanceAdminService(InstanceAdminService service) {
+        this.instanceAdminService = service;
     }
 
-    public void setProfileAdminService(UserGroupAdminService profileAdminService)
-    {
-        this.profileAdminService = profileAdminService;
+    public void setUserGroupAdminService(UserGroupAdminService service) {
+        this.userGroupAdminService = service;
     }
 
-    public void setRuleAdminService(RuleAdminService ruleAdminService)
-    {
-        this.ruleAdminService = ruleAdminService;
+    public void setRuleAdminService(RuleAdminService service) {
+        this.ruleAdminService = service;
     }
 
-    public void setUserAdminService(UserAdminService userAdminService)
-    {
-        this.userAdminService = userAdminService;
+    public void setUserAdminService(UserAdminService service) {
+        this.userAdminService = service;
     }
-
-
 }

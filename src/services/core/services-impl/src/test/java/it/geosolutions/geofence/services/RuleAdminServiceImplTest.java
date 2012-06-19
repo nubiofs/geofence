@@ -371,19 +371,12 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
             ruleAdminService.setDetails(id, details);
             lid1 = details.getId();
             assertNotNull(lid1);
-
-            Map<String, String> map = new HashMap<String, String>();
-            map.put("k1", "v1");
-            ruleAdminService.setDetailsProps(id, map);
         }
 
         // check props have been set in LD
         {
             Rule loaded = ruleAdminService.get(id);
             assertNotNull(loaded.getLayerDetails());
-
-            Map<String, String> map = ruleAdminService.getDetailsProps(id);
-            assertEquals(1, map.size());
         }
 
         // set new details, old map should be retained
@@ -393,9 +386,6 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
             ruleAdminService.setDetails(id, details);
             lid2 = details.getId();
             assertNotNull(lid2);
-
-            Map<String, String> map = ruleAdminService.getDetailsProps(id);
-            assertEquals(1, map.size());
         }
 
         // remove details
@@ -410,10 +400,6 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
         {
             LayerDetails details = new LayerDetails();
             ruleAdminService.setDetails(id, details);
-
-            Map<String, String> map = new HashMap<String, String>();
-            map.put("k1", "v1");
-            ruleAdminService.setDetailsProps(id, map);
 
             Rule loaded = ruleAdminService.get(id);
             assertNotNull(loaded.getLayerDetails());

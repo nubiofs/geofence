@@ -35,6 +35,7 @@ import it.geosolutions.geofence.core.model.enums.AccessType;
 import it.geosolutions.geofence.core.model.enums.GrantType;
 import it.geosolutions.geofence.services.dto.AccessInfo;
 import it.geosolutions.geofence.services.dto.RuleFilter;
+import it.geosolutions.geofence.services.dto.RuleFilter.SpecialFilterType;
 import it.geosolutions.geofence.services.dto.ShortRule;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 import java.net.Inet4Address;
@@ -263,8 +264,6 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
 
         LayerDetails details = new LayerDetails();
         details.setRule(rules.get(1));
-        details.getCustomProps().put("k1", "v1");
-        details.getCustomProps().put("k2", "v2");
         ruleAdminService.setDetails(rules.get(1).getId(), details);
 
         assertEquals(2, ruleAdminService.count(new RuleFilter(RuleFilter.SpecialFilterType.ANY)));
@@ -283,14 +282,12 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
             accessInfo = ruleReaderService.getAccessInfo(ruleFilter);
             assertEquals(GrantType.ALLOW, accessInfo.getGrant());
             assertNull(accessInfo.getAreaWkt());
-
-            assertEquals(2, accessInfo.getCustomProps().size());
         }
     }
 
     @Test
     public void testNoDefault() {
-        assertEquals(0, ruleAdminService.getCount("*","*","*", "*","*", "*","*"));
+        assertEquals(0, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY)));
 
         int pri = -1;
         Rule rules[] = new Rule[100];
@@ -458,7 +455,7 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
 //        final String MULTIPOLYGONWKT1 = "MULTIPOLYGON(((6 6, 6 -6, -6 -6 , -6 6, 6 6)))";
 //
 //        UserGroup g1 = createUserGroup("p1");
-//        GSUser u1 = createUser("u1", g1);
+//        GSUser u1 = createGFUser("u1", g1);
 //        u1.setAllowedArea(buildMultiPolygon(MULTIPOLYGONWKT0));
 //        userAdminService.update(u1);
 //

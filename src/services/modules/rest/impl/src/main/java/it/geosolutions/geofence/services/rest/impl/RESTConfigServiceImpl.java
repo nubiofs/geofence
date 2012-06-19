@@ -50,31 +50,26 @@ import it.geosolutions.geofence.services.rest.utils.InstanceCleaner;
 
 import org.apache.log4j.Logger;
 
-
 /**
  *
  * @author ETj (etj at geo-solutions.it)
  */
-public class RESTConfigServiceImpl implements RESTConfigService
-{
-    private static final Logger LOGGER = Logger.getLogger(RESTConfigServiceImpl.class.toString());
+public class RESTConfigServiceImpl implements RESTConfigService {
 
+    private static final Logger LOGGER = Logger.getLogger(RESTConfigServiceImpl.class.toString());
     private UserAdminService userAdminService;
     private UserGroupAdminService userGroupAdminService;
     private RuleAdminService ruleAdminService;
     private InstanceAdminService instanceAdminService;
     private GFUserAdminService grUserAdminService;
-
     private InstanceCleaner instanceCleaner;
 
-    public RESTFullConfiguration getConfiguration()
-    {
+    public RESTFullConfiguration getConfiguration() {
         return getConfiguration(false);
     }
 
     @Override
-    public RESTFullConfiguration getConfiguration(Boolean includeGRUsers)
-    {
+    public RESTFullConfiguration getConfiguration(Boolean includeGRUsers) {
         RESTFullConfiguration cfg = new RESTFullConfiguration();
 
         RESTFullUserList users = new RESTFullUserList();
@@ -82,19 +77,18 @@ public class RESTConfigServiceImpl implements RESTConfigService
         cfg.setUserList(users);
 
         RESTFullUserGroupList profiles = new RESTFullUserGroupList();
-        profiles.setList(userGroupAdminService.getFullList(null, null, null));
+        profiles.setList(userGroupAdminService.getList(null, null, null));
         cfg.setUserGroupList(profiles);
 
         RESTFullGSInstanceList instances = new RESTFullGSInstanceList();
-        instances.setList(instanceAdminService.getList(null, null, null));
+        instances.setList(instanceAdminService.getFullList(null, null, null));
         cfg.setGsInstanceList(instances);
 
         RESTFullRuleList rules = new RESTFullRuleList();
         rules.setList(ruleAdminService.getListFull(null, null, null));
         cfg.setRuleList(rules);
 
-        if (includeGRUsers.booleanValue())
-        {
+        if ( includeGRUsers.booleanValue() ) {
             RESTFullGRUserList grUsers = new RESTFullGRUserList();
             grUsers.setList(grUserAdminService.getFullList(null, null, null));
             cfg.setGrUserList(grUsers);
@@ -103,21 +97,17 @@ public class RESTConfigServiceImpl implements RESTConfigService
         return cfg;
     }
 
-    public synchronized RESTConfigurationRemapping setConfiguration(RESTFullConfiguration config)
-    {
+    public synchronized RESTConfigurationRemapping setConfiguration(RESTFullConfiguration config) {
         return setConfiguration(config, false);
     }
 
     @Override
     public synchronized RESTConfigurationRemapping setConfiguration(RESTFullConfiguration config,
-        Boolean includeGRUsers)
-    {
+            Boolean includeGRUsers) {
         LOGGER.warn("SETTING CONFIGURATION");
 
-        if (includeGRUsers)
-        {
-            if ((config.getGrUserList() == null) || (config.getGrUserList().getList() == null) || config.getGrUserList().getList().isEmpty())
-            {
+        if ( includeGRUsers ) {
+            if ( (config.getGrUserList() == null) || (config.getGrUserList().getList() == null) || config.getGrUserList().getList().isEmpty() ) {
                 throw new BadRequestRestEx("Can't restore internal users: no internal user defined");
             }
         }
@@ -129,24 +119,20 @@ public class RESTConfigServiceImpl implements RESTConfigService
         RemapperCache<UserGroup, UserGroupAdminService> groupCache = new RemapperCache<UserGroup, UserGroupAdminService>(userGroupAdminService, remap.getUserGroups());
         RemapperCache<GSUser, UserAdminService> userCache = new RemapperCache<GSUser, UserAdminService>(userAdminService, remap.getUsers());
         RemapperCache<GSInstance, InstanceAdminService> instanceCache =
-            new RemapperCache<GSInstance, InstanceAdminService>(instanceAdminService, remap.getInstances());
+                new RemapperCache<GSInstance, InstanceAdminService>(instanceAdminService, remap.getInstances());
 
 
-        try
-        {
+        try {
             // === UserGroups
-            for (UserGroup group : config.getUserGroupList().getList())
-            {
-                Long oldId = group.getId();
-                ShortGroup sp = new ShortGroup(group);
+            for (ShortGroup sp : config.getUserGroupList().getList()) {
+                Long oldId = sp.getId();
                 long newId = userGroupAdminService.insert(sp);
                 LOGGER.info("Remapping userGroup " + oldId + " -> " + newId);
                 remap.getUserGroups().put(oldId, newId);
             }
 
             // === Users
-            for (GSUser user : config.getUserList().getList())
-            {
+            for (GSUser user : config.getUserList().getList()) {
                 for (UserGroup userGroup : user.getGroups()) {
                     Long oldGroupId = userGroup.getId();
                     UserGroup group = groupCache.get(oldGroupId);
@@ -163,8 +149,7 @@ public class RESTConfigServiceImpl implements RESTConfigService
 
 
             // === GSInstances
-            for (GSInstance instance : config.getGsInstanceList().getList())
-            {
+            for (GSInstance instance : config.getGsInstanceList().getList()) {
                 Long oldId = instance.getId();
                 instance.setId(null);
 
@@ -174,23 +159,19 @@ public class RESTConfigServiceImpl implements RESTConfigService
             }
 
             // === Rules
-            for (Rule rule : config.getRuleList().getList())
-            {
+            for (Rule rule : config.getRuleList().getList()) {
                 Long oldId = rule.getId();
                 rule.setId(null);
 
-                if (rule.getUserGroup() != null)
-                {
+                if ( rule.getUserGroup() != null ) {
                     rule.setUserGroup(groupCache.get(rule.getUserGroup().getId()));
                 }
 
-                if (rule.getGsuser() != null)
-                {
+                if ( rule.getGsuser() != null ) {
                     rule.setGsuser(userCache.get(rule.getGsuser().getId()));
                 }
 
-                if (rule.getInstance() != null)
-                {
+                if ( rule.getInstance() != null ) {
                     rule.setInstance(instanceCache.get(rule.getInstance().getId()));
                 }
 
@@ -203,33 +184,26 @@ public class RESTConfigServiceImpl implements RESTConfigService
                 LOGGER.info("Remapping rule " + oldId + " -> " + newId);
                 remap.getRules().put(oldId, newId);
 
-                if (ld != null)
-                {
+                if ( ld != null ) {
                     ruleAdminService.setDetails(newId, ld);
                 }
             }
-        }
-        catch (RemapperException e)
-        {
+        } catch (RemapperException e) {
             LOGGER.error("Exception in remapping: Configuration will be erased");
             instanceCleaner.removeAll();
             throw new BadRequestRestEx(e.getMessage());
 
-        }
-        catch (NotFoundRestEx e)
-        {
+        } catch (NotFoundRestEx e) {
             LOGGER.error("Internal exception in remapping: Configuration will be erased");
             instanceCleaner.removeAll();
             throw e;
         }
 
         // === Internal users
-        if (includeGRUsers)
-        {
-            instanceCleaner.removeAllGRUsers();
+        if ( includeGRUsers ) {
+            instanceCleaner.removeAllGFUsers();
 
-            for (GFUser grUser : config.getGrUserList().getList())
-            {
+            for (GFUser grUser : config.getGrUserList().getList()) {
                 Long oldId = grUser.getId();
                 grUser.setId(null);
 
@@ -243,10 +217,8 @@ public class RESTConfigServiceImpl implements RESTConfigService
         return remap;
     }
 
-
     @Override
-    public RESTFullUserList getUsers() throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx
-    {
+    public RESTFullUserList getUsers() throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
         List<GSUser> users = userAdminService.getFullList(null, null, null);
 
         RESTFullUserList ret = new RESTFullUserList();
@@ -256,8 +228,7 @@ public class RESTConfigServiceImpl implements RESTConfigService
     }
 
     // not @Override: not available as a standalone service
-    public RESTFullGRUserList getGRUsers() throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx
-    {
+    public RESTFullGRUserList getGRUsers() throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
         List<GFUser> users = grUserAdminService.getFullList(null, null, null);
 
         RESTFullGRUserList ret = new RESTFullGRUserList();
@@ -267,118 +238,87 @@ public class RESTConfigServiceImpl implements RESTConfigService
     }
 
     @Override
-    public RESTFullUserGroupList getUserGroups() throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx
-    {
-        List<UserGroup> groups = userGroupAdminService.getFullList(null, null, null);
-
-        RESTFullUserGroupList ret = new RESTFullUserGroupList();
-        ret.setList(groups);
-
-        return ret;
-
+    public RESTFullUserGroupList getUserGroups() throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+        List<ShortGroup> groups = userGroupAdminService.getList(null, null, null);
+        return new RESTFullUserGroupList(groups);
     }
 
     // ==========================================================================
-
-
     // ==========================================================================
-
-    public void setInstanceCleaner(InstanceCleaner instanceCleaner)
-    {
+    public void setInstanceCleaner(InstanceCleaner instanceCleaner) {
         this.instanceCleaner = instanceCleaner;
     }
 
     // ==========================================================================
-
     public void setUserGroupAdminService(UserGroupAdminService service) {
         this.userGroupAdminService = service;
     }
 
-    public void setUserAdminService(UserAdminService service)
-    {
+    public void setUserAdminService(UserAdminService service) {
         this.userAdminService = service;
     }
 
-    public void setInstanceAdminService(InstanceAdminService service)
-    {
+    public void setInstanceAdminService(InstanceAdminService service) {
         this.instanceAdminService = service;
     }
 
-    public void setRuleAdminService(RuleAdminService service)
-    {
+    public void setRuleAdminService(RuleAdminService service) {
         this.ruleAdminService = service;
     }
 
-    public void setGrUserAdminService(GFUserAdminService service)
-    {
+    public void setGrUserAdminService(GFUserAdminService service) {
         this.grUserAdminService = service;
     }
 
     // ==========================================================================
+    class RemapperCache<TYPE, SERVICE extends GetProviderService<TYPE>> {
 
-
-    class RemapperCache<TYPE, SERVICE extends GetProviderService<TYPE>>
-    {
         private Map<Long, TYPE> cache = new HashMap<Long, TYPE>();
         private final Map<Long, Long> idRemapper;
         private final SERVICE service;
 
-        public RemapperCache(SERVICE service, Map<Long, Long> idRemapper)
-        {
+        public RemapperCache(SERVICE service, Map<Long, Long> idRemapper) {
             this.idRemapper = idRemapper;
             this.service = service;
         }
 
-
-        TYPE get(Long oldId) throws RemapperException, NotFoundRestEx
-        {
+        TYPE get(Long oldId) throws RemapperException, NotFoundRestEx {
             Long newId = idRemapper.get(oldId);
-            if (newId == null)
-            {
+            if ( newId == null ) {
                 LOGGER.error("Can't remap " + oldId);
                 throw new RemapperException("Can't remap " + oldId);
             }
 
             TYPE cached = cache.get(newId);
-            try
-            {
-                if (cached == null)
-                {
+            try {
+                if ( cached == null ) {
                     cached = service.get(newId.longValue()); // may throw NotFoundServiceEx
                     cache.put(newId, cached);
                 }
 
                 return cached;
-            }
-            catch (NotFoundServiceEx ex)
-            {
+            } catch (NotFoundServiceEx ex) {
                 LOGGER.error(ex.getMessage(), ex);
                 throw new NotFoundRestEx(ex.getMessage());
             }
         }
     }
 
-    class RemapperException extends Exception
-    {
+    class RemapperException extends Exception {
 
-        public RemapperException(Throwable cause)
-        {
+        public RemapperException(Throwable cause) {
             super(cause);
         }
 
-        public RemapperException(String message, Throwable cause)
-        {
+        public RemapperException(String message, Throwable cause) {
             super(message, cause);
         }
 
-        public RemapperException(String message)
-        {
+        public RemapperException(String message) {
             super(message);
         }
 
-        public RemapperException()
-        {
+        public RemapperException() {
         }
     }
-
 }

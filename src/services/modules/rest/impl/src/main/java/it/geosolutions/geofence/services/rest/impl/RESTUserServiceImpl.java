@@ -56,7 +56,7 @@ public class RESTUserServiceImpl
 //    private UserAdminService userAdminService;
 //    private UserGroupAdminService userGroupAdminService;
     @Override
-    public void delete(Long id, boolean cascade) throws BadRequestRestEx, NotFoundRestEx {
+    public Response delete(Long id, boolean cascade) throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx {
         try {
             if ( cascade ) {
                 ruleAdminService.deleteRulesByUser(id);
@@ -74,6 +74,9 @@ public class RESTUserServiceImpl
                 LOGGER.warn("User not found: " + id);
                 throw new NotFoundRestEx("User not found: " + id);
             }
+
+            return Response.status(Status.OK).entity("OK\n").build();
+
         } catch (GeoFenceRestEx ex) { // already handled
             throw ex;
         } catch (NotFoundServiceEx ex) {
@@ -86,10 +89,10 @@ public class RESTUserServiceImpl
     }
 
     @Override
-    public void delete(String name, boolean cascade) throws BadRequestServiceEx, NotFoundRestEx {
+    public Response delete(String name, boolean cascade) throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx {
         try {
             long id = userAdminService.get(name).getId();
-            this.delete(id, cascade);
+            return this.delete(id, cascade);
         } catch (NotFoundServiceEx ex) {
             LOGGER.warn("User not found: " + name);
             throw new NotFoundRestEx("User not found: " + name);
@@ -264,7 +267,7 @@ public class RESTUserServiceImpl
     }
 
     @Override
-    public RESTShortUserList getUsers(String nameLike, Integer page, Integer entries) throws BadRequestRestEx, InternalErrorRestEx {
+    public RESTShortUserList getList(String nameLike, Integer page, Integer entries) throws BadRequestRestEx, InternalErrorRestEx {
         try {
             List<GSUser> list = userAdminService.getFullList(nameLike, page, entries);
             RESTShortUserList ret = new RESTShortUserList(list.size());
@@ -283,7 +286,7 @@ public class RESTUserServiceImpl
     }
 
     @Override
-    public long getCount(String nameLike) {
+    public long count(String nameLike) {
         return userAdminService.getCount(nameLike);
     }
 

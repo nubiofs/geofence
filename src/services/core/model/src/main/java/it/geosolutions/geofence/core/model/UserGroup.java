@@ -287,11 +287,11 @@ public class UserGroup implements Identifiable, Serializable {
     public String toString() {
         StringBuilder builder = new StringBuilder(this.getClass().getSimpleName());
         builder.append("[");
-        builder.append("id=").append(id);
+        builder.append("id:").append(id);
         if (name != null)
-            builder.append(" name=").append(name);
+            builder.append(" name:").append(name);
         if( ! enabled )
-            builder.append(" enabled=").append(enabled);
+            builder.append(" disabled");
         builder.append("]");
         return builder.toString();
     }

@@ -23,7 +23,6 @@ import it.geosolutions.geofence.core.model.LayerAttribute;
 import it.geosolutions.geofence.core.model.enums.AccessType;
 import it.geosolutions.geofence.core.model.enums.GrantType;
 import it.geosolutions.geofence.core.model.enums.LayerType;
-import it.geosolutions.geofence.services.rest.model.RESTInputRule.RESTLayerConstraints;
 import it.geosolutions.geofence.services.rest.model.RESTInputRule.RESTRulePosition;
 import it.geosolutions.geofence.services.rest.model.RESTInputRule.RESTRulePosition.RulePosition;
 import it.geosolutions.geofence.services.rest.model.util.IdName;

@@ -31,9 +31,9 @@ import javax.xml.bind.annotation.XmlType;
  *
  * @author ETj (etj at geo-solutions.it)
  */
-@XmlRootElement(name = "User")
-@XmlType(propOrder = {"extId", "name", "password", "fullName", "emailAddress", "groups"})
-public class RESTInputUser {
+@XmlRootElement(name = "user")
+@XmlType(name="User", propOrder = {"extId", "name", "password", "fullName", "emailAddress", "groups"})
+public class RESTInputUser extends AbstractRESTPayload {
 
     private String extId;
     private String name;

@@ -46,6 +46,14 @@ public interface UserAdminService extends GetProviderService<GSUser>
 
     boolean delete(long id) throws NotFoundServiceEx;
 
+    /**
+     * Retrieves basic info on Users. <BR>
+     * If you need structured info (such as Groups), use the {@link #getFull(long)} method.
+     *
+     * @return Basic GSUser, with some info left unreferenced.
+     *
+     * @throws NotFoundServiceEx
+     */
     @Override
     GSUser get(long id) throws NotFoundServiceEx;
     GSUser get(String name) throws NotFoundServiceEx;

@@ -82,6 +82,7 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
+import java.util.Collections;
 
 /**
  * The Class RulesManagerServiceImpl.
@@ -488,6 +489,9 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 	 */
 	public PagingLoadResult<LayerCustomProps> getLayerCustomProps(int offset,
 			int limit, Rule rule) {
+
+        logger.error("TODO: rule refactoring!!! custom props have been removed");
+
 		int start = offset;
 		Long t = new Long(0);
 
@@ -495,8 +499,8 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 
 		if ((rule != null) && (rule.getId() >= 0)) {
 			try {
-				Map<String, String> customProperties = geofenceRemoteService
-						.getRuleAdminService().getDetailsProps(rule.getId());
+				Map<String, String> customProperties = Collections.EMPTY_MAP;
+//                        geofenceRemoteService.getRuleAdminService().getDetailsProps(rule.getId());
 
 				if (customProperties == null) {
 					if (logger.isErrorEnabled()) {
@@ -547,6 +551,9 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 	 * it.geosolutions.geofence.gui.client.model.data.LayerCustomProps)
 	 */
 	public void setDetailsProps(Long ruleId, List<LayerCustomProps> customProps) {
+
+        logger.error("TODO: rule refactoring!!! custom props have been removed");
+
 		Map<String, String> props = new HashMap<String, String>();
 
 		for (LayerCustomProps prop : customProps) {
@@ -584,12 +591,13 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 					}
 				}
 
-				details.setCustomProps(props);
-				geofenceRemoteService.getRuleAdminService().setDetails(ruleId,
-						details);
+                // REMOVED BY ETj
+//				details.setCustomProps(props); 
+//				geofenceRemoteService.getRuleAdminService().setDetails(ruleId,
+//						details);
 			} else {
-				geofenceRemoteService.getRuleAdminService().setDetailsProps(
-						ruleId, props);
+//				geofenceRemoteService.getRuleAdminService().setDetailsProps(
+//						ruleId, props);
 			}
 
 		} catch (Exception e) {

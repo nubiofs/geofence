@@ -55,7 +55,7 @@ public interface RESTUserService {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_XML)
-    RESTShortUserList getUsers(
+    RESTShortUserList getList(
             @QueryParam("nameLike") String nameLike,
             @QueryParam("page") Integer page,
             @QueryParam("entries") Integer entries)
@@ -70,7 +70,7 @@ public interface RESTUserService {
      */
     @GET
     @Path("/count/{nameLike}")
-    long getCount(@PathParam("nameLike") String nameLike);
+    long count(@PathParam("nameLike") String nameLike);
 
     /**
      * Returns a single user.
@@ -156,10 +156,10 @@ public interface RESTUserService {
      * @throws InternalErrorRestEx (HTTP code 500)
      */
     @DELETE
-    @Path("/{id}")
-    void delete(
+    @Path("/id/{id}")
+    Response delete(
             @PathParam("id") Long id,
-            @QueryParam("cascade") @DefaultValue("false") boolean cascade) throws BadRequestRestEx, NotFoundRestEx;
+            @QueryParam("cascade") @DefaultValue("false") boolean cascade) throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx;
 
     /**
      * Deletes a GSUser.
@@ -174,9 +174,9 @@ public interface RESTUserService {
      */
     @DELETE
     @Path("/name/{name}")
-    void delete(
+    Response delete(
             @PathParam("name") String name,
-            @QueryParam("cascade") @DefaultValue("false") boolean cascade) throws BadRequestRestEx, NotFoundRestEx;
+            @QueryParam("cascade") @DefaultValue("false") boolean cascade) throws ConflictRestEx, NotFoundRestEx, InternalErrorRestEx;
 
     //=========================================================================
     //=== Group association stuff

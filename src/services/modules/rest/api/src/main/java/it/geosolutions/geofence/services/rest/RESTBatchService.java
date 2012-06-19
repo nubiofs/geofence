@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -17,18 +17,30 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package it.geosolutions.geofence.services.rest;
 
-package it.geosolutions.geofence.core.dao;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 
-import it.geosolutions.geofence.core.model.LayerDetails;
+import it.geosolutions.geofence.services.rest.exception.BadRequestRestEx;
+import it.geosolutions.geofence.services.rest.exception.InternalErrorRestEx;
+import it.geosolutions.geofence.services.rest.exception.NotFoundRestEx;
+import it.geosolutions.geofence.services.rest.model.RESTBatch;
+import javax.ws.rs.core.Response;
+
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+
 
 /**
- * Public interface to define operations on LayerDetails
- * 
+ *
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
 
-public interface LayerDetailsDAO 
-        extends RestrictedGenericDAO<LayerDetails>,
-                AllowedStylesProvider{
+@Path("/")
+public interface RESTBatchService
+{
+    @POST
+    @Path("/exec")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML})
+    Response exec(@Multipart("batch")RESTBatch batch) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 }

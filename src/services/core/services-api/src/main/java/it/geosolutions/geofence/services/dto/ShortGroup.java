@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -17,101 +17,80 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.geosolutions.geofence.services.dto;
 
 import java.io.Serializable;
 import java.util.Date;
 
 import it.geosolutions.geofence.core.model.UserGroup;
-
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * A compact representation of UserGroup useful in lists.
  *
  * @author Etj (etj at geo-solutions.it)
  */
-public class ShortGroup implements Serializable
-{
+@XmlRootElement(name = "Group")
+@XmlType(propOrder = {"id", "extId", "name"})
+public class ShortGroup implements Serializable {
 
     private static final long serialVersionUID = -8410646966443187827L;
     private long id;
     private String name;
     private String extId;
-    private Date dateCreation;
     private Boolean enabled;
 
-    public ShortGroup()
-    {
+    public ShortGroup() {
     }
 
-    public ShortGroup(UserGroup group)
-    {
+    public ShortGroup(UserGroup group) {
         this.id = group.getId();
         this.name = group.getName();
-        this.dateCreation = group.getDateCreation();
         this.enabled = group.getEnabled();
         this.extId = group.getExtId();
     }
 
-    public long getId()
-    {
+    public long getId() {
         return id;
     }
 
-    public void setId(long id)
-    {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public Date getDateCreation()
-    {
-        return dateCreation;
-    }
-
-    public void setDateCreation(Date dateCreation)
-    {
-        this.dateCreation = dateCreation;
-    }
-
-    public Boolean isEnabled()
-    {
+    @XmlAttribute(name = "enabled")
+    public Boolean isEnabled() {
         return enabled;
     }
 
-    public void setEnabled(Boolean enabled)
-    {
+    public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
 
-    public String getExtId()
-    {
+    public String getExtId() {
         return extId;
     }
 
-    public void setExtId(String extId)
-    {
+    public void setExtId(String extId) {
         this.extId = extId;
     }
 
     @Override
-    public String toString()
-    {
-        return getClass().getSimpleName() +
-            "[id=" + id +
-            " name=" + name +
-            " enabled=" + enabled +
-            ']';
+    public String toString() {
+        return getClass().getSimpleName()
+                + "[id=" + id
+                + " name=" + name
+                + " enabled=" + enabled
+                + ']';
     }
-
 }

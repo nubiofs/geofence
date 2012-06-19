@@ -49,14 +49,14 @@ public class GFUserAdminServiceImplTest extends ServiceTestBase {
     @Test
     public void testInsertDeleteUser() throws NotFoundServiceEx {
 
-        GFUser user = createUser(getName());
+        GFUser user = createGFUser(getName());
         gfUserAdminService.get(user.getId()); // will throw if not found
         assertTrue("Could not delete user", gfUserAdminService.delete(user.getId()));
     }
 
     @Test
     public void testUpdateUser() throws Exception {
-        GFUser user = createUser("u1");
+        GFUser user = createGFUser("u1");
 
         final String NEWNAME = "NEWNAME";
 
@@ -82,9 +82,9 @@ public class GFUserAdminServiceImplTest extends ServiceTestBase {
     public void testGetAllUsers() {
         assertEquals(0, gfUserAdminService.getList(null,null,null).size());
 
-        createUser("u1");
-        createUser("u2");
-        createUser("u3");
+        createGFUser("u1");
+        createGFUser("u2");
+        createGFUser("u3");
 
         assertEquals(3, gfUserAdminService.getList(null,null,null).size());
     }
@@ -93,10 +93,10 @@ public class GFUserAdminServiceImplTest extends ServiceTestBase {
     public void testGetUsersCount() {
         assertEquals(0, gfUserAdminService.getCount(null));
 
-        createUser("u10");
-        createUser("u20");
-        createUser("u30");
-        GFUser u99 = createUser("u99");
+        createGFUser("u10");
+        createGFUser("u20");
+        createGFUser("u30");
+        GFUser u99 = createGFUser("u99");
 
         assertEquals(4, gfUserAdminService.getCount(null));
         assertEquals(4, gfUserAdminService.getCount("u%"));

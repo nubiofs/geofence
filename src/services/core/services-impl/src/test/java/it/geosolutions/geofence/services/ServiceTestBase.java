@@ -29,6 +29,7 @@ import it.geosolutions.geofence.services.dto.ShortGroup;
 import it.geosolutions.geofence.services.dto.ShortRule;
 import it.geosolutions.geofence.services.dto.ShortUser;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
+import java.util.Arrays;
 import java.util.List;
 import junit.framework.TestCase;
 import org.apache.log4j.Logger;
@@ -151,16 +152,16 @@ public class ServiceTestBase extends TestCase {
         assertEquals("Instances have not been properly deleted", 0, instanceAdminService.getCount(null));
     }
 
-    protected GSUser createUser(String base, UserGroup group) {
+    protected GSUser createUser(String base, UserGroup ... groups) {
 
         GSUser user = new GSUser();
         user.setName( base );
-        user.getGroups().add(group);
+        user.getGroups().addAll(Arrays.asList(groups));
         userAdminService.insert(user);
         return user;
     }
 
-    protected GFUser createUser(String base) {
+    protected GFUser createGFUser(String base) {
 
         GFUser user = new GFUser();
         user.setName( base );

@@ -62,7 +62,6 @@ public class AccessInfo implements Serializable {
     private String cqlFilterWrite;
 
     private Set<LayerAttribute> attributes;
-    private Map<String, String> customProps;
     private Set<String> allowedStyles;
 
 
@@ -111,14 +110,6 @@ public class AccessInfo implements Serializable {
 
     public void setCqlFilterWrite(String cqlFilterWrite) {
         this.cqlFilterWrite = cqlFilterWrite;
-    }
-
-    public Map<String, String> getCustomProps() {
-        return customProps;
-    }
-
-    public void setCustomProps(Map<String, String> customProps) {
-        this.customProps = customProps;
     }
 
     public String getDefaultStyle() {
@@ -174,9 +165,6 @@ public class AccessInfo implements Serializable {
         }
         if (attributes != null && ! attributes.isEmpty()) {
             sb.append(" attr:").append(attributes); // needs decoding?
-        }
-        if (customProps != null && ! customProps.isEmpty()) {
-            sb.append(" props:").append(customProps); // needs decoding?
         }
 
         sb.append(']');
