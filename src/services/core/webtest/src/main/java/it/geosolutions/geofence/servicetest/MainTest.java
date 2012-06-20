@@ -272,11 +272,11 @@ public class MainTest implements InitializingBean, ApplicationContextAware {
             LOGGER.info("Removing " + item);
             boolean ret = profileAdminService.delete(item.getId());
             if(!ret)
-                throw new IllegalStateException("Profile not removed");
+                throw new IllegalStateException("Group not removed");
         }
 
         if( profileAdminService.getCount(null) != 0)
-                throw new IllegalStateException("Profiles have not been properly deleted");
+                throw new IllegalStateException("Groups have not been properly deleted");
     }
 
     protected void removeAllInstances() throws NotFoundServiceEx {

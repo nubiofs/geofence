@@ -32,12 +32,6 @@
  */
 package it.geosolutions.geofence.gui.server.service.impl;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
-
 import it.geosolutions.geofence.gui.client.ApplicationException;
 import it.geosolutions.geofence.gui.client.model.GSInstance;
 import it.geosolutions.geofence.gui.client.model.data.rpc.RpcPageLoadResult;
@@ -46,10 +40,16 @@ import it.geosolutions.geofence.gui.service.GeofenceRemoteService;
 import it.geosolutions.geofence.services.dto.ShortInstance;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
 /**
  * The Class InstancesManagerServiceImpl.

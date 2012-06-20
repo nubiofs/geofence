@@ -315,7 +315,7 @@ public class EditRuleWidget extends GeofenceFormWidget
 
         ColumnConfig ruleProfileColumn = new ColumnConfig();
         ruleProfileColumn.setId(BeanKeyValue.PROFILE.getValue());
-        ruleProfileColumn.setHeader("Profile");
+        ruleProfileColumn.setHeader("Group");
         ruleProfileColumn.setWidth(COLUMN_PROFILE_WIDTH);
         ruleProfileColumn.setRenderer(this.createProfilesComboBox());
         ruleProfileColumn.setMenuDisabled(true);

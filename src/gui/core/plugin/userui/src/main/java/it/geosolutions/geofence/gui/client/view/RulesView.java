@@ -486,8 +486,8 @@ public class RulesView extends View {
 		} else {
 			// TODO: i18n!!
 			Dispatcher.forwardEvent(GeofenceEvents.SEND_ERROR_MESSAGE,
-					new String[] { "Profiles Details Editor",
-							"Could not found any associated profiles!" });
+					new String[] { "Groups Details Editor",
+							"Could not found any associated groups!" });
 		}
 	}
 
@@ -631,7 +631,7 @@ public class RulesView extends View {
 		} else {
 			// TODO: i18n!!
 			Dispatcher.forwardEvent(GeofenceEvents.SEND_ERROR_MESSAGE,
-					new String[] { "Profile Details Editor",
+					new String[] { "Group Details Editor",
 							"Could not found any associated rule!" });
 		}
 	}
@@ -668,7 +668,7 @@ public class RulesView extends View {
 		} else {
 			// TODO: i18n!!
 			Dispatcher.forwardEvent(GeofenceEvents.SEND_ERROR_MESSAGE,
-					new String[] { "Profile Details Editor",
+					new String[] { "Group Details Editor",
 							"Could not found any associated rule!" });
 		}
 	}

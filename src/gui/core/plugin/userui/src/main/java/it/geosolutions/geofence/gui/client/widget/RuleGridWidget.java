@@ -260,7 +260,7 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 
 		ColumnConfig ruleProfileColumn = new ColumnConfig();
 		ruleProfileColumn.setId(BeanKeyValue.PROFILE.getValue());
-		ruleProfileColumn.setHeader("Profile");
+		ruleProfileColumn.setHeader("Group");
 		ruleProfileColumn.setWidth(COLUMN_PROFILE_WIDTH);
 		ruleProfileColumn.setRenderer(this.createProfilesCustomField()); // createProfilesComboBox
 		ruleProfileColumn.setMenuDisabled(true);
@@ -496,7 +496,7 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 				LabelField profilesCustomField = new LabelField();
 				profilesCustomField.setId("ruleProfilesCombo");
 				profilesCustomField.setName("ruleProfilesCombo");
-				profilesCustomField.setEmptyText("(No profile available)");
+				profilesCustomField.setEmptyText("(No group available)");
 				profilesCustomField.setFieldLabel(BeanKeyValue.NAME.getValue());
 				profilesCustomField.setValue(BeanKeyValue.NAME.getValue());
 				profilesCustomField.setReadOnly(false);

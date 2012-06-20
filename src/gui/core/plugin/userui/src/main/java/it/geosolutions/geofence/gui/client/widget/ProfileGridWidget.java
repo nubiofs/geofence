@@ -137,7 +137,7 @@ public class ProfileGridWidget extends GeofenceGridWidget<UserGroup> {
 
 		ColumnConfig profileNameColumn = new ColumnConfig();
 		profileNameColumn.setId(BeanKeyValue.NAME.getValue());
-		profileNameColumn.setHeader("Profile Name");
+		profileNameColumn.setHeader("Group Name");
 		profileNameColumn.setWidth(160);
 		profileNameColumn.setRenderer(this.createProfileNameTextBox());
 		configs.add(profileNameColumn);
@@ -231,7 +231,7 @@ public class ProfileGridWidget extends GeofenceGridWidget<UserGroup> {
 
 		// Add Profile button
 		// TODO: generalize this!
-		Button addProfileButton = new Button("Add Profile");
+		Button addProfileButton = new Button("Add Group");
 		addProfileButton.setIcon(Resources.ICONS.add());
 		// TODO: temporally disabled!
 		addProfileButton.setEnabled(false);
@@ -242,7 +242,7 @@ public class ProfileGridWidget extends GeofenceGridWidget<UserGroup> {
 					public void handleEvent(ButtonEvent be) {
 						Dispatcher.forwardEvent(
 								GeofenceEvents.SEND_INFO_MESSAGE, new String[] {
-										"GeoServer Profile", "Add Profile" });
+										"GeoServer Group", "Add Group" });
 
 						Dispatcher
 								.forwardEvent(GeofenceEvents.CREATE_NEW_PROFILE);
@@ -389,8 +389,8 @@ public class ProfileGridWidget extends GeofenceGridWidget<UserGroup> {
 								Dispatcher.forwardEvent(
 										GeofenceEvents.SEND_INFO_MESSAGE,
 										new String[] {
-												"GeoServer Profile",
-												"Profile name changed to -> "
+												"GeoServer Group",
+												"Group name changed to -> "
 														+ be.getField()
 																.getValue() });
 
@@ -461,7 +461,7 @@ public class ProfileGridWidget extends GeofenceGridWidget<UserGroup> {
 							public void handleEvent(FieldEvent be) {
 								Dispatcher.forwardEvent(
 										GeofenceEvents.SEND_INFO_MESSAGE,
-										new String[] { "GeoServer Profile",
+										new String[] { "GeoServer Group",
 												"Enable check!" });
 
 								model.setEnabled((Boolean) be.getField()
@@ -541,8 +541,8 @@ public class ProfileGridWidget extends GeofenceGridWidget<UserGroup> {
 													.forwardEvent(
 															GeofenceEvents.SEND_INFO_MESSAGE,
 															new String[] {
-																	"GeoServer Profile",
-																	"Remove Profile: "
+																	"GeoServer Group",
+																	"Remove Group: "
 																			+ model.getName() });
 										}
 									}
@@ -615,8 +615,8 @@ public class ProfileGridWidget extends GeofenceGridWidget<UserGroup> {
 								Dispatcher.forwardEvent(
 										GeofenceEvents.SEND_INFO_MESSAGE,
 										new String[] {
-												"GeoServer Profile",
-												"Profile Details: "
+												"GeoServer Group",
+												"Group Details: "
 														+ model.getName() });
 
 								Dispatcher.forwardEvent(

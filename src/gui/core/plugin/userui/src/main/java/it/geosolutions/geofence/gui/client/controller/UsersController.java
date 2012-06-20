@@ -190,8 +190,8 @@ public class UsersController extends Controller
                             Dispatcher.forwardEvent(GeofenceEvents.SEND_ERROR_MESSAGE,
                                 new String[]
                                 {
-                                    I18nProvider.getMessages().ruleServiceName(),
-                                    I18nProvider.getMessages().ruleFetchFailureMessage()
+                            		"User Service",
+                                    "Error occurred while saving the new user!"
                                 });
                         }
 
@@ -241,8 +241,8 @@ public class UsersController extends Controller
                             Dispatcher.forwardEvent(GeofenceEvents.SEND_ERROR_MESSAGE,
                                 new String[]
                                 {
-                                    I18nProvider.getMessages().ruleServiceName(),
-                                    I18nProvider.getMessages().ruleFetchFailureMessage()
+                            		"User Service",
+                                    "Error occurred while deleting the selected user."
                                 });
                         }
 

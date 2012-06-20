@@ -206,7 +206,7 @@ public class UserGridWidget extends GeofenceGridWidget<GSUser>
 
         /*ColumnConfig userProfileColumn = new ColumnConfig();
         userProfileColumn.setId(BeanKeyValue.PROFILE.getValue());
-        userProfileColumn.setHeader("Profile");
+        userProfileColumn.setHeader("Group");
         userProfileColumn.setWidth(160);
         userProfileColumn.setRenderer(this.createProfilesComboBox());
         userProfileColumn.setMenuDisabled(true);
@@ -379,7 +379,7 @@ public class UserGridWidget extends GeofenceGridWidget<GSUser>
                         Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
                             new String[]
                             {
-                                I18nProvider.getMessages().remoteServiceName(),
+                                "User Service",
                                 I18nProvider.getMessages().foundLabel() + " " + result.getData().size() +
                                 " " + message
                             });
@@ -389,7 +389,7 @@ public class UserGridWidget extends GeofenceGridWidget<GSUser>
                         Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
                             new String[]
                             {
-                                I18nProvider.getMessages().remoteServiceName(),
+                        		"User Service",
                                 I18nProvider.getMessages().recordNotFoundMessage()
                             });
                     }
@@ -713,7 +713,7 @@ public class UserGridWidget extends GeofenceGridWidget<GSUser>
 //                            public void handleEvent(FieldEvent be)
 //                            {
 //                                Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
-//                                    new String[] { "GeoServer Users", "Profiles" });
+//                                    new String[] { "GeoServer Users", "Groups" });
 //
 //                                model.setProfile((Profile) be.getField().getValue());
 //                                Dispatcher.forwardEvent(GeofenceEvents.UPDATE_USER, model);

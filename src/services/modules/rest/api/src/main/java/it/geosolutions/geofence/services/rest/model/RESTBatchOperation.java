@@ -101,7 +101,7 @@ public class RESTBatchOperation {
         @XmlElement(name="user",     nillable=true, type=RESTInputUser.class),
         @XmlElement(name="userGroup",    nillable=true, type=RESTInputGroup.class),
         @XmlElement(name="instance", nillable=true, type=RESTInputInstance.class),
-        @XmlElement(name="rule",     nillable=true, type=RESTInputRule.class),
+        @XmlElement(name="rule",     nillable=true, type=RESTInputRule.class)
     })
     public AbstractRESTPayload getPayload() {
         return payload;

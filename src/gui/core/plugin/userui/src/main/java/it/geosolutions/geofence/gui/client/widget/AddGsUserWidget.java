@@ -208,8 +208,8 @@ public class AddGsUserWidget extends GeofenceFormWidget
     private void createProfilesComboBox()
     {
         profilesComboBox = new ComboBox<UserGroup>();
-        profilesComboBox.setFieldLabel("Profile");
-        profilesComboBox.setEmptyText("(No profile available)");
+        profilesComboBox.setFieldLabel("Group");
+        profilesComboBox.setEmptyText("(No group available)");
         profilesComboBox.setDisplayField(BeanKeyValue.NAME.getValue());
         profilesComboBox.setEditable(false);
         profilesComboBox.setStore(getAvailableProfiles());

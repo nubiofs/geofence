@@ -125,7 +125,7 @@ public class AddProfileWidget extends GeofenceFormWidget
     public void addComponentToForm()
     {
         fieldSet = new FieldSet();
-        fieldSet.setHeading("Profile Information");
+        fieldSet.setHeading("Group Information");
 
         FormLayout layout = new FormLayout();
         layout.setLabelWidth(80);
@@ -133,7 +133,7 @@ public class AddProfileWidget extends GeofenceFormWidget
 
         profileName = new TextField<String>();
         profileName.setAllowBlank(false);
-        profileName.setFieldLabel("Profile name");
+        profileName.setFieldLabel("Group name");
         fieldSet.add(profileName);
 
         this.formPanel.add(fieldSet);
@@ -184,7 +184,7 @@ public class AddProfileWidget extends GeofenceFormWidget
     @Override
     public void initSize()
     {
-        setHeading( /* TODO: I18nProvider.getMessages().addAoiDialogTitle() */"Create new Profile");
+        setHeading( /* TODO: I18nProvider.getMessages().addAoiDialogTitle() */"Create new Group");
         setSize(420, 300);
     }
 
