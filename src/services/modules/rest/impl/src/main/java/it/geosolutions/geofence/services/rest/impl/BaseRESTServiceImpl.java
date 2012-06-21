@@ -46,7 +46,7 @@ import org.apache.log4j.Logger;
 public abstract class BaseRESTServiceImpl {
 
     private static final Logger LOGGER = Logger.getLogger(BaseRESTServiceImpl.class);
-
+    
     protected UserAdminService userAdminService;
     protected UserGroupAdminService userGroupAdminService;
     protected InstanceAdminService instanceAdminService;

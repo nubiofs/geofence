@@ -19,16 +19,10 @@
  */
 package it.geosolutions.geofence.services.rest.impl;
 
-import it.geosolutions.geofence.services.dto.ShortGroup;
-import it.geosolutions.geofence.services.rest.RESTUserGroupService;
-import it.geosolutions.geofence.services.rest.RESTUserService;
 import it.geosolutions.geofence.services.rest.exception.ConflictRestEx;
 import it.geosolutions.geofence.services.rest.model.RESTInputGroup;
 import it.geosolutions.geofence.services.rest.model.RESTInputUser;
 import it.geosolutions.geofence.services.rest.model.RESTOutputUser;
-import it.geosolutions.geofence.services.rest.model.RESTShortUser;
-import it.geosolutions.geofence.services.rest.model.RESTShortUserList;
-import it.geosolutions.geofence.services.rest.model.config.RESTFullUserGroupList;
 import it.geosolutions.geofence.services.rest.model.util.IdName;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,77 +30,16 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.core.Response;
 import org.apache.log4j.Logger;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import static org.junit.Assert.*;
 
 /**
  *
  * @author ETj (etj at geo-solutions.it)
  */
-public class RESTUserServiceImplTest {
+public class RESTUserServiceImplTest extends RESTBaseTest {
     private static final Logger LOGGER = Logger.getLogger(RESTUserServiceImplTest.class);
 
-
-    protected static ClassPathXmlApplicationContext ctx = null;
-
-    protected static RESTUserService restUserService;
-    protected static RESTUserGroupService restUserGroupService;
-
-    public RESTUserServiceImplTest() {
-
-        synchronized(RESTUserServiceImplTest.class) {
-            if(ctx == null) {
-                String[] paths = {
-                        "classpath*:applicationContext.xml"
-//                         ,"applicationContext-test.xml"
-                };
-                ctx = new ClassPathXmlApplicationContext(paths);
-
-
-                for(String name : ctx.getBeanDefinitionNames()) {
-                    if(name.startsWith("rest") )
-                        LOGGER.warn("  BEAN ===> " + name);                    
-                }
-
-                restUserService       = (RESTUserService)ctx.getBean("restUserService");
-                restUserGroupService  = (RESTUserGroupService)ctx.getBean("restUserGroupService");
-            }
-            
-            assertNotNull(restUserService);
-            assertNotNull(restUserGroupService);
-        }
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @Before
-    public void before() throws Exception {
-
-//        assertNotNull(restUserService);
-//        assertNotNull(restUserGroupService);
-
-        RESTShortUserList users = restUserService.getList(null, null, null);
-        for (RESTShortUser user : users) {
-            LOGGER.warn("Removing " + user);
-            restUserService.delete(user.getId(), true);            
-        }
-        RESTFullUserGroupList userGroups = restUserGroupService.getList(null, null, null);
-        for (ShortGroup group : userGroups) {
-            LOGGER.warn("Removing " + group);
-            restUserGroupService.delete(group.getId(), true);
-        }
-
-    }
 
     @Test
     public void testInsert() {

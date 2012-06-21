@@ -104,4 +104,25 @@ public class RESTLayerConstraints {
     public void setType(LayerType type) {
         this.type = type;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(getClass().getSimpleName()).append('[');
+        if(type != null)
+            sb.append("type:").append(type);
+        if(defaultStyle != null)
+            sb.append(" defStyle:").append(defaultStyle);
+        if(cqlFilterRead != null)
+            sb.append(" cqlR:").append(cqlFilterRead);
+        if(cqlFilterWrite != null)
+            sb.append(" cqlW:").append(cqlFilterWrite);
+        if(restrictedAreaWkt != null)
+            sb.append(" wkt:").append(restrictedAreaWkt);
+        if(allowedStyles != null)
+            sb.append(" styles(").append(allowedStyles.size()).append("):").append(allowedStyles);
+        if(attributes != null)
+            sb.append(" attrs:").append(attributes);
+        sb.append(']');
+        return sb.toString();
+    }
 }

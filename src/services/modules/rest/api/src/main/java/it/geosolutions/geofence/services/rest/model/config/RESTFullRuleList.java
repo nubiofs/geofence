@@ -27,13 +27,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import it.geosolutions.geofence.core.model.GSInstance;
 import it.geosolutions.geofence.core.model.Rule;
+import java.util.Iterator;
 
 /**
  *
  * @author ETj (etj at geo-solutions.it)
  */
 @XmlRootElement(name = "RuleList")
-public class RESTFullRuleList {
+public class RESTFullRuleList implements Iterable<Rule> {
 
     private List<Rule> list;
 
@@ -60,6 +61,11 @@ public class RESTFullRuleList {
 
     public void add(Rule rule) {
         list.add(rule);
+    }
+    
+    @Override
+    public Iterator<Rule> iterator() {
+        return list.iterator();
     }
 
     @Override
