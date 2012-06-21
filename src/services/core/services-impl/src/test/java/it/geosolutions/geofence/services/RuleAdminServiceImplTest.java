@@ -32,6 +32,7 @@ import it.geosolutions.geofence.services.dto.RuleFilter.SpecialFilterType;
 import it.geosolutions.geofence.services.dto.ShortRule;
 import it.geosolutions.geofence.services.exception.BadRequestServiceEx;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
+import java.util.Arrays;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -263,7 +264,7 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
             assertNotNull(details);
             assertEquals(lid1, details.getId());
             assertEquals(1, details.getAttributes().size());
-            assertEquals(1, details.getAllowedStyles().size());
+            assertEquals(new HashSet<String>(Arrays.asList("FIRST_style1")), details.getAllowedStyles());
             LOGGER.info("Found " + loaded + " --> " + loaded.getLayerDetails());
         }
 
@@ -277,11 +278,12 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
 
             assertEquals(3, details.getAttributes().size());
 
-            Set<String> styles = new HashSet<String>();
-            styles.add("style1");
-            styles.add("style2");
+            // way [1] to update allowed styles: setAllowedStyles
+            Set<String> styles = new HashSet<String>(Arrays.asList("style1X","style2X"));
             ruleAdminService.setAllowedStyles(id, styles);
+//            details.setAllowedStyles(styles);
 
+            details.setAllowedStyles(null); // we're setting the list to null because we dont want to update
             ruleAdminService.setDetails(id, details);
             lid2 = details.getId();
             assertNotNull(lid2);
@@ -297,8 +299,7 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
             }
 
             assertEquals(3, details.getAttributes().size());
-            assertEquals(2, details.getAllowedStyles().size());
-            assertTrue(details.getAllowedStyles().contains("style1"));
+            assertEquals(new HashSet<String>(Arrays.asList("style1X","style2X")), details.getAllowedStyles());
         }
 
         // remove details
@@ -320,6 +321,166 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
             ruleAdminService.delete(id);
         }
 
+    }
+
+    public void testAllowedStyles() throws NotFoundServiceEx {
+        final Long id;
+
+        {
+            Rule r1 = new Rule(10, null, null, null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
+            ruleAdminService.insert(r1);
+            id = r1.getId();
+        }
+
+        // save details and check it has been saved
+        final Long lid1;
+        {
+            LayerDetails details = new LayerDetails();
+            details.getAllowedStyles().add("style_A_1");
+            ruleAdminService.setDetails(id, details);
+            lid1 = details.getId();
+            assertNotNull(lid1);
+        }
+
+        // check details have been set in Rule
+        {
+            Rule loaded = ruleAdminService.get(id);
+            LayerDetails details = loaded.getLayerDetails();
+            assertNotNull(details);
+            assertEquals(lid1, details.getId());
+            assertEquals(new HashSet<String>(Arrays.asList("style_A_1")), details.getAllowedStyles());
+            LOGGER.info("Found " + loaded + " --> " + loaded.getLayerDetails());
+        }
+
+        // set new details, leaving the style as is
+        final Long lid2;
+        {
+            LayerDetails old = ruleAdminService.get(id).getLayerDetails();
+            old.setDefaultStyle("ds1");
+            old.setAllowedStyles(null); // setting this on null, will not change the existing style list
+
+            ruleAdminService.setDetails(id, old); // mh
+            lid2 = old.getId();
+            assertNotNull(lid2);
+        }
+
+        // check
+        {
+            Rule loaded = ruleAdminService.get(id);
+            LayerDetails details = loaded.getLayerDetails();
+            assertNotNull(details);
+            assertEquals(lid2, details.getId());
+            assertEquals("ds1", details.getDefaultStyle());
+            assertEquals(new HashSet<String>(Arrays.asList("style_A_1")), details.getAllowedStyles()); // not changed
+
+            LOGGER.info("Found " + loaded + " --> " + loaded.getLayerDetails());
+        }
+
+        // set new details, and allowedStyles
+        {
+            LayerDetails old = ruleAdminService.get(id).getLayerDetails();
+            old.setAllowedStyles(new HashSet<String>(Arrays.asList("style_B_1","style_B_2")));
+
+            ruleAdminService.setDetails(id, old); // mh
+        }
+
+        // check
+        {
+            Rule loaded = ruleAdminService.get(id);
+            LayerDetails details = loaded.getLayerDetails();
+            assertNotNull(details);
+            assertEquals(lid2, details.getId());
+            assertEquals("ds1", details.getDefaultStyle());
+            assertEquals(new HashSet<String>(Arrays.asList("style_B_1","style_B_2")), details.getAllowedStyles());
+
+            LOGGER.info("Found " + loaded + " --> " + loaded.getLayerDetails());
+        }
+
+        // set new allowed styles directly
+        {
+            ruleAdminService.setAllowedStyles(id, new HashSet<String>(Arrays.asList("style_C_1","style_C_2","style_C_3")));
+        }
+
+        // check
+        {
+            Rule loaded = ruleAdminService.get(id);
+            LayerDetails details = loaded.getLayerDetails();
+            assertNotNull(details);
+            assertEquals(new HashSet<String>(Arrays.asList("style_C_1","style_C_2","style_C_3")), details.getAllowedStyles());
+
+            LOGGER.info("Found " + loaded + " --> " + loaded.getLayerDetails());
+        }
+    }
+
+    public void testAttribs() throws NotFoundServiceEx {
+        final Long id;
+
+        {
+            Rule r1 = new Rule(10, null, null, null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
+            ruleAdminService.insert(r1);
+            id = r1.getId();
+        }
+
+        // save details and check it has been saved
+        final Long lid1;
+        {
+            LayerDetails details = new LayerDetails();
+            details.setAttributes(new HashSet<LayerAttribute>(Arrays.asList(
+                    new LayerAttribute("attr1", AccessType.NONE),
+                    new LayerAttribute("attr2", AccessType.READWRITE)
+                    )));
+            ruleAdminService.setDetails(id, details);
+            lid1 = details.getId();
+            assertNotNull(lid1);
+        }
+
+        // check attribs have been properly set
+        {
+            Rule loaded = ruleAdminService.get(id);
+            LayerDetails details = loaded.getLayerDetails();
+            LOGGER.debug("Reloaded details 1: " + details);
+            assertNotNull(details);
+            assertEquals(lid1, details.getId());
+
+            assertEquals(new HashSet<LayerAttribute>(Arrays.asList(
+                            new LayerAttribute("attr1", AccessType.NONE),
+                            new LayerAttribute("attr2", AccessType.READWRITE)
+                            )),
+                    details.getAttributes());
+        }
+
+        String allowedArea = "MULTIPOLYGON (((4146.5 1301.4, 4147.5 1301.1, 4147.8 1301.4, 4146.5 1301.4)))";
+
+        // set new area in details, leaving the attribs as is
+        final Long lid2;
+        {
+            LayerDetails old = ruleAdminService.get(id).getLayerDetails();
+            old.setDefaultStyle("ds1");
+
+            old.setArea(parseMultiPolygon(allowedArea));
+
+            ruleAdminService.setDetails(id, old);
+            lid2 = old.getId();
+            assertNotNull(lid2);
+        }
+
+        // check
+        {
+            Rule loaded = ruleAdminService.get(id);
+            LayerDetails details = loaded.getLayerDetails();
+            LOGGER.debug("Reloaded details 2: " + details);
+            assertNotNull(details);
+            assertEquals(lid2, details.getId());
+            assertEquals("ds1", details.getDefaultStyle());
+            assertTrue(parseMultiPolygon(allowedArea).equals(details.getArea())); // assertEquals is not reliable here
+            
+            // these should not have changed
+            assertEquals(new HashSet<LayerAttribute>(Arrays.asList(
+                            new LayerAttribute("attr1", AccessType.NONE),
+                            new LayerAttribute("attr2", AccessType.READWRITE)
+                            )),
+                    details.getAttributes());                       
+        }
     }
 
     public void testRuleDetailsErrors() throws NotFoundServiceEx {
@@ -459,6 +620,8 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
         assertEquals(20, loaded.get(1).getPriority());
         assertEquals(30, loaded.get(2).getPriority());
     }
+
+
 
 
 }

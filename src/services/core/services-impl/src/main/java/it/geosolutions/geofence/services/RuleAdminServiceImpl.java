@@ -24,6 +24,7 @@ import com.googlecode.genericdao.search.Search;
 import it.geosolutions.geofence.core.dao.LayerDetailsDAO;
 import it.geosolutions.geofence.core.dao.RuleDAO;
 import it.geosolutions.geofence.core.dao.RuleLimitsDAO;
+import it.geosolutions.geofence.core.model.LayerAttribute;
 import it.geosolutions.geofence.core.model.LayerDetails;
 import it.geosolutions.geofence.core.model.Rule;
 import it.geosolutions.geofence.core.model.RuleLimits;
@@ -414,37 +415,60 @@ public class RuleAdminServiceImpl implements RuleAdminService {
 
 
     @Override
-    public void setDetails(Long ruleId, LayerDetails details) {
+    public void setDetails(Long ruleId, LayerDetails detailsNew) {
         Rule rule = ruleDAO.find(ruleId);
         if(rule == null)
             throw new NotFoundServiceEx("Rule not found");
 
-        if(rule.getLayer() == null && details != null)
+        if(rule.getLayer() == null && detailsNew != null)
             throw new BadRequestServiceEx("Rule does not refer to a fixed layer");
 
-        if(rule.getAccess() != GrantType.ALLOW && details != null)
+        if(rule.getAccess() != GrantType.ALLOW && detailsNew != null)
             throw new BadRequestServiceEx("Rule is not of ALLOW type");
 
 //        final Map<String, String> oldProps;
         final Set<String> oldStyles;
+        final Set<LayerAttribute> oldAttrs;
 
         // remove old details if any
         if(rule.getLayerDetails() != null) {
 //            oldProps = detailsDAO.getCustomProps(ruleId);
             oldStyles = detailsDAO.getAllowedStyles(ruleId);
+            oldAttrs  = rule.getLayerDetails().getAttributes();
             detailsDAO.remove(rule.getLayerDetails());
         } else{
 //            oldProps = null;
             oldStyles = null;
+            oldAttrs = null;
         }
 
         rule = ruleDAO.find(ruleId);
         if(rule.getLayerDetails() != null)
             throw new IllegalStateException("LayerDetails should be null");
 
-        if(details != null) {
-            details.setRule(rule);
-            detailsDAO.persist(details);
+        if(detailsNew != null) {
+
+            if(detailsNew.getAttributes() == null) {
+                if( oldStyles != null) {
+                    LOGGER.info("Restoring " + oldAttrs.size() + " old attribs");
+                    detailsNew.setAttributes(oldAttrs);
+                } else {
+                    // no new, no old, nothing to do
+                }
+            } else {
+                if(LOGGER.isDebugEnabled()) {
+                    if(oldAttrs!=null && oldAttrs.equals(detailsNew.getAttributes())) {
+                        LOGGER.debug("New attribs are the same as old ones:" + detailsNew.getAttributes());
+                    } else
+                        LOGGER.debug("Setting " + detailsNew.getAttributes().size() + " new attrs " + detailsNew.getAttributes());
+                }
+                // we're using a brand new Set, bc the old one may have been set as deleted by hibernate
+                final Set<LayerAttribute> clonedAttrs = new HashSet<LayerAttribute>(detailsNew.getAttributes());
+                detailsNew.setAttributes(clonedAttrs);
+            }
+
+            detailsNew.setRule(rule);
+            detailsDAO.persist(detailsNew);
             // restore old properties
 //            if(oldProps != null) {
 //                LOGGER.info("Restoring " + oldProps.size() + " props from older LayerDetails (id:"+ruleId+")");
@@ -454,7 +478,12 @@ public class RuleAdminServiceImpl implements RuleAdminService {
 //                detailsDAO.setCustomProps(ruleId, newProps);
 //            }
 
-            if(oldStyles != null){
+            if(detailsNew.getAllowedStyles() != null) {
+                LOGGER.info("Setting " + detailsNew.getAllowedStyles().size() + " new styles");
+                Set<String> newStyles = new HashSet<String>();
+                newStyles.addAll(detailsNew.getAllowedStyles());
+                detailsDAO.setAllowedStyles(ruleId, newStyles);
+            } else if(oldStyles != null) {  // no new style list, check for old list to restore
                 LOGGER.info("Restoring " + oldStyles.size() + " styles from older LayerDetails (id:"+ruleId+")");
                 //cannot reuse the same Map returned by Hibernate, since it is detached now.
                 Set<String> newStyles = new HashSet<String>();

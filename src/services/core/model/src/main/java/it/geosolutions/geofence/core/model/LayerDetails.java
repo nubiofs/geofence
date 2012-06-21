@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  * 
  *  GPLv3 + Classpath exception
@@ -21,13 +21,10 @@
 package it.geosolutions.geofence.core.model;
 
 import com.vividsolutions.jts.geom.MultiPolygon;
-import it.geosolutions.geofence.core.model.adapter.MapAdapter;
 import it.geosolutions.geofence.core.model.adapter.MultiPolygonAdapter;
 import it.geosolutions.geofence.core.model.enums.LayerType;
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -105,7 +102,7 @@ public class LayerDetails implements Serializable {
     @Column(name="styleName")
     private Set<String> allowedStyles = new HashSet<String>();
 
-    /** Custom properties associated to the Layer 
+    /** Feature Attributes associated to the Layer
      * <P>We'll use the pair <TT>(details_id, name)</TT> as PK for the associated table.
      * To do so, we have to perform some trick on the <TT>{@link LayerAttribute#access}</TT> field.
      */
@@ -205,6 +202,8 @@ public class LayerDetails implements Serializable {
                 + " cqlw=" + cqlFilterWrite
                 + " area=" + area
                 + " rule=" + rule
+                + " attrs=" + attributes
+                + " styles=" + allowedStyles
                 + '}';
     }
 

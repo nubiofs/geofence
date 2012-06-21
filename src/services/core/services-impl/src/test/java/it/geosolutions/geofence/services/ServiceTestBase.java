@@ -20,11 +20,13 @@
 
 package it.geosolutions.geofence.services;
 
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 import it.geosolutions.geofence.core.model.GFUser;
 import it.geosolutions.geofence.core.model.GSInstance;
 import it.geosolutions.geofence.core.model.GSUser;
 import it.geosolutions.geofence.core.model.UserGroup;
-import it.geosolutions.geofence.services.dto.RuleFilter.IdNameFilter;
 import it.geosolutions.geofence.services.dto.ShortGroup;
 import it.geosolutions.geofence.services.dto.ShortRule;
 import it.geosolutions.geofence.services.dto.ShortUser;
@@ -185,6 +187,17 @@ public class ServiceTestBase extends TestCase {
 
         UserGroup group = createUserGroup(base);
         return createUser(base, group);
+    }
+
+    protected MultiPolygon parseMultiPolygon(String wkt) {
+        try {
+            WKTReader wktReader = new WKTReader();
+            MultiPolygon the_geom = (MultiPolygon) wktReader.read(wkt);
+            the_geom.setSRID(4326);
+            return the_geom;
+        } catch (ParseException e) {
+            throw new IllegalArgumentException("Unparsabe WKT", e);
+        }
     }
 
 }
