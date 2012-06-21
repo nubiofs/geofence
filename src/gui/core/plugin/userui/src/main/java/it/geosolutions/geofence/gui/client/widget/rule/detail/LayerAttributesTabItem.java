@@ -32,12 +32,15 @@
  */
 package it.geosolutions.geofence.gui.client.widget.rule.detail;
 
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.widget.TabItem;
-
 import it.geosolutions.geofence.gui.client.Resources;
 import it.geosolutions.geofence.gui.client.model.Rule;
 import it.geosolutions.geofence.gui.client.service.RulesManagerRemoteServiceAsync;
+
+import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.TabItem;
 
 
 // TODO: Auto-generated Javadoc
@@ -88,10 +91,13 @@ public class LayerAttributesTabItem extends TabItem
 
         setScrollMode(Scroll.NONE);
 
-        getLayerAttributesWidget().getLayerAttributesInfo().getLoader().load();
+        this.addListener(Events.Select, new Listener<BaseEvent>() {
 
-        // getLayerCustomPropsWidget().getLayerCustomPropsInfo().getLoader().load(0, it.geosolutions.geofence.gui.client.Constants.DEFAULT_PAGESIZE);
+			public void handleEvent(BaseEvent be) {
+				getLayerAttributesWidget().getLayerAttributesInfo().getLoader().load();
+			}
 
+		});
     }
 
     /**

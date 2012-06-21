@@ -157,13 +157,13 @@ public class ProfileGridWidget extends GeofenceGridWidget<UserGroup> {
 		profileEnabledColumn.setSortable(false);
 		configs.add(profileEnabledColumn);
 
-		ColumnConfig detailsActionColumn = new ColumnConfig();
-		detailsActionColumn.setId("detailsProfile");
-		detailsActionColumn.setWidth(80);
-		detailsActionColumn.setRenderer(this.createProfileDetailsButton());
-		detailsActionColumn.setMenuDisabled(true);
-		detailsActionColumn.setSortable(false);
-		configs.add(detailsActionColumn);
+//		ColumnConfig detailsActionColumn = new ColumnConfig();
+//		detailsActionColumn.setId("detailsProfile");
+//		detailsActionColumn.setWidth(80);
+//		detailsActionColumn.setRenderer(this.createProfileDetailsButton());
+//		detailsActionColumn.setMenuDisabled(true);
+//		detailsActionColumn.setSortable(false);
+//		configs.add(detailsActionColumn);
 
 		ColumnConfig removeActionColumn = new ColumnConfig();
 		removeActionColumn.setId("removeProfile");

@@ -83,7 +83,7 @@ public class RuleDetailsTabItem extends TabItem {
 	 */
 	public RuleDetailsTabItem(String tabItemId, Rule model,
 			WorkspacesManagerRemoteServiceAsync workspacesService,
-			boolean loadModel) {
+			final boolean loadModel) {
 		this(tabItemId);
 		this.theRule = model;
 
@@ -93,11 +93,10 @@ public class RuleDetailsTabItem extends TabItem {
 
 		setScrollMode(Scroll.NONE);
 
-		if (loadModel) {
 			this.addListener(Events.Select, new Listener<BaseEvent>() {
 
 				public void handleEvent(BaseEvent be) {
-					if (ruleDetailsWidget.getRuleDetailsInfo().getModel() == null) {
+					if (loadModel && ruleDetailsWidget.getRuleDetailsInfo().getModel() == null) {
 						Dispatcher.forwardEvent(
 								GeofenceEvents.LOAD_LAYER_DETAILS, theRule);
 					}
@@ -110,7 +109,6 @@ public class RuleDetailsTabItem extends TabItem {
 				}
 
 			});
-		}
 		// getLayerCustomPropsWidget().getLayerCustomPropsInfo().getLoader().load(0,
 		// it.geosolutions.geofence.gui.client.Constants.DEFAULT_PAGESIZE);
 

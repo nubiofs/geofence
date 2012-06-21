@@ -145,8 +145,8 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
         comboStyles.setName(BeanKeyValue.STYLES_COMBO.getValue());
         comboStyles.setDisplayField(BeanKeyValue.STYLES_COMBO.getValue());
         comboStyles.setEditable(false);
-        comboStyles.setAllowBlank(false);
-        comboStyles.setForceSelection(true);
+        comboStyles.setAllowBlank(true);
+        comboStyles.setForceSelection(false);
         comboStyles.setStore(getAvailableStyles(theRule));
         comboStyles.setTypeAhead(true);
         comboStyles.setTriggerAction(TriggerAction.ALL);
@@ -181,6 +181,7 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
         cqlFilterWrite = new TextArea();
         cqlFilterWrite.setFieldLabel("CQL Write");
         cqlFilterWrite.setWidth(200);
+        cqlFilterWrite.setEnabled(true);
         cqlFilterWrite.setPreventScrollbars(true);
         cqlFilterWrite.addListener(Events.Change, new Listener<FieldEvent>()
             {
