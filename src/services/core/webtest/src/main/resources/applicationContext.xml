@@ -27,9 +27,10 @@
 
     <bean name="testService" class="it.geosolutions.geofence.servicetest.MainTest"  >
         <property name="userAdminService" ref="userAdminService" />
-        <property name="profileAdminService" ref="profileAdminService" />
+        <property name="userGroupAdminService" ref="userGroupAdminService" />
         <property name="instanceAdminService" ref="instanceAdminService" />
         <property name="ruleAdminService" ref="ruleAdminService" />
+
 <!--        <property name="ruleReaderService" ref="remoteRuleReaderProxy" />-->
 
     </bean>

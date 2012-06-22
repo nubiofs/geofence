@@ -66,7 +66,7 @@ public class MainTest implements InitializingBean, ApplicationContextAware {
     private XmlWebApplicationContext applicationContext;
 
     private UserAdminService userAdminService;
-    private UserGroupAdminService profileAdminService;
+    private UserGroupAdminService userGroupAdminService;
     private InstanceAdminService instanceAdminService;
     private RuleAdminService ruleAdminService;
     private RuleReaderService ruleReaderService;
@@ -96,13 +96,13 @@ public class MainTest implements InitializingBean, ApplicationContextAware {
         LOGGER.info("===== Creating Profiles (not actually needed while testing GS) =====");
         ShortGroup shortProfile = new ShortGroup();
         shortProfile.setName("basic");
-        long pid1 = profileAdminService.insert(shortProfile);
-        UserGroup p1 = profileAdminService.get(pid1);
+        long pid1 = userGroupAdminService.insert(shortProfile);
+        UserGroup p1 = userGroupAdminService.get(pid1);
 
         ShortGroup shortProfile2 = new ShortGroup();
         shortProfile2.setName("advanced");
-        long pid2 = profileAdminService.insert(shortProfile2);
-        UserGroup p2 = profileAdminService.get(pid2);
+        long pid2 = userGroupAdminService.insert(shortProfile2);
+        UserGroup p2 = userGroupAdminService.get(pid2);
 
 
         LOGGER.info("===== Creating Users =====");
@@ -267,15 +267,15 @@ public class MainTest implements InitializingBean, ApplicationContextAware {
     }
 
     protected void removeAllProfiles() throws NotFoundServiceEx {
-        List<ShortGroup> list = profileAdminService.getList(null,null,null);
+        List<ShortGroup> list = userGroupAdminService.getList(null,null,null);
         for (ShortGroup item : list) {
             LOGGER.info("Removing " + item);
-            boolean ret = profileAdminService.delete(item.getId());
+            boolean ret = userGroupAdminService.delete(item.getId());
             if(!ret)
                 throw new IllegalStateException("Group not removed");
         }
 
-        if( profileAdminService.getCount(null) != 0)
+        if( userGroupAdminService.getCount(null) != 0)
                 throw new IllegalStateException("Groups have not been properly deleted");
     }
 
@@ -299,8 +299,8 @@ public class MainTest implements InitializingBean, ApplicationContextAware {
         this.instanceAdminService = instanceAdminService;
     }
 
-    public void setProfileAdminService(UserGroupAdminService profileAdminService) {
-        this.profileAdminService = profileAdminService;
+    public void setUserGroupAdminService(UserGroupAdminService userGroupAdminService) {
+        this.userGroupAdminService = userGroupAdminService;
     }
 
     public void setRuleAdminService(RuleAdminService ruleAdminService) {
