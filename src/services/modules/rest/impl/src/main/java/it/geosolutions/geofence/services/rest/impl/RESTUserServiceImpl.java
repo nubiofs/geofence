@@ -327,86 +327,37 @@ public class RESTUserServiceImpl
 
     @Override
     public void addIntoGroup(Long userId, String groupName) throws NotFoundRestEx, InternalErrorRestEx {
-        GSUser user = null;
-        UserGroup group = null;
-        try {
-            group = getUserGroup(new IdName(groupName));
-            user = userAdminService.getFull(userId);
-        } catch (GeoFenceRestEx e) {
-            throw e;
-        } catch (NotFoundServiceEx e) {
-            throw new NotFoundRestEx("User not found");
-        } catch (Exception e) {
-            LOGGER.warn("Unexpected exception", e);
-            throw new InternalErrorRestEx(e.getMessage());
-        }
-
-        addIntoGroup(user, group);
+        addIntoGroup(new IdName(userId), new IdName(groupName));
     }
 
     @Override
     public void addIntoGroup(Long userId, Long groupId) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
-        GSUser user = null;
-        UserGroup group = null;
-        try {
-            group = getUserGroup(new IdName(groupId));
-            user = userAdminService.getFull(userId);
-        } catch (GeoFenceRestEx e) {
-            throw e;
-        } catch (NotFoundServiceEx e) {
-            throw new NotFoundRestEx("User not found");
-        } catch (Exception e) {
-            LOGGER.warn("Unexpected exception", e);
-            throw new InternalErrorRestEx(e.getMessage());
-        }
-
-        addIntoGroup(user, group);
+        addIntoGroup(new IdName(userId), new IdName(groupId));
     }
 
     @Override
     public void addIntoGroup(String userName, String groupName) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
-        GSUser user = null;
-        UserGroup group = null;
-        try {
-            group = getUserGroup(new IdName(groupName));
-            user = userAdminService.get(userName);
-            user.setGroups(userAdminService.getUserGroups(user.getId()));
-        } catch (GeoFenceRestEx e) {
-            throw e;
-        } catch (NotFoundServiceEx e) {
-            throw new NotFoundRestEx("User not found");
-        } catch (Exception e) {
-            LOGGER.warn("Unexpected exception", e);
-            throw new InternalErrorRestEx(e.getMessage());
-        }
-
-        addIntoGroup(user, group);
+        addIntoGroup(new IdName(userName), new IdName(groupName));
     }
 
     @Override
     public void addIntoGroup(String userName, Long groupId) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
-        GSUser user = null;
-        UserGroup group = null;
-        try {
-            group = getUserGroup(new IdName(groupId));
-            user = userAdminService.get(userName);
-            user.setGroups(userAdminService.getUserGroups(user.getId()));
-        } catch (GeoFenceRestEx e) {
-            throw e;
-        } catch (NotFoundServiceEx e) {
-            throw new NotFoundRestEx("User not found");
-        } catch (Exception e) {
-            LOGGER.warn("Unexpected exception", e);
-            throw new InternalErrorRestEx(e.getMessage());
-        }
-
-        addIntoGroup(user, group);
+        addIntoGroup(new IdName(userName), new IdName(groupId));
     }
 
-    protected void addIntoGroup(GSUser user, UserGroup group) throws InternalErrorRestEx {
+    @Override
+    public void addIntoGroup(IdName userId, IdName groupId) throws InternalErrorRestEx, BadRequestRestEx, NotFoundRestEx {
         try {
+            GSUser user = getUser(userId);
+            UserGroup group = getUserGroup(groupId);
+
             user.getGroups().add(group);
             userAdminService.update(user);
+
+        } catch (BadRequestRestEx e) {
+            throw e;
+        } catch (NotFoundRestEx e) {
+            throw e;
         } catch (Exception e) {
             LOGGER.warn("Unexpected exception", e);
             throw new InternalErrorRestEx(e.getMessage());
@@ -417,80 +368,34 @@ public class RESTUserServiceImpl
     // ==========================================================================
 
     @Override
-    public void removeFromGroup(Long userId, String groupName) throws NotFoundRestEx, InternalErrorRestEx {
-        GSUser user = null;
-        try {
-            user = userAdminService.getFull(userId);
-        } catch (GeoFenceRestEx e) {
-            throw e;
-        } catch (NotFoundServiceEx e) {
-            throw new NotFoundRestEx("User not found");
-        } catch (Exception e) {
-            LOGGER.warn("Unexpected exception", e);
-            throw new InternalErrorRestEx(e.getMessage());
-        }
-
-        removeFromGroup(user, groupName);
+    public void removeFromGroup(Long userId, String groupName) throws NotFoundRestEx, InternalErrorRestEx, BadRequestRestEx {
+        removeFromGroup(new IdName(userId), new IdName(groupName));
     }
 
     @Override
-    public void removeFromGroup(Long userId, Long groupId) throws NotFoundRestEx, InternalErrorRestEx {
-        GSUser user = null;
-        try {
-            user = userAdminService.getFull(userId);
-        } catch (GeoFenceRestEx e) {
-            throw e;
-        } catch (NotFoundServiceEx e) {
-            throw new NotFoundRestEx("User not found");
-        } catch (Exception e) {
-            LOGGER.warn("Unexpected exception", e);
-            throw new InternalErrorRestEx(e.getMessage());
-        }
-
-        removeFromGroup(user, groupId);
+    public void removeFromGroup(Long userId, Long groupId) throws NotFoundRestEx, InternalErrorRestEx, BadRequestRestEx {
+        removeFromGroup(new IdName(userId), new IdName(groupId));
     }
 
     @Override
-    public void removeFromGroup(String userName, String groupName) throws NotFoundRestEx, InternalErrorRestEx {
-        GSUser user = null;
-        try {
-            user = userAdminService.get(userName);
-            user.setGroups(userAdminService.getUserGroups(user.getId()));
-        } catch (GeoFenceRestEx e) {
-            throw e;
-        } catch (NotFoundServiceEx e) {
-            throw new NotFoundRestEx("User not found");
-        } catch (Exception e) {
-            LOGGER.warn("Unexpected exception", e);
-            throw new InternalErrorRestEx(e.getMessage());
-        }
-
-        removeFromGroup(user, groupName);
+    public void removeFromGroup(String userName, String groupName) throws NotFoundRestEx, InternalErrorRestEx, BadRequestRestEx {
+        removeFromGroup(new IdName(userName), new IdName(groupName));
     }
 
     @Override
-    public void removeFromGroup(String userName, Long groupId) throws NotFoundRestEx, InternalErrorRestEx {
-        GSUser user = null;
-        try {
-            user = userAdminService.get(userName);
-            user.setGroups(userAdminService.getUserGroups(user.getId()));
-        } catch (GeoFenceRestEx e) {
-            throw e;
-        } catch (NotFoundServiceEx e) {
-            throw new NotFoundRestEx("User not found");
-        } catch (Exception e) {
-            LOGGER.warn("Unexpected exception", e);
-            throw new InternalErrorRestEx(e.getMessage());
-        }
-
-        removeFromGroup(user, groupId);
+    public void removeFromGroup(String userName, Long groupId) throws NotFoundRestEx, InternalErrorRestEx, BadRequestRestEx {
+        removeFromGroup(new IdName(userName), new IdName(groupId));
     }
 
-    private void removeFromGroup(GSUser user, Long groupId) throws InternalErrorRestEx {
+    @Override
+    public void removeFromGroup(IdName userId, IdName groupId) throws InternalErrorRestEx, BadRequestRestEx, NotFoundRestEx {
         try {
+            GSUser user = getUser(userId);
+            UserGroup groupToRemove = getUserGroup(groupId);
+
             UserGroup found = null;
             for (UserGroup group : user.getGroups()) {
-                if(group.getId().equals(groupId) ) {
+                if(group.getId().equals(groupToRemove.getId()) ) {
                     found = group;
                     break;
                 }
@@ -500,30 +405,15 @@ public class RESTUserServiceImpl
                 userAdminService.update(user);
             } else {
                 if(LOGGER.isInfoEnabled())
-                    LOGGER.info("User " + user.getName() + " not in group " + groupId);
+                    LOGGER.info("User " + user.getName() + " not in group " + groupToRemove);
             }
-        } catch (Exception e) {
-            LOGGER.warn("Unexpected exception", e);
-            throw new InternalErrorRestEx(e.getMessage());
-        }
-    }
-
-    private void removeFromGroup(GSUser user, String groupName) throws InternalErrorRestEx {
-        try {
-            UserGroup found = null;
-            for (UserGroup group : user.getGroups()) {
-                if(group.getName().equals(groupName) ) {
-                    found = group;
-                    break;
-                }
-            }
-            if(found != null) {
-                user.getGroups().remove(found);
-                userAdminService.update(user);
-            } else {
-                if(LOGGER.isInfoEnabled())
-                    LOGGER.info("User " + user.getName() + " not in group " + groupName);
-            }
+        } catch (NotFoundRestEx e) {
+            throw e;
+        } catch (BadRequestRestEx e) {
+            throw e;
+        } catch (NotFoundServiceEx e) {
+            LOGGER.warn(e.getMessage());
+            throw new NotFoundRestEx(e.getMessage());
         } catch (Exception e) {
             LOGGER.warn("Unexpected exception", e);
             throw new InternalErrorRestEx(e.getMessage());

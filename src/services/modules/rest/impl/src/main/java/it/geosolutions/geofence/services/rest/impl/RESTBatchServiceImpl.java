@@ -35,6 +35,7 @@ import it.geosolutions.geofence.services.rest.model.RESTInputGroup;
 import it.geosolutions.geofence.services.rest.model.RESTInputInstance;
 import it.geosolutions.geofence.services.rest.model.RESTInputRule;
 import it.geosolutions.geofence.services.rest.model.RESTInputUser;
+import it.geosolutions.geofence.services.rest.model.util.IdName;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -200,9 +201,14 @@ public class RESTBatchServiceImpl
             else
                 throw new BadRequestRestEx("Missing identifier for op " + op);
         } else if(OP_ADDGROUP.equals(op.getType()) ) {
-            throw new UnsupportedOperationException("Not implemented yet");
+            IdName userId = new IdName(op.getUserId(), op.getUserName());
+            IdName groupId = new IdName(op.getGroupId(), op.getGroupName());
+            restUserService.addIntoGroup(userId, groupId);
+            
         } else if(OP_DELGROUP.equals(op.getType()) ) {
-            throw new UnsupportedOperationException("Not implemented yet");
+            IdName userId = new IdName(op.getUserId(), op.getUserName());
+            IdName groupId = new IdName(op.getGroupId(), op.getGroupName());
+            restUserService.removeFromGroup(userId, groupId);
         } else {
             throw new BadRequestRestEx("Operation not bound " + op);
         }

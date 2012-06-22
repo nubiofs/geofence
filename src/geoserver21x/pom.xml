@@ -124,12 +124,18 @@
         <repository>
             <id>Hibernate Spatial repo</id>
             <url>http://www.hibernatespatial.org/repository</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
 
         <repository>
-            <id>trg-dao-repo</id>
-            <name>Repository for The Revere Group's Hibernate Generic DAO framework</name>
+            <id>generic-dao-repo</id>
+            <name>Repository for Hibernate Generic DAO framework</name>
             <url>http://hibernate-generic-dao.googlecode.com/svn/trunk/maven-repo/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
 
 		<!-- Apache -->
@@ -193,11 +199,17 @@
             <id>spring-release</id>
             <name>Spring Portfolio Release Repository</name>
             <url>http://maven.springframework.org/release</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>spring-external</id>
             <name>Spring Portfolio External Repository</name>
             <url>http://maven.springframework.org/external</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
 
         <!-- Java.net -->
@@ -205,6 +217,9 @@
             <id>java.net</id>
             <url>http://download.java.net/maven/1</url>
             <layout>legacy</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
 
 		<!-- OSGEO -->

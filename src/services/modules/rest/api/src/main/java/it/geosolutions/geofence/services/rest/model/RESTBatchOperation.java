@@ -47,6 +47,15 @@ public class RESTBatchOperation {
     private String name;
     private Boolean cascade;
 
+    /** used in group reassign. */
+    private Long userId;
+    /** used in group reassign. */
+    private String userName;
+    /** used in group reassign. */
+    private Long groupId;
+    /** used in group reassign. */
+    private String groupName;
+
     private AbstractRESTPayload payload;
 
     public RESTBatchOperation() {
@@ -111,6 +120,44 @@ public class RESTBatchOperation {
         this.payload = payload;
     }
 
+    @XmlAttribute
+    public Long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
+    }
+
+    @XmlAttribute
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    @XmlAttribute
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    @XmlAttribute
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "[" 
@@ -119,6 +166,10 @@ public class RESTBatchOperation {
                 + (name != null? " name:"+name:"")
                 + (cascade != null? " cascade:"+cascade:"")
                 + (payload!=null? " payload is a " + payload.getClass().getSimpleName() : "")
+                + (userId!=null?    " uId:"+userId : "")
+                + (userName!=null?  " uName:"+userName : "")
+                + (groupId!=null?   " gId:"+groupId : "")
+                + (groupName!=null? " gName:"+groupName : "")
                 + "]";
     }
 }

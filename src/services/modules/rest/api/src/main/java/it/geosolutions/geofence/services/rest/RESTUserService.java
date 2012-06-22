@@ -29,6 +29,7 @@ import it.geosolutions.geofence.services.rest.exception.NotFoundRestEx;
 import it.geosolutions.geofence.services.rest.model.RESTInputUser;
 import it.geosolutions.geofence.services.rest.model.RESTOutputUser;
 import it.geosolutions.geofence.services.rest.model.RESTShortUserList;
+import it.geosolutions.geofence.services.rest.model.util.IdName;
 import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
@@ -182,6 +183,9 @@ public interface RESTUserService {
     //=== Group association stuff
     //=========================================================================
 
+    void addIntoGroup(IdName userId, IdName groupId)
+            throws InternalErrorRestEx, BadRequestRestEx, NotFoundRestEx;
+
     /**
      * Adds a user into a userGroup
      *
@@ -253,6 +257,9 @@ public interface RESTUserService {
     //=========================================================================
     //=== Group removal stuff
     //=========================================================================
+
+    void removeFromGroup(IdName userId, IdName groupId)
+            throws InternalErrorRestEx, BadRequestRestEx, NotFoundRestEx;
 
     /**
      * Remove a user from a userGroup
