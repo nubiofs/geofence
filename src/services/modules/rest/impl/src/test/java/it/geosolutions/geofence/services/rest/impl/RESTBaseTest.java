@@ -19,14 +19,14 @@
  */
 package it.geosolutions.geofence.services.rest.impl;
 
-import it.geosolutions.geofence.core.model.Rule;
 import it.geosolutions.geofence.services.dto.ShortGroup;
 import it.geosolutions.geofence.services.rest.RESTRuleService;
 import it.geosolutions.geofence.services.rest.RESTUserGroupService;
 import it.geosolutions.geofence.services.rest.RESTUserService;
+import it.geosolutions.geofence.services.rest.model.RESTOutputRule;
+import it.geosolutions.geofence.services.rest.model.RESTOutputRuleList;
 import it.geosolutions.geofence.services.rest.model.RESTShortUser;
 import it.geosolutions.geofence.services.rest.model.RESTShortUserList;
-import it.geosolutions.geofence.services.rest.model.config.RESTFullRuleList;
 import it.geosolutions.geofence.services.rest.model.config.RESTFullUserGroupList;
 import org.apache.log4j.Logger;
 import org.junit.AfterClass;
@@ -92,8 +92,8 @@ public abstract class RESTBaseTest {
         LOGGER.info("============================== TEST " + name.getMethodName());
         LOGGER.info("");
 
-        RESTFullRuleList rules = restRuleService.get(null, null, false, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
-        for (Rule rule : rules) {
+        RESTOutputRuleList rules = restRuleService.get(null, null, false, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+        for (RESTOutputRule rule : rules) {
             LOGGER.warn("Removing " + rule);
             restRuleService.delete(rule.getId());
         }

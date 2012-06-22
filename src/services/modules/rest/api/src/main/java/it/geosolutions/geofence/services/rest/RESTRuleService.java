@@ -27,7 +27,7 @@ import it.geosolutions.geofence.services.rest.exception.InternalErrorRestEx;
 import it.geosolutions.geofence.services.rest.exception.NotFoundRestEx;
 import it.geosolutions.geofence.services.rest.model.RESTInputRule;
 import it.geosolutions.geofence.services.rest.model.RESTOutputRule;
-import it.geosolutions.geofence.services.rest.model.config.RESTFullRuleList;
+import it.geosolutions.geofence.services.rest.model.RESTOutputRuleList;
 import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
@@ -41,11 +41,31 @@ import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 @Path("/")
 public interface RESTRuleService
 {
+    @POST
+    @Path("/")
+    @Produces(MediaType.APPLICATION_XML)
+    Response insert(@Multipart("rule") RESTInputRule rule) throws BadRequestRestEx, NotFoundRestEx;
+
+    @GET
+    @Path("/id/{id}")
+    @Produces(MediaType.APPLICATION_XML)
+    RESTOutputRule get(@PathParam("id") Long id) throws BadRequestRestEx, NotFoundRestEx;
+
+    @PUT
+    @Path("/id/{id}")
+    @Produces(MediaType.APPLICATION_XML)
+    void update(@PathParam("id") Long id,
+        @Multipart("rule") RESTInputRule rule) throws BadRequestRestEx, NotFoundRestEx;
+
+    @DELETE
+    @Path("/id/{id}")
+    @Produces(MediaType.APPLICATION_XML)
+    Response delete(@PathParam("id") Long id) throws BadRequestRestEx, NotFoundRestEx;
 
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_XML)
-    RESTFullRuleList get(
+    RESTOutputRuleList get(
         @QueryParam("page") Integer page,
         @QueryParam("entries") Integer entries,
         @QueryParam("full")@DefaultValue("false")  boolean full,
@@ -102,27 +122,5 @@ public interface RESTRuleService
         @QueryParam("layer") String  layer,
         @QueryParam("layerAny")  Boolean layerAny
     );
-
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_XML)
-    RESTOutputRule get(@PathParam("id") Long id) throws BadRequestRestEx, NotFoundRestEx;
-
-    @POST
-    @Path("/")
-    @Produces(MediaType.APPLICATION_XML)
-    Response insert(@Multipart("rule") RESTInputRule rule) throws BadRequestRestEx, NotFoundRestEx;
-
-
-    @PUT
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_XML)
-    void update(@PathParam("id") Long id,
-        @Multipart("rule") RESTInputRule rule) throws BadRequestRestEx, NotFoundRestEx;
-
-    @DELETE
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_XML)
-    Response delete(@PathParam("id") Long id) throws BadRequestRestEx, NotFoundRestEx;
 
 }

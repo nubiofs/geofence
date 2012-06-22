@@ -43,6 +43,7 @@ import it.geosolutions.geofence.services.rest.model.RESTInputRule;
 import it.geosolutions.geofence.services.rest.model.RESTInputRule.RESTRulePosition.RulePosition;
 import it.geosolutions.geofence.services.rest.model.RESTLayerConstraints;
 import it.geosolutions.geofence.services.rest.model.RESTOutputRule;
+import it.geosolutions.geofence.services.rest.model.RESTOutputRuleList;
 import it.geosolutions.geofence.services.rest.model.config.RESTFullRuleList;
 import it.geosolutions.geofence.services.rest.model.util.IdName;
 import java.util.HashSet;
@@ -340,7 +341,7 @@ public class RESTRuleServiceImpl
 //        this.userGroupAdminService = service;
 //    }
     @Override
-    public RESTFullRuleList get(Integer page, Integer entries,
+    public RESTOutputRuleList get(Integer page, Integer entries,
             boolean full,
             Long userId, String userName, Boolean userDefault,
             Long groupId, String groupName, Boolean groupDefault,
@@ -362,7 +363,7 @@ public class RESTRuleServiceImpl
 
         try {
             List<Rule> listFull = ruleAdminService.getListFull(filter, page, entries);
-            return new RESTFullRuleList(listFull);
+            return toOutput(listFull);
         } catch (Exception ex) {
             LOGGER.error(ex);
             throw new InternalErrorRestEx(ex.getMessage());
@@ -452,6 +453,15 @@ public class RESTRuleServiceImpl
 
     }
 
+    // ==========================================================================
+    protected RESTOutputRuleList toOutput(List<Rule> rules) {
+        RESTOutputRuleList list = new RESTOutputRuleList(rules.size());
+        for (Rule rule : rules) {
+            list.add(toOutput(rule));
+        }
+        return list;
+    }
+    
     // ==========================================================================
     protected RESTOutputRule toOutput(Rule rule) {
         RESTOutputRule out = new RESTOutputRule();
