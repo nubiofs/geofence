@@ -278,6 +278,54 @@ public class RuleFilter implements Serializable {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final RuleFilter other = (RuleFilter) obj;
+        if (this.user != other.user && (this.user == null || !this.user.equals(other.user))) {
+            return false;
+        }
+        if (this.userGroup != other.userGroup && (this.userGroup == null || !this.userGroup.equals(other.userGroup))) {
+            return false;
+        }
+        if (this.instance != other.instance && (this.instance == null || !this.instance.equals(other.instance))) {
+            return false;
+        }
+        if (this.service != other.service && (this.service == null || !this.service.equals(other.service))) {
+            return false;
+        }
+        if (this.request != other.request && (this.request == null || !this.request.equals(other.request))) {
+            return false;
+        }
+        if (this.workspace != other.workspace && (this.workspace == null || !this.workspace.equals(other.workspace))) {
+            return false;
+        }
+        if (this.layer != other.layer && (this.layer == null || !this.layer.equals(other.layer))) {
+            return false;
+        }
+        //NOTE: ipaddress not in equals() bc it is not used for caching
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 37 * hash + (this.user != null ? this.user.hashCode() : 0);
+        hash = 37 * hash + (this.userGroup != null ? this.userGroup.hashCode() : 0);
+        hash = 37 * hash + (this.instance != null ? this.instance.hashCode() : 0);
+        hash = 37 * hash + (this.service != null ? this.service.hashCode() : 0);
+        hash = 37 * hash + (this.request != null ? this.request.hashCode() : 0);
+        hash = 37 * hash + (this.workspace != null ? this.workspace.hashCode() : 0);
+        hash = 37 * hash + (this.layer != null ? this.layer.hashCode() : 0);
+        //NOTE: ipaddress not in hashcode bc it is not used for caching
+        return hash;
+    }
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getClass().getSimpleName());
         sb.append('[');
@@ -384,6 +432,40 @@ public class RuleFilter implements Serializable {
         }
 
         @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final IdNameFilter other = (IdNameFilter) obj;
+            if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+                return false;
+            }
+            if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+                return false;
+            }
+            if (this.type != other.type) {
+                return false;
+            }
+            if (this.includeDefault != other.includeDefault) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 83 * hash + (this.id != null ? this.id.hashCode() : 0);
+            hash = 83 * hash + (this.name != null ? this.name.hashCode() : 0);
+            hash = 83 * hash + (this.type != null ? this.type.hashCode() : 0);
+            hash = 83 * hash + (this.includeDefault ? 1 : 0);
+            return hash;
+        }
+
+        @Override
         public String toString() {
             switch (type) {
                 case ANY:
@@ -456,6 +538,40 @@ public class RuleFilter implements Serializable {
 
         public void setIncludeDefault(boolean includeDefault) {
             this.includeDefault = includeDefault;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final NameFilter other = (NameFilter) obj;
+            if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+                return false;
+            }
+            if (this.type != other.type) {
+                return false;
+            }
+            if (this.forceUppercase != other.forceUppercase) {
+                return false;
+            }
+            if (this.includeDefault != other.includeDefault) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 3;
+            hash = 61 * hash + (this.name != null ? this.name.hashCode() : 0);
+            hash = 61 * hash + (this.type != null ? this.type.hashCode() : 0);
+            hash = 61 * hash + (this.forceUppercase ? 1 : 0);
+            hash = 61 * hash + (this.includeDefault ? 1 : 0);
+            return hash;
         }
 
         @Override
