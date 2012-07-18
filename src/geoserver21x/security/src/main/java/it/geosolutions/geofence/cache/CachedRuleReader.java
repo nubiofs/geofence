@@ -60,7 +60,9 @@ public class CachedRuleReader implements RuleReaderService {
 
     private RuleReaderService realRuleReaderService;
 
-    private LoadingCache<RuleFilter, AccessInfo> cache;
+    private LoadingCache<RuleFilter, AccessInfo> ruleCache;
+    private LoadingCache<String, Boolean>        adminCache;
+
     private final CacheInitParams cacheInitParams = new CacheInitParams();
 
     public CachedRuleReader() {
@@ -73,6 +75,11 @@ public class CachedRuleReader implements RuleReaderService {
      * <code>init()</code>ting the cache
      */
     public void init() {
+        ruleCache  = getCacheBuilder().build(new RuleLoader());
+        adminCache = getCacheBuilder().build(new UserLoader());
+    }
+
+    protected CacheBuilder getCacheBuilder() {
         CacheBuilder builder = CacheBuilder.newBuilder()
                 .maximumSize(cacheInitParams.getSize())
                 .refreshAfterWrite(cacheInitParams.getRefreshMilliSec(), TimeUnit.MILLISECONDS) // reloadable after x time
@@ -80,15 +87,15 @@ public class CachedRuleReader implements RuleReaderService {
                 ;
         //.expireAfterAccess(timeoutMillis, TimeUnit.MILLISECONDS)
         //                .removalListener(MY_LISTENER)
-
         // this should only be used while testing
         if(cacheInitParams.getCustomTicker() != null) {
             LOGGER.log(Level.SEVERE, "Setting a custom Ticker in the cache {0}", cacheInitParams.getCustomTicker().getClass().getName());
             builder.ticker(cacheInitParams.getCustomTicker());
         }
-
-        cache = builder.build(new RuleLoader());
+        return builder;
     }
+
+
 
     private class RuleLoader extends CacheLoader<RuleFilter, AccessInfo> {
 
@@ -120,10 +127,33 @@ public class CachedRuleReader implements RuleReaderService {
         }
     }
 
+    private class UserLoader extends CacheLoader<String, Boolean> {
+
+        @Override
+        public Boolean load(String userName) throws Exception {
+            if(LOGGER.isLoggable(Level.FINE))
+                LOGGER.log(Level.FINE, "Loading user '"+userName+"'");
+            return realRuleReaderService.isAdmin(userName);
+        }
+
+        @Override
+        public ListenableFuture<Boolean> reload(final String userName, Boolean isAdmin) throws Exception {
+            if(LOGGER.isLoggable(Level.FINE))
+                LOGGER.log(Level.FINE, "Reloading user '"+userName+"'");
+
+            // this is a sync implementation
+            Boolean ret = realRuleReaderService.isAdmin(userName);
+            return Futures.immediateFuture(ret);
+
+            // todo: we may want a asynchronous implementation
+        }
+    }
+
     public void invalidateAll() {
-        if(LOGGER.isLoggable(Level.INFO))
-            LOGGER.log(Level.INFO, "Forcing cache invalidation");
-        cache.invalidateAll();
+        if(LOGGER.isLoggable(Level.WARNING))
+            LOGGER.log(Level.WARNING, "Forcing cache invalidation");
+        ruleCache.invalidateAll();
+        adminCache.invalidateAll();
     }
 
     /**
@@ -145,11 +175,14 @@ public class CachedRuleReader implements RuleReaderService {
             LOGGER.log(Level.FINE, "Request for {0}", filter);
 
         if(LOGGER.isLoggable(Level.INFO))
-            if(dumpCnt.incrementAndGet() % 10 == 0)
-                LOGGER.info(this.toString());
+            if(dumpCnt.incrementAndGet() % 10 == 0) {
+                LOGGER.info("Rules   :"+ruleCache.stats());
+                LOGGER.info("isAdmin :"+adminCache.stats());
+                LOGGER.fine("params  :"+cacheInitParams);
+            }
 
         try {
-            return cache.get(filter);
+            return ruleCache.get(filter);
         } catch (ExecutionException ex) {
             throw new RuntimeException(ex); // fixme: handle me
         }
@@ -172,16 +205,16 @@ public class CachedRuleReader implements RuleReaderService {
     }
 
     /**
-     * Not caching this, since in GeoRepo integration this value is solved in
-     * the bridge itself, using user credentials.
-     *
-     * @param userName
-     * @return
      */
     @Override
     public boolean isAdmin(String userName) {
-        LOGGER.log(Level.WARNING, "Call to isAdmin({0}) is not cached", userName);
-        return realRuleReaderService.isAdmin(userName);
+        try {
+            return adminCache.get(userName);
+        } catch (ExecutionException ex) {
+            throw new RuntimeException(ex); // fixme: handle me
+        }
+//        LOGGER.log(Level.WARNING, "Call to isAdmin({0}) is not cached", userName);
+//        return realRuleReaderService.isAdmin(userName);
     }
 
     //--------------------------------------------------------------------------
@@ -195,18 +228,26 @@ public class CachedRuleReader implements RuleReaderService {
     }
 
     public CacheStats getStats() {
-        return cache.stats();
+        return ruleCache.stats();
+    }
+
+    public CacheStats getUserStats() {
+        return adminCache.stats();
     }
 
     public long getCacheSize() {
-        return cache.size();
+        return ruleCache.size();
+    }
+
+    public long getUserCacheSize() {
+        return adminCache.size();
     }
 
     /**
      * May be useful if an external peer doesn't want to use the guava dep.
      */
     public String getStatsString() {
-        return cache.stats().toString();
+        return ruleCache.stats().toString();
     }
 
     public class CacheInitParams {
@@ -257,7 +298,8 @@ public class CachedRuleReader implements RuleReaderService {
     public String toString() {
         return getClass().getSimpleName()
                 +"["
-                + cache.stats()
+                + "Rule:"+ruleCache.stats()
+                + " isAdmin:"+adminCache.stats()
                 + " " + cacheInitParams
                 + "]";
     }

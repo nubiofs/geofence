@@ -47,6 +47,7 @@ public class AuthenticationFilter implements GeoServerFilter, ExtensionPriority
         if (geofenceService == null)
         {
             geofenceService = (RuleReaderService) GeoServerExtensions.bean("ruleReaderService");
+            System.out.println("*** Forcing default ruleReaderService in " + this);
         }
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
@@ -74,7 +75,7 @@ public class AuthenticationFilter implements GeoServerFilter, ExtensionPriority
         if (username != null)
         {
             GrantedAuthority[] authorities;
-            // check against georepo that the user is the admin
+            // check against geofence that the user is the admin
             if ((geofenceService != null) && geofenceService.isAdmin(username))
             {
                 authorities = new GrantedAuthority[] { new GrantedAuthorityImpl(ROOT_ROLE) };
@@ -84,8 +85,9 @@ public class AuthenticationFilter implements GeoServerFilter, ExtensionPriority
                 authorities = new GrantedAuthority[] { new GrantedAuthorityImpl(USER_ROLE) };
             }
 
-            UsernamePasswordAuthenticationToken upa = new UsernamePasswordAuthenticationToken(new User(username,
-                        password, true, true, true, true, authorities), password, authorities);
+            UsernamePasswordAuthenticationToken upa = new UsernamePasswordAuthenticationToken(
+                    new User(username, password, true, true, true, true, authorities),
+                    password, authorities);
             authentication = upa;
         }
         else
@@ -130,6 +132,7 @@ public class AuthenticationFilter implements GeoServerFilter, ExtensionPriority
     	if (geofenceService == null)
         {
             geofenceService = (RuleReaderService) GeoServerExtensions.bean("ruleReaderService");
+            System.out.println("*** Forcing default ruleReaderService in " + this);
         }
     }
 
@@ -140,4 +143,7 @@ public class AuthenticationFilter implements GeoServerFilter, ExtensionPriority
         return ExtensionPriority.HIGHEST;
     }
 
+    public void setGeofenceService(RuleReaderService geofenceService) {
+        this.geofenceService = geofenceService;
+    }
 }

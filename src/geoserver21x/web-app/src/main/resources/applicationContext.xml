@@ -4,18 +4,20 @@
 <beans>
 
   <!-- The servlet filter that performs the Georepo authentication -->
-  <bean id="geofenceAuthFilter" class="it.geosolutions.geofence.AuthenticationFilter">
-  </bean>
+    <bean id="geofenceAuthFilter" class="it.geosolutions.geofence.AuthenticationFilter">
+        <!-- remove this property to use the default non-cached service-->
+        <property name="geofenceService" ref="cachedRuleReader"/>
+    </bean>
 
-  <bean id="webGSEnterpriseDispatcherMapping"
-    class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping"
-    lazy-init="true">
-    <property name="alwaysUseFullPath" value="true" />
-    <property name="mappings">
-      <props>
-        <prop key="/js/**">filePublisher</prop>
-      </props>
-    </property>
-  </bean>
+    <bean id="webGSEnterpriseDispatcherMapping"
+          class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping"
+          lazy-init="true">
+        <property name="alwaysUseFullPath" value="true" />
+        <property name="mappings">
+            <props>
+                <prop key="/js/**">filePublisher</prop>
+            </props>
+        </property>
+    </bean>
 
 </beans>
