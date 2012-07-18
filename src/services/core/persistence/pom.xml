@@ -183,9 +183,16 @@
         </dependency>
 
 		<!-- HIBERNATE-SPATIAL -->
-        <dependency>
+<!--        <dependency>
             <groupId>org.hibernatespatial</groupId>
             <artifactId>hibernate-spatial-postgis</artifactId>
+        </dependency>
+-->
+        <!-- todo:  create oracle profile -->
+        <dependency>
+            <groupId>org.hibernatespatial</groupId>
+            <artifactId>hibernate-spatial-oracle</artifactId>
+            <version>1.0</version>
         </dependency>
 	
   	<!-- CGLIB -->
