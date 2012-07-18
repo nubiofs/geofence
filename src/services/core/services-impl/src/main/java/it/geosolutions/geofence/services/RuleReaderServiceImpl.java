@@ -175,8 +175,12 @@ public class RuleReaderServiceImpl implements RuleReaderService {
                 AccessInfoInternal ret = new AccessInfoInternal(GrantType.ALLOW);
 
                 Set<String> allowedStyles = new HashSet<String>();
-                allowedStyles.addAll(baseAccess.getAllowedStyles());
-                allowedStyles.addAll(moreAccess.getAllowedStyles());
+                // if at least one of the two set is empty, the result will be an empty set,
+                // that means styles are not restricted
+                if( ! baseAccess.getAllowedStyles().isEmpty() && ! moreAccess.getAllowedStyles().isEmpty() ) {
+                    allowedStyles.addAll(baseAccess.getAllowedStyles());
+                    allowedStyles.addAll(moreAccess.getAllowedStyles());
+                }
                 ret.setAllowedStyles(allowedStyles);
 
                 ret.setCqlFilterRead(unionCQL(baseAccess.getCqlFilterRead(), moreAccess.getCqlFilterRead()));
@@ -212,10 +216,12 @@ public class RuleReaderServiceImpl implements RuleReaderService {
     private static Set<LayerAttribute> unionAttributes(Set<LayerAttribute> a0, Set<LayerAttribute> a1) {
         // TODO: check how geoserver deals with empty set
 
-        if(a0 == null)
-            return a1;
-        if(a1==null)
-            return a0;
+        if(a0 == null || a0.isEmpty())
+            return Collections.EMPTY_SET;
+//            return a1;
+        if(a1==null || a1.isEmpty())
+            return Collections.EMPTY_SET;
+//            return a0;
 
         Set<LayerAttribute> ret = new HashSet<LayerAttribute>();
         // add both attributes only in a0, and enlarge common attributes
@@ -243,6 +249,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
 
         return ret;
     }
+
 
     private static LayerAttribute getAttribute(String name, Set<LayerAttribute> set) {
         for (LayerAttribute layerAttribute : set) {
