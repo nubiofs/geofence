@@ -174,15 +174,6 @@ public class RuleReaderServiceImpl implements RuleReaderService {
                 // ok: extending grants
                 AccessInfoInternal ret = new AccessInfoInternal(GrantType.ALLOW);
 
-                Set<String> allowedStyles = new HashSet<String>();
-                // if at least one of the two set is empty, the result will be an empty set,
-                // that means styles are not restricted
-                if( ! baseAccess.getAllowedStyles().isEmpty() && ! moreAccess.getAllowedStyles().isEmpty() ) {
-                    allowedStyles.addAll(baseAccess.getAllowedStyles());
-                    allowedStyles.addAll(moreAccess.getAllowedStyles());
-                }
-                ret.setAllowedStyles(allowedStyles);
-
                 ret.setCqlFilterRead(unionCQL(baseAccess.getCqlFilterRead(), moreAccess.getCqlFilterRead()));
                 ret.setCqlFilterWrite(unionCQL(baseAccess.getCqlFilterWrite(), moreAccess.getCqlFilterWrite()));
 
@@ -191,6 +182,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
                 else
                     ret.setDefaultStyle(baseAccess.getDefaultStyle()); // just pick one
 
+                ret.setAllowedStyles(unionAllowedStyles(baseAccess.getAllowedStyles(), moreAccess.getAllowedStyles()));
                 ret.setAttributes(unionAttributes(baseAccess.getAttributes(), moreAccess.getAttributes()));
                 ret.setArea(unionGeometry(baseAccess.getArea(), moreAccess.getArea()));
 
@@ -257,6 +249,22 @@ public class RuleReaderServiceImpl implements RuleReaderService {
                 return layerAttribute;
         }
         return null;
+    }
+
+    private static Set<String> unionAllowedStyles(Set<String> a0, Set<String> a1) {
+
+        // if at least one of the two set is empty, the result will be an empty set,
+        // that means styles are not restricted
+        if(a0 == null || a0.isEmpty())
+            return Collections.EMPTY_SET;
+
+        if(a1==null || a1.isEmpty())
+            return Collections.EMPTY_SET;
+
+        Set<String> allowedStyles = new HashSet<String>();
+        allowedStyles.addAll(a0);
+        allowedStyles.addAll(a1);
+        return allowedStyles;
     }
 
     private AccessInfoInternal resolveRuleset(List<Rule> ruleList) {

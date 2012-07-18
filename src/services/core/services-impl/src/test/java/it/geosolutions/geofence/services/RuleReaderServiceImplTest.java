@@ -20,7 +20,6 @@
 
 package it.geosolutions.geofence.services;
 
-import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
@@ -29,8 +28,6 @@ import it.geosolutions.geofence.core.model.LayerAttribute;
 import it.geosolutions.geofence.core.model.LayerDetails;
 import it.geosolutions.geofence.core.model.UserGroup;
 import it.geosolutions.geofence.core.model.Rule;
-import it.geosolutions.geofence.core.model.RuleLimits;
-import it.geosolutions.geofence.core.model.adapter.GeometryAdapter;
 import it.geosolutions.geofence.core.model.enums.AccessType;
 import it.geosolutions.geofence.core.model.enums.GrantType;
 import it.geosolutions.geofence.services.dto.AccessInfo;
@@ -41,6 +38,8 @@ import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -498,37 +497,208 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
     public void testAttrib() throws NotFoundServiceEx {
         assertEquals(0, ruleAdminService.getCountAll());
 
-        UserGroup g1 = createUserGroup("p1");
-        GSUser u1 = createUser("u1", g1);
+        {
+            UserGroup g1 = createUserGroup("g1");
+            UserGroup g2 = createUserGroup("g2");
+            UserGroup g3 = createUserGroup("g3");
+            UserGroup g4 = createUserGroup("g4");
 
-        Rule r1 = new Rule(20, null, g1, null,      null, null, null, "l1", GrantType.ALLOW);
-        ruleAdminService.insert(r1);
+            GSUser u1 = createUser("u1", g1);
+            GSUser u2 = createUser("u2", g2);
+            GSUser u3 = createUser("u3", g1, g2);
+            GSUser u4 = createUser("u4", g1, g3);
+            GSUser u5 = createUser("u5", g1, g4);
 
-        LayerDetails details = new LayerDetails();
-        details.getAllowedStyles().add("style01");
-        details.getAllowedStyles().add("style02");
-        details.getAttributes().add(new LayerAttribute("att1", "String", AccessType.NONE));
-        details.getAttributes().add(new LayerAttribute("att2", "String", AccessType.READONLY));
-        details.getAttributes().add(new LayerAttribute("att3", "String", AccessType.READWRITE));
+            {
+                Rule r1 = new Rule(20, null, g1, null,      null, null, null, "l1", GrantType.ALLOW);
+                ruleAdminService.insert(r1);
 
-        ruleAdminService.setDetails(r1.getId(), details);
+                LayerDetails d1 = new LayerDetails();
+                d1.getAllowedStyles().add("style01");
+                d1.getAllowedStyles().add("style02");
+                d1.getAttributes().add(new LayerAttribute("att1", "String", AccessType.NONE));
+                d1.getAttributes().add(new LayerAttribute("att2", "String", AccessType.READONLY));
+                d1.getAttributes().add(new LayerAttribute("att3", "String", AccessType.READWRITE));
+
+                ruleAdminService.setDetails(r1.getId(), d1);
+            }
+            {
+                Rule r1 = new Rule(20, null, g2, null,      null, null, null, "l1", GrantType.ALLOW);
+                ruleAdminService.insert(r1);
+
+                LayerDetails d1 = new LayerDetails();
+                d1.getAllowedStyles().add("style02");
+                d1.getAllowedStyles().add("style03");
+                d1.getAttributes().add(new LayerAttribute("att1", "String", AccessType.READONLY));
+                d1.getAttributes().add(new LayerAttribute("att2", "String", AccessType.READWRITE));
+                d1.getAttributes().add(new LayerAttribute("att3", "String", AccessType.NONE));
+
+                ruleAdminService.setDetails(r1.getId(), d1);
+            }
+            {
+                Rule r1 = new Rule(20, null, g3, null,      null, null, null, "l1", GrantType.ALLOW);
+                ruleAdminService.insert(r1);
+
+                LayerDetails d1 = new LayerDetails();
+
+                ruleAdminService.setDetails(r1.getId(), d1);
+            }
+            {
+                Rule r1 = new Rule(20, null, g4, null,      null, null, null, "l1", GrantType.DENY);
+                ruleAdminService.insert(r1);
+            }
+        }
 
         LOGGER.info("SETUP ENDED, STARTING TESTS========================================");
 
-        assertEquals(1, ruleAdminService.getCountAll());
+        assertEquals(4, ruleAdminService.getCountAll());
 
         //===
 
-        RuleFilter filterU1;
-        filterU1 = new RuleFilter(RuleFilter.SpecialFilterType.ANY);
-        filterU1.setUser(u1.getId());
+        // TEST u1
+        {
+            RuleFilter filterU1;
+            filterU1 = new RuleFilter(RuleFilter.SpecialFilterType.ANY);
+            filterU1.setUser("u1");
 
-        LOGGER.info("getMatchingRules ========================================");
-        assertEquals(1, ruleReaderService.getMatchingRules(filterU1).size());
+            LOGGER.info("getMatchingRules ========================================");
+            assertEquals(1, ruleReaderService.getMatchingRules(filterU1).size());
 
-        LOGGER.info("getAccessInfo ========================================");
-        AccessInfo accessInfo = ruleReaderService.getAccessInfo(filterU1);
-        assertEquals(GrantType.ALLOW, accessInfo.getGrant());
+            LOGGER.info("getAccessInfo ========================================");
+            AccessInfo accessInfo = ruleReaderService.getAccessInfo(filterU1);
+            assertEquals(GrantType.ALLOW, accessInfo.getGrant());
+        }
+
+        // TEST u2
+        {
+            RuleFilter filter;
+            filter = new RuleFilter(RuleFilter.SpecialFilterType.ANY);
+            filter.setUser("u2");
+            filter.setLayer("l1");
+
+            assertEquals(1, ruleReaderService.getMatchingRules(filter).size());
+
+            AccessInfo accessInfo = ruleReaderService.getAccessInfo(filter);
+            assertEquals(GrantType.ALLOW, accessInfo.getGrant());
+            assertNotNull(accessInfo.getAttributes());
+            assertEquals(3, accessInfo.getAttributes().size());
+            assertEquals(
+                    new HashSet(Arrays.asList(
+                        new LayerAttribute("att1", "String", AccessType.READONLY),
+                        new LayerAttribute("att2", "String", AccessType.READWRITE),
+                        new LayerAttribute("att3", "String", AccessType.NONE))),
+                    accessInfo.getAttributes());
+
+            assertEquals(2, accessInfo.getAllowedStyles().size());
+        }
+
+        // TEST u3
+        // merging attributes at higher access level
+        // merging styles
+        {
+            RuleFilter filter;
+            filter = new RuleFilter(RuleFilter.SpecialFilterType.ANY);
+            filter.setUser("u3");
+            filter.setLayer("l1");
+
+            assertEquals(2, ruleReaderService.getMatchingRules(filter).size());
+
+            AccessInfo accessInfo = ruleReaderService.getAccessInfo(filter);
+            assertEquals(GrantType.ALLOW, accessInfo.getGrant());
+            assertNotNull(accessInfo.getAttributes());
+            assertEquals(3, accessInfo.getAttributes().size());
+            assertEquals(
+                    new HashSet(Arrays.asList(
+                        new LayerAttribute("att1", "String", AccessType.READONLY),
+                        new LayerAttribute("att2", "String", AccessType.READWRITE),
+                        new LayerAttribute("att3", "String", AccessType.READWRITE))),
+                    accessInfo.getAttributes());
+
+            assertEquals(3, accessInfo.getAllowedStyles().size());
+        }
+
+        // TEST u4
+        // merging attributes to full access
+        // unconstraining styles
+
+        {
+            RuleFilter filter;
+            filter = new RuleFilter(RuleFilter.SpecialFilterType.ANY);
+            filter.setUser("u4");
+            filter.setLayer("l1");
+
+            assertEquals(2, ruleReaderService.getMatchingRules(filter).size());
+
+            AccessInfo accessInfo = ruleReaderService.getAccessInfo(filter);
+            assertEquals(GrantType.ALLOW, accessInfo.getGrant());
+            LOGGER.info("attributes: " + accessInfo.getAttributes());
+            assertTrue(accessInfo.getAttributes().isEmpty());
+//            assertEquals(3, accessInfo.getAttributes().size());
+//            assertEquals(
+//                    new HashSet(Arrays.asList(
+//                        new LayerAttribute("att1", "String", AccessType.READONLY),
+//                        new LayerAttribute("att2", "String", AccessType.READWRITE),
+//                        new LayerAttribute("att3", "String", AccessType.READWRITE))),
+//                    accessInfo.getAttributes());
+
+            assertTrue(accessInfo.getAllowedStyles().isEmpty());
+        }
     }
+
+    /**
+     * Added for issue #23
+     */
+    @Test
+    public void testNullAllowableStyles() throws NotFoundServiceEx {
+        assertEquals(0, ruleAdminService.getCountAll());
+
+        {
+            UserGroup g1 = createUserGroup("g1");
+            UserGroup g2 = createUserGroup("g2");
+
+            GSUser u1 = createUser("u1", g1, g2);
+
+            // no details for first rule
+            {
+                Rule r1 = new Rule(30, null, g2, null,      null, null, null, "l1", GrantType.ALLOW);
+                ruleAdminService.insert(r1);
+            }
+            // some allowed styles for second rule
+            {
+                Rule r1 = new Rule(40, null, g1, null,      null, null, null, "l1", GrantType.ALLOW);
+                ruleAdminService.insert(r1);
+
+                LayerDetails d1 = new LayerDetails();
+                d1.getAllowedStyles().add("style01");
+                d1.getAllowedStyles().add("style02");
+
+                ruleAdminService.setDetails(r1.getId(), d1);
+            }
+        }
+
+        LOGGER.info("SETUP ENDED, STARTING TESTS========================================");
+
+        assertEquals(2, ruleAdminService.getCountAll());
+
+        //===
+
+        // TEST u1
+        {
+            RuleFilter filterU1;
+            filterU1 = new RuleFilter(RuleFilter.SpecialFilterType.ANY);
+            filterU1.setUser("u1");
+
+            LOGGER.info("getMatchingRules ========================================");
+            assertEquals(2, ruleReaderService.getMatchingRules(filterU1).size());
+
+            LOGGER.info("getAccessInfo ========================================");
+            AccessInfo accessInfo = ruleReaderService.getAccessInfo(filterU1);
+            assertEquals(GrantType.ALLOW, accessInfo.getGrant());
+
+            assertTrue(accessInfo.getAllowedStyles().isEmpty());
+        }
+
+    }
+
 
 }
