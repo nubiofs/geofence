@@ -17,6 +17,8 @@
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations" value="classpath*:geofence-geoserver.properties" />
 		<property name="ignoreResourceNotFound" value="false" />
+        <!-- ignoreUnresolvable is needed in case other PropertyPlaceholderConfigurers are in use -->
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
 	</bean>
 	
 	<!-- TODO: add authorization to these requests using the hints at
@@ -32,10 +34,9 @@
     </bean>
 
 	<bean id="cachedRuleReader" class="it.geosolutions.geofence.cache.CachedRuleReader" lazy-init="true" init-method="init">
-        <property name="cacheInitParams.size" value="1000"/>
-        <property name="cacheInitParams.refreshMilliSec" value="30000"/>
-        <property name="cacheInitParams.expireMilliSec" value="60000"/>
-
+        <property name="cacheInitParams.size" value="${geofence.cache.size}"/>
+        <property name="cacheInitParams.refreshMilliSec" value="${geofence.cache.refresh}"/>
+        <property name="cacheInitParams.expireMilliSec" value="${geofence.cache.expire}"/>
         <property name="realRuleReaderService" ref="ruleReaderService"/>
     </bean>
 
