@@ -111,10 +111,10 @@
         </dependency>
    		
    	<!-- Apache Commons -->
-        <dependency>
+<!--        <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>commons-codec</groupId>
