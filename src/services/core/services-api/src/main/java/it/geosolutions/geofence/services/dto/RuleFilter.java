@@ -377,6 +377,11 @@ public class RuleFilter implements Serializable {
             this.includeDefault = includeDefault;
         }
 
+        public IdNameFilter(String name, boolean includeDefault) {
+            setName(name);
+            this.includeDefault = includeDefault;
+        }
+
         public void setHeuristically(String name) {
             if ( name == null ) {
                 this.type = FilterType.DEFAULT;

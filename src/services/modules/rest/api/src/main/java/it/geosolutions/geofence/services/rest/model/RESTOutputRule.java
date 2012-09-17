@@ -149,6 +149,37 @@ public class RESTOutputRule implements Serializable {
         this.grant = grant;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(getClass().getSimpleName())
+                .append("[id:").append(id)
+                .append(" pri:").append(priority);
+
+        if (user != null) {
+            sb.append(" user:").append(user);
+        }
+        if (group != null) {
+            sb.append(" group:").append(group);
+        }
+        if (instance != null) {
+            sb.append(" instance:").append(instance);
+        }
+        if (service != null) {
+            sb.append(" service:").append(service);
+        }
+        if (request != null) {
+            sb.append(" request:").append(request);
+        }
+        if (workspace != null) {
+            sb.append(" workspace:").append(workspace);
+        }
+        if (layer != null) {
+            sb.append(" layer:").append(layer);
+        }
+        sb.append(']');
+
+        return sb.toString();
+    }
 
     //=========================================================================
     

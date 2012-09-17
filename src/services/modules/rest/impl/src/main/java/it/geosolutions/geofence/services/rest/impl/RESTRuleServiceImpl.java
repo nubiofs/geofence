@@ -370,7 +370,15 @@ public class RESTRuleServiceImpl
         }
     }
 
-    protected RuleFilter buildFilter(Long userId, String userName, Boolean userDefault, Long groupId, String groupName, Boolean groupDefault, Long instanceId, String instanceName, Boolean instanceDefault, String serviceName, Boolean serviceDefault, String requestName, Boolean requestDefault, String workspace, Boolean workspaceDefault, String layer, Boolean layerDefault) throws BadRequestRestEx {
+    protected RuleFilter buildFilter(
+            Long userId, String userName, Boolean userDefault,
+            Long groupId, String groupName, Boolean groupDefault,
+            Long instanceId, String instanceName, Boolean instanceDefault,
+            String serviceName, Boolean serviceDefault,
+            String requestName, Boolean requestDefault,
+            String workspace, Boolean workspaceDefault,
+            String layer, Boolean layerDefault) throws BadRequestRestEx {
+
         RuleFilter filter = new RuleFilter(SpecialFilterType.ANY, true);
 
         setFilter(filter.getUser(), userId, userName, userDefault);

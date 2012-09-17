@@ -41,8 +41,16 @@ public class RESTBatchOperation {
         rules
     }
 
+    public enum TypeName {
+        insert,
+        update,
+        delete,
+        addGroup,
+        delgroup
+    }
+
     private ServiceName service;
-    private String type;
+    private TypeName type;
     private Long id;
     private String name;
     private Boolean cascade;
@@ -89,11 +97,11 @@ public class RESTBatchOperation {
     }
 
     @XmlAttribute
-    public String getType() {
+    public TypeName getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(TypeName type) {
         this.type = type;
     }
 
@@ -107,10 +115,10 @@ public class RESTBatchOperation {
     }
 
     @XmlElements({
-        @XmlElement(name="user",     nillable=true, type=RESTInputUser.class),
-        @XmlElement(name="userGroup",    nillable=true, type=RESTInputGroup.class),
-        @XmlElement(name="instance", nillable=true, type=RESTInputInstance.class),
-        @XmlElement(name="rule",     nillable=true, type=RESTInputRule.class)
+        @XmlElement(name="user",        type=RESTInputUser.class),
+        @XmlElement(name="userGroup",   type=RESTInputGroup.class),
+        @XmlElement(name="instance",    type=RESTInputInstance.class),
+        @XmlElement(name="rule",        type=RESTInputRule.class)
     })
     public AbstractRESTPayload getPayload() {
         return payload;

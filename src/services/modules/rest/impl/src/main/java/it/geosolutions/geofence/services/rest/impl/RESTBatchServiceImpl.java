@@ -54,12 +54,12 @@ public class RESTBatchServiceImpl
 {
     private static final Logger LOGGER = Logger.getLogger(RESTBatchServiceImpl.class);
 
-    private final static String OP_INSERT = "insert";
-    private final static String OP_UPDATE = "update";
-    private final static String OP_DELETE = "delete";
-
-    private final static String OP_ADDGROUP = "addGroup";
-    private final static String OP_DELGROUP = "delGroup";
+//    private final static String OP_INSERT = "insert";
+//    private final static String OP_UPDATE = "update";
+//    private final static String OP_DELETE = "delete";
+//
+//    private final static String OP_ADDGROUP = "addGroup";
+//    private final static String OP_DELGROUP = "delGroup";
 
 
     private RESTUserService restUserService;
@@ -77,6 +77,9 @@ public class RESTBatchServiceImpl
         for (RESTBatchOperation op : batch.getList()) {
             if(LOGGER.isInfoEnabled() )
                 LOGGER.info("Running " + op);
+
+            if(op.getType() == null)
+                throw new BadRequestRestEx("Operation type is missing in operation " + op);
 
             try {
                 switch(op.getService()) {
@@ -111,106 +114,141 @@ public class RESTBatchServiceImpl
     }
 
     protected void dispatchRuleOp(RESTBatchOperation op) throws NotFoundRestEx, BadRequestRestEx {
-        if(OP_INSERT.equals( op.getType()) ) {
-            ensurePayload(op);
-            restRuleService.insert((RESTInputRule)op.getPayload());
-        } else if(OP_UPDATE.equals(op.getType()) ) {
-            ensurePayload(op);
-            if(op.getId() != null)
-                restRuleService.update(op.getId(), (RESTInputRule)op.getPayload());
-            else
-                throw new BadRequestRestEx("Missing identifier for op " + op);
-        } else if(OP_DELETE.equals(op.getType() )) {
-            if(op.getId() != null)
-                restRuleService.delete(op.getId());
-            else
-                throw new BadRequestRestEx("Missing identifier for op " + op);
-        } else {
-            throw new BadRequestRestEx("Operation not bound " + op);
+        switch(op.getType()) {
+            case insert:
+                ensurePayload(op);
+                restRuleService.insert((RESTInputRule)op.getPayload());
+                break;
+
+            case update:
+                ensurePayload(op);
+                if(op.getId() != null)
+                    restRuleService.update(op.getId(), (RESTInputRule)op.getPayload());
+                else
+                    throw new BadRequestRestEx("Missing identifier for op " + op);
+                break;
+
+            case delete:
+                if(op.getId() != null)
+                    restRuleService.delete(op.getId());
+                else
+                    throw new BadRequestRestEx("Missing identifier for op " + op);
+                break;
+
+            default:
+                throw new BadRequestRestEx("Operation not bound " + op);
         }
     }
 
     protected void dispatchInstanceOp(RESTBatchOperation op) throws NotFoundRestEx, InternalErrorRestEx, ConflictRestEx, BadRequestRestEx {
-        if(OP_INSERT.equals( op.getType()) ) {
-            ensurePayload(op);
-            restInstanceService.insert((RESTInputInstance)op.getPayload());
-        } else if(OP_UPDATE.equals(op.getType()) ) {
-            ensurePayload(op);
-            if(op.getId() != null)
-                restInstanceService.update(op.getId(), (RESTInputInstance)op.getPayload());
-            else if(op.getName() != null)
-                restInstanceService.update(op.getName(), (RESTInputInstance)op.getPayload());
-            else
-                throw new BadRequestRestEx("Missing identifier for op " + op);
-        } else if(OP_DELETE.equals(op.getType() )) {
-            boolean cascade = op.getCascade()==null? false: op.getCascade().booleanValue();
-            if(op.getId() != null)
-                restInstanceService.delete(op.getId(), cascade);
-            else if(op.getName() != null)
-                restInstanceService.delete(op.getName(), cascade);
-            else
-                throw new BadRequestRestEx("Missing identifier for op " + op);
-        } else {
-            throw new BadRequestRestEx("Operation not bound " + op);
+        switch(op.getType()) {
+            case insert:
+                ensurePayload(op);
+                restInstanceService.insert((RESTInputInstance)op.getPayload());
+                break;
+
+            case update:
+                ensurePayload(op);
+                if(op.getId() != null)
+                    restInstanceService.update(op.getId(), (RESTInputInstance)op.getPayload());
+                else if(op.getName() != null)
+                    restInstanceService.update(op.getName(), (RESTInputInstance)op.getPayload());
+                else
+                    throw new BadRequestRestEx("Missing identifier for op " + op);
+                break;
+
+            case delete:
+                boolean cascade = op.getCascade()==null? false: op.getCascade().booleanValue();
+                if(op.getId() != null)
+                    restInstanceService.delete(op.getId(), cascade);
+                else if(op.getName() != null)
+                    restInstanceService.delete(op.getName(), cascade);
+                else
+                    throw new BadRequestRestEx("Missing identifier for op " + op);
+                break;
+
+            default:
+                throw new BadRequestRestEx("Operation not bound " + op);
         }
     }
 
     protected void dispatchGroupOp(RESTBatchOperation op) throws BadRequestRestEx, NotFoundRestEx, ConflictRestEx, InternalErrorRestEx {
-        if(OP_INSERT.equals( op.getType()) ) {
-            ensurePayload(op);
-            restUserGroupService.insert((RESTInputGroup)op.getPayload());
-        } else if(OP_UPDATE.equals(op.getType()) ) {
-            ensurePayload(op);
-            if(op.getId() != null)
-                restUserGroupService.update(op.getId(), (RESTInputGroup)op.getPayload());
-            else if(op.getName() != null)
-                restUserGroupService.update(op.getName(), (RESTInputGroup)op.getPayload());
-            else
-                throw new BadRequestRestEx("Missing identifier for op " + op);
-        } else if(OP_DELETE.equals(op.getType() )) {
-            boolean cascade = op.getCascade()==null? false: op.getCascade().booleanValue();
-            if(op.getId() != null)
-                restUserGroupService.delete(op.getId(), cascade);
-            else if(op.getName() != null)
-                restUserGroupService.delete(op.getName(), cascade);
-            else
-                throw new BadRequestRestEx("Missing identifier for op " + op);
-        } else {
-            throw new BadRequestRestEx("Operation not bound " + op);
+        switch(op.getType()) {
+            case insert:
+                ensurePayload(op);
+                restUserGroupService.insert((RESTInputGroup)op.getPayload());
+                break;
+
+            case update:
+                ensurePayload(op);
+                if(op.getId() != null)
+                    restUserGroupService.update(op.getId(), (RESTInputGroup)op.getPayload());
+                else if(op.getName() != null)
+                    restUserGroupService.update(op.getName(), (RESTInputGroup)op.getPayload());
+                else
+                    throw new BadRequestRestEx("Missing identifier for op " + op);
+                break;
+
+            case delete:
+                boolean cascade = op.getCascade()==null? false: op.getCascade().booleanValue();
+                if(op.getId() != null)
+                    restUserGroupService.delete(op.getId(), cascade);
+                else if(op.getName() != null)
+                    restUserGroupService.delete(op.getName(), cascade);
+                else
+                    throw new BadRequestRestEx("Missing identifier for op " + op);
+                break;
+
+            default:
+                throw new BadRequestRestEx("Operation not bound " + op);
         }
     }
 
     protected void dispatchUserOp(RESTBatchOperation op) throws NotFoundRestEx, BadRequestRestEx, InternalErrorRestEx, ConflictRestEx, UnsupportedOperationException {
-        if(OP_INSERT.equals( op.getType()) ) {
-            ensurePayload(op);
-            restUserService.insert((RESTInputUser)op.getPayload());
-        } else if(OP_UPDATE.equals(op.getType()) ) {
-            ensurePayload(op);
-            if(op.getId() != null)
-                restUserService.update(op.getId(), (RESTInputUser)op.getPayload());
-            else if(op.getName() != null)
-                restUserService.update(op.getName(), (RESTInputUser)op.getPayload());
-            else
-                throw new BadRequestRestEx("Missing identifier for op " + op);
-        } else if(OP_DELETE.equals(op.getType() )) {
-            boolean cascade = op.getCascade()==null? false: op.getCascade().booleanValue();
-            if(op.getId() != null)
-                restUserService.delete(op.getId(), cascade);
-            else if(op.getName() != null)
-                restUserService.delete(op.getName(), cascade);
-            else
-                throw new BadRequestRestEx("Missing identifier for op " + op);
-        } else if(OP_ADDGROUP.equals(op.getType()) ) {
-            IdName userId = new IdName(op.getUserId(), op.getUserName());
-            IdName groupId = new IdName(op.getGroupId(), op.getGroupName());
-            restUserService.addIntoGroup(userId, groupId);
-            
-        } else if(OP_DELGROUP.equals(op.getType()) ) {
-            IdName userId = new IdName(op.getUserId(), op.getUserName());
-            IdName groupId = new IdName(op.getGroupId(), op.getGroupName());
-            restUserService.removeFromGroup(userId, groupId);
-        } else {
-            throw new BadRequestRestEx("Operation not bound " + op);
+        switch(op.getType()) {
+            case insert:
+                ensurePayload(op);
+                restUserService.insert((RESTInputUser)op.getPayload());
+                break;
+
+            case update:
+                ensurePayload(op);
+                if(op.getId() != null)
+                    restUserService.update(op.getId(), (RESTInputUser)op.getPayload());
+                else if(op.getName() != null)
+                    restUserService.update(op.getName(), (RESTInputUser)op.getPayload());
+                else
+                    throw new BadRequestRestEx("Missing identifier for op " + op);
+                break;
+
+            case delete:
+                boolean cascade = op.getCascade()==null? false: op.getCascade().booleanValue();
+                if(op.getId() != null)
+                    restUserService.delete(op.getId(), cascade);
+                else if(op.getName() != null)
+                    restUserService.delete(op.getName(), cascade);
+                else
+                    throw new BadRequestRestEx("Missing identifier for op " + op);
+                break;
+
+            case addGroup:
+                {
+                    IdName userId = new IdName(op.getUserId(), op.getUserName());
+                    IdName groupId = new IdName(op.getGroupId(), op.getGroupName());
+                    restUserService.addIntoGroup(userId, groupId);
+                }
+                break;
+
+            case delgroup:
+                {
+                    IdName userId = new IdName(op.getUserId(), op.getUserName());
+                    IdName groupId = new IdName(op.getGroupId(), op.getGroupName());
+                    restUserService.removeFromGroup(userId, groupId);
+                }
+                break;
+
+            default:
+                throw new BadRequestRestEx("Operation not bound " + op);
         }
     }
 

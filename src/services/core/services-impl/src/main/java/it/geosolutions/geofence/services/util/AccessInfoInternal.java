@@ -33,6 +33,8 @@ import it.geosolutions.geofence.services.dto.AccessInfo;
 
 /**
  * This class is used internally when merging restrictedArea, because it deals with Geometries and not with WKT strings.
+ * Also note the collections here can be null, where {@link AccessInfo AccessInfo}
+ * collections are initt'ed.
  *
  * @author ETj (etj at geo-solutions.it)
  */

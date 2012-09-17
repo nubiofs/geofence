@@ -19,6 +19,7 @@
  */
 package it.geosolutions.geofence.services.rest.model;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -34,10 +35,7 @@ public class RESTBatch {
     private List<RESTBatchOperation> list;
 
     public RESTBatch() {
-        this(10);
-    }
-
-    public RESTBatch(int initialCapacity) {
+        list = new LinkedList<RESTBatchOperation>();
     }
 
     @XmlElement(name = "operation")

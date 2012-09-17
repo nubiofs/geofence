@@ -162,6 +162,47 @@ public class RESTInputRule extends AbstractRESTPayload {
         this.grant = grant;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(getClass().getSimpleName());
+
+        sb.append('[').append(grant);
+        if(position != null && position.getPosition() != null) {
+            if(position.getPosition() == RESTRulePosition.RulePosition.fixedPriority)
+                sb.append('=');
+            else if(position.getPosition() == RESTRulePosition.RulePosition.offsetFromTop)
+                sb.append('+');
+            else if(position.getPosition() == RESTRulePosition.RulePosition.offsetFromBottom)
+                sb.append('-');
+            sb.append(position.getValue());
+        }
+
+        if (user != null) {
+            sb.append(" user:").append(user);
+        }
+        if (group != null) {
+            sb.append(" group:").append(group);
+        }
+        if (instance != null) {
+            sb.append(" instance:").append(instance);
+        }
+        if (service != null) {
+            sb.append(" service:").append(service);
+        }
+        if (request != null) {
+            sb.append(" request:").append(request);
+        }
+        if (workspace != null) {
+            sb.append(" workspace:").append(workspace);
+        }
+        if (layer != null) {
+            sb.append(" layer:").append(layer);
+        }
+        sb.append(']');
+
+        return sb.toString();
+    }
+
     //=========================================================================
 
     public static class RESTRulePosition {
