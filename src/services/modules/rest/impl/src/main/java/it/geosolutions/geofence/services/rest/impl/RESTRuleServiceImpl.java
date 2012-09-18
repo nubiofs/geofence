@@ -84,8 +84,6 @@ public class RESTRuleServiceImpl
     @Transactional(propagation = Propagation.REQUIRED, value = "geofenceTransactionManager")
     public Response insert(RESTInputRule inputRule) throws NotFoundRestEx, BadRequestRestEx, InternalErrorRestEx {
 
-        Rule rule = fromInput(inputRule);
-
         if (inputRule.getPosition() == null || inputRule.getPosition().getPosition() == null) {
             throw new BadRequestRestEx("Bad position: " + inputRule.getPosition());
         }
@@ -94,6 +92,7 @@ public class RESTRuleServiceImpl
             throw new BadRequestRestEx("Missing grant type");
         }
 
+        Rule rule = fromInput(inputRule);
 
         InsertPosition position =
                 inputRule.getPosition().getPosition() == RulePosition.fixedPriority ? InsertPosition.FIXED
@@ -518,6 +517,8 @@ public class RESTRuleServiceImpl
 
     protected Rule fromInput(RESTInputRule in) {
         Rule rule = new Rule();
+
+        rule.setPriority(in.getPosition().getValue());
 
         rule.setAccess(in.getGrant());
 
