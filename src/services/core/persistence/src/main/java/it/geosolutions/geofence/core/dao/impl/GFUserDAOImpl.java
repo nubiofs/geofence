@@ -20,16 +20,16 @@
 package it.geosolutions.geofence.core.dao.impl;
 
 
-import java.util.Date;
-import java.util.List;
-
-import com.googlecode.genericdao.search.ISearch;
-
 import it.geosolutions.geofence.core.dao.GFUserDAO;
 import it.geosolutions.geofence.core.model.GFUser;
 
+import java.util.Date;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.googlecode.genericdao.search.ISearch;
 
 
 /**

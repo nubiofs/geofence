@@ -20,9 +20,9 @@
 
 package it.geosolutions.geofence.core.dao;
 
-import com.googlecode.genericdao.search.Search;
 import it.geosolutions.geofence.core.model.GSUser;
 import it.geosolutions.geofence.core.model.UserGroup;
+
 import java.util.Set;
 
 /**

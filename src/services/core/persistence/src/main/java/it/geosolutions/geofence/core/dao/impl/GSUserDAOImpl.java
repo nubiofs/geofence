@@ -19,22 +19,20 @@
  */
 package it.geosolutions.geofence.core.dao.impl;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import com.googlecode.genericdao.search.ISearch;
-import com.googlecode.genericdao.search.Search;
-
-import com.vividsolutions.jts.geom.MultiPolygon;
-
 import it.geosolutions.geofence.core.dao.GSUserDAO;
 import it.geosolutions.geofence.core.model.GSUser;
 import it.geosolutions.geofence.core.model.UserGroup;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.googlecode.genericdao.search.ISearch;
+import com.googlecode.genericdao.search.Search;
 
 
 /**
