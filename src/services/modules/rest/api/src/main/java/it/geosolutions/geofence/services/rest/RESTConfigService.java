@@ -31,10 +31,16 @@ import javax.ws.rs.core.MediaType;
 import it.geosolutions.geofence.services.rest.exception.BadRequestRestEx;
 import it.geosolutions.geofence.services.rest.exception.InternalErrorRestEx;
 import it.geosolutions.geofence.services.rest.exception.NotFoundRestEx;
+import it.geosolutions.geofence.services.rest.model.RESTBatch;
+import it.geosolutions.geofence.services.rest.model.RESTOutputRuleList;
+import it.geosolutions.geofence.services.rest.model.RESTShortInstanceList;
+import it.geosolutions.geofence.services.rest.model.RESTShortUserList;
 import it.geosolutions.geofence.services.rest.model.config.RESTConfigurationRemapping;
 import it.geosolutions.geofence.services.rest.model.config.RESTFullConfiguration;
 import it.geosolutions.geofence.services.rest.model.config.RESTFullUserGroupList;
 import it.geosolutions.geofence.services.rest.model.config.RESTFullUserList;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
 
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 
@@ -49,14 +55,52 @@ public interface RESTConfigService
 {
 
     /**
-     * @return a sample profile list
-     * */
+     * @deprecated misbehaves since usergroups introduction. Please use backup()
+     */
     @GET
     @Path("/full")
     @Produces(MediaType.APPLICATION_XML)
-    RESTFullConfiguration getConfiguration(@QueryParam("includeGRUsers")
+    RESTFullConfiguration getConfiguration(@QueryParam("includeGFUsers")
         @DefaultValue("False")
         Boolean includeGRUsers);
+
+    @GET
+    @Path("/backup")
+    @Produces(MediaType.APPLICATION_XML)
+    RESTBatch backup(@QueryParam("includeGFUsers")
+        @DefaultValue("False")
+        Boolean includeGRUsers);
+
+    @PUT
+    @Path("/restore")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML})
+    void restore(@Multipart("batch")RESTBatch batch)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
+
+    @PUT
+    @Path("/cleanup")
+    void cleanup()
+            throws InternalErrorRestEx;
+
+    @GET
+    @Path("/backup/groups")
+    @Produces(MediaType.APPLICATION_XML)
+    RESTBatch backupGroups();
+
+    @GET
+    @Path("/backup/users")
+    @Produces(MediaType.APPLICATION_XML)
+    RESTBatch backupUsers();
+
+    @GET
+    @Path("/backup/instances")
+    @Produces(MediaType.APPLICATION_XML)
+    RESTBatch backupInstances();
+
+    @GET
+    @Path("/backup/rules")
+    @Produces(MediaType.APPLICATION_XML)
+    RESTBatch backupRules();
 
     @PUT
     @Path("/full")
@@ -64,16 +108,55 @@ public interface RESTConfigService
     RESTConfigurationRemapping setConfiguration(@Multipart("configuration") RESTFullConfiguration config,
         @QueryParam("includeGRUsers")
         @DefaultValue("False")
-        Boolean includeGRUsers) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
+        Boolean includeGRUsers)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 
     @GET
     @Path("/users")
     @Produces(MediaType.APPLICATION_XML)
-    RESTFullUserList getUsers() throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
+    RESTFullUserList getUsers()
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 
     @GET
     @Path("/groups")
     @Produces(MediaType.APPLICATION_XML)
-    RESTFullUserGroupList getUserGroups() throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
+    RESTFullUserGroupList getUserGroups()
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
+
+    //====
+
+    @POST
+    @Path("/groups")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML})
+    void setUserGroups(@Multipart("groups")RESTFullUserGroupList groups)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
+
+    /**
+     * only for debug/quick insert
+     * takes as input the same xml returned by the related service GET operation
+     */
+    @POST
+    @Path("/users/short")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML})
+    void setUsers(@Multipart("users")RESTShortUserList users)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
+
+    /**
+     * only for debug/quick insert
+     */
+    @POST
+    @Path("/instances/short")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML})
+    void setInstances(@Multipart("instances")RESTShortInstanceList instances)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
+
+    /**
+     * only for debug/quick insert
+     */
+    @POST
+    @Path("/rules/short")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML})
+    void setRules(@Multipart("rules")RESTOutputRuleList rules)
+            throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 
 }

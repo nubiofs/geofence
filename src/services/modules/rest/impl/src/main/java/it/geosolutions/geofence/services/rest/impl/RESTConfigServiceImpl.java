@@ -17,6 +17,7 @@
  */
 package it.geosolutions.geofence.services.rest.impl;
 
+import com.vividsolutions.jts.geom.MultiPolygon;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ import it.geosolutions.geofence.core.model.GSUser;
 import it.geosolutions.geofence.core.model.LayerDetails;
 import it.geosolutions.geofence.core.model.UserGroup;
 import it.geosolutions.geofence.core.model.Rule;
+import it.geosolutions.geofence.core.model.RuleLimits;
 import it.geosolutions.geofence.services.GFUserAdminService;
 import it.geosolutions.geofence.services.GetProviderService;
 import it.geosolutions.geofence.services.InstanceAdminService;
@@ -34,11 +36,26 @@ import it.geosolutions.geofence.services.UserGroupAdminService;
 import it.geosolutions.geofence.services.RuleAdminService;
 import it.geosolutions.geofence.services.UserAdminService;
 import it.geosolutions.geofence.services.dto.ShortGroup;
+import it.geosolutions.geofence.services.dto.ShortInstance;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
+import it.geosolutions.geofence.services.rest.RESTBatchService;
 import it.geosolutions.geofence.services.rest.RESTConfigService;
 import it.geosolutions.geofence.services.rest.exception.BadRequestRestEx;
 import it.geosolutions.geofence.services.rest.exception.InternalErrorRestEx;
 import it.geosolutions.geofence.services.rest.exception.NotFoundRestEx;
+import it.geosolutions.geofence.services.rest.model.RESTBatch;
+import it.geosolutions.geofence.services.rest.model.RESTBatchOperation;
+import it.geosolutions.geofence.services.rest.model.RESTInputGroup;
+import it.geosolutions.geofence.services.rest.model.RESTInputInstance;
+import it.geosolutions.geofence.services.rest.model.RESTInputRule;
+import it.geosolutions.geofence.services.rest.model.RESTInputRule.RESTRulePosition;
+import it.geosolutions.geofence.services.rest.model.RESTInputUser;
+import it.geosolutions.geofence.services.rest.model.RESTLayerConstraints;
+import it.geosolutions.geofence.services.rest.model.RESTOutputRule;
+import it.geosolutions.geofence.services.rest.model.RESTOutputRuleList;
+import it.geosolutions.geofence.services.rest.model.RESTShortInstanceList;
+import it.geosolutions.geofence.services.rest.model.RESTShortUser;
+import it.geosolutions.geofence.services.rest.model.RESTShortUserList;
 import it.geosolutions.geofence.services.rest.model.config.RESTConfigurationRemapping;
 import it.geosolutions.geofence.services.rest.model.config.RESTFullConfiguration;
 import it.geosolutions.geofence.services.rest.model.config.RESTFullGRUserList;
@@ -46,7 +63,10 @@ import it.geosolutions.geofence.services.rest.model.config.RESTFullGSInstanceLis
 import it.geosolutions.geofence.services.rest.model.config.RESTFullUserGroupList;
 import it.geosolutions.geofence.services.rest.model.config.RESTFullRuleList;
 import it.geosolutions.geofence.services.rest.model.config.RESTFullUserList;
+import it.geosolutions.geofence.services.rest.model.util.IdName;
+import it.geosolutions.geofence.services.rest.model.util.RESTBatchOperationFactory;
 import it.geosolutions.geofence.services.rest.utils.InstanceCleaner;
+import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
@@ -56,24 +76,192 @@ import org.apache.log4j.Logger;
  */
 public class RESTConfigServiceImpl implements RESTConfigService {
 
-    private static final Logger LOGGER = Logger.getLogger(RESTConfigServiceImpl.class.toString());
+    private static final Logger LOGGER = Logger.getLogger(RESTConfigServiceImpl.class);
+
     private UserAdminService userAdminService;
     private UserGroupAdminService userGroupAdminService;
     private RuleAdminService ruleAdminService;
     private InstanceAdminService instanceAdminService;
     private GFUserAdminService grUserAdminService;
+    private RESTBatchService restBatchService;
     private InstanceCleaner instanceCleaner;
 
     public RESTFullConfiguration getConfiguration() {
         return getConfiguration(false);
     }
 
+    protected RESTBatch collectUsers(RESTBatch backup) {
+        for (GSUser user : userAdminService.getFullList(null, null, null, true)) {
+            RESTBatchOperation op = RESTBatchOperationFactory.createUserInputOp();
+            RESTInputUser input = new RESTInputUser();
+            op.setPayload(input);
+
+            input.setAdmin(user.isAdmin());
+            input.setEmailAddress(user.getEmailAddress());
+            input.setEnabled(user.getEnabled());
+            input.setExtId(user.getExtId());
+            input.setFullName(user.getFullName());
+            input.setName(user.getName());
+            input.setPassword(user.getPassword());
+
+            if(user.getGroups() != null) {
+                input.setGroups(new ArrayList<IdName>(user.getGroups().size()));
+                for (UserGroup userGroup : user.getGroups()) {
+                    input.getGroups().add(new IdName(userGroup.getName()));
+                }
+            }
+            backup.add(op);
+        }
+        return backup;
+    }
+
+    protected RESTBatch collectGroups(RESTBatch backup) {
+        for (ShortGroup shortGroup : userGroupAdminService.getList(null, null, null)) {
+            RESTBatchOperation op = RESTBatchOperationFactory.createGroupInputOp(shortGroup.getName());
+            RESTInputGroup input = (RESTInputGroup)op.getPayload();
+            input.setExtId(shortGroup.getExtId());
+            input.setEnabled(shortGroup.isEnabled());
+            backup.add(op);
+        }
+        return backup;
+    }
+
+    protected RESTBatch collectInstances(RESTBatch backup) {
+
+        for (GSInstance instance : instanceAdminService.getFullList(null, null, null)) {
+            RESTBatchOperation op = RESTBatchOperationFactory.createInstanceInputOp();
+            RESTInputInstance input = new RESTInputInstance();
+            op.setPayload(input);
+
+            input.setBaseURL(instance.getBaseURL());
+            input.setDescription(instance.getDescription());
+            input.setName(instance.getName());
+            input.setPassword(instance.getPassword());
+            input.setUsername(instance.getUsername());
+
+            backup.add(op);
+        }
+        return backup;
+    }
+
+    protected RESTBatch collectRules(RESTBatch backup) {
+        for (Rule rule : ruleAdminService.getListFull(null, null, null)) {
+            RESTBatchOperation op = RESTBatchOperationFactory.createRuleInputOp();
+            RESTInputRule input = new RESTInputRule();
+            op.setPayload(input);
+
+            input.setGrant(rule.getAccess());
+            input.setPosition(new RESTRulePosition(RESTRulePosition.RulePosition.fixedPriority, rule.getPriority()));
+
+            if(rule.getUserGroup() != null)
+                input.setGroupName(rule.getUserGroup().getName());
+            if(rule.getGsuser() != null)
+                input.setUserName(rule.getGsuser().getName());
+            if(rule.getInstance() != null)
+                input.setInstanceName(rule.getInstance().getName());
+
+            input.setService(rule.getService());
+            input.setRequest(rule.getRequest());
+            input.setWorkspace(rule.getWorkspace());
+            input.setLayer(rule.getLayer());
+
+            RESTLayerConstraints constraints = new RESTLayerConstraints();
+
+            if(rule.getRuleLimits() != null ) {
+                RuleLimits limits = rule.getRuleLimits();
+                MultiPolygon mp = limits.getAllowedArea();
+
+                constraints.setRestrictedAreaWkt(mp.toText());
+                input.setConstraints(constraints);
+            }
+
+            if(rule.getLayerDetails() != null) {
+                LayerDetails details = rule.getLayerDetails();
+
+                constraints.setAllowedStyles(details.getAllowedStyles());
+                constraints.setAttributes(details.getAttributes());
+                constraints.setCqlFilterRead(details.getCqlFilterRead());
+                constraints.setCqlFilterWrite(details.getCqlFilterWrite());
+                constraints.setDefaultStyle(details.getDefaultStyle());
+                constraints.setType(details.getType());
+
+                input.setConstraints(constraints);
+            }
+
+            backup.add(op);
+        }
+        return backup;
+    }
+
+    @Override
+    public RESTBatch backupGroups() {
+        return collectGroups(new RESTBatch());
+    }
+
+    @Override
+    public RESTBatch backupUsers() {
+        return collectUsers(new RESTBatch());
+    }
+
+    @Override
+    public RESTBatch backupInstances() {
+        return collectInstances(new RESTBatch());
+    }
+
+    @Override
+    public RESTBatch backupRules() {
+        return collectRules(new RESTBatch());
+    }
+
+
+    @Override
+    public RESTBatch backup(Boolean includeGRUsers) {
+        RESTBatch backup = new RESTBatch();
+
+        collectGroups(backup);
+        collectUsers(backup);
+        collectInstances(backup);
+        collectRules(backup);
+
+        if ( includeGRUsers.booleanValue() ) {
+            LOGGER.warn("TODO::: GF users not handled");            
+//            RESTFullGRUserList grUsers = new RESTFullGRUserList();
+//            grUsers.setList(grUserAdminService.getFullList(null, null, null));
+//            backup.setGrUserList(grUsers);
+        }
+
+        return backup;
+    }
+
+    @Override
+    public void restore(RESTBatch batch) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+        LOGGER.warn("Restoring GeoFence using batch with " + batch.getList().size() + " operations");
+
+        instanceCleaner.removeAll();
+        restBatchService.runBatch(batch);
+    }
+
+    @Override
+    public void cleanup() throws InternalErrorRestEx {
+        LOGGER.warn("Cleaning up GeoFence data");
+
+        instanceCleaner.removeAll();
+    }
+
+
+    /**
+     * @deprecated misbehaves since usergroups introduction. Please use backup()
+     */
     @Override
     public RESTFullConfiguration getConfiguration(Boolean includeGRUsers) {
         RESTFullConfiguration cfg = new RESTFullConfiguration();
 
         RESTFullUserList users = new RESTFullUserList();
-        users.setList(userAdminService.getFullList(null, null, null));
+        List<GSUser> userlist = userAdminService.getFullList(null, null, null);
+        for (GSUser user : userlist) {
+            user.setGroups(userAdminService.getUserGroups(user.getId()));
+        }
+        users.setList(userlist);
         cfg.setUserList(users);
 
         RESTFullUserGroupList profiles = new RESTFullUserGroupList();
@@ -245,6 +433,141 @@ public class RESTConfigServiceImpl implements RESTConfigService {
 
     // ==========================================================================
     // ==========================================================================
+
+    /**
+     * Simplified operation used for quick re-insertion of data extracted with a GET op in the related service
+     */
+    @Override
+    public void setUserGroups(RESTFullUserGroupList groups) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+        int okCnt = 0;
+        for (ShortGroup group : groups) {
+            LOGGER.info("Adding group " +group );
+            try {
+                userGroupAdminService.insert(group);
+                okCnt++;
+            } catch (Exception e) {
+                LOGGER.info("Could not add group " +group +": " + e.getMessage());
+            }
+        }
+        LOGGER.info(okCnt+"/"+groups.getList().size() + " items inserted");
+    }
+
+    /**
+     * Simplified operation used for quick re-insertion of data extracted with a GET op in the related service
+     */
+    @Override
+    public void setUsers(RESTShortUserList users) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+        int okCnt = 0;
+        for (RESTShortUser su : users) {
+            LOGGER.info("Adding user " +su );
+            try {
+                GSUser u = new GSUser();
+                u.setExtId(su.getExtId());
+                u.setName(su.getUserName());
+                u.setEnabled(su.isEnabled());
+                // group list is not retrievable in shortuser :|
+
+                userAdminService.insert(u);
+                okCnt++;
+            } catch (Exception e) {
+                LOGGER.info("Could not add user " +su +": " + e.getMessage());
+            }
+        }
+        LOGGER.info(okCnt+"/"+users.getUserList().size() + " items inserted");
+    }
+
+    /**
+     * Simplified operation used for quick re-insertion of data extracted with a GET op in the related service
+     */
+    @Override
+    public void setInstances(RESTShortInstanceList instances) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+        int okCnt = 0;
+        for (ShortInstance si : instances) {
+            LOGGER.info("Adding instance " +si );
+            try {
+                GSInstance i = new GSInstance();
+                i.setName(si.getName());
+                i.setDescription(si.getDescription());
+                i.setBaseURL(si.getUrl());
+                i.setUsername("unknown");
+                i.setPassword("unknown");
+                instanceAdminService.insert(i);
+                okCnt++;
+            } catch (Exception e) {
+                LOGGER.info("Could not add instance " +si +": " + e.getMessage());
+            }
+        }
+        LOGGER.info(okCnt+"/"+instances.getList().size() + " items inserted");
+    }
+
+    /**
+     * Simplified operation used for quick re-insertion of data extracted with a GET op in the related service
+     */
+    @Override
+    public void setRules(RESTOutputRuleList rules) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+        int okCnt = 0;
+        Map<String, UserGroup>  groups = new HashMap<String, UserGroup>();
+        Map<String, GSUser>     users = new HashMap<String, GSUser>();
+        Map<String, GSInstance> instances = new HashMap<String, GSInstance>();
+
+        for (RESTOutputRule in : rules) {
+            try {
+                Rule out = new Rule();
+
+                out.setAccess(in.getGrant());
+                out.setPriority(in.getPriority());
+
+                if (in.getGroup() != null) {
+                    String name = in.getGroup().getName();
+                    UserGroup ug = groups.get(name);
+                    if(ug == null) {
+                        ug = userGroupAdminService.get(name);
+                        groups.put(name, ug);
+                    }
+                    out.setUserGroup(ug);
+                }
+
+                if (in.getUser() != null) {
+                    String name = in.getUser().getName();
+                    GSUser user = users .get(name);
+                    if(user == null) {
+                        user = userAdminService.get(name);
+                        users.put(name, user);
+                    }
+                    out.setGsuser(user);
+                }
+
+                if (in.getInstance()!= null) {
+                    String name = in.getInstance().getName();
+                    GSInstance instance = instances.get(name);
+                    if(instance == null) {
+                        instance = instanceAdminService.get(name);
+                        instances.put(name, instance);
+                    }
+                    out.setInstance(instance);
+                }
+                out.setService(in.getService());
+                out.setRequest(in.getRequest());
+                out.setWorkspace(in.getWorkspace());
+                out.setLayer(in.getLayer());
+
+                long ruleid = ruleAdminService.insert(out);
+                okCnt++;
+
+                if (in.getConstraints() != null) {
+                    LOGGER.warn("TODO::: Constraints exist but will not be inserted for rule " + out);
+                }
+            } catch (Exception e) {
+                LOGGER.info("Could not add rule " +in +": " + e.getMessage());
+            }
+        }
+        LOGGER.info(okCnt+"/"+rules.getList().size() + " items inserted");
+    }
+
+
+
+    // ==========================================================================
+    // ==========================================================================
     public void setInstanceCleaner(InstanceCleaner instanceCleaner) {
         this.instanceCleaner = instanceCleaner;
     }
@@ -269,6 +592,10 @@ public class RESTConfigServiceImpl implements RESTConfigService {
     public void setGrUserAdminService(GFUserAdminService service) {
         this.grUserAdminService = service;
     }
+
+    public void setRestBatchService(RESTBatchService restBatchService) {
+        this.restBatchService = restBatchService;
+    }     
 
     // ==========================================================================
     class RemapperCache<TYPE, SERVICE extends GetProviderService<TYPE>> {

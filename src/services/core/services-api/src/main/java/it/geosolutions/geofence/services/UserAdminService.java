@@ -66,4 +66,5 @@ public interface UserAdminService extends GetProviderService<GSUser>
     List<ShortUser> getList(String nameLike, Integer page, Integer entries);
 
     List<GSUser> getFullList(String nameLike, Integer page, Integer entries) throws BadRequestServiceEx;
+    List<GSUser> getFullList(String nameLike, Integer page, Integer entries, boolean fetchGroups) throws BadRequestServiceEx;
 }

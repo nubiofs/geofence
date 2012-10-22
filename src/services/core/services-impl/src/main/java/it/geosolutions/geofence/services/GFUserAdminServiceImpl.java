@@ -72,6 +72,22 @@ public class GFUserAdminServiceImpl implements GFUserAdminService {
     }
 
     @Override
+    public GFUser get(String name) {
+        Search search = new Search(GFUser.class);
+        search.addFilterEqual("name", name);
+        List<GFUser> users = gfUserDAO.search(search);
+
+        if(users.isEmpty())
+            throw new NotFoundServiceEx("User not found  '"+ name + "'");
+        else if(users.size() > 1)
+            throw new IllegalStateException("Found more than one user with name '"+name+"'");
+        else
+            return users.get(0);
+    }
+
+
+
+    @Override
     public boolean delete(long id) throws NotFoundServiceEx {
         // data on ancillary tables should be deleted by cascading
         return gfUserDAO.removeById(id);

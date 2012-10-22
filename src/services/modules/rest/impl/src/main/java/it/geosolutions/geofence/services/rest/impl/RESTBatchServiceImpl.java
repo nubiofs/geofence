@@ -67,10 +67,14 @@ public class RESTBatchServiceImpl
     private RESTGSInstanceService restInstanceService;
     private RESTRuleService restRuleService;
 
-
     @Transactional(value="geofenceTransactionManager")
     @Override
     public Response exec(RESTBatch batch) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
+        runBatch(batch);
+        return Response.status(Status.OK).entity("OK\n").build();
+    }
+
+    public void runBatch(RESTBatch batch) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {
         if(LOGGER.isInfoEnabled() )
             LOGGER.info("Running batch with " + batch.getList().size() + " operations");
 
@@ -109,8 +113,6 @@ public class RESTBatchServiceImpl
                 throw new InternalErrorRestEx("Unexpected exception: " + ex.getMessage());
             }
         }
-
-       return Response.status(Status.OK).entity("OK\n").build();
     }
 
     protected void dispatchRuleOp(RESTBatchOperation op) throws NotFoundRestEx, BadRequestRestEx {

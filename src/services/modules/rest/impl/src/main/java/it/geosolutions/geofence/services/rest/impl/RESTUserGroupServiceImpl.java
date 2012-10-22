@@ -64,7 +64,7 @@ public class RESTUserGroupServiceImpl
         List<ShortGroup> groups = userGroupAdminService.getList(nameLike, page, entries);
         return new RESTFullUserGroupList(groups);
     }
-
+    
     @Override
     public long count(String nameLike) {
         return userGroupAdminService.getCount(nameLike);

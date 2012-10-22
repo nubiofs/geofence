@@ -140,6 +140,11 @@ public class UserAdminServiceImpl implements UserAdminService {
 
     @Override
     public List<GSUser> getFullList(String nameLike, Integer page, Integer entries) throws BadRequestServiceEx {
+        return getFullList(nameLike, page, entries, false);
+    }
+
+    @Override
+    public List<GSUser> getFullList(String nameLike, Integer page, Integer entries, boolean fetchGroups) throws BadRequestServiceEx {
 
         if( (page != null && entries == null) || (page ==null && entries != null)) {
             throw new BadRequestServiceEx("Page and entries params should be declared together.");
@@ -150,6 +155,10 @@ public class UserAdminServiceImpl implements UserAdminService {
         if(page != null) {
             searchCriteria.setMaxResults(entries);
             searchCriteria.setPage(page);
+        }
+
+        if(fetchGroups) {
+            searchCriteria.addFetch("userGroups");
         }
 
         searchCriteria.addSortAsc("name");

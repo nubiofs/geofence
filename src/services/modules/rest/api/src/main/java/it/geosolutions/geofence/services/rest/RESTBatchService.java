@@ -43,4 +43,10 @@ public interface RESTBatchService
     @Path("/exec")
     @Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML})
     Response exec(@Multipart("batch")RESTBatch batch) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
+
+    /**
+     * Similar to exec, but not transaction.
+     * Used internally.
+     */
+    void runBatch(RESTBatch batch) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 }

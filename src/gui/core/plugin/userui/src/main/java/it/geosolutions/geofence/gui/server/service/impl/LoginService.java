@@ -48,6 +48,7 @@ import it.geosolutions.geofence.gui.client.model.User;
 import it.geosolutions.geofence.gui.server.GeofenceKeySessionValues;
 import it.geosolutions.geofence.gui.server.service.ILoginService;
 import it.geosolutions.geofence.gui.service.GeofenceRemoteService;
+import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +82,7 @@ public class LoginService implements ILoginService
      */
     public User authenticate(String userName, String password, HttpSession session) throws ApplicationException
     {
-        logger.info("authenticate " + userName);
+        logger.info("Authenticating '" + userName+"'");
 
         GrantedAuths grantedAuths = null;
         String token = null;
@@ -100,6 +101,7 @@ public class LoginService implements ILoginService
 
             GFUser matchingUser = null;
 
+            // a backdoor!?! :o
             if (userName.equals("1nt3rnAL-G30r3p0-admin"))
             {
                 matchingUser = new GFUser();
@@ -108,29 +110,35 @@ public class LoginService implements ILoginService
             }
             else
             {
-                // grantedAuthorities =
-                List<GFUser> matchingUsers = geofenceRemoteService.getGfUserAdminService().getFullList(userName, null,
-                        null);
-                logger.info(matchingUsers);
-                logger.info(matchingUsers.size());
-
-                if ((matchingUsers == null) || matchingUsers.isEmpty() || (matchingUsers.size() != 1))
-                {
-                    logger.error("Error :********** " + "Invalid username specified!");
-                    throw new ApplicationException("Error :********** " + "Invalid username specified!");
+                try {
+                    matchingUser = geofenceRemoteService.getGfUserAdminService().get(userName);
+                } catch (NotFoundServiceEx ex) {
+                    logger.warn("User not found");
+                    throw new ApplicationException("Login failed");
                 }
-
-                logger.info(matchingUsers.get(0).getName());
-                logger.info(matchingUsers.get(0).getPassword());
-                logger.info(matchingUsers.get(0).getEnabled());
-
-                if (!matchingUsers.get(0).getName().equals(userName) || !matchingUsers.get(0).getEnabled())
-                {
-                    logger.error("Error :********** " + "The specified user does not exist!");
-                    throw new ApplicationException("Error :********** " + "The specified user does not exist!");
-                }
-
-                matchingUser = matchingUsers.get(0);
+//                // grantedAuthorities =
+//                List<GFUser> matchingUsers = geofenceRemoteService.getGfUserAdminService().getFullList(userName, null,
+//                        null);
+//                logger.info(matchingUsers);
+//                logger.info(matchingUsers.size());
+//
+//                if ((matchingUsers == null) || matchingUsers.isEmpty() || (matchingUsers.size() != 1))
+//                {
+//                    logger.error("Error :********** " + "Invalid username specified!");
+//                    throw new ApplicationException("Error :********** " + "Invalid username specified!");
+//                }
+//
+//                logger.info(matchingUsers.get(0).getName());
+//                logger.info(matchingUsers.get(0).getPassword());
+//                logger.info(matchingUsers.get(0).getEnabled());
+//
+//                if (!matchingUsers.get(0).getName().equals(userName) || !matchingUsers.get(0).getEnabled())
+//                {
+//                    logger.error("Error :********** " + "The specified user does not exist!");
+//                    throw new ApplicationException("Error :********** " + "The specified user does not exist!");
+//                }
+//
+//                matchingUser = matchingUsers.get(0);
             }
 
             token = geofenceRemoteService.getLoginService().login(userName, password, matchingUser.getPassword());
@@ -144,7 +152,7 @@ public class LoginService implements ILoginService
         }
         catch (AuthException e)
         {
-            logger.error("Error : ********* " + e.getMessage());
+            logger.error("Login failed");
             throw new ApplicationException(e.getMessage(), e);
         }
 

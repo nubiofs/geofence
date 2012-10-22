@@ -71,6 +71,14 @@ public class IdName {
 
     @Override
     public String toString() {
-        return "[id:" +id+ " name:" + name + ']';
+        StringBuffer sb = new StringBuffer();
+//        sb.append(getClass().getSimpleName()).append('[');
+        sb.append('[');
+        if(id != null)
+            sb.append("id:").append(id);
+        if(name != null)
+            sb.append("name:").append(name);
+        sb.append(']');
+        return sb.toString();
     }
 }

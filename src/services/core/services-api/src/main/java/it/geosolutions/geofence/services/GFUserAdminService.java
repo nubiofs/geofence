@@ -45,6 +45,7 @@ public interface GFUserAdminService extends GetProviderService<GFUser>
 
     @Override
     GFUser get(long id) throws NotFoundServiceEx;
+    GFUser get(String name) throws NotFoundServiceEx;
 
     long getCount(String nameLike);
 

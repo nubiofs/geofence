@@ -155,19 +155,22 @@ public class RESTUserServiceImpl
             throw new ConflictRestEx("User '" + user.getName() + "' already exists");
         }
 
+
         try {
+            Set<UserGroup> groups = new HashSet<UserGroup>();
             // resolve groups
             List<IdName> inputGroups = user.getGroups();
             if ( inputGroups == null || inputGroups.isEmpty() ) {
-                throw new BadRequestRestEx("Can't insert user without group");
-            }
-            Set<UserGroup> groups = new HashSet<UserGroup>();
-            for (IdName identifier : inputGroups) {
-                if ( identifier == null ) {
-                    throw new BadRequestRestEx("Bad group identifier");
+//                throw new BadRequestRestEx("Can't insert user without group");
+                LOGGER.warn("No groups defined for user " + user.getName());
+            } else {
+                for (IdName identifier : inputGroups) {
+                    if ( identifier == null ) {
+                        throw new BadRequestRestEx("Bad group identifier");
+                    }
+                    UserGroup group = getUserGroup(identifier);
+                    groups.add(group);
                 }
-                UserGroup group = getUserGroup(identifier);
-                groups.add(group);
             }
 
             GSUser u = new GSUser();

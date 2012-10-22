@@ -17,7 +17,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.geosolutions.geofence.login.util;
 
 import java.io.UnsupportedEncodingException;
@@ -32,63 +31,51 @@ import it.geosolutions.geofence.api.exception.AuthException;
 
 import org.apache.log4j.Logger;
 
-
 /**
  * A dummy AuthProvider which grants all auths to every request.
  *
  * @author ETj (etj at geo-solutions.it)
  */
-public class GrantAll implements AuthProvider
-{
+public class GrantAll implements AuthProvider {
+
     private static final Logger LOGGER = Logger.getLogger(GrantAll.class);
 
     @Override
-    public GrantedAuths login(String username, String password, String encryptedPassword) throws AuthException
-    {
+    public GrantedAuths login(String username, String password, String encryptedPassword) throws AuthException {
         // allow auth to anybody
-        LOGGER.warn("Granting login to " + username);
+        LOGGER.warn("Login request from '" + username + "'");
 
         GrantedAuths ga = new GrantedAuths();
 
-        byte[] bytesOfMessage;
-        try
-        {
-            bytesOfMessage = password.getBytes("UTF-8");
-        }
-        catch (UnsupportedEncodingException e)
-        {
+        byte[] passwordByteArr;
+        try {
+            passwordByteArr = password.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
             LOGGER.error(e.getLocalizedMessage(), e);
             throw new AuthException(e.getLocalizedMessage(), e);
         }
 
         MessageDigest md;
-        try
-        {
+        try {
             md = MessageDigest.getInstance("MD5");
             md.reset();
-        }
-        catch (NoSuchAlgorithmException e)
-        {
+        } catch (NoSuchAlgorithmException e) {
             LOGGER.error(e.getLocalizedMessage(), e);
             throw new AuthException(e.getLocalizedMessage(), e);
         }
 
-        byte[] thedigest = md.digest(bytesOfMessage);
+        byte[] thedigest = md.digest(passwordByteArr);
         StringBuffer hexString = new StringBuffer();
-        for (int i = 0; i < thedigest.length; i++)
-        {
+        for (int i = 0; i < thedigest.length; i++) {
             hexString.append(Integer.toHexString(0xFF & thedigest[i]));
         }
 
         LOGGER.info("encryptedPassword: " + encryptedPassword);
         LOGGER.info("hexString: " + hexString);
 
-        if (hexString.toString().equals(encryptedPassword))
-        {
+        if (hexString.toString().equals(encryptedPassword)) {
             ga.setAuthorities(Arrays.asList(Authority.values()));
-        }
-        else
-        {
+        } else {
             ga.setAuthorities(Arrays.asList(Authority.REMOTE));
         }
 
@@ -96,9 +83,7 @@ public class GrantAll implements AuthProvider
     }
 
     @Override
-    public void logout(String token)
-    {
+    public void logout(String token) {
         // nothing to do
     }
-
 }

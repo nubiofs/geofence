@@ -31,6 +31,7 @@ package it.geosolutions.geofence.core.model;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import it.geosolutions.geofence.core.model.adapter.FK2UserGroupAdapter;
 import it.geosolutions.geofence.core.model.adapter.FK2UserGroupSetAdapter;
+import it.geosolutions.geofence.core.model.adapter.FK2UserGroupSetAdapter2;
 import it.geosolutions.geofence.core.model.adapter.MultiPolygonAdapter;
 import it.geosolutions.geofence.core.model.util.PwEncoder;
 import java.io.Serializable;
@@ -51,6 +52,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -74,7 +77,7 @@ import org.hibernate.annotations.Type;
 @Table(name = "gf_gsuser")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "GSUser")
 @XmlRootElement(name = "GSUser")
-@XmlType(propOrder={"id","extId","name","fullName","password","emailAddress","dateCreation","allowedArea","userGroups"})
+@XmlType(propOrder={"id","extId","name","fullName","password","emailAddress","dateCreation","groups"})
 public class GSUser implements Identifiable, Serializable {
 
     private static final long serialVersionUID = 7718458156939088033L;
@@ -288,8 +291,9 @@ public class GSUser implements Identifiable, Serializable {
     }
 
     /**
-     * @return the profile
+     * @return the groups associated to the user
      */
+    @XmlElement(name="groups")
     @XmlJavaTypeAdapter(FK2UserGroupSetAdapter.class)
     public Set<UserGroup> getGroups() {
         return userGroups;

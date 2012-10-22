@@ -35,6 +35,20 @@ public class RESTBatchOperationFactory {
         return op;
     }
 
+    public static RESTBatchOperation createInstanceInputOp() {
+        RESTBatchOperation op = new RESTBatchOperation();
+        op.setService(RESTBatchOperation.ServiceName.instances);
+        op.setType(RESTBatchOperation.TypeName.insert);
+        return op;
+    }
+
+    public static RESTBatchOperation createRuleInputOp() {
+        RESTBatchOperation op = new RESTBatchOperation();
+        op.setService(RESTBatchOperation.ServiceName.rules);
+        op.setType(RESTBatchOperation.TypeName.insert);
+        return op;
+    }
+
     public static RESTBatchOperation createUserUpdateOp(String username) {
         RESTBatchOperation op = new RESTBatchOperation();
         op.setService(RESTBatchOperation.ServiceName.users);
