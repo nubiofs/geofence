@@ -38,8 +38,8 @@ import it.geosolutions.geofence.gui.client.i18n.I18nProvider;
 import it.geosolutions.geofence.gui.client.model.BeanKeyValue;
 import it.geosolutions.geofence.gui.client.model.GSInstance;
 import it.geosolutions.geofence.gui.client.model.GSUser;
-import it.geosolutions.geofence.gui.client.model.UserGroup;
 import it.geosolutions.geofence.gui.client.model.Rule;
+import it.geosolutions.geofence.gui.client.model.UserGroup;
 import it.geosolutions.geofence.gui.client.model.data.Grant;
 import it.geosolutions.geofence.gui.client.model.data.Layer;
 import it.geosolutions.geofence.gui.client.model.data.Request;
@@ -176,7 +176,21 @@ public class EditRuleWidget extends GeofenceFormWidget
 
     boolean onExecute = false;
 
-    /**
+	private static ListStore<Workspace> workspaces = new ListStore<Workspace>();
+
+	private static ListStore<Layer> layers = new ListStore<Layer>();
+
+    /* (non-Javadoc)
+	 * @see com.extjs.gxt.ui.client.widget.Window#show()
+	 */
+	@Override
+	public void show() {
+		super.show();
+		
+		initializeWorkspaces(model.getInstance());
+	}
+
+	/**
      * Instantiates a new edits the rule widget.
      *
      * @param submitEvent
@@ -897,7 +911,47 @@ public class EditRuleWidget extends GeofenceFormWidget
                                 model.setRequest("*");
                                 model.setWorkspace("*");
                                 model.setLayer("*");
+                                
+                                getAvailableWorkspaces(instance);
                                 Dispatcher.forwardEvent(GeofenceEvents.RULE_UPDATE_EDIT_GRID_COMBO, model);
+                            }
+
+                            /**
+                             * TODO: Call User Service here!!
+                             *
+                             * @param rule
+                             *
+                             * @return
+                             */
+                            private ListStore<Workspace> getAvailableWorkspaces(final GSInstance gsInstance)
+                            {
+                                /*RpcProxy<PagingLoadResult<Workspace>> workspacesProxy = new RpcProxy<PagingLoadResult<Workspace>>()
+                                    {
+
+                                        @Override
+                                        protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<Workspace>> callback)
+                                        {
+                                            workspacesService.getWorkspaces(((PagingLoadConfig) loadConfig).getOffset(), ((PagingLoadConfig) loadConfig).getLimit(),
+                                                (gsInstance != null) ? gsInstance.getBaseURL() : null, gsInstance,
+                                                callback);
+                                            
+                                        }
+
+                                    };
+
+                                BasePagingLoader<PagingLoadResult<ModelData>> workspacesLoader =
+                                    new BasePagingLoader<PagingLoadResult<ModelData>>(
+                                        workspacesProxy);
+                                workspacesLoader.setRemoteSort(false);
+
+                                ListStore<Workspace> availableWorkspaces = new ListStore<Workspace>(
+                                        workspacesLoader);
+
+                                return availableWorkspaces;*/
+                            	
+                            	initializeWorkspaces(gsInstance);
+                            	
+                            	return null;
                             }
                         });
 
@@ -1259,7 +1313,7 @@ public class EditRuleWidget extends GeofenceFormWidget
             {
 
                 private boolean init;
-
+				
                 public Object render(final Rule model, String property, ColumnData config,
                     int rowIndex, int colIndex, ListStore<Rule> store, Grid<Rule> grid)
                 {
@@ -1291,8 +1345,8 @@ public class EditRuleWidget extends GeofenceFormWidget
                     workspacesComboBox.setName("ruleWorkspacesCombo");
 
                     workspacesComboBox.setDisplayField(BeanKeyValue.WORKSPACE.getValue());
-                    workspacesComboBox.setEditable(false);
-                    workspacesComboBox.setStore(getAvailableWorkspaces(model.getInstance()));
+                    workspacesComboBox.setStore(workspaces);
+                    workspacesComboBox.setEditable(true);
                     workspacesComboBox.setTypeAhead(true);
                     workspacesComboBox.setTriggerAction(TriggerAction.ALL);
                     workspacesComboBox.setWidth(120);
@@ -1312,44 +1366,51 @@ public class EditRuleWidget extends GeofenceFormWidget
 
                                 model.setWorkspace(workspace.getWorkspace());
                                 model.setLayer("*");
+                                getAvailableLayers(model.getInstance(), model.getWorkspace(), model.getService());
                                 Dispatcher.forwardEvent(GeofenceEvents.RULE_UPDATE_EDIT_GRID_COMBO, model);
                             }
+
+                            /**
+                             * TODO: Call User Service here!!
+                             *
+                             * @param workspace
+                             * @param rule
+                             *
+                             * @return
+                             */
+                            private ListStore<Layer> getAvailableLayers(final GSInstance gsInstance,
+                                final String workspace, final String service)
+                            {
+//                                RpcProxy<PagingLoadResult<Layer>> workspacesProxy = new RpcProxy<PagingLoadResult<Layer>>()
+//                                    {
+//
+//                                        @Override
+//                                        protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<Layer>> callback)
+//                                        {
+//                                            workspacesService.getLayers(((PagingLoadConfig) loadConfig).getOffset(), ((PagingLoadConfig) loadConfig).getLimit(),
+//                                                (gsInstance != null) ? gsInstance.getBaseURL() : null, gsInstance,
+//                                                workspace, service, callback);
+//                                        }
+//
+//                                    };
+//
+//                                BasePagingLoader<PagingLoadResult<ModelData>> workspacesLoader =
+//                                    new BasePagingLoader<PagingLoadResult<ModelData>>(
+//                                        workspacesProxy);
+//                                workspacesLoader.setRemoteSort(false);
+//
+//                                ListStore<Layer> availableWorkspaceLayers = new ListStore<Layer>(workspacesLoader);
+//
+//                                return availableWorkspaceLayers;
+                            	
+                            	initializeLayers(gsInstance, workspace, service);
+                            	
+                            	return null;
+                            }
+
                         });
 
                     return workspacesComboBox;
-                }
-
-                /**
-                 * TODO: Call User Service here!!
-                 *
-                 * @param rule
-                 *
-                 * @return
-                 */
-                private ListStore<Workspace> getAvailableWorkspaces(final GSInstance gsInstance)
-                {
-                    RpcProxy<PagingLoadResult<Workspace>> workspacesProxy = new RpcProxy<PagingLoadResult<Workspace>>()
-                        {
-
-                            @Override
-                            protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<Workspace>> callback)
-                            {
-                                workspacesService.getWorkspaces(((PagingLoadConfig) loadConfig).getOffset(), ((PagingLoadConfig) loadConfig).getLimit(),
-                                    (gsInstance != null) ? gsInstance.getBaseURL() : null, gsInstance,
-                                    callback);
-                            }
-
-                        };
-
-                    BasePagingLoader<PagingLoadResult<ModelData>> workspacesLoader =
-                        new BasePagingLoader<PagingLoadResult<ModelData>>(
-                            workspacesProxy);
-                    workspacesLoader.setRemoteSort(false);
-
-                    ListStore<Workspace> availableWorkspaces = new ListStore<Workspace>(
-                            workspacesLoader);
-
-                    return availableWorkspaces;
                 }
             };
 
@@ -1399,8 +1460,8 @@ public class EditRuleWidget extends GeofenceFormWidget
                     workspaceLayersComboBox.setName("ruleLayersCombo");
 
                     workspaceLayersComboBox.setDisplayField(BeanKeyValue.LAYER.getValue());
-                    workspaceLayersComboBox.setEditable(false);
-                    workspaceLayersComboBox.setStore(getAvailableLayers(model.getInstance(), model.getWorkspace(), model.getService()));
+                    workspaceLayersComboBox.setStore(layers);
+                    workspaceLayersComboBox.setEditable(true);
                     workspaceLayersComboBox.setTypeAhead(true);
                     workspaceLayersComboBox.setTriggerAction(TriggerAction.ALL);
                     workspaceLayersComboBox.setWidth(120);
@@ -1424,40 +1485,6 @@ public class EditRuleWidget extends GeofenceFormWidget
                         });
 
                     return workspaceLayersComboBox;
-                }
-
-                /**
-                 * TODO: Call User Service here!!
-                 *
-                 * @param workspace
-                 * @param rule
-                 *
-                 * @return
-                 */
-                private ListStore<Layer> getAvailableLayers(final GSInstance gsInstance,
-                    final String workspace, final String service)
-                {
-                    RpcProxy<PagingLoadResult<Layer>> workspacesProxy = new RpcProxy<PagingLoadResult<Layer>>()
-                        {
-
-                            @Override
-                            protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<Layer>> callback)
-                            {
-                                workspacesService.getLayers(((PagingLoadConfig) loadConfig).getOffset(), ((PagingLoadConfig) loadConfig).getLimit(),
-                                    (gsInstance != null) ? gsInstance.getBaseURL() : null, gsInstance,
-                                    workspace, service, callback);
-                            }
-
-                        };
-
-                    BasePagingLoader<PagingLoadResult<ModelData>> workspacesLoader =
-                        new BasePagingLoader<PagingLoadResult<ModelData>>(
-                            workspacesProxy);
-                    workspacesLoader.setRemoteSort(false);
-
-                    ListStore<Layer> availableWorkspaceLayers = new ListStore<Layer>(workspacesLoader);
-
-                    return availableWorkspaceLayers;
                 }
             };
 
@@ -1843,4 +1870,47 @@ public class EditRuleWidget extends GeofenceFormWidget
     {
         this.rulesView = rulesView;
     }
+    
+    /**
+	 * @param gsInstance
+	 */
+	private void initializeWorkspaces(
+			final GSInstance gsInstance) {
+		workspacesService.getWorkspaces(0, 0, (gsInstance != null) ? gsInstance.getBaseURL() : null, gsInstance,
+                new AsyncCallback<PagingLoadResult<Workspace>>() {
+
+					public void onFailure(Throwable caught) {
+						workspaces.removeAll();
+					}
+
+					public void onSuccess(PagingLoadResult<Workspace> result) {
+						workspaces.removeAll();
+						workspaces.add(result.getData());
+						
+						initializeLayers(gsInstance, model.getWorkspace(), model.getService());
+					}
+				});
+	}
+	
+    /**
+	 * @param gsInstance
+	 * @param workspace
+	 * @param service
+	 */
+	private void initializeLayers(
+			final GSInstance gsInstance,
+			final String workspace, final String service) {
+		workspacesService.getLayers(0, 0, (gsInstance != null) ? gsInstance.getBaseURL() : null, gsInstance, workspace, service, 
+    			new AsyncCallback<PagingLoadResult<Layer>>() {
+
+    		public void onFailure(Throwable caught) {
+    			layers.removeAll();
+    		}
+
+    		public void onSuccess(PagingLoadResult<Layer> result) {
+    			layers.removeAll();
+    			layers.add(result.getData());
+    		}
+    	});
+	}
 }

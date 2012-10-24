@@ -31,7 +31,7 @@ package it.geosolutions.geofence.core.model;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import it.geosolutions.geofence.core.model.adapter.FK2UserGroupAdapter;
 import it.geosolutions.geofence.core.model.adapter.FK2UserGroupSetAdapter;
-import it.geosolutions.geofence.core.model.adapter.FK2UserGroupSetAdapter2;
+//import it.geosolutions.geofence.core.model.adapter.FK2UserGroupSetAdapter2;
 import it.geosolutions.geofence.core.model.adapter.MultiPolygonAdapter;
 import it.geosolutions.geofence.core.model.util.PwEncoder;
 import java.io.Serializable;
