@@ -85,7 +85,7 @@ public class UsersProcessor {
 
             case DELETE:
                 restOp.setType(RESTBatchOperation.TypeName.delete);
-                restOp.setUserName(userOp.getUserName());
+                restOp.setName(userOp.getUserName());
 
                 break;
 
