@@ -5,7 +5,9 @@
   <!-- When adding/removing classes, please also keep aligned the main
          persistence file src/main/resources/META-INF/persistence.xml -->
     <session-factory>
-        <property name="hibernate.dialect">org.hibernatespatial.postgis.PostgisDialect</property>
+        <property name="hibernate.dialect">org.hibernatespatial.postgis.PostgisDialect</property> 
+<!--	<property name="hibernate.dialect">org.hibernatespatial.oracle.OracleSpatial10gDialect</property> -->
+
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
     <!--        <property name="hibernate.connection.url">NOT USEFUL</property>-->
     <!--        <property name="hibernate.connection.username">NOT USEFUL</property>-->

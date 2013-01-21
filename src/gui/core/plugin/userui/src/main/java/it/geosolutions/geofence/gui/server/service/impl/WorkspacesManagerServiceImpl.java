@@ -55,11 +55,12 @@ import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 import it.geosolutions.geoserver.rest.decoder.RESTAbstractList;
 import it.geosolutions.geoserver.rest.decoder.RESTLayer;
-import it.geosolutions.geoserver.rest.decoder.RESTLayerGroup;
 import it.geosolutions.geoserver.rest.decoder.RESTStyleList;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList.RESTShortWorkspace;
 import it.geosolutions.geoserver.rest.decoder.utils.NameLinkElem;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -142,85 +143,65 @@ public class WorkspacesManagerServiceImpl implements IWorkspacesManagerService
         List<Layer> layersListDTO = new ArrayList<Layer>();
         layersListDTO.add(new Layer("*"));
 
-        if ((baseURL != null) && !baseURL.equals("*") && !baseURL.contains("?") && (workspace != null) &&
+        if ((baseURL != null) &&
+                !baseURL.equals("*") &&
+                !baseURL.contains("?") &&
+                (workspace != null) &&
                 (workspace.length() > 0))
         {
             try
             {
                 GeoServerRESTReader gsreader = new GeoServerRESTReader(baseURL, gsInstance.getUsername(), gsInstance.getPassword());
-
-                RESTAbstractList<NameLinkElem> layers;
-
+                
                 if (workspace.equals("*") && workspaceConfigOpts.isShowDefaultGroups() && service.equals("WMS"))
                 {
-                    layers = gsreader.getLayerGroups();
+                    RESTAbstractList<NameLinkElem> layerGroups = gsreader.getLayerGroups();
 
-                    if ((layers != null) && !layers.isEmpty())
-                    {
-                        Iterator<NameLinkElem> lrIT = layers.iterator();
-                        while (lrIT.hasNext())
-                        {
-                            NameLinkElem layerLink = lrIT.next();
-                            RESTLayerGroup group = gsreader.getLayerGroup(layerLink.getName());
-
-                            if (group != null)
-                            {
-                                layersListDTO.add(new Layer(group.getName()));
-                            }
+                    if ((layerGroups != null)) {
+                        for (NameLinkElem lg : layerGroups) {
+//                            RESTLayerGroup group = gsreader.getLayerGroup(lg.getName());
+//                            if (group != null)
+//                            {
+//                                layersListDTO.add(new Layer(group.getName()));
+//                            }
+                            layersListDTO.add(new Layer(lg.getName()));                            
                         }
                     }
                 }
                 else
                 {
-                    layers = gsreader.getLayers();
+                    SortedSet<String> sortedLayerNames = new TreeSet<String>();
+                    RESTAbstractList<NameLinkElem> layers = gsreader.getLayers();
 
-                    if ((layers != null) && !layers.isEmpty())
-                    {
-                        Iterator<NameLinkElem> lrIT = layers.iterator();
-                        while (lrIT.hasNext())
-                        {
-                            NameLinkElem layerLink = lrIT.next();
-                            RESTLayer layer = gsreader.getLayer(layerLink.getName());
+                    if (workspace.equals("*")) { // load all layers
+                        for (NameLinkElem layerLink : layers) {
+                            sortedLayerNames.add(layerLink.getName());
+                         }
+                    } else {
+                        if ((layers != null) && !layers.isEmpty()) {
 
-                            if (checkLayerIsInWorkspace(layer.getResourceUrl(), workspace))
-                            {
-                                layersListDTO.add(new Layer(layer.getName()));
+                            for (NameLinkElem layerNL : layers) {
+                                // next block is really too slow
+                                RESTLayer layer = gsreader.getLayer(layerNL.getName());
+                                if(layer.getResourceUrl().contains("workspaces/" + workspace + "/"))  {
+                                    sortedLayerNames.add(layerNL.getName());
+                                    //layersListDTO.add(new Layer(layerNL.getName()));
+                                }
                             }
                         }
                     }
+                    // return the sorted layers list
+                    for (String layerName : sortedLayerNames) {
+                        layersListDTO.add(new Layer(layerName));
+                    }
                 }
-            }
-            catch (MalformedURLException e)
-            {
+            } catch (MalformedURLException e) {
                 logger.error(e.getLocalizedMessage(), e);
                 throw new ApplicationException(e.getLocalizedMessage(), e);
             }
         }
 
         return new RpcPageLoadResult<Layer>(layersListDTO, 0, layersListDTO.size());
-    }
-
-    /**
-     * Check layer is in workspace.
-     *
-     * @param baseURL
-     *            the base url
-     * @param workspace
-     *            the workspace
-     * @param layerName
-     *            the layer name
-     * @return true, if successful
-     */
-    private boolean checkLayerIsInWorkspace(String resourceHref, String workspace)
-    {
-        boolean res = false;
-
-        if (resourceHref.contains("workspaces/" + workspace + "/"))
-        {
-            res = true;
-        }
-
-        return res;
     }
 
     /*

@@ -3,7 +3,7 @@
 
 <beans>
 
-  <!-- The servlet filter that performs the Georepo authentication -->
+  <!-- The servlet filter that performs the Geofence authentication -->
     <bean id="geofenceAuthFilter" class="it.geosolutions.geofence.AuthenticationFilter">
         <!-- remove this property to use the default non-cached service-->
         <property name="geofenceService" ref="cachedRuleReader"/>

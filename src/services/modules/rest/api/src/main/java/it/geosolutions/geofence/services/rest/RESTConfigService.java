@@ -102,6 +102,9 @@ public interface RESTConfigService
     @Produces(MediaType.APPLICATION_XML)
     RESTBatch backupRules();
 
+    /**
+     * @deprecated
+     */
     @PUT
     @Path("/full")
     @Produces(MediaType.APPLICATION_XML)
@@ -111,12 +114,18 @@ public interface RESTConfigService
         Boolean includeGRUsers)
             throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 
+    /**
+     * @deprecated
+     */
     @GET
     @Path("/users")
     @Produces(MediaType.APPLICATION_XML)
     RESTFullUserList getUsers()
             throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 
+    /**
+     * @deprecated
+     */
     @GET
     @Path("/groups")
     @Produces(MediaType.APPLICATION_XML)
@@ -125,6 +134,9 @@ public interface RESTConfigService
 
     //====
 
+    /**
+     * @deprecated used for testing only
+     */
     @POST
     @Path("/groups")
     @Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML})
@@ -134,6 +146,8 @@ public interface RESTConfigService
     /**
      * only for debug/quick insert
      * takes as input the same xml returned by the related service GET operation
+     *
+     * @deprecated used for testing only
      */
     @POST
     @Path("/users/short")
@@ -142,7 +156,7 @@ public interface RESTConfigService
             throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 
     /**
-     * only for debug/quick insert
+     * @deprecated used for testing only
      */
     @POST
     @Path("/instances/short")
@@ -151,7 +165,7 @@ public interface RESTConfigService
             throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx;
 
     /**
-     * only for debug/quick insert
+     * @deprecated used for testing only
      */
     @POST
     @Path("/rules/short")

@@ -42,10 +42,10 @@
     <bean id="restRuleService" class="it.geosolutions.geofence.services.rest.impl.RESTRuleServiceImpl">
     </bean>
 
-    <bean id="restConfigService" class="it.geosolutions.geofence.services.rest.impl.RESTConfigServiceImpl">
+    <bean id="restBatchService" class="it.geosolutions.geofence.services.rest.impl.RESTBatchServiceImpl">
     </bean>
 
-    <bean id="restBatchService" class="it.geosolutions.geofence.services.rest.impl.RESTBatchServiceImpl">
+    <bean id="restConfigService" class="it.geosolutions.geofence.services.rest.impl.RESTConfigServiceImpl">
     </bean>
 
     <!-- ====================================================================-->

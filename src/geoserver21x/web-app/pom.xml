@@ -59,6 +59,17 @@
             <version>${geoserver-version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.geoserver.community</groupId>
+            <artifactId>monitoring</artifactId>
+            <version>${geoserver-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>it.geosolutions.geoserver</groupId>
+            <artifactId>jms-server-impl</artifactId>
+            <version>${geoserver-version}</version>
+        </dependency>
+
 		<!-- =========================================================== -->
 		<!--     Geofence                                                -->
 		<!-- =========================================================== -->

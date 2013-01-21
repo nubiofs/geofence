@@ -40,6 +40,6 @@ public class RuleCacheStatsFinder extends Finder {
 
     @Override
     public Resource findTarget(Request request, Response response) {
-        return new RESTCacheStats(getContext(), request, response, cachedRuleReader.getStats());
+        return new RESTCacheStats(getContext(), request, response, cachedRuleReader);
     }
 }
