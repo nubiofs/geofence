@@ -24,13 +24,13 @@ The GeoFence code base includes a module that will build a GeoServer .war file r
 
 Download
 ==================================================
-* [**GeoFence** .war file](http://geo-solutions.it)
-* [Latest **GeoServer** .war file (2.2.x)](http://geo-solutions.it)
-* [Latest **GeoServer** .war file (2.1.x)](http://geo-solutions.it)
+* [**GeoFence** .war file](http://maven.geo-solutions.it/it/geosolutions/geofence/web) **TODO**
+* [Latest **GeoServer** .war file (2.2.x)](http://geo-solutions.it) **TODO**
+* [Latest **GeoServer** .war file (2.1.x)](http://geo-solutions.it) **TODO**
 
 
 Documentation
 ==================================================
-* [How to build GeoFence](http://geo-solutions.it)
-* [How to deploy and configure GeoFence](http://geo-solutions.it)
+* [How to build GeoFence](https://github.com/geosolutions-it/geofence/wiki/Building-instructions)
+* [How to configure GeoFence](https://github.com/geosolutions-it/geofence/wiki/WebApps-configuration)
 
