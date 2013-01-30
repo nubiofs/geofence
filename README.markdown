@@ -9,7 +9,7 @@ How to interact with GeoFence
 --------------------------------------------------
 **GeoFence** provides a _GWT-based_ user interface to administer the basic objects and the authorization rules.
 
-Furthermore, some _REST API_ has already been implemented that allows the administration of some ancillary data.
+Furthermore, some [REST API](https://github.com/geosolutions-it/geofence/wiki/REST-API) have already been implemented that allows the administration of some ancillary data.
 
 GeoServer will send authorization queries to GeoFence using a configurable internal protocol (by default it uses Spring remoting over HTTP).
 
@@ -24,9 +24,9 @@ The GeoFence code base includes a module that will build a GeoServer .war file r
 
 Download
 ==================================================
-* [**GeoFence** .war file](http://maven.geo-solutions.it/it/geosolutions/geofence/web) **TODO**
-* [Latest **GeoServer** .war file (2.2.x)](http://geo-solutions.it) **TODO**
-* [Latest **GeoServer** .war file (2.1.x)](http://geo-solutions.it) **TODO**
+* [**GeoFence** .war file](http://maven.geo-solutions.it/it/geosolutions/geofence/geofence-gui-web/2.2-SNAPSHOT/geofence-gui-web-2.2-SNAPSHOT.war)
+* [Latest **GeoServer 2.1.x** GeoFence integration module .jar file](http://maven.geo-solutions.it/it/geosolutions/geofence/geoserver/geofence-security21/2.2-SNAPSHOT/geofence-security21-2.2-SNAPSHOT.jar) (todo: add refs to ancillary libs)
+* [Latest GeoFence **integration configuration file**](https://github.com/geosolutions-it/geofence/blob/master/src/geoserver21x/web-app/src/main/resources/geofence-geoserver.properties)
 
 
 Documentation
