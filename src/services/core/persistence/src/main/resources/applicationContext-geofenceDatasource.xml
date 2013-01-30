@@ -31,7 +31,7 @@
 
 	<bean class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
 		<property name="locations" value="classpath*:geofence-datasource-ovr.properties"/>
-        <property name="ignoreResourceNotFound" value="true"q/>
+        <property name="ignoreResourceNotFound" value="true"/>
     </bean>
 
 	<!--
