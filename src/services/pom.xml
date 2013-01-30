@@ -104,6 +104,30 @@
         <gt-version>8.4</gt-version>
     </properties>
 
+
+    <distributionManagement>
+      <downloadUrl>http://maven.geo-solutions.it</downloadUrl>
+
+      <!-- use the following if you're not using a snapshot version. -->
+      <repository>
+         <id>geosolutions</id>
+         <name>GeoSolutions maven repo</name>
+         <url>ftp://maven.geo-solutions.it/</url>
+         <uniqueVersion>true</uniqueVersion>
+      </repository>
+      <!-- use the following if you ARE using a snapshot version. -->
+      <snapshotRepository>
+         <id>geosolutions</id>
+         <name>GeoSolutions maven repo</name>
+         <url>ftp://maven.geo-solutions.it/</url>
+         <uniqueVersion>false</uniqueVersion>
+      </snapshotRepository>
+      <site>
+         <id>demo.geosolutions</id>
+         <url>scp://demo.geo-solutions.it/var/www/share/javadoc/geofence/${project.version}</url>
+      </site>
+    </distributionManagement>
+
     <!-- =========================================================== -->
     <!--     Dependency Management                                   -->
     <!--     If a POM declares one of those dependencies, then it    -->

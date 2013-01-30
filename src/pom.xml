@@ -34,16 +34,44 @@
         </developer>
     </developers>
 
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/geosolutions-it/geofence/issues</url>
+    </issueManagement>
+
     <scm>
         <connection>scm:git:git@github.com:geosolutions-it/geofence.git</connection>
         <tag>master</tag>
         <url>https://github.com/geosolutions-it/geofence</url>
     </scm>
 
-    <issueManagement>
-        <system>github</system>
-        <url>https://github.com/geosolutions-it/geofence/issues</url>
-    </issueManagement>
+    <ciManagement>
+        <system>jenkins</system>
+        <url>http://ci.geo-solutions.it/</url>
+    </ciManagement>
+    
+    <distributionManagement>
+      <downloadUrl>http://maven.geo-solutions.it</downloadUrl>
+
+      <!-- use the following if you're not using a snapshot version. -->
+      <repository>
+         <id>geosolutions</id>
+         <name>GeoSolutions maven repo</name>
+         <url>ftp://maven.geo-solutions.it/</url>
+         <uniqueVersion>true</uniqueVersion>
+      </repository>
+      <!-- use the following if you ARE using a snapshot version. -->
+      <snapshotRepository>
+         <id>geosolutions</id>
+         <name>GeoSolutions maven repo</name>
+         <url>ftp://maven.geo-solutions.it/</url>
+         <uniqueVersion>false</uniqueVersion>
+      </snapshotRepository>
+      <site>
+         <id>demo.geosolutions</id>
+         <url>scp://demo.geo-solutions.it/var/www/share/javadoc/geofence/${project.version}</url>
+      </site>
+    </distributionManagement>
 
     <modules>
         <module>services</module>
@@ -54,6 +82,13 @@
 
 
     <build>
+<!--        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+            </plugin>
+        </plugins>-->
+
         <!-- ======================================================== -->
         <!--              Extensions settings for Deployment          -->
         <!-- ======================================================== -->
@@ -64,7 +99,7 @@
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
                 <artifactId>wagon-ftp</artifactId>
-                <version>1.0-beta-7</version>
+                <version>1.0</version>
             </extension>
         </extensions>
     </build>

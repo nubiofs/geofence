@@ -41,6 +41,29 @@
         <jetty-version>6.1.8</jetty-version>
     </properties>
 
+    <distributionManagement>
+      <downloadUrl>http://maven.geo-solutions.it</downloadUrl>
+
+      <!-- use the following if you're not using a snapshot version. -->
+      <repository>
+         <id>geosolutions</id>
+         <name>GeoSolutions maven repo</name>
+         <url>ftp://maven.geo-solutions.it/</url>
+         <uniqueVersion>true</uniqueVersion>
+      </repository>
+      <!-- use the following if you ARE using a snapshot version. -->
+      <snapshotRepository>
+         <id>geosolutions</id>
+         <name>GeoSolutions maven repo</name>
+         <url>ftp://maven.geo-solutions.it/</url>
+         <uniqueVersion>false</uniqueVersion>
+      </snapshotRepository>
+      <site>
+         <id>demo.geosolutions</id>
+         <url>scp://demo.geo-solutions.it/var/www/share/javadoc/geofence/${project.version}</url>
+      </site>
+    </distributionManagement>
+    
 <!--    <dependencyManagement>
         <dependencies>
             <dependency>
@@ -106,7 +129,7 @@
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
                 <artifactId>wagon-ftp</artifactId>
-                <version>1.0-beta-6</version>
+                <version>2.3</version>
             </extension>
         </extensions>
 

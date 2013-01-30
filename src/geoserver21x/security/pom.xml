@@ -14,6 +14,29 @@
 	<packaging>jar</packaging>
 	<name>GeoFence - GeoServer 2.1.x security integration</name>
 
+    <distributionManagement>
+      <downloadUrl>http://maven.geo-solutions.it</downloadUrl>
+
+      <!-- use the following if you're not using a snapshot version. -->
+      <repository>
+         <id>geosolutions</id>
+         <name>GeoSolutions maven repo</name>
+         <url>ftp://maven.geo-solutions.it/</url>
+         <uniqueVersion>true</uniqueVersion>
+      </repository>
+      <!-- use the following if you ARE using a snapshot version. -->
+      <snapshotRepository>
+         <id>geosolutions</id>
+         <name>GeoSolutions maven repo</name>
+         <url>ftp://maven.geo-solutions.it/</url>
+         <uniqueVersion>false</uniqueVersion>
+      </snapshotRepository>
+      <site>
+         <id>demo.geosolutions</id>
+         <url>scp://demo.geo-solutions.it/var/www/share/javadoc/geofence/${project.version}</url>
+      </site>
+    </distributionManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.geoserver</groupId>
@@ -106,5 +129,22 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+    <build>
+        <!-- ======================================================== -->
+        <!--              Extensions settings for Deployment          -->
+        <!-- ======================================================== -->
+        <extensions>
+        <!--.............................................-->
+        <!--       geo-solutions (using wagon ftp)       -->
+        <!--.............................................-->
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ftp</artifactId>
+                <version>2.3</version>
+            </extension>
+        </extensions>
+    </build>
+
 </project>
 
