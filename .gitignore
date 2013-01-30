@@ -55,3 +55,6 @@ src/services/modules/rest/impl/target
 src/services/modules/rest/target
 src/services/modules/rest/test/target
 src/services/target
+/src/services/modules/rest/client/target/
+/src/csv2geofence/target/
+/src/samples/csv2geofence/target/
