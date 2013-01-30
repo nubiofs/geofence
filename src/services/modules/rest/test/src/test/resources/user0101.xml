@@ -1,0 +1,12 @@
+<user enabled="true" admin="false">
+   <extId>ext_zz</extId>
+   <name>user_02</name>
+   <password>pw_02</password>
+   <fullName>fullname_02</fullName>
+   <emailAddress>email_02</emailAddress>
+   <groups>
+       <group>
+	    <name>sample REST group</name>
+       </group>
+   </groups>
+</user>
