@@ -109,6 +109,11 @@
 			<groupId>it.geosolutions.geofence</groupId>
 			<artifactId>geofence-rest-impl</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>it.geosolutions.geofence</groupId>
+			<artifactId>geofence-ldap</artifactId>
+		</dependency>
 
 		<!-- =============================================================== -->
 		<!-- 4J UTILS -->
