@@ -226,6 +226,12 @@
                 <artifactId>geofence-rest-test</artifactId>
                 <version>${geofence-version}</version>
             </dependency>
+			
+			<dependency>
+                <groupId>it.geosolutions.geofence</groupId>
+                <artifactId>geofence-ldap</artifactId>
+                <version>${geofence-version}</version>
+            </dependency>
 
 		    <!-- =========================================================== -->
 		    <!--     GeoServer Manager                                       -->
