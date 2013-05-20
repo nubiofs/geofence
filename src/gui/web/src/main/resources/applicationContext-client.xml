@@ -60,18 +60,41 @@
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
     <import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml" />
 
+	<bean id="geofence-global-configurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		
+		<property name="locations">
+			<list>
+                <value>classpath*:geofence-datasource.properties</value>
+                <value>classpath:geofence-externalize-aux.properties</value>                
+                <value>classpath*:geofence-global.properties</value>
+            </list>
+		</property>
+		<property name="ignoreResourceNotFound" value="false" />
+	</bean>
+	
+	<bean class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath*:geofence-global-ovr.properties</value>
+				<value>file:${geofence.dir}/geofence-global-ovr.properties</value>
+			</list>
+		</property>				
+        <property name="ignoreResourceNotFound" value="true"/>        
+    </bean>
 
     <!-- ====================================================================-->
     <!-- GeoFence Global Config -->
     <!-- ====================================================================-->
     <bean id="geofenceGlobalConfiguration" class="it.geosolutions.geofence.gui.client.configuration.GeofenceGlobalConfiguration">
-        <property name="baseLayerURL" value="http://demo1.geo-solutions.it/geoserver-enterprise/wms"/>
-        <property name="baseLayerName" value="GeoSolutions:ne_shaded"/>
-        <property name="baseLayerTitle" value="GeoSolutions Natural Earth"/>
-        <property name="baseLayerFormat" value="image/jpeg"/>
-        <property name="baseLayerStyle" value=""/>
+        <property name="baseLayerURL" value="${geofenceGlobalConfiguration.baseLayerURL}"/>
+        <property name="baseLayerName" value="${geofenceGlobalConfiguration.baseLayerName}"/>
+        <property name="baseLayerTitle" value="${geofenceGlobalConfiguration.baseLayerTitle}"/>
+        <property name="baseLayerFormat" value="${geofenceGlobalConfiguration.baseLayerFormat}"/>
+        <property name="baseLayerStyle" value="${geofenceGlobalConfiguration.baseLayerStyle}"/>
     </bean>
     
+        
     <!-- ====================================================================-->
     <!-- Service endpoints -->
     <!-- ====================================================================-->

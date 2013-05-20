@@ -53,3 +53,8 @@
 ## This is needed in a geofence-clustered environment.
 
 #geofenceEntityManagerFactory.jpaPropertyMap[hibernate.cache.use_second_level_cache]=false
+
+################################################################################
+## Use external ehcache configuration file.
+## Useful to change cache settings, for example diskStore path.
+#geofenceEntityManagerFactory.jpaPropertyMap[hibernate.cache.provider_configuration_file_resource_path]=file:/path/to/geofence-ehcache-override.xml

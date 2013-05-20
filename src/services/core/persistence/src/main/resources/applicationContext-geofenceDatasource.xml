@@ -24,14 +24,20 @@
         <property name="locations">
             <list>
                 <value>classpath*:geofence-datasource.properties</value>
-                <value>classpath:geofence-externalize-aux.properties</value>
+                <value>classpath:geofence-externalize-aux.properties</value>                
             </list>
         </property>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
 	</bean>
 
 	<bean class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
-		<property name="locations" value="classpath*:geofence-datasource-ovr.properties"/>
-        <property name="ignoreResourceNotFound" value="true"/>
+		<property name="locations">
+			<list>
+				<value>classpath*:geofence-datasource-ovr.properties</value>
+				<value>file:${geofence.dir}/geofence-datasource-ovr.properties</value>
+			</list>
+		</property>				
+        <property name="ignoreResourceNotFound" value="true"/>        
     </bean>
 
 	<!--
@@ -74,7 +80,7 @@
 			<map>
 				<entry key="hibernate.cache.provider_class" value="org.hibernate.cache.EhCacheProvider" />
 				<entry key="hibernate.cache.provider_configuration_file_resource_path"
-					value="classpath:geofence-ehcache.xml" />
+					value="geofence-ehcache.xml" />
                 <!-- hibernate.hbm2ddl.auto should not be enabled by default     -->
                 <!--   * update and create-drop should not be used in production -->
                 <!--   * validate will not work with oracle spatial              -->
