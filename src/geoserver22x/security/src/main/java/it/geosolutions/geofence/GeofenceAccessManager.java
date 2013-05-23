@@ -538,7 +538,7 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
         if ((user != null) && !(user instanceof AnonymousAuthenticationToken)) {
             // shortcut, if the user is the admin, he can do everything
             if (isAdmin(user)) {
-                LOGGER.log(Level.FINE, "Admin level access, no applying default style for this request");
+                LOGGER.log(Level.FINE, "Admin level access, not applying default style for this request");
 
                 return operation;
             } else {
@@ -610,17 +610,10 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
         }
     }
 
-    private void overrideGetMapRequest(Request gsRequest, String service, String request,
+    private void overrideGetMapRequest(Request gsRequest, String service, String request, 
         String username, GetMapRequest getMap)
     {
-        // basic sanity checks, we don't allow dynamic styling
-        if ((getMap.getSld() != null) || (getMap.getSldBody() != null))
-        {
-            throw new ServiceException("Dynamic style usage is forbidden");
-        }
-
-        if (gsRequest.getKvp().get("layers") == null)
-        {
+        if (gsRequest.getKvp().get("layers") == null) {
             throw new ServiceException("GetMap POST requests are forbidden");
         }
 
@@ -660,9 +653,12 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
             // get the requested style name
             String styleName = (styleNameList.size() > 0) ? styleNameList.get(i) : null;
 
+            checkDynStyles(getMap, rule, layer); // throw ServiceEx if not allowed
+
             // if default use geofence default
-            if ((styleName == null) && (rule.getDefaultStyle() != null))
-            {
+            if (styleName != null) {
+                checkStyleAllowed(rule, styleName);
+            } else if((rule.getDefaultStyle() != null)) {
                 try
                 {
                     StyleInfo si = catalog.getStyleByName(rule.getDefaultStyle());
@@ -681,9 +677,38 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
                         rule.getDefaultStyle(), e);
                 }
             }
-            else
-            {
-                checkStyleAllowed(rule, styleName);
+        }
+    }
+
+    /**
+     *
+     * Allow dynamic styling only when there's no style restriction.
+     *
+     * We may update the model by adding a "allow dyn style" permission,
+     * but it would break current installations.
+     * We can infer this authorization by verifying if any style constraint is in place:
+     * It means that both of these conditions should be verified:
+     * 1) rule.getAllowedStyles() != null
+     *    - -> no style restriction has been defined in the rule details
+     * 2) the number of allowed styles should be less than than the number of total styles
+     *    --> generally, you can't delete the restricted style list once it has been defined.
+     *      > We assume that if all the available styles have been allowed, then there should be no
+     *      > style restrictions. We're only comparing the number of the available styles, but a
+     *      > better approach would be to make sure all of the available styles (maybe identified by name)
+     *      > are currently allowed.
+     *
+     * @param getMap
+     * @param rule
+     * @param layer
+     * @throws ServiceException if dyn style usage is forbidden
+     */
+    protected void checkDynStyles(GetMapRequest getMap, AccessInfo rule, MapLayerInfo layer) throws ServiceException {
+        if ((getMap.getSld() != null) || (getMap.getSldBody() != null))
+        {
+            if( rule.getAllowedStyles() != null &&
+                    rule.getAllowedStyles().size() != layer.getLayerInfo().getStyles().size() ) {
+                LOGGER.info("Denying dynamic style; allowed#"+rule.getAllowedStyles().size() + " avail#"+layer.getLayerInfo().getStyles().size());
+                throw new ServiceException("Dynamic style usage is forbidden");
             }
         }
     }
