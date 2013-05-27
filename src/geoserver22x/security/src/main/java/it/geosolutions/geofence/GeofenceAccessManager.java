@@ -122,11 +122,15 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
     Catalog catalog;
 
     String instanceName;
+    
+    boolean allowRemoteAndInlineLayers;
 
-    public GeofenceAccessManager(RuleReaderService rules, Catalog catalog, String instanceName) {
+   	public GeofenceAccessManager(RuleReaderService rules, Catalog catalog,
+			String instanceName, boolean allowRemoteAndInlineLayers) {
         this.rules = rules;
         this.catalog = catalog;
         this.instanceName = instanceName;
+        this.allowRemoteAndInlineLayers = allowRemoteAndInlineLayers;
 
         LOGGER.log(Level.INFO,
                 "Initializing the Geofence access manager with instance name {0}",
@@ -613,7 +617,9 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
     private void overrideGetMapRequest(Request gsRequest, String service, String request, 
         String username, GetMapRequest getMap)
     {
-        if (gsRequest.getKvp().get("layers") == null) {
+		if (gsRequest.getKvp().get("layers") == null
+				&& gsRequest.getKvp().get("sld") == null
+				&& gsRequest.getKvp().get("sld_body") == null) {
             throw new ServiceException("GetMap POST requests are forbidden");
         }
 
@@ -632,11 +638,11 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
         for (int i = 0; i < layers.size(); i++)
         {
             MapLayerInfo layer = layers.get(i);
-            ResourceInfo info = layer.getResource();
-
-            if (info == null)
-            {
-                throw new ServiceException("Remote layers are not allowed");
+            ResourceInfo info = null;
+            if(layer.getType() == MapLayerInfo.TYPE_VECTOR || layer.getType() == MapLayerInfo.TYPE_RASTER) {
+            	info = layer.getResource();
+            } else if(!allowRemoteAndInlineLayers) {            	
+                throw new ServiceException("Remote layers are not allowed");                
             }
 
             // get the rule, it contains default and allowed styles
@@ -645,8 +651,13 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
             ruleFilter.setInstance(instanceName);
             ruleFilter.setService(service);
             ruleFilter.setRequest(request);
-            ruleFilter.setWorkspace(info.getStore().getWorkspace().getName());
-            ruleFilter.setLayer(info.getName());
+            if(info != null) {
+	            ruleFilter.setWorkspace(info.getStore().getWorkspace().getName());
+	            ruleFilter.setLayer(info.getName());
+            } else {
+            	ruleFilter.setWorkspace(RuleFilter.SpecialFilterType.ANY);
+            	ruleFilter.setLayer(RuleFilter.SpecialFilterType.ANY);
+            }
 
             AccessInfo rule = rules.getAccessInfo(ruleFilter);
 
