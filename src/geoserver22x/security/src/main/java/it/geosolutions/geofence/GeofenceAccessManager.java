@@ -124,13 +124,15 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
     String instanceName;
     
     boolean allowRemoteAndInlineLayers;
+    boolean allowDynamicStyles;
 
    	public GeofenceAccessManager(RuleReaderService rules, Catalog catalog,
-			String instanceName, boolean allowRemoteAndInlineLayers) {
+			String instanceName, boolean allowRemoteAndInlineLayers, boolean allowDynamicStyles) {
         this.rules = rules;
         this.catalog = catalog;
         this.instanceName = instanceName;
         this.allowRemoteAndInlineLayers = allowRemoteAndInlineLayers;
+        this.allowDynamicStyles = allowDynamicStyles;
 
         LOGGER.log(Level.INFO,
                 "Initializing the Geofence access manager with instance name {0}",
@@ -622,6 +624,13 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
 				&& gsRequest.getKvp().get("sld_body") == null) {
             throw new ServiceException("GetMap POST requests are forbidden");
         }
+		
+        // check for dynamic style
+        if ((getMap.getSld() != null) || (getMap.getSldBody() != null)) {
+            if( !allowDynamicStyles ) {	                
+                throw new ServiceException("Dynamic style usage is forbidden");
+            }
+        }
 
         // parse the styles param like the kvp parser would (since we have no way,
         // to know if a certain style was requested explicitly or defaulted, and
@@ -654,6 +663,7 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
             if(info != null) {
 	            ruleFilter.setWorkspace(info.getStore().getWorkspace().getName());
 	            ruleFilter.setLayer(info.getName());
+	            
             } else {
             	ruleFilter.setWorkspace(RuleFilter.SpecialFilterType.ANY);
             	ruleFilter.setLayer(RuleFilter.SpecialFilterType.ANY);
@@ -663,8 +673,6 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
 
             // get the requested style name
             String styleName = (styleNameList.size() > 0) ? styleNameList.get(i) : null;
-
-            checkDynStyles(getMap, rule, layer); // throw ServiceEx if not allowed
 
             // if default use geofence default
             if (styleName != null) {
@@ -716,8 +724,7 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
     protected void checkDynStyles(GetMapRequest getMap, AccessInfo rule, MapLayerInfo layer) throws ServiceException {
         if ((getMap.getSld() != null) || (getMap.getSldBody() != null))
         {
-            if( rule.getAllowedStyles() != null &&
-                    rule.getAllowedStyles().size() != layer.getLayerInfo().getStyles().size() ) {
+            if( !allowDynamicStyles ) {
                 LOGGER.info("Denying dynamic style; allowed#"+rule.getAllowedStyles().size() + " avail#"+layer.getLayerInfo().getStyles().size());
                 throw new ServiceException("Dynamic style usage is forbidden");
             }
