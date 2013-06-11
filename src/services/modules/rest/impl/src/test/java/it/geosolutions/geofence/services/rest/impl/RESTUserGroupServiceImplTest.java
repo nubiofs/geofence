@@ -26,7 +26,9 @@ import it.geosolutions.geofence.services.rest.model.RESTOutputUser;
 import it.geosolutions.geofence.services.rest.model.util.IdName;
 import java.util.ArrayList;
 import javax.ws.rs.core.Response;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -35,7 +37,7 @@ import static org.junit.Assert.*;
  * @author ETj (etj at geo-solutions.it)
  */
 public class RESTUserGroupServiceImplTest extends RESTBaseTest {
-    private static final Logger LOGGER = Logger.getLogger(RESTUserGroupServiceImplTest.class);
+    private static final Logger LOGGER = LogManager.getLogger(RESTUserGroupServiceImplTest.class);
 
     @Test
     public void testInsert() {

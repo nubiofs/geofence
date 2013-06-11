@@ -30,7 +30,9 @@ import it.geosolutions.geofence.core.dao.GSUserDAO;
 import it.geosolutions.geofence.core.dao.UserGroupDAO;
 
 import org.apache.directory.server.core.schema.SchemaService;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -57,7 +59,7 @@ public abstract class BaseDAOTest {
     protected static ClassPathXmlApplicationContext ctx = null;
 
     public BaseDAOTest() {
-        LOGGER = Logger.getLogger(getClass());
+        LOGGER = LogManager.getLogger(getClass());
 
        
         

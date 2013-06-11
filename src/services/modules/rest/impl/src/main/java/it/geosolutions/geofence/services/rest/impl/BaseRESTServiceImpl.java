@@ -37,7 +37,9 @@ import it.geosolutions.geofence.services.rest.model.RESTShortUser;
 import it.geosolutions.geofence.services.rest.model.util.IdName;
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 /**
  *
@@ -45,7 +47,7 @@ import org.apache.log4j.Logger;
  */
 public abstract class BaseRESTServiceImpl {
 
-    private static final Logger LOGGER = Logger.getLogger(BaseRESTServiceImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(BaseRESTServiceImpl.class);
     
     protected UserAdminService userAdminService;
     protected UserGroupAdminService userGroupAdminService;

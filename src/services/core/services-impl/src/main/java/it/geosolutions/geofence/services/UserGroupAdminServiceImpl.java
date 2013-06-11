@@ -26,7 +26,9 @@ import it.geosolutions.geofence.core.model.UserGroup;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import it.geosolutions.geofence.services.dto.ShortGroup;
 import it.geosolutions.geofence.services.exception.BadRequestServiceEx;
@@ -39,7 +41,7 @@ import java.util.ArrayList;
  */
 public class UserGroupAdminServiceImpl implements UserGroupAdminService {
 
-    private final static Logger LOGGER = Logger.getLogger(UserGroupAdminServiceImpl.class);
+    private final static Logger LOGGER = LogManager.getLogger(UserGroupAdminServiceImpl.class);
     private UserGroupDAO userGroupDAO;
 
     // ==========================================================================

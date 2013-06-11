@@ -24,7 +24,9 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.apache.log4j.spi.LoggerFactory;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -39,7 +41,7 @@ import org.junit.rules.TestName;
  */
 public abstract class BaseTest {
 
-    private final static Logger LOGGER = Logger.getLogger(BaseTest.class);
+    private final static Logger LOGGER = LogManager.getLogger(BaseTest.class);
     @Rule
     public TestName _testName = new TestName();
     private static File testDataDir = null;

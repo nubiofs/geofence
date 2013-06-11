@@ -40,7 +40,9 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.transport.Conduit;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 /**
  * 
@@ -52,7 +54,7 @@ import org.apache.log4j.Logger;
  */
 public class BasicAuthInterceptor extends AbstractInDatabindingInterceptor {
 
-    protected Logger LOGGER = Logger.getLogger(getClass());
+    protected Logger LOGGER = LogManager.getLogger(getClass());
 
     private AuthProvider authProvider = new GrantAll(); // reassign this, maybe by injection
 

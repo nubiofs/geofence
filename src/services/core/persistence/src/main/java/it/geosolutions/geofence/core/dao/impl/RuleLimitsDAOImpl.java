@@ -26,7 +26,9 @@ import com.googlecode.genericdao.search.ISearch;
 import it.geosolutions.geofence.core.dao.RuleLimitsDAO;
 import it.geosolutions.geofence.core.model.RuleLimits;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -39,7 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class RuleLimitsDAOImpl extends BaseDAO<RuleLimits, Long> implements RuleLimitsDAO
 {
 
-    private static final Logger LOGGER = Logger.getLogger(RuleLimitsDAOImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(RuleLimitsDAOImpl.class);
 
     @Override
     public void persist(RuleLimits... entities)

@@ -50,7 +50,9 @@ import it.geosolutions.geofence.gui.server.service.ILoginService;
 import it.geosolutions.geofence.gui.service.GeofenceRemoteService;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -64,7 +66,7 @@ public class LoginService implements ILoginService
 {
 
     /** The logger. */
-    private final Logger logger = Logger.getLogger(this.getClass());
+    private final Logger logger = LogManager.getLogger(this.getClass());
 
     // @Autowired
     // private SecurityManager securityManagerService; // DIRECT ACCESS TO

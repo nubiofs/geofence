@@ -25,7 +25,9 @@ import it.geosolutions.geofence.services.dto.ShortUser;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import it.geosolutions.geofence.core.dao.GFUserDAO;
 import it.geosolutions.geofence.core.model.GFUser;
@@ -38,7 +40,7 @@ import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
  */
 public class GFUserAdminServiceImpl implements GFUserAdminService {
 
-    private final static Logger LOGGER = Logger.getLogger(GFUserAdminServiceImpl.class);
+    private final static Logger LOGGER = LogManager.getLogger(GFUserAdminServiceImpl.class);
 
     private GFUserDAO gfUserDAO;
 

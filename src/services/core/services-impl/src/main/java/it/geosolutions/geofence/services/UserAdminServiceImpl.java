@@ -28,7 +28,9 @@ import it.geosolutions.geofence.services.dto.ShortUser;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import it.geosolutions.geofence.services.exception.BadRequestServiceEx;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
@@ -40,7 +42,7 @@ import java.util.Set;
  */
 public class UserAdminServiceImpl implements UserAdminService {
 
-    private final static Logger LOGGER = Logger.getLogger(UserAdminServiceImpl.class);
+    private final static Logger LOGGER = LogManager.getLogger(UserAdminServiceImpl.class);
 
     private GSUserDAO userDAO;
 

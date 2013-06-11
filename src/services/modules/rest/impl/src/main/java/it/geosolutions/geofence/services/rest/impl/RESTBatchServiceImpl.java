@@ -39,7 +39,9 @@ import it.geosolutions.geofence.services.rest.model.util.IdName;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,7 +54,7 @@ public class RESTBatchServiceImpl
         implements InitializingBean, RESTBatchService
 //        implements RESTUserGroupService
 {
-    private static final Logger LOGGER = Logger.getLogger(RESTBatchServiceImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(RESTBatchServiceImpl.class);
 
 //    private final static String OP_INSERT = "insert";
 //    private final static String OP_UPDATE = "update";

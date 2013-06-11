@@ -41,7 +41,7 @@ package it.geosolutions.geofence.gui.server.service;
 public class SecurityManager
 {
 
-    // Logger LOGGER = Logger.getLogger(SecurityManager.class.getName());
+    // Logger LOGGER = LogManager.getLogger(SecurityManager.class.getName());
     //
     // private List<String> authorizedRoles;
     //

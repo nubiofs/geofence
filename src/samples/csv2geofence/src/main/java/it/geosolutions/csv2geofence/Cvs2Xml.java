@@ -10,7 +10,9 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 /**
  * Application main file.
@@ -19,7 +21,7 @@ import org.apache.log4j.Logger;
  */
 public class Cvs2Xml {
 
-    private final static Logger LOGGER = Logger.getLogger(Cvs2Xml.class);
+    private final static Logger LOGGER = LogManager.getLogger(Cvs2Xml.class);
 
     protected static final char CLI_CONFIGFILE_CHAR = 'c';
     protected static final char CLI_USERFILE_CHAR = 'u';

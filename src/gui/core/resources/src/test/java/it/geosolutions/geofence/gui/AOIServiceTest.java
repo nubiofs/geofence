@@ -43,7 +43,7 @@ import junit.framework.TestSuite;
 public class AOIServiceTest extends TestCase
 // AbstractDependencyInjectionSpringContextTests {
 {
-    // private final Logger logger = Logger.getLogger(this.getClass());
+    // private final Logger logger = LogManager.getLogger(this.getClass());
     //
     // @Autowired
     // private GEOFENCERemoteService geofenceRemoteService;

@@ -66,7 +66,7 @@ import it.geosolutions.geogwt.gui.client.GeoGWTEvents;
 public class RulesController extends Controller
 {
 
-    // final private static Logger LOGGER = Logger.getLogger(RulesController.class);
+    // final private static Logger LOGGER = LogManager.getLogger(RulesController.class);
     /** The Constant RULES_TAB_ITEM_ID. */
     private static final String RULES_TAB_ITEM_ID = "RulesTabItem";
 

@@ -68,7 +68,9 @@ import it.geosolutions.geofence.services.rest.model.util.RESTBatchOperationFacto
 import it.geosolutions.geofence.services.rest.utils.InstanceCleaner;
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 /**
  *
@@ -76,7 +78,7 @@ import org.apache.log4j.Logger;
  */
 public class RESTConfigServiceImpl implements RESTConfigService {
 
-    private static final Logger LOGGER = Logger.getLogger(RESTConfigServiceImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(RESTConfigServiceImpl.class);
 
     private UserAdminService userAdminService;
     private UserGroupAdminService userGroupAdminService;

@@ -20,7 +20,6 @@
 package it.geosolutions.geofence.core.dao.impl;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.googlecode.genericdao.search.ISearch;
@@ -28,8 +27,9 @@ import com.googlecode.genericdao.search.ISearch;
 import it.geosolutions.geofence.core.dao.LayerDetailsDAO;
 import it.geosolutions.geofence.core.model.LayerAttribute;
 import it.geosolutions.geofence.core.model.LayerDetails;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(value = "geofenceTransactionManager")
 public class LayerDetailsDAOImpl extends BaseDAO<LayerDetails, Long> implements LayerDetailsDAO {
 
-    private static final Logger LOGGER = Logger.getLogger(LayerDetailsDAOImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(LayerDetailsDAOImpl.class);
 
     @Override
     public void persist(LayerDetails... entities) {

@@ -32,7 +32,9 @@ import it.geosolutions.geofence.core.model.Rule;
 
 import it.geosolutions.geofence.core.model.enums.GrantType;
 import it.geosolutions.geofence.core.model.enums.InsertPosition;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +46,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(value = "geofenceTransactionManager")
 public class RuleDAOImpl extends BaseDAO<Rule, Long> implements RuleDAO {
 
-    private static final Logger LOGGER = Logger.getLogger(RuleDAOImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(RuleDAOImpl.class);
 
     @Override
     public void persist(Rule... entities) {

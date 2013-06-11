@@ -27,7 +27,9 @@ import com.googlecode.genericdao.search.ISearch;
 import it.geosolutions.geofence.core.dao.UserGroupDAO;
 import it.geosolutions.geofence.core.model.UserGroup;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -42,7 +44,7 @@ public class UserGroupDAOImpl extends BaseDAO<UserGroup, Long>
     implements UserGroupDAO
 {
 
-    private static final Logger LOGGER = Logger.getLogger(UserGroupDAOImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(UserGroupDAOImpl.class);
 
     @Override
     public void persist(UserGroup... entities)

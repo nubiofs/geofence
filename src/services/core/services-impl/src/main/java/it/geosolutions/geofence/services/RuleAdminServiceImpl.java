@@ -42,7 +42,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import it.geosolutions.geofence.services.exception.BadRequestServiceEx;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
@@ -58,7 +60,7 @@ import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
  */
 public class RuleAdminServiceImpl implements RuleAdminService {
 
-    private final static Logger LOGGER = Logger.getLogger(RuleAdminServiceImpl.class);
+    private final static Logger LOGGER = LogManager.getLogger(RuleAdminServiceImpl.class);
 
     private RuleDAO ruleDAO;
     private RuleLimitsDAO limitsDAO;

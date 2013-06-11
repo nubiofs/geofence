@@ -28,7 +28,9 @@ import it.geosolutions.geofence.services.dto.RuleFilter.IdNameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.vividsolutions.jts.geom.Geometry;
 import it.geosolutions.geofence.core.dao.GSUserDAO;
@@ -69,7 +71,7 @@ import java.util.TreeMap;
  */
 public class RuleReaderServiceImpl implements RuleReaderService {
 
-    private final static Logger LOGGER = Logger.getLogger(RuleReaderServiceImpl.class);
+    private final static Logger LOGGER = LogManager.getLogger(RuleReaderServiceImpl.class);
 
     private RuleDAO ruleDAO;
     private LayerDetailsDAO detailsDAO;

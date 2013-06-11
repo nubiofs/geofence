@@ -26,7 +26,9 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.security.SecurityContext;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 
 /**
@@ -38,7 +40,7 @@ import org.apache.log4j.Logger;
 public class GeofenceAuthenticationInterceptor extends AbstractPhaseInterceptor<Message>
 {
 
-    private static final Logger LOGGER = Logger.getLogger(GeofenceAuthenticationInterceptor.class);
+    private static final Logger LOGGER = LogManager.getLogger(GeofenceAuthenticationInterceptor.class);
 
     // TODO: inject user service
 

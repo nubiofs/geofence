@@ -53,7 +53,9 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.bind.JAXB;
 import org.apache.cxf.jaxrs.client.ServerWebApplicationException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 /**
  * Main logic.
@@ -63,7 +65,7 @@ import org.apache.log4j.Logger;
  * @author ETj (etj at geo-solutions.it)
  */
 public class Runner {
-    private final static Logger LOGGER = Logger.getLogger(Runner.class);
+    private final static Logger LOGGER = LogManager.getLogger(Runner.class);
 
     private RunInfo runInfo;
 

@@ -52,7 +52,9 @@ import java.util.Set;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,7 +66,7 @@ public class RESTRuleServiceImpl
         extends BaseRESTServiceImpl
         implements RESTRuleService {
 
-    private static final Logger LOGGER = Logger.getLogger(RESTRuleServiceImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(RESTRuleServiceImpl.class);
 
     @Override
     public RESTOutputRule get(Long id) throws BadRequestRestEx, NotFoundRestEx, InternalErrorRestEx {

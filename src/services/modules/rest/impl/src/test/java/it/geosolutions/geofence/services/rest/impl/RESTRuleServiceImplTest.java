@@ -31,7 +31,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.core.Response;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -40,7 +42,7 @@ import static org.junit.Assert.*;
  * @author ETj (etj at geo-solutions.it)
  */
 public class RESTRuleServiceImplTest extends RESTBaseTest {
-    private static final Logger LOGGER = Logger.getLogger(RESTRuleServiceImplTest.class);
+    private static final Logger LOGGER = LogManager.getLogger(RESTRuleServiceImplTest.class);
 
 
     @Test

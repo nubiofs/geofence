@@ -26,7 +26,8 @@ import com.googlecode.genericdao.search.ISearch;
 import it.geosolutions.geofence.core.dao.GSInstanceDAO;
 import it.geosolutions.geofence.core.model.GSInstance;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -39,7 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class GSInstanceDAOImpl extends BaseDAO<GSInstance, Long> implements GSInstanceDAO
 {
 
-    private static final Logger LOGGER = Logger.getLogger(GSInstanceDAOImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(GSInstanceDAOImpl.class);
 
     @Override
     public void persist(GSInstance... entities)

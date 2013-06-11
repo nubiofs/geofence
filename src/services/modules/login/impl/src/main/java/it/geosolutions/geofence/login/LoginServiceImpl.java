@@ -30,7 +30,9 @@ import it.geosolutions.geofence.api.exception.AuthException;
 import it.geosolutions.geofence.login.util.GrantAll;
 import it.geosolutions.geofence.login.util.SessionManager;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -41,7 +43,7 @@ import org.springframework.beans.factory.InitializingBean;
 public class LoginServiceImpl implements LoginService, InitializingBean, DisposableBean
 {
 
-    private static final Logger LOGGER = Logger.getLogger(LoginServiceImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(LoginServiceImpl.class);
 
     // private List<String> authorizedRoles;
 
@@ -85,7 +87,7 @@ public class LoginServiceImpl implements LoginService, InitializingBean, Disposa
     // ==========================================================================
 
     @Override
-    public String login(String username, String password, String encryptedPassword) throws AuthException
+    public String login(String username, String password, String pwFromDb) throws AuthException
     {
         LOGGER.info("LOGIN REQUEST FOR " + username);
 
@@ -103,7 +105,7 @@ public class LoginServiceImpl implements LoginService, InitializingBean, Disposa
         {
             try
             {
-                GrantedAuths ga = authProvider.login(username, password, encryptedPassword);
+                GrantedAuths ga = authProvider.login(username, password, pwFromDb);
                 if (!ga.getAuthorities().contains(Authority.LOGIN))
                 {
                     LOGGER.warn("Login not granted to user [" + username + "]");

@@ -27,12 +27,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.googlecode.genericdao.search.ISearch;
 import com.googlecode.genericdao.search.Search;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 /**
@@ -44,7 +45,7 @@ import com.googlecode.genericdao.search.Search;
 public class GSUserDAOImpl extends BaseDAO<GSUser, Long> implements GSUserDAO
 {
 
-    private static final Logger LOGGER = Logger.getLogger(GSUserDAOImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(GSUserDAOImpl.class);
 
     @Override
     public void persist(GSUser... entities)

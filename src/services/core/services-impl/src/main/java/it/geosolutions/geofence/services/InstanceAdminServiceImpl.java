@@ -24,7 +24,9 @@ import it.geosolutions.geofence.core.model.GSInstance;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import it.geosolutions.geofence.core.dao.GSInstanceDAO;
 import it.geosolutions.geofence.services.dto.ShortInstance;
@@ -38,7 +40,7 @@ import java.util.ArrayList;
  */
 public class InstanceAdminServiceImpl implements InstanceAdminService {
 
-    private final static Logger LOGGER = Logger.getLogger(InstanceAdminServiceImpl.class);
+    private final static Logger LOGGER = LogManager.getLogger(InstanceAdminServiceImpl.class);
 
     private GSInstanceDAO instanceDAO;
 

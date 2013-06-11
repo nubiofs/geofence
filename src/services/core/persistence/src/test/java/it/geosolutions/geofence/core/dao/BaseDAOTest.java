@@ -30,7 +30,9 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -54,7 +56,7 @@ public abstract class BaseDAOTest extends TestCase {
     protected static ClassPathXmlApplicationContext ctx = null;
 
     public BaseDAOTest() {
-        LOGGER = Logger.getLogger(getClass());
+        LOGGER = LogManager.getLogger(getClass());
 
         synchronized(BaseDAOTest.class) {
             if(ctx == null) {

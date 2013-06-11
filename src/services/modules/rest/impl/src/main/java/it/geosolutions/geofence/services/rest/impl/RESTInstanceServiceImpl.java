@@ -44,7 +44,9 @@ import it.geosolutions.geofence.services.rest.model.RESTShortInstanceList;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 /**
  *
@@ -54,7 +56,7 @@ public class RESTInstanceServiceImpl
         extends BaseRESTServiceImpl
         implements RESTGSInstanceService {
 
-    private static final Logger LOGGER = Logger.getLogger(RESTInstanceServiceImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(RESTInstanceServiceImpl.class);
     private InstanceAdminService instanceAdminService;
 
     @Override

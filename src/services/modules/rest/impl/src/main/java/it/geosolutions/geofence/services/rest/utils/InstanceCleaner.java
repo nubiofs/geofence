@@ -32,7 +32,9 @@ import it.geosolutions.geofence.services.dto.ShortRule;
 import it.geosolutions.geofence.services.dto.ShortUser;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 /** 
  *
@@ -40,7 +42,7 @@ import org.apache.log4j.Logger;
  */
 public class InstanceCleaner {
 
-    private static final Logger LOGGER = Logger.getLogger(InstanceCleaner.class);
+    private static final Logger LOGGER = LogManager.getLogger(InstanceCleaner.class);
 
     private RuleAdminService ruleAdminService;
     private UserGroupAdminService userGroupAdminService;

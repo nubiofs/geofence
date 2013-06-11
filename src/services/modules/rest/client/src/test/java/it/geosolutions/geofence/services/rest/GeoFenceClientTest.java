@@ -32,7 +32,9 @@ import it.geosolutions.geofence.services.rest.model.RESTShortUser;
 import it.geosolutions.geofence.services.rest.model.util.IdName;
 import java.net.ConnectException;
 import java.util.Arrays;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -45,7 +47,7 @@ import static org.junit.Assert.*;
  * @author ETj (etj at geo-solutions.it)
  */
 public class GeoFenceClientTest {
-    private final static Logger LOGGER = Logger.getLogger(GeoFenceClientTest.class);
+    private final static Logger LOGGER = LogManager.getLogger(GeoFenceClientTest.class);
 
     public GeoFenceClientTest() {
     }

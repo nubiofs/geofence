@@ -16,13 +16,15 @@ import org.apache.cxf.phase.Phase;
 import org.apache.cxf.security.SecurityContext;
 import org.apache.cxf.service.Service;
 import org.apache.cxf.service.model.BindingOperationInfo;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 
 public class AuthorizationHandler extends AbstractPhaseInterceptor<Message>
 {
 
-    private static final Logger LOGGER = Logger.getLogger(AuthorizationHandler.class);
+    private static final Logger LOGGER = LogManager.getLogger(AuthorizationHandler.class);
 //      private static final String ALL_ROLES = "*";
 
     private static Map<String, List<String>> parseRolesMap(Map<String, String> rolesMap)

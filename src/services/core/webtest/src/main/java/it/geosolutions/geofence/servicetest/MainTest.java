@@ -41,7 +41,9 @@ import it.geosolutions.geofence.services.dto.ShortUser;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
@@ -61,7 +63,7 @@ import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
  */
 public class MainTest implements InitializingBean, ApplicationContextAware {
 
-    private final static Logger LOGGER = Logger.getLogger(MainTest.class);
+    private final static Logger LOGGER = LogManager.getLogger(MainTest.class);
 
     private XmlWebApplicationContext applicationContext;
 

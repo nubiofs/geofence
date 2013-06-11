@@ -24,7 +24,9 @@ import java.net.InetAddress;
 
 import it.geosolutions.geofence.core.model.Rule;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 /**
  * A Filter for selecting {@link Rule}s. <P> For every given field, you may choose to select <LI>a given value</LI> <LI>any values
@@ -37,7 +39,7 @@ import org.apache.log4j.Logger;
 public class RuleFilter implements Serializable {
 
     private static final long serialVersionUID = 5629211135629700041L;
-    private static final Logger LOGGER = Logger.getLogger(RuleFilter.class);
+    private static final Logger LOGGER = LogManager.getLogger(RuleFilter.class);
 
     public enum FilterType {
 

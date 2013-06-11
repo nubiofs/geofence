@@ -34,7 +34,9 @@ import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 import java.util.Arrays;
 import java.util.List;
 import junit.framework.TestCase;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
@@ -43,7 +45,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class ServiceTestBase extends TestCase {
 
-    protected final Logger LOGGER = Logger.getLogger(getClass());
+    protected final Logger LOGGER = LogManager.getLogger(getClass());
 
     protected static UserAdminService userAdminService;
     protected static GFUserAdminService gfUserAdminService;
@@ -55,7 +57,7 @@ public class ServiceTestBase extends TestCase {
     protected static ClassPathXmlApplicationContext ctx = null;
 
     public ServiceTestBase() {
-//        LOGGER = Logger.getLogger(getClass());
+//        LOGGER = LogManager.getLogger(getClass());
 
         synchronized(ServiceTestBase.class) {
             if(ctx == null) {

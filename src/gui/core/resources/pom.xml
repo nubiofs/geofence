@@ -27,14 +27,29 @@
 	    <dependency>
 			<groupId>it.geosolutions.geogwt.core</groupId>
 	        <artifactId>geogwt-resources</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jcl-over-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>log4j-over-slf4j</artifactId>
+                </exclusion>
+            </exclusions>
 		</dependency>
-
     	<!-- =============================================================== -->
 
 		<!-- GeoGWT -->
 		<dependency>
 			<groupId>it.geosolutions.geogwt.widgets.map</groupId>
 			<artifactId>maptoolbar</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
 		</dependency>
 		
 		<dependency>
@@ -94,7 +109,7 @@
 		</dependency>
 
 		<!-- logging dependencies, delegate all to slf4j and use logback -->
-		<dependency>
+<!--		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.5.8</version>
@@ -108,7 +123,7 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>log4j-over-slf4j</artifactId>
 			<version>1.5.8</version>
-		</dependency>
+		</dependency>-->
 <!--		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>

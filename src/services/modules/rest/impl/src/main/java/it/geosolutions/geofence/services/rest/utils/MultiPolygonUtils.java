@@ -25,7 +25,9 @@ import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
 
 import jaitools.jts.Utils;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 
 /**
@@ -34,7 +36,7 @@ import org.apache.log4j.Logger;
  */
 public class MultiPolygonUtils
 {
-    private static final Logger LOGGER = Logger.getLogger(MultiPolygonUtils.class);
+    private static final Logger LOGGER = LogManager.getLogger(MultiPolygonUtils.class);
 
     /**
      * Simplifies a MultiPolygon.

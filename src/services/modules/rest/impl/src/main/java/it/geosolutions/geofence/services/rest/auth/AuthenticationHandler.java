@@ -43,7 +43,9 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.transport.Conduit;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 
 /**
@@ -57,7 +59,7 @@ import org.apache.log4j.Logger;
 public class AuthenticationHandler extends AbstractInDatabindingInterceptor
 {
 
-    private static final Logger LOGGER = Logger.getLogger(AuthenticationHandler.class);
+    private static final Logger LOGGER = LogManager.getLogger(AuthenticationHandler.class);
 
     private String realm;
 

@@ -26,7 +26,9 @@ import it.geosolutions.geofence.services.rest.model.util.IdName;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 /**
  * Transforms UserOps into RESTBatchoperations
@@ -35,7 +37,7 @@ import org.apache.log4j.Logger;
  */
 public class UsersProcessor {
 
-    private final static Logger LOGGER = Logger.getLogger(UsersProcessor.class);
+    private final static Logger LOGGER = LogManager.getLogger(UsersProcessor.class);
 
     public List<RESTBatchOperation> buildUserBatchOps(List<UserOp> ops, Map<String, String> availableGroups) {
         List<RESTBatchOperation> ret = new ArrayList<RESTBatchOperation>(ops.size());

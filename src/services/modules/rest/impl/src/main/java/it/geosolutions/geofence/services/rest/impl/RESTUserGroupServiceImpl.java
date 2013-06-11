@@ -46,7 +46,9 @@ import java.util.Set;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 /**
  *
@@ -56,7 +58,7 @@ public class RESTUserGroupServiceImpl
         extends BaseRESTServiceImpl
         implements RESTUserGroupService {
 
-    private static final Logger LOGGER = Logger.getLogger(RESTUserGroupServiceImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(RESTUserGroupServiceImpl.class);
 //    private UserGroupAdminService userGroupAdminService;
 
     @Override
