@@ -36,6 +36,9 @@ import org.apache.logging.log4j.Logger;
 /**
  * A dummy AuthProvider which grants all auths to every request.
  *
+ * TODO: this class used to provide a GrantAll grant, but since long an MD5 check
+ * was implemented here. Naming should be fixed
+ *
  * @author ETj (etj at geo-solutions.it)
  */
 public class GrantAll implements AuthProvider {
@@ -43,39 +46,17 @@ public class GrantAll implements AuthProvider {
     private static final Logger LOGGER = LogManager.getLogger(GrantAll.class);
 
     @Override
-    public GrantedAuths login(String username, String password, String encryptedPassword) throws AuthException {
+    public GrantedAuths login(String username, String password, String pwFromDb) throws AuthException {
         // allow auth to anybody
         LOGGER.warn("Login request from '" + username + "'");
 
         GrantedAuths ga = new GrantedAuths();
+        String hashedPw = MD5Util.getHash(password);
 
-        byte[] passwordByteArr;
-        try {
-            passwordByteArr = password.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            LOGGER.error(e.getLocalizedMessage(), e);
-            throw new AuthException(e.getLocalizedMessage(), e);
-        }
+//        LOGGER.info("storedPassword: " + pwFromDb);
+        LOGGER.info("hashedPw: " + hashedPw);
 
-        MessageDigest md;
-        try {
-            md = MessageDigest.getInstance("MD5");
-            md.reset();
-        } catch (NoSuchAlgorithmException e) {
-            LOGGER.error(e.getLocalizedMessage(), e);
-            throw new AuthException(e.getLocalizedMessage(), e);
-        }
-
-        byte[] thedigest = md.digest(passwordByteArr);
-        StringBuffer hexString = new StringBuffer();
-        for (int i = 0; i < thedigest.length; i++) {
-            hexString.append(Integer.toHexString(0xFF & thedigest[i]));
-        }
-
-        LOGGER.info("encryptedPassword: " + encryptedPassword);
-        LOGGER.info("hexString: " + hexString);
-
-        if (hexString.toString().equals(encryptedPassword)) {
+        if (hashedPw.equals(pwFromDb)) {
             ga.setAuthorities(Arrays.asList(Authority.values()));
         } else {
             ga.setAuthorities(Arrays.asList(Authority.REMOTE));
@@ -88,4 +69,6 @@ public class GrantAll implements AuthProvider {
     public void logout(String token) {
         // nothing to do
     }
+
+
 }

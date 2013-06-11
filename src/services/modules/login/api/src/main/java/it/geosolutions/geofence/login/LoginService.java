@@ -36,7 +36,7 @@ public interface LoginService {
 
     @WebResult(name = "token")
     String login(@WebParam(name = "username") String username,
-            @WebParam(name = "password") String password, String encryptedPassword) throws AuthException;
+            @WebParam(name = "password") String password, String pwFromDb) throws AuthException;
 
     GrantedAuths getGrantedAuthorities(@WebParam(name = "token") String token);
 

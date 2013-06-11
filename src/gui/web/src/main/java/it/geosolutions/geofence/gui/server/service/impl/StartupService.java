@@ -32,8 +32,14 @@
  */
 package it.geosolutions.geofence.gui.server.service.impl;
 
+import it.geosolutions.geofence.core.model.GFUser;
 import it.geosolutions.geofence.gui.client.configuration.GeofenceGlobalConfiguration;
 import it.geosolutions.geofence.gui.server.service.IStartupService;
+import it.geosolutions.geofence.login.util.MD5Util;
+import it.geosolutions.geofence.services.GFUserAdminServiceImpl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.InitializingBean;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -42,12 +48,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * The Class StartupService.
  */
-public class StartupService implements IStartupService
+public class StartupService implements IStartupService, InitializingBean
 {
+    private static final Logger LOGGER = LogManager.getLogger(StartupService.class);
 
     /** The geofence global configuration. */
     @Autowired
     private GeofenceGlobalConfiguration geofenceGlobalConfiguration;
+
+    @Autowired
+    GFUserAdminServiceImpl gfUserAdminService;
 
     /*
      * (non-Javadoc)
@@ -60,4 +70,21 @@ public class StartupService implements IStartupService
         return geofenceGlobalConfiguration;
     }
 
+    public void afterPropertiesSet() throws Exception {
+        long cnt = gfUserAdminService.getCount(null);
+        if(cnt == 0) {
+            LOGGER.warn("No GF users found. Creating the default admin.");
+            
+            GFUser user = new GFUser();
+            user.setFullName("Default admin");
+            user.setName("admin");
+            user.setPassword(MD5Util.getHash("geofence"));
+            user.setEnabled(Boolean.TRUE);
+            gfUserAdminService.insert(user);
+        }
+    }
+
+    public void setGfUserAdminService(GFUserAdminServiceImpl gfUserAdminService) {
+        this.gfUserAdminService = gfUserAdminService;
+    }
 }

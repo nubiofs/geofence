@@ -30,7 +30,7 @@ import it.geosolutions.geofence.api.exception.AuthException;
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
 public interface AuthProvider {
-    GrantedAuths login(String username, String password, String encryptedPassword) throws AuthException;
+    GrantedAuths login(String username, String password, String pwFromDB) throws AuthException;
 
     void logout(String token);
 }
