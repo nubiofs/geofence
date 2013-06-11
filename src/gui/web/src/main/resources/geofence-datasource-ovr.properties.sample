@@ -58,3 +58,13 @@
 ## Use external ehcache configuration file.
 ## Useful to change cache settings, for example diskStore path.
 #geofenceEntityManagerFactory.jpaPropertyMap[hibernate.cache.provider_configuration_file_resource_path]=file:/path/to/geofence-ehcache-override.xml
+
+
+################################################################################
+## Configure map base layer
+
+#geofenceGlobalConfiguration.baseLayerURL=http://demo1.geo-solutions.it/geoserver-enterprise/wms
+#geofenceGlobalConfiguration.baseLayerName=GeoSolutions:ne_shaded
+#geofenceGlobalConfiguration.baseLayerTitle=GeoSolutions Natural Earth
+#geofenceGlobalConfiguration.baseLayerFormat=image/jpeg
+#geofenceGlobalConfiguration.baseLayerStyle=
