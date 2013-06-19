@@ -21,6 +21,10 @@
 package it.geosolutions.geofence.core.dao;
 
 import com.googlecode.genericdao.search.Search;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
+import static it.geosolutions.geofence.core.dao.BaseDAOTest.ruleDAO;
 import it.geosolutions.geofence.core.model.GSUser;
 import it.geosolutions.geofence.core.model.LayerAttribute;
 import it.geosolutions.geofence.core.model.LayerDetails;
@@ -300,6 +304,25 @@ public class RuleDAOTest extends BaseDAOTest {
             assertEquals(2, details.getAllowedStyles().size());
             assertTrue(details.getAllowedStyles().contains("style1"));
         }
+
+        // add geom
+        {
+            Rule loaded = ruleDAO.find(id);
+            LayerDetails details = loaded.getLayerDetails();
+
+            MultiPolygon mpoly = buildMultiPolygon();
+            details.setArea(mpoly);
+            setDetails(id, details);
+        }
+
+        // check geom
+        {
+            Rule loaded = ruleDAO.find(id);
+            LayerDetails details = loaded.getLayerDetails();
+            assertNotNull(details);
+            assertNotNull(details.getArea());
+        }
+
 
         // remove details
         {

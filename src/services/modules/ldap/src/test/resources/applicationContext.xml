@@ -19,14 +19,14 @@
 
     <import resource="applicationContext-geofenceLdapDatasource.xml"/>
     
-    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+<!--    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="ignoreResourceNotFound" value="false" />
         <property name="locations">
             <list>
                 <value>classpath*:geofence-ldap.properties</value>                
             </list>
         </property>
-	</bean>
+	</bean>-->
 
 	<bean class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
 		<property name="locations" value="classpath*:geofence-ldap-ovr.properties"/>

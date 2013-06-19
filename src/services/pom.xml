@@ -89,11 +89,6 @@
 <!--        <postgis-jdbc-version>1.3.3</postgis-jdbc-version>-->
 
         <persistence-version>1.0</persistence-version>
-        <hibernate-version>3.3.2.GA</hibernate-version>
-        <hibernate-spatial-version>1.0</hibernate-spatial-version>
-        <hibernate-annotations-version>3.3.1.GA</hibernate-annotations-version>
-        <hibernate-commons-annotations-version>3.3.0.ga</hibernate-commons-annotations-version>
-        <hibernate-generic-dao-version>0.5.1</hibernate-generic-dao-version>
         <asm-version>2.2.3</asm-version>
         <cglib-version>2.1_3</cglib-version>
 
@@ -653,26 +648,51 @@
 		    <!-- =========================================================== -->
 		    <!--     HIBERNATE                                               -->
 		    <!-- =========================================================== -->
-            <dependency>
+<!--            <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-annotations</artifactId>
-                <version>${hibernate-annotations-version}</version>
-            </dependency>
-            <dependency>
+                <version>3.3.1.GA</version>
+                <version>3.5.6-Final</version>
+                <version>3.6.0.Final</version>
+            </dependency>-->
+<!--            <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-commons-annotations</artifactId>
-                <version>${hibernate-commons-annotations-version}</version>
-            </dependency>
+                <version>3.3.0.ga</version>
+            </dependency>-->
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-entitymanager</artifactId>
-                <version>${hibernate-version}</version>
+                <version>3.6.0.Final</version>
+        <!--<hibernate-version>3.3.2.GA</hibernate-version>-->
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
-                <version>3.0.0.ga</version>
+                <!--<version>3.0.0.ga</version>-->
+                <version>3.1.0.GA</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>3.6.0.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>3.6.0.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-ehcache</artifactId>
+                <version>3.6.0.Final</version>
+            </dependency>
+
+        <!--<hibernate-version>3.3.2.GA</hibernate-version>-->
+<!--        <hibernate-annotations-version>3.3.1.GA</hibernate-annotations-version>
+        <hibernate-commons-annotations-version>3.3.0.ga</hibernate-commons-annotations-version>
+        <hibernate-generic-dao-version>0.5.1</hibernate-generic-dao-version>-->
 
 		    <!-- =========================================================== -->
 		    <!--     HIBERNATE-SPATIAL                                       -->
@@ -680,7 +700,19 @@
             <dependency>
                 <groupId>org.hibernatespatial</groupId>
                 <artifactId>hibernate-spatial-postgis</artifactId>
-                <version>${hibernate-spatial-version}</version>
+                <version>1.1.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hibernatespatial</groupId>
+                <artifactId>hibernate-spatial-oracle</artifactId>
+                <version>1.1.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hibernatespatial</groupId>
+                <artifactId>hibernate-spatial-h2-geodb</artifactId>
+                <version>1.1.1</version>
             </dependency>
 
 		    <!-- =========================================================== -->
@@ -696,6 +728,19 @@
                 <artifactId>postgresql</artifactId>
                 <version>8.4-702.jdbc3</version>
             </dependency>
+
+		    <!-- =========================================================== -->
+
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>1.3.172</version>
+            </dependency>
+
+            <!-- =========================================================== -->
+			<!--                                                             -->
+		    <!-- =========================================================== -->
+
             <dependency>
                 <groupId>com.vividsolutions</groupId>
                 <artifactId>jts</artifactId>

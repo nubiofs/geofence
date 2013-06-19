@@ -68,6 +68,7 @@
                 <value>classpath*:geofence-datasource.properties</value>
                 <value>classpath:geofence-externalize-aux.properties</value>                
                 <value>classpath*:geofence-global.properties</value>
+                <value>classpath*:geofence-ldap.properties</value>
             </list>
 		</property>
 		<property name="ignoreResourceNotFound" value="false" />

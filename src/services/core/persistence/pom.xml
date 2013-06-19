@@ -119,25 +119,66 @@
             <artifactId>log4j-slf4j-impl</artifactId>
         </dependency>
 
-		<!-- POSTGRES - POSTGIS -->
+		<!--  -->
         <dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.postgis</groupId>
-            <artifactId>postgis-jdbc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-        </dependency>
-				
+
+
+		    <!-- =========================================================== -->
+		    <!--     HIBERNATE-SPATIAL                                       -->
+		    <!-- =========================================================== -->
+
+            <!-- These deps should be mutually exclusive :
+                 http://www.hibernatespatial.org/hibernate-spatial-h2-geodb/usage.html
+            -->
+            
+<!--            <dependency>
+                <groupId>org.hibernatespatial</groupId>
+                <artifactId>hibernate-spatial-postgis</artifactId>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hibernatespatial</groupId>
+                <artifactId>hibernate-spatial-oracle</artifactId>
+            </dependency>-->
+
+            <dependency>
+                <groupId>org.hibernatespatial</groupId>
+                <artifactId>hibernate-spatial-h2-geodb</artifactId>
+            </dependency>
+
+		    <!-- =========================================================== -->
+		    <!--     JDBC                                                    -->
+		    <!-- =========================================================== -->
+            <dependency>
+                <groupId>org.postgis</groupId>
+                <artifactId>postgis-jdbc</artifactId>
+            </dependency>
+
+            <dependency>
+                <groupId>postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+            </dependency>
+
+		    <!-- =========================================================== -->
+
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+            </dependency>
+
 		<!-- =========================================================== -->
 		<!--     Hibernate                                               -->
 		<!-- =========================================================== -->
 
-        <dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-ehcache</artifactId>
+            </dependency>
+
+<!--        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-annotations</artifactId>
             <exclusions>
@@ -158,7 +199,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-commons-annotations</artifactId>
-        </dependency>
+        </dependency>-->
 <!--        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
@@ -182,19 +223,6 @@
             </exclusions>
         </dependency>
 
-		<!-- HIBERNATE-SPATIAL -->
-       <dependency>
-            <groupId>org.hibernatespatial</groupId>
-            <artifactId>hibernate-spatial-postgis</artifactId>
-        </dependency>
-
-        <!-- todo:  create oracle profile -->
-        <!-- dependency>
-            <groupId>org.hibernatespatial</groupId>
-            <artifactId>hibernate-spatial-oracle</artifactId>
-            <version>1.0</version>
-        </dependency-->
-	
   	<!-- CGLIB -->
         <dependency>
             <groupId>asm</groupId>
@@ -236,7 +264,7 @@
   
     <build>
         <plugins>
-            <plugin>
+<!--            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>hibernate3-maven-plugin</artifactId>
                 <version>2.2</version>
@@ -262,12 +290,12 @@
                     <componentProperties>
                         <configurationfile>/src/test/resources/hibernate.cfg.xml</configurationfile>
                         <outputfilename>geofence.ddl</outputfilename>
-<!--                        <namingstrategy>mycompany.myapp.IRDNamingStrategy</namingstrategy>-->
+                        <namingstrategy>mycompany.myapp.IRDNamingStrategy</namingstrategy>
 
-<!--                        <scan-classes>true</scan-classes>
-                        <filepattern>it.geosolutions.geofence/core/model</filepattern>-->
+                        <scan-classes>true</scan-classes>
+                        <filepattern>it.geosolutions.geofence/core/model</filepattern>
 
-<!--                        <jdk5>true</jdk5>-->
+                        <jdk5>true</jdk5>
 
                         <drop>false</drop>
                         <create>true</create>
@@ -275,7 +303,7 @@
                         <format>true</format>
                     </componentProperties>
                 </configuration>
-            </plugin>
+            </plugin>-->
         </plugins>
 
     </build>

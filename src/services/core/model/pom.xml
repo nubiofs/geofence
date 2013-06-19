@@ -44,12 +44,31 @@
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
         </dependency>
-  	
+
         <dependency>
             <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>asm</groupId>
+                    <artifactId>asm</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>asm</groupId>
+                    <artifactId>asm-attrs</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>cglib</groupId>
+                    <artifactId>cglib</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+<!--        <dependency>
+            <groupId>org.hibernate</groupId>
             <artifactId>hibernate-annotations</artifactId>
-            <!-- need transitive dependency: service-API looks for annotation and would complain about these -->
-            <!--<scope>provided</scope> -->
+             need transitive dependency: service-API looks for annotation and would complain about these 
+            <scope>provided</scope> 
             <exclusions>
                 <exclusion>
                     <groupId>asm</groupId>
@@ -68,7 +87,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-commons-annotations</artifactId>
-            <scope>provided</scope> <!-- the dao module should import them for runtime -->
+            <scope>provided</scope>  the dao module should import them for runtime 
             <exclusions>
                 <exclusion>
                     <groupId>asm</groupId>
@@ -83,21 +102,26 @@
                     <artifactId>cglib</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
+        </dependency>-->
 
 		<!-- HIBERNATE-SPATIAL -->
-        <dependency>
+<!--        <dependency>
             <groupId>org.hibernatespatial</groupId>
             <artifactId>hibernate-spatial-postgis</artifactId>
-            <scope>provided</scope> <!-- the dao module should import them for runtime -->
+            <scope>provided</scope>  the dao module should import them for runtime 
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>-->
+
+        <dependency>
+            <groupId>com.vividsolutions</groupId>
+            <artifactId>jts</artifactId>
         </dependency>
-	  	
+
 		  	<!-- CGLIB -->
         <dependency>
             <groupId>asm</groupId>
