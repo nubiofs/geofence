@@ -856,6 +856,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.1</version>
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
@@ -921,12 +922,6 @@
             </snapshots>
         </repository>
 
-<!--        <repository>
-            <id>trg-dao-repo</id>
-            <name>Repository for The Revere Group's Hibernate Generic DAO framework</name>
-            <url>http://hibernate-generic-dao.googlecode.com/svn/trunk/maven-repo/</url>
-        </repository>
--->
 				<!-- Apache -->
         <repository>
             <id>maven2-repository.dev.java.net</id>
@@ -937,19 +932,7 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-<!--
-        <repository>
-            <id>apache.snapshots</id>
-            <name>Apache Snapshots Repository</name>
-            <url>http://people.apache.org/repo/m2-snapshot-repository</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
--->
+        
         <repository>
             <id>apache.incubating</id>
             <name>Apache Incubating Repository</name>
@@ -1010,27 +993,6 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-
-				<!-- ServiceMix -->
-<!--        <repository>
-            <id>servicemix-m2-repo</id>
-            <name>Servicemix Maven2 Repository</name>
-            <url>http://svn.apache.org/repos/asf/servicemix/m2-repo/</url>
-        </repository>-->
-
-				<!-- GWT -->
-<!--        <repository>
-            <id>gwt-maven</id>
-            <name>gwt-maven</name>
-            <url>http://gwt-maven.googlecode.com/svn/trunk/mavenrepo</url>
-        </repository>-->
-
-        <!-- Fuse -->
-<!--        <repository>
-            <id>fuse</id>
-            <name>fuse</name>
-            <url>http://repo.fusesource.com/maven2/</url>
-        </repository>-->
 
 				<!-- OSGEO -->
         <repository>

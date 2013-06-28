@@ -24,7 +24,6 @@
     <groupId>it.geosolutions.geofence</groupId>
     <artifactId>geofence-geoserver22</artifactId>
     <version>2.2-SNAPSHOT</version>
-<!--    <classifier>2.2</classifier>-->
     <packaging>pom</packaging>
 
     <name>GeoFence - GeoServer 2.2.x integration</name>
@@ -54,7 +53,14 @@
             <artifactId>spring-web</artifactId>
             <version>3.1.1.RELEASE</version>
 		</dependency>
-
+            <!-- =========================================================== -->
+            <!--    XERCES                                                   -->
+            <!-- =========================================================== -->
+            <dependency>
+                <groupId>xerces</groupId>
+                <artifactId>xercesImpl</artifactId>
+                <version>2.7.1</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -250,12 +256,6 @@
             <releases>
                 <enabled>true</enabled>
             </releases>
-        </pluginRepository>
-
-        <pluginRepository>
-            <id>mortbay-repo</id>
-            <name>mortbay-repo</name>
-            <url>http://www.mortbay.org/maven2/snapshot</url>
         </pluginRepository>
 
         <pluginRepository>

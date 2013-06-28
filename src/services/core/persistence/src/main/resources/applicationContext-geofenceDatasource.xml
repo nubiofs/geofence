@@ -46,21 +46,6 @@
     </bean>
 
     <!--
-        <bean
-        class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
-        <property name="location"
-        value="file:${user.home}/geofence-datasource-ovr.properties"/>
-        <property name="ignoreResourceNotFound" value="True"/> </bean>
-    -->
-
-    <!--
-        <bean
-        class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
-        <property name="location" value="file:${geofence-datasource}"/>
-        <property name="ignoreResourceNotFound" value="True"/> </bean>
-    -->
-
-    <!--
         ====================================================================
     -->
 

@@ -34,11 +34,6 @@
       <!-- GeoServer Trunk Artifact -->
       <groupId>org.geoserver.web</groupId>
       <artifactId>web-app</artifactId>
-
-      <!-- GeoServer Priv Artifact -->
-      <!-- groupId>it.geosolutions.geoserver</groupId>
-      <artifactId>webapp</artifactId -->
-
       <version>${geoserver-version}</version>
     </dependency>
 
@@ -94,7 +89,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-			<version>${hibernate-version}</version>
+            <version>${hibernate-version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>asm</groupId>
@@ -135,7 +130,7 @@
     <build>
     <plugins>
       <!-- Builds a valid data directory into the web app -->
-      <plugin>
+      <!--plugin>
         <groupId>org.geoserver.maven</groupId>
         <artifactId>config</artifactId>
         <version>${geoserver-version}</version>
@@ -159,7 +154,7 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
+      </plugin-->
       <plugin>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>maven-jetty-plugin</artifactId>

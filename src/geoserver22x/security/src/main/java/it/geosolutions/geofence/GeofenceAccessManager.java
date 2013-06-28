@@ -213,7 +213,7 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
         }
 
         WorkspaceAccessLimits limits = buildAccessLimits(workspace, rule);
-        LOGGER.log(Level.SEVERE, "Returning {0} for workspace {1} and user {2}",
+        LOGGER.log(Level.FINE, "Returning {0} for workspace {1} and user {2}",
                 new Object[]{limits, workspace.getName(), username});
 
         return limits;
