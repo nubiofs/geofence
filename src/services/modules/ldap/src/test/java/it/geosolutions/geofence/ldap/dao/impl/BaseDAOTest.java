@@ -21,18 +21,13 @@
 package it.geosolutions.geofence.ldap.dao.impl;
 
 import static org.junit.Assert.assertNotNull;
-
-import javax.naming.directory.Attributes;
-import javax.naming.directory.BasicAttributes;
-import javax.naming.directory.DirContext;
-
 import it.geosolutions.geofence.core.dao.GSUserDAO;
 import it.geosolutions.geofence.core.dao.UserGroupDAO;
 
-import org.apache.directory.server.core.schema.SchemaService;
+import javax.naming.directory.DirContext;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -78,19 +73,32 @@ public abstract class BaseDAOTest {
         }
     }
     
+    private static DirContext ldapContext = null;
+        
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
-        // Start an LDAP server and import test data
-    	LdapTestUtils.startApacheDirectoryServer(10389, "dc=example,dc=com", "test", LdapTestUtils.DEFAULT_PRINCIPAL, LdapTestUtils.DEFAULT_PASSWORD, null);
+    	try {
+	        // Start an LDAP server and import test data
+	    	ldapContext = LdapTestUtils.startApacheDirectoryServer(10389, "dc=example,dc=com", "test", LdapTestUtils.DEFAULT_PRINCIPAL, LdapTestUtils.DEFAULT_PASSWORD, null);	    	
+    	} catch(Exception e) {
+    		ldapContext = null;
+    	}
+    	
     }
    
     @AfterClass
     public static void tearDownClass() throws Exception {
-        LdapTestUtils.destroyApacheDirectoryServer(LdapTestUtils.DEFAULT_PRINCIPAL, LdapTestUtils.DEFAULT_PASSWORD);        
+        LdapTestUtils.destroyApacheDirectoryServer(LdapTestUtils.DEFAULT_PRINCIPAL, LdapTestUtils.DEFAULT_PASSWORD);      
+        if(ldapContext != null) {
+        	ldapContext.close();
+        	ldapContext = null;
+        }
     }
 
     @Before
     public void setUp() throws Exception {
+    	org.junit.Assume.assumeNotNull(ldapContext);
     	// Bind to the directory
         LdapContextSource contextSource = new LdapContextSource();
         contextSource.setUrl("ldap://127.0.0.1:10389");
@@ -108,13 +116,12 @@ public abstract class BaseDAOTest {
         LOGGER.info("################ Running " + getClass().getSimpleName() );
         
 
-        LOGGER.info("##### Ending setup for " + getClass().getSimpleName() + " ###----------------------");
+        LOGGER.info("##### Ending setup for " + getClass().getSimpleName() + " ###----------------------");    	
     }
 
     @Test
     public void testCheckDAOs() {
-
-        assertNotNull(userDAO);        
+    	assertNotNull(userDAO);      	
     }
 
 }
