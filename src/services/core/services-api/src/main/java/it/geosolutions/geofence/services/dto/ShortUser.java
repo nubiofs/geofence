@@ -20,10 +20,10 @@
 
 package it.geosolutions.geofence.services.dto;
 
-import java.io.Serializable;
-
 import it.geosolutions.geofence.core.model.GFUser;
 import it.geosolutions.geofence.core.model.GSUser;
+
+import java.io.Serializable;
 
 
 /**

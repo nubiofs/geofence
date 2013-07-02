@@ -20,7 +20,9 @@
 package it.geosolutions.geofence.services.dto;
 
 import it.geosolutions.geofence.core.model.GSInstance;
+
 import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 

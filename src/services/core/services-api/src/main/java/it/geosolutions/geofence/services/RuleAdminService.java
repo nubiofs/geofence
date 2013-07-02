@@ -19,9 +19,6 @@
  */
 package it.geosolutions.geofence.services;
 
-import java.util.List;
-import java.util.Set;
-
 import it.geosolutions.geofence.core.model.LayerDetails;
 import it.geosolutions.geofence.core.model.Rule;
 import it.geosolutions.geofence.core.model.RuleLimits;
@@ -29,6 +26,9 @@ import it.geosolutions.geofence.core.model.enums.InsertPosition;
 import it.geosolutions.geofence.services.dto.RuleFilter;
 import it.geosolutions.geofence.services.dto.ShortRule;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
+
+import java.util.List;
+import java.util.Set;
 
 
 /**

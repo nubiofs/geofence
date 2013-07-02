@@ -19,19 +19,19 @@
  */
 package it.geosolutions.geofence.services.rest.model.config;
 
+import it.geosolutions.geofence.core.model.GFUser;
+import it.geosolutions.geofence.core.model.GSInstance;
+import it.geosolutions.geofence.core.model.GSUser;
+import it.geosolutions.geofence.core.model.Rule;
+import it.geosolutions.geofence.core.model.UserGroup;
+import it.geosolutions.geofence.services.rest.model.config.adapter.RemapperAdapter;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import it.geosolutions.geofence.core.model.GFUser;
-import it.geosolutions.geofence.core.model.GSInstance;
-import it.geosolutions.geofence.core.model.GSUser;
-import it.geosolutions.geofence.core.model.UserGroup;
-import it.geosolutions.geofence.core.model.Rule;
-import it.geosolutions.geofence.services.rest.model.config.adapter.RemapperAdapter;
 
 /**
  *

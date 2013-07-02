@@ -19,7 +19,6 @@
  */
 package it.geosolutions.geofence.services.rest.model;
 
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**

@@ -19,10 +19,10 @@
  */
 package it.geosolutions.geofence.services.dto;
 
-import java.io.Serializable;
-import java.util.Date;
-
 import it.geosolutions.geofence.core.model.UserGroup;
+
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;

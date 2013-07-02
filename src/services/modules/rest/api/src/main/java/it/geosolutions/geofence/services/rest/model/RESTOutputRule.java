@@ -21,10 +21,11 @@ package it.geosolutions.geofence.services.rest.model;
 
 import it.geosolutions.geofence.core.model.enums.GrantType;
 import it.geosolutions.geofence.services.rest.model.util.IdName;
+
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**

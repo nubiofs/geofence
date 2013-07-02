@@ -19,12 +19,11 @@
  */
 package it.geosolutions.geofence.services;
 
-import java.util.List;
-import java.util.Map;
-
 import it.geosolutions.geofence.core.model.UserGroup;
 import it.geosolutions.geofence.services.dto.ShortGroup;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
+
+import java.util.List;
 
 
 /**

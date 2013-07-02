@@ -19,14 +19,14 @@
  */
 package it.geosolutions.geofence.services.rest.model.config;
 
+import it.geosolutions.geofence.services.dto.ShortGroup;
+
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import it.geosolutions.geofence.services.dto.ShortGroup;
-import java.util.Iterator;
 
 /**
  *

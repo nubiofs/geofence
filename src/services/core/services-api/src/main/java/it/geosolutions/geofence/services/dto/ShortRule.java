@@ -20,10 +20,10 @@
 
 package it.geosolutions.geofence.services.dto;
 
-import java.io.Serializable;
-
 import it.geosolutions.geofence.core.model.Rule;
 import it.geosolutions.geofence.core.model.enums.GrantType;
+
+import java.io.Serializable;
 
 
 /**

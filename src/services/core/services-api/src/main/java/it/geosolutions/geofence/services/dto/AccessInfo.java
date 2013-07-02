@@ -20,14 +20,11 @@
 
 package it.geosolutions.geofence.services.dto;
 
-import java.io.Serializable;
-import java.util.Map;
-import java.util.Set;
-
-import com.vividsolutions.jts.geom.Geometry;
-
 import it.geosolutions.geofence.core.model.LayerAttribute;
 import it.geosolutions.geofence.core.model.enums.GrantType;
+
+import java.io.Serializable;
+import java.util.Set;
 
 
 /**

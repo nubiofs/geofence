@@ -19,13 +19,10 @@
  */
 package it.geosolutions.geofence.services.dto;
 
-import java.io.Serializable;
-import java.net.InetAddress;
-
 import it.geosolutions.geofence.core.model.Rule;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.io.Serializable;
+import java.net.InetAddress;
 
 
 /**
@@ -39,7 +36,6 @@ import org.apache.logging.log4j.Logger;
 public class RuleFilter implements Serializable {
 
     private static final long serialVersionUID = 5629211135629700041L;
-    private static final Logger LOGGER = LogManager.getLogger(RuleFilter.class);
 
     public enum FilterType {
 
@@ -122,7 +118,6 @@ public class RuleFilter implements Serializable {
             String workspace, String layer) {
         this(SpecialFilterType.DEFAULT);
 
-        LOGGER.warn("Creating a RuleFilter heuristically");
 
         this.user.setHeuristically(userName);
         this.userGroup.setHeuristically(groupName);
@@ -144,8 +139,6 @@ public class RuleFilter implements Serializable {
     public RuleFilter(Long userId, Long groupId, Long instanceId, String service, String request, String workspace,
             String layer) {
         this(SpecialFilterType.DEFAULT);
-
-        LOGGER.warn("Creating a RuleFilter heuristically");
 
         this.user.setHeuristically(userId);
         this.userGroup.setHeuristically(groupId);

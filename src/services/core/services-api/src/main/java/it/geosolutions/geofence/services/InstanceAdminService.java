@@ -19,11 +19,11 @@
  */
 package it.geosolutions.geofence.services;
 
-import java.util.List;
-
 import it.geosolutions.geofence.core.model.GSInstance;
 import it.geosolutions.geofence.services.dto.ShortInstance;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
+
+import java.util.List;
 
 
 /**

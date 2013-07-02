@@ -19,15 +19,14 @@
  */
 package it.geosolutions.geofence.services;
 
-import java.util.List;
-
-import javax.jws.WebService;
-import javax.ws.rs.PathParam;
-
 import it.geosolutions.geofence.core.model.Rule;
 import it.geosolutions.geofence.services.dto.AccessInfo;
 import it.geosolutions.geofence.services.dto.RuleFilter;
 import it.geosolutions.geofence.services.dto.ShortRule;
+
+import java.util.List;
+
+import javax.ws.rs.PathParam;
 
 
 /**

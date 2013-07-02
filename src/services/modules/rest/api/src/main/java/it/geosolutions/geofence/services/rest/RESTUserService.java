@@ -19,9 +19,6 @@
  */
 package it.geosolutions.geofence.services.rest;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-
 import it.geosolutions.geofence.services.rest.exception.BadRequestRestEx;
 import it.geosolutions.geofence.services.rest.exception.ConflictRestEx;
 import it.geosolutions.geofence.services.rest.exception.InternalErrorRestEx;
@@ -30,6 +27,17 @@ import it.geosolutions.geofence.services.rest.model.RESTInputUser;
 import it.geosolutions.geofence.services.rest.model.RESTOutputUser;
 import it.geosolutions.geofence.services.rest.model.RESTShortUserList;
 import it.geosolutions.geofence.services.rest.model.util.IdName;
+
+import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;

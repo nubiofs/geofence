@@ -97,15 +97,6 @@
             <artifactId>gt-api</artifactId>
             <type>jar</type>
         </dependency>
-<!--        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-main</artifactId>
-            <type>jar</type>
-        </dependency>-->
-<!--        <dependency>
-            <groupId>com.googlecode.jaitools</groupId>
-            <artifactId>jt-utils</artifactId>
-        </dependency>-->
 
         <dependency>
             <groupId>net.sf.json-lib</groupId>
@@ -132,7 +123,12 @@
             <artifactId>geofence-services-impl</artifactId>
             <scope>test</scope>
         </dependency>
-
+        
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+        </dependency>
+        
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

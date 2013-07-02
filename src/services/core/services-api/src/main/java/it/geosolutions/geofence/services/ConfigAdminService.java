@@ -19,14 +19,14 @@
  */
 package it.geosolutions.geofence.services;
 
+import it.geosolutions.geofence.core.model.GSUser;
+import it.geosolutions.geofence.services.dto.ShortUser;
+import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
+
 import java.util.List;
 
 import javax.jws.WebParam;
 import javax.jws.WebService;
-
-import it.geosolutions.geofence.core.model.GSUser;
-import it.geosolutions.geofence.services.dto.ShortUser;
-import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 
 import org.codehaus.jra.Delete;
 import org.codehaus.jra.Get;

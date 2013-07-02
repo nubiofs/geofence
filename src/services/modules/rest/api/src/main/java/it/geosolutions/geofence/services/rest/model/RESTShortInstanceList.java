@@ -20,6 +20,7 @@
 package it.geosolutions.geofence.services.rest.model;
 
 import it.geosolutions.geofence.services.dto.ShortInstance;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

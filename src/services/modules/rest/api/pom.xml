@@ -45,11 +45,6 @@
             <artifactId>geofence-model</artifactId>
         </dependency>
 
-<!--        <dependency>
-            <groupId>it.geosolutions.geofence</groupId>
-            <artifactId>geofence-persistence</artifactId>
-        </dependency>-->
-
         <dependency>
             <groupId>it.geosolutions.geofence</groupId>
             <artifactId>geofence-services-api</artifactId>
@@ -82,43 +77,6 @@
             <artifactId>javassist</artifactId>
             <scope>runtime</scope>
         </dependency>
-<!--        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-        </dependency>-->
-
-<!--        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-api</artifactId>
-            <type>jar</type>
-        </dependency>-->
-<!--        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-main</artifactId>
-            <type>jar</type>
-        </dependency>-->
-<!--        <dependency>
-            <groupId>com.googlecode.jaitools</groupId>
-            <artifactId>jt-utils</artifactId>
-        </dependency>-->
-
-<!--        <dependency>
-            <groupId>net.sf.json-lib</groupId>
-            <artifactId>json-lib</artifactId>
-            <version>2.4</version>
-            <type>jar</type>
-            <classifier>jdk15</classifier>
-            <scope>compile</scope>
-        </dependency>-->
-<!--        <dependency>
-            <groupId>xom</groupId>
-            <artifactId>xom</artifactId>
-            <version>1.1</version>
-        </dependency>-->
-<!--        <dependency>
-            <groupId>com.googlecode.jaitools</groupId>
-            <artifactId>jt-utils</artifactId>
-        </dependency>-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

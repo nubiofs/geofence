@@ -29,16 +29,15 @@ import it.geosolutions.geofence.services.rest.model.RESTInputRule.RESTRulePositi
 import it.geosolutions.geofence.services.rest.model.RESTInputRule.RESTRulePosition.RulePosition;
 import it.geosolutions.geofence.services.rest.model.config.RESTFullUserGroupList;
 import it.geosolutions.geofence.services.rest.model.util.IdName;
+
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.xml.bind.JAXB;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import org.junit.Test;
 
@@ -47,29 +46,28 @@ import org.junit.Test;
  * @author ETj (etj at geo-solutions.it)
  */
 public class ModelPrintoutFakeTest {
-    private final static Logger LOGGER = LogManager.getLogger(ModelPrintoutFakeTest.class);
 
     public ModelPrintoutFakeTest() {
-        LOGGER.info("RESTShortUser sample");
+        System.out.println("RESTShortUser sample");
         RESTShortUser user = createShortUser("01");
-        LOGGER.info(marshal(user));
+        System.out.println(marshal(user));
 
-        LOGGER.info("RESTShortUserList sample");
+        System.out.println("RESTShortUserList sample");
         RESTShortUserList userList = new RESTShortUserList();
         userList.add(createShortUser("01"));
         userList.add(createShortUser("02"));
-        LOGGER.info(marshal(userList));
+        System.out.println(marshal(userList));
 
-        LOGGER.info("RESTInputUser sample");
+        System.out.println("RESTInputUser sample");
         RESTInputUser inputUser = createInputUser("02");
-        LOGGER.info(marshal(inputUser));
+        System.out.println(marshal(inputUser));
 
-        LOGGER.info("RESTInputRule sample");
+        System.out.println("RESTInputRule sample");
         RESTInputRule inputRule = createInputRule("02");
-        LOGGER.info(marshal(inputRule));
+        System.out.println(marshal(inputRule));
 
         {
-            LOGGER.info("RESTRuleList sample");
+            System.out.println("RESTRuleList sample");
             RESTRuleList ruleList = new RESTRuleList();
 
             RESTOutputRule r1 = createOutputRule("01");
@@ -81,43 +79,43 @@ public class ModelPrintoutFakeTest {
             r1.setConstraints(null);
             ruleList.add(r1);
 
-            LOGGER.info(marshal(ruleList));
+            System.out.println(marshal(ruleList));
         }
 
         {
-            LOGGER.info("RESTInputGroup sample");
+            System.out.println("RESTInputGroup sample");
             RESTInputGroup inputGroup = new RESTInputGroup();
             inputGroup.setEnabled(Boolean.TRUE);
             inputGroup.setName("sample group");
             inputGroup.setExtId("external_id_here");
-            LOGGER.info(marshal(inputGroup));
+            System.out.println(marshal(inputGroup));
         }
         {
-            LOGGER.info("RESTInputGroup sample (field enable not set)");
+            System.out.println("RESTInputGroup sample (field enable not set)");
             RESTInputGroup inputGroup = new RESTInputGroup();
             inputGroup.setName("sample group");
-            LOGGER.info(marshal(inputGroup));
+            System.out.println(marshal(inputGroup));
         }
         {
-            LOGGER.info("RESTFullUserGroupList sample");
+            System.out.println("RESTFullUserGroupList sample");
             RESTFullUserGroupList list = new RESTFullUserGroupList();
             list.add(createShortGroup("group1"));
             list.add(createShortGroup("group2"));
-            LOGGER.info(marshal(list));
+            System.out.println(marshal(list));
         }
         {
-            LOGGER.info("RESTInputInstance sample");
+            System.out.println("RESTInputInstance sample");
             RESTInputInstance i = new RESTInputInstance();
             i.setName("sample instance");
             i.setDescription("sample descr");
             i.setBaseURL("http://yourgeoserver/geoserver");
             i.setUsername("admin");
             i.setPassword("clearpw");
-            LOGGER.info(marshal(i));
+            System.out.println(marshal(i));
         }
 
         {
-            LOGGER.info("RESTShortInstanceList sample");
+            System.out.println("RESTShortInstanceList sample");
             RESTShortInstanceList list = new RESTShortInstanceList();
             {
                 ShortInstance i1 = new ShortInstance();
@@ -133,7 +131,7 @@ public class ModelPrintoutFakeTest {
                 i1.setUrl("http://othertest/geoserver");
                 list.add(i1);
             }
-            LOGGER.info(marshal(list));
+            System.out.println(marshal(list));
         }
     }
 
