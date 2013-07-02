@@ -184,16 +184,6 @@
             </snapshots>
         </repository>
 
-		<!-- JBoss -->
-        <repository>
-            <id>jboss-repo</id>
-            <name>JBoss Maven2 Repository</name>
-            <url>http://repository.jboss.com/maven2</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-
 		<!-- Spring -->
         <repository>
             <id>spring-release</id>
@@ -231,6 +221,16 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+        
+        <repository>
+         <id>maven.cci.emory</id>
+         <name>Maven Repository</name>
+         <url>http://maven.cci.emory.edu/nexus/content/repositories/aiw</url>
+         <snapshots>
+           <enabled>false</enabled>
+         </snapshots>
+        </repository>
+
     </repositories>
 
     <pluginRepositories>
@@ -265,7 +265,7 @@
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
-        </pluginRepository>
+        </pluginRepository>         
     </pluginRepositories>
 
 </project>
