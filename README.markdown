@@ -34,3 +34,7 @@ Documentation
 * [How to build GeoFence](https://github.com/geosolutions-it/geofence/wiki/Building-instructions)
 * [How to configure GeoFence](https://github.com/geosolutions-it/geofence/wiki/WebApps-configuration)
 
+Community
+==================================================
+* [Users forum](https://groups.google.com/forum/#!forum/geofence-users)
+* [Developers forum](https://groups.google.com/forum/#!forum/geofence-developers)
