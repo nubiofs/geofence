@@ -45,6 +45,7 @@ import it.geosolutions.geofence.core.model.Rule;
 import it.geosolutions.geofence.core.model.RuleLimits;
 import it.geosolutions.geofence.core.model.enums.AccessType;
 import it.geosolutions.geofence.core.model.enums.GrantType;
+import it.geosolutions.geofence.services.dto.AuthUser;
 import it.geosolutions.geofence.services.dto.RuleFilter;
 import it.geosolutions.geofence.services.dto.RuleFilter.FilterType;
 import it.geosolutions.geofence.services.dto.RuleFilter.NameFilter;
@@ -648,11 +649,18 @@ public class RuleReaderServiceImpl implements RuleReaderService {
     // ==========================================================================
 
     @Override
-    public boolean isAdmin(String userName) {
-        if(LOGGER.isDebugEnabled())
-            LOGGER.debug("isAdmin " + userName);
-        GSUser user = getUserByName(userName);
-        return user == null? false : user.isAdmin() && user.getEnabled();
+    public AuthUser authorize(String username, String password) {
+        GSUser user = getUserByName(username);
+        if(user == null) {
+            LOGGER.debug("User not found " + username);
+            return null;
+        }
+        if(! user.getPassword().equals(password)) {
+            LOGGER.debug("Bad pw for user " + username);
+            return null;
+        }
+
+        return new AuthUser(username, user.isAdmin() ? AuthUser.Role.ADMIN : AuthUser.Role.USER);
     }
 
     // ==========================================================================

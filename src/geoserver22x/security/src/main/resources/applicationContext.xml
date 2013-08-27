@@ -26,7 +26,7 @@
 	    see if you can add some ehcache proxy interceptor when we switch to using remoted services
 	-->
 
-	<bean id="ruleReaderService" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean" lazy-init="true">
+	<bean id="baseReaderService" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean" lazy-init="true">
         <property name="serviceUrl" value="${servicesUrl}"/>
         <property name="serviceInterface" value="it.geosolutions.geofence.services.RuleReaderService"/>
     </bean>
@@ -36,14 +36,15 @@
         <property name="cacheInitParams.refreshMilliSec" value="30000"/>
         <property name="cacheInitParams.expireMilliSec" value="60000"/>
 
-        <property name="realRuleReaderService" ref="ruleReaderService"/>
+        <property name="realRuleReaderService" ref="baseReaderService"/>
     </bean>
 
     <!-- You may replace the cachedRuleReader ref with ruleReaderService ref in order to disable the caching -->
+    <alias name="cachedRuleReader" alias="ruleReaderService"/>
 
 	<bean id="geofenceRuleAccessManager" class="it.geosolutions.geofence.GeofenceAccessManager">
 <!--		<constructor-arg index="0" ref="ruleReaderService" />-->
-		<constructor-arg index="0" ref="cachedRuleReader" />
+		<constructor-arg index="0" ref="ruleReaderService" />
 		<constructor-arg index="1" ref="rawCatalog" />
 		<constructor-arg index="2" value="${instanceName}" />
 		<constructor-arg index="3" value="${allowRemoteAndInlineLayers}" />
@@ -80,5 +81,15 @@
         <constructor-arg index="0" ref="cachedRuleReader"/>
     </bean>
 
+
+    <!-- geoserver auth mechanism -->
+
+    <bean id="geofenceFilter" class="it.geosolutions.geoserver.authentication.filter.GeoFenceAuthFilterProvider">
+        <property name="ruleReaderService" ref="ruleReaderService"/>
+    </bean>
+
+    <bean id="geofenceAuth" class="it.geosolutions.geoserver.authentication.auth.GeoFenceSecurityProvider">
+        <property name="ruleReaderService" ref="ruleReaderService"/>
+    </bean>
 
 </beans>

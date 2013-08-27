@@ -4,8 +4,8 @@
 <beans>
 
   <!-- The servlet filter that performs the Georepo authentication -->
-  <bean id="geofenceAuthFilter" class="it.geosolutions.geofence.AuthenticationFilter">
-  </bean>
+<!--  <bean id="geofenceAuthFilter" class="it.geosolutions.geofence.AuthenticationFilter">
+  </bean>-->
 
   <bean id="webGSEnterpriseDispatcherMapping"
     class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping"

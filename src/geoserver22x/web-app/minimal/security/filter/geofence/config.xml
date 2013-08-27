@@ -1,0 +1,6 @@
+<geofenceFilter>
+  <id>9e0fe5ce:9e0fe5ce000:-abcd</id>
+  <name>geofence</name>
+  <className>it.geosolutions.geoserver.authentication.filter.GeoFenceAuthFilter</className>
+<!--  <useRememberMe>true</useRememberMe> -->
+</geofenceFilter>

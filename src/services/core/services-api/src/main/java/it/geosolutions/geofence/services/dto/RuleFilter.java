@@ -151,16 +151,22 @@ public class RuleFilter implements Serializable {
     }
 
     public RuleFilter setUser(Long id) {
+        if(id == null)
+            throw new NullPointerException();
         user.setId(id);
         return this;
     }
 
     public RuleFilter setUser(String name) {
+        if(name == null)
+            throw new NullPointerException();
         user.setName(name);
         return this;
     }
 
     public RuleFilter setUser(SpecialFilterType type) {
+        if(type == null)
+            throw new NullPointerException();
         user.setType(type);
         return this;
     }
@@ -476,7 +482,14 @@ public class RuleFilter implements Serializable {
                     return "id" + (includeDefault?"+:":":") + (id==null?"(null)":id.toString());
 
                 case NAMEVALUE:
-                    return "name" + (includeDefault?"+:":":") + name == null ? "(null)" : name.isEmpty() ? "(empty)" : name;
+                    String tmp;
+                    if(name == null)
+                        tmp = "(null)";
+                    else if (name.isEmpty())
+                        tmp = "(empty)";
+                    else
+                        tmp = name;
+                    return "name" + (includeDefault?"+:":":") + tmp;
 
                 default:
                     throw new AssertionError();

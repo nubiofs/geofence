@@ -19,7 +19,9 @@
  */
 package it.geosolutions.geofence.cache.rest;
 
+import com.google.common.base.Objects;
 import com.google.common.cache.CacheStats;
+import it.geosolutions.geofence.cache.CachedRuleReader;
 import org.restlet.Context;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
@@ -33,16 +35,43 @@ import org.restlet.resource.StringRepresentation;
  */
 public class RESTCacheStats extends Resource {
 
-    private final CacheStats stats;
+    private final CachedRuleReader crr;
 
-    RESTCacheStats(Context context, Request request, Response response, CacheStats stats) {
+    RESTCacheStats(Context context, Request request, Response response, CachedRuleReader cachedRuleReader) {
         super(context, request, response);
-        this.stats = stats;
+        this.crr = cachedRuleReader;
     }
 
     @Override
     public void handleGet() {
-        Representation representation = new StringRepresentation(stats.toString());
-        getResponse().setEntity(representation);
+        //        Representation representation = new StringRepresentation(stats.toString());
+        //        getResponse().setEntity(representation);
+        CacheStats stats = crr.getStats();
+
+        StringBuilder sb = new StringBuilder()
+                .append("RuleStats[")
+                .append(" size:").append(crr.getCacheSize())
+                .append("/").append(crr.getCacheInitParams().getSize())
+                .append(" hitCount:").append(stats.hitCount())
+                .append(" missCount:").append(stats.missCount())
+                .append(" loadSuccessCount:").append(stats.loadSuccessCount())
+                .append(" loadExceptionCount:").append(stats.loadExceptionCount())
+                .append(" totalLoadTime:").append(stats.totalLoadTime())
+                .append(" evictionCount:").append(stats.evictionCount())
+                .append("] \n");
+
+        stats = crr.getUserStats();
+        sb.append("UserStats[")
+                .append(" size:").append(crr.getUserCacheSize())
+                .append("/").append(crr.getCacheInitParams().getSize())
+                .append(" hitCount:").append(stats.hitCount())
+                .append(" missCount:").append(stats.missCount())
+                .append(" loadSuccessCount:").append(stats.loadSuccessCount())
+                .append(" loadExceptionCount:").append(stats.loadExceptionCount())
+                .append(" totalLoadTime:").append(stats.totalLoadTime())
+                .append(" evictionCount:").append(stats.evictionCount())
+                .append("] \n");
+
+       getResponse().setEntity(new StringRepresentation(sb));
     }
 }

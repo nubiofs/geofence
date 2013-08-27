@@ -21,6 +21,7 @@ package it.geosolutions.geofence.services;
 
 import it.geosolutions.geofence.core.model.Rule;
 import it.geosolutions.geofence.services.dto.AccessInfo;
+import it.geosolutions.geofence.services.dto.AuthUser;
 import it.geosolutions.geofence.services.dto.RuleFilter;
 import it.geosolutions.geofence.services.dto.ShortRule;
 
@@ -95,8 +96,7 @@ public interface RuleReaderService
      */
     List<ShortRule> getMatchingRules(RuleFilter filter);
 
-    boolean isAdmin(String userName);
-
+    public AuthUser authorize(String username, String password);
 
     // ==========================================================================
 

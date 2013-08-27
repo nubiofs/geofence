@@ -1,10 +1,12 @@
 package it.geosolutions.geofence;
 
+import it.geosolutions.geofence.cache.CachedRuleReader;
 import it.geosolutions.geofence.services.RuleReaderService;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.logging.Logger;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -15,9 +17,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
 import org.geoserver.filters.GeoServerFilter;
 import org.geoserver.platform.ExtensionPriority;
 import org.geoserver.platform.GeoServerExtensions;
+import org.geotools.util.logging.Logging;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,6 +33,7 @@ import org.springframework.security.core.userdetails.User;
 
 public class AuthenticationFilter implements GeoServerFilter, ExtensionPriority
 {
+    static final Logger LOGGER = Logging.getLogger(AuthenticationFilter.class);
 
     static final String ROOT_ROLE = "ROLE_ADMINISTRATOR";
     static final String ANONYMOUS_ROLE = "ROLE_ANONYMOUS";
@@ -45,6 +50,13 @@ public class AuthenticationFilter implements GeoServerFilter, ExtensionPriority
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
         ServletException
     {
+        LOGGER.severe("THIS FILTER IS DEPRECATED and does nothing");
+        chain.doFilter(request, response);
+    }
+
+    public void dontFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+
         if (rules == null)
         {
             rules = (RuleReaderService) GeoServerExtensions.bean("ruleReaderService");
@@ -78,11 +90,16 @@ public class AuthenticationFilter implements GeoServerFilter, ExtensionPriority
             }
         }
 
-        if (username != null)
+        if ( StringUtils.isBlank(username) )
+        {
+            authentication = new AnonymousAuthenticationToken("geoserver", "null",
+                    Arrays.asList(new GrantedAuthority[] { new SimpleGrantedAuthority(ANONYMOUS_ROLE) }));
+        }
+        else
         {
             Collection<GrantedAuthority> authorities;
             // check against geofence that the user is the admin
-            if ((rules != null) && rules.isAdmin(username))
+            if ((rules != null) ) // && rules.isAdmin(username))
             {
                 authorities = Arrays.asList(new GrantedAuthority[] { new SimpleGrantedAuthority(ROOT_ROLE) });
             }
@@ -91,14 +108,9 @@ public class AuthenticationFilter implements GeoServerFilter, ExtensionPriority
                 authorities = Arrays.asList(new GrantedAuthority[] { new SimpleGrantedAuthority(USER_ROLE) });
             }
 
-            UsernamePasswordAuthenticationToken upa = new UsernamePasswordAuthenticationToken(new User(username,
-                        password, true, true, true, true, authorities), password, authorities);
+            User user = new User(username,password, true, true, true, true, authorities);
+            UsernamePasswordAuthenticationToken upa = new UsernamePasswordAuthenticationToken(user, password, authorities);
             authentication = upa;
-        }
-        else
-        {
-            authentication = new AnonymousAuthenticationToken("geoserver", "null",
-                    Arrays.asList(new GrantedAuthority[] { new SimpleGrantedAuthority(ANONYMOUS_ROLE) }));
         }
 
         /* if(authentication instanceof AnonymousAuthenticationToken && (httpRequest.getPathInfo().startsWith("/web"))) {
@@ -119,16 +131,16 @@ public class AuthenticationFilter implements GeoServerFilter, ExtensionPriority
             httpResponse.addHeader("WWW-Authenticate", "Basic realm=\"geoserver\"");
             httpResponse.sendRedirect(httpRequest.getContextPath() + "/web");
         }
-        else if (authentication instanceof AnonymousAuthenticationToken)
-        {
-            httpResponse.addHeader("WWW-Authenticate", "Basic realm=\"geoserver\"");
-            httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Please authenticate as administrator");
-        }
-        else
-        {
+//        else if (authentication instanceof AnonymousAuthenticationToken)
+//        {
+//            httpResponse.addHeader("WWW-Authenticate", "Basic realm=\"geoserver\"");
+//            httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Please authenticate as administrator");
+//        }
+//        else
+//        {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             chain.doFilter(httpRequest, response);
-        }
+//        }
     }
 
     @Override

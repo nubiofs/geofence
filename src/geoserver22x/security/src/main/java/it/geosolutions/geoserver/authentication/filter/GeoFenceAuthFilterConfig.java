@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2013 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  * 
  *  GPLv3 + Classpath exception
@@ -17,29 +17,35 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.geofence.cache.rest;
+package it.geosolutions.geoserver.authentication.filter;
 
-import it.geosolutions.geofence.cache.CachedRuleReader;
-import org.restlet.Finder;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-import org.restlet.resource.Resource;
+import org.geoserver.security.config.SecurityFilterConfig;
 
 /**
- * FIXME: probably a far-from-optimal solution
  *
  * @author ETj (etj at geo-solutions.it)
  */
-public class RuleCacheStatsFinder extends Finder {
+public class GeoFenceAuthFilterConfig extends SecurityFilterConfig {
 
-    private CachedRuleReader cachedRuleReader;
+    // just testing...
+    private String geofenceUrl;
+    // just testing...
+    private String geoserverName;
 
-    public RuleCacheStatsFinder(CachedRuleReader cachedRuleReader) {
-        this.cachedRuleReader = cachedRuleReader;
+    public String getGeofenceUrl() {
+        return geofenceUrl;
     }
 
-    @Override
-    public Resource findTarget(Request request, Response response) {
-        return new RESTCacheStats(getContext(), request, response, cachedRuleReader);
+    public void setGeofenceUrl(String geofenceUrl) {
+        this.geofenceUrl = geofenceUrl;
     }
+
+    public String getGeoserverName() {
+        return geoserverName;
+    }
+
+    public void setGeoserverName(String geoserverName) {
+        this.geoserverName = geoserverName;
+    }
+
 }
