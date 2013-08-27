@@ -69,6 +69,7 @@ import org.geoserver.security.StyleAccessLimits;
 import org.geoserver.security.VectorAccessLimits;
 import org.geoserver.security.WMSAccessLimits;
 import org.geoserver.security.WorkspaceAccessLimits;
+import org.geoserver.security.impl.GeoServerRole;
 import org.geoserver.wms.GetFeatureInfoRequest;
 import org.geoserver.wms.GetLegendGraphicRequest;
 import org.geoserver.wms.GetMapRequest;
@@ -143,7 +144,7 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
         if (user.getAuthorities() != null) {
             for (GrantedAuthority authority : user.getAuthorities()) {
                 final String userRole = authority.getAuthority();
-                if (ROOT_ROLE.equals(userRole)) {
+                if (ROOT_ROLE.equals(userRole) || GeoServerRole.ADMIN_ROLE.getAuthority().equals(userRole) ) {
                     return true;
                 }
             }
@@ -156,67 +157,18 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
     public WorkspaceAccessLimits getAccessLimits(Authentication user, WorkspaceInfo workspace) {
         LOGGER.log(Level.FINE, "Getting access limits for workspace {0}", workspace.getName());
 
-        // extract the user name
-        String username = null;
         if ((user != null) && !(user instanceof AnonymousAuthenticationToken)) {
             // shortcut, if the user is the admin, he can do everything
             if (isAdmin(user)) {
                 LOGGER.log(Level.FINE, "Admin level access, returning "
                         + "full rights for workspace {0}", workspace.getName());
 
-                return buildAccessLimits(workspace, AccessInfo.ALLOW_ALL);
-            }
-
-            username = user.getName();
-        }
-
-        // get info from the current request
-        String service = null;
-        String request = null;
-        Request owsRequest = Dispatcher.REQUEST.get();
-        if (owsRequest != null) {
-            service = owsRequest.getService();
-            request = owsRequest.getRequest();
-        }
-
-        // get the request infos
-        RuleFilter ruleFilter = new RuleFilter(RuleFilter.SpecialFilterType.ANY);
-        if (username == null) {
-            ruleFilter.setUser(RuleFilter.SpecialFilterType.DEFAULT);
-        } else {
-            ruleFilter.setUser(username);
-        }
-        ruleFilter.setInstance(instanceName);
-
-        if (service != null) {
-            if ("*".equals(service)) {
-                ruleFilter.setService(RuleFilter.SpecialFilterType.ANY);
-            } else {
-                ruleFilter.setService(service);
+                return new WorkspaceAccessLimits(catalogMode, true, true);
             }
         }
 
-        if (request != null) {
-            if ("*".equals(request)) {
-                ruleFilter.setRequest(RuleFilter.SpecialFilterType.ANY);
-            } else {
-                ruleFilter.setRequest(request);
-            }
-        }
-        ruleFilter.setWorkspace(workspace.getName());
-        ruleFilter.setSourceAddress(getSourceAddress(owsRequest));
-
-        AccessInfo rule = rules.getAccessInfo(ruleFilter);
-
-        if (rule == null) {
-            rule = AccessInfo.DENY_ALL;
-        }
-
-        WorkspaceAccessLimits limits = buildAccessLimits(workspace, rule);
-        LOGGER.log(Level.FINE, "Returning {0} for workspace {1} and user {2}",
-                new Object[]{limits, workspace.getName(), username});
-
-        return limits;
+        // further logic disabled because of https://github.com/geosolutions-it/geofence/issues/6
+        return new WorkspaceAccessLimits(catalogMode, true, false);
     }
 
     InetAddress getSourceAddress(Request owsRequest) {
@@ -257,6 +209,7 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
     public StyleAccessLimits getAccessLimits(Authentication user, StyleInfo style)
     {
         //return getAccessLimits(user, style.getResource());
+        LOGGER.fine("Not limiting styles");
     	return null;
     	// TODO
     }
@@ -266,6 +219,7 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
         LayerGroupInfo layerInfo)
     {
         //return getAccessLimits(user, layerInfo.getResource());
+        LOGGER.fine("Not limiting layergroups");
     	return null;
     	// TODO
     }
@@ -273,12 +227,14 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
     @Override
     public DataAccessLimits getAccessLimits(Authentication user, LayerInfo layer)
     {
+        LOGGER.log(Level.FINE, "Getting access limits for Layer {0}", layer.getName());
         return getAccessLimits(user, layer.getResource());
     }
 
     @Override
     public DataAccessLimits getAccessLimits(Authentication user, ResourceInfo resource)
     {
+        LOGGER.log(Level.FINE, "Getting access limits for Resource {0}", resource.getName());
         // extract the user name
         String username = null;
         if ((user != null) && !(user instanceof AnonymousAuthenticationToken))
@@ -296,8 +252,8 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
         }
 
         // get info from the current request
-        String service = "*";
-        String request = "*";
+        String service = null;
+        String request = null;
         Request owsRequest = Dispatcher.REQUEST.get();
         if (owsRequest != null)
         {
@@ -332,6 +288,8 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
             {
                 ruleFilter.setService(service);
             }
+        } else {
+            ruleFilter.setService(RuleFilter.SpecialFilterType.DEFAULT);
         }
 
         if (request != null)
@@ -344,10 +302,14 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
             {
                 ruleFilter.setRequest(request);
             }
+        } else {
+            ruleFilter.setRequest(RuleFilter.SpecialFilterType.DEFAULT);
         }
         ruleFilter.setWorkspace(workspace);
         ruleFilter.setLayer(layer);
         ruleFilter.setSourceAddress(getSourceAddress(owsRequest));
+
+        LOGGER.log(Level.FINE, "ResourceInfo filter: {0}", ruleFilter);
 
         AccessInfo rule = rules.getAccessInfo(ruleFilter);
 
@@ -590,6 +552,8 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
         ruleFilter.setWorkspace(resource.getStore().getWorkspace().getName());
         ruleFilter.setLayer(resource.getName());
 
+        LOGGER.log(Level.FINE, "Getting access limits for getLegendGraphic", ruleFilter);
+
         AccessInfo rule = rules.getAccessInfo(ruleFilter);
 
         // get the request object
@@ -656,7 +620,9 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
 
             // get the rule, it contains default and allowed styles
             RuleFilter ruleFilter = new RuleFilter(RuleFilter.SpecialFilterType.ANY);
-            ruleFilter.setUser(username);
+
+            if(username != null)
+                ruleFilter.setUser(username); // ?? maybe a DEFAULT here
             ruleFilter.setInstance(instanceName);
             ruleFilter.setService(service);
             ruleFilter.setRequest(request);
@@ -668,6 +634,8 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
             	ruleFilter.setWorkspace(RuleFilter.SpecialFilterType.ANY);
             	ruleFilter.setLayer(RuleFilter.SpecialFilterType.ANY);
             }
+
+            LOGGER.log(Level.FINE, "Getting access limits for getMap", ruleFilter);
 
             AccessInfo rule = rules.getAccessInfo(ruleFilter);
 
