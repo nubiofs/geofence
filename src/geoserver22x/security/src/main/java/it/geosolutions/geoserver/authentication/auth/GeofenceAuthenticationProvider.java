@@ -21,15 +21,13 @@ package it.geosolutions.geoserver.authentication.auth;
 
 import it.geosolutions.geofence.services.RuleReaderService;
 import it.geosolutions.geofence.services.dto.AuthUser;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.geoserver.security.GeoServerAuthenticationProvider;
-import org.geoserver.security.config.SecurityNamedServiceConfig;
-import org.geoserver.security.config.UsernamePasswordAuthenticationProviderConfig;
 import org.geoserver.security.impl.GeoServerRole;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -38,20 +36,11 @@ import org.springframework.security.core.GrantedAuthority;
 
 /**
  * Authentication provider that delegates to GeoFence
+ * @author ETj (etj at geo-solutions.it)
  */
 public class GeofenceAuthenticationProvider extends GeoServerAuthenticationProvider {
 
-
     private RuleReaderService ruleReaderService;
-
-
-    @Override
-    public void initializeFromConfig(SecurityNamedServiceConfig config) throws IOException {
-
-        UsernamePasswordAuthenticationProviderConfig upAuthConfig =
-                (UsernamePasswordAuthenticationProviderConfig) config;
-
-    }
 
     @Override
     public boolean supports(Class<? extends Object> authentication, HttpServletRequest request) {
@@ -63,16 +52,23 @@ public class GeofenceAuthenticationProvider extends GeoServerAuthenticationProvi
             throws AuthenticationException {
 
         UsernamePasswordAuthenticationToken  outTok = null;
-        LOGGER.warning("AUTH USERNAMEPW for " + authentication);
+        LOGGER.log(Level.FINE, "Auth request with {0}", authentication);
 
         if (authentication instanceof UsernamePasswordAuthenticationToken) {
             UsernamePasswordAuthenticationToken inTok =  (UsernamePasswordAuthenticationToken)authentication;
-            AuthUser authUser = ruleReaderService.authorize(
-                    inTok.getPrincipal().toString(),
-                    inTok.getCredentials().toString());
+
+            AuthUser authUser = null;
+            try {
+                authUser = ruleReaderService.authorize(
+                        inTok.getPrincipal().toString(),
+                        inTok.getCredentials().toString());
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, "Error in authenticating with GeoFence", e);
+                throw new AuthenticationException("Error in GeoFence communication", e) {};
+            }
 
             if(authUser != null) {
-                LOGGER.warning("User " + inTok.getPrincipal() + " authenticated:" + authUser);
+                LOGGER.log(Level.FINE, "User {0} authenticated: {1}", new Object[]{inTok.getPrincipal(), authUser});
 
                 List<GrantedAuthority> roles = new ArrayList<GrantedAuthority>();
                 roles.addAll(inTok.getAuthorities());
@@ -84,7 +80,7 @@ public class GeofenceAuthenticationProvider extends GeoServerAuthenticationProvi
                     inTok.getPrincipal(), inTok.getCredentials(), roles);
 
             } else {
-                LOGGER.warning("User " + inTok.getPrincipal() + " NOT authenticated");
+                LOGGER.log(Level.WARNING, "User {0} NOT authenticated", inTok.getPrincipal());
             }
 
             return outTok;

@@ -79,11 +79,9 @@ public class GeoFenceAuthFilter extends GeoServerSecurityFilter
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null) {
-            LOGGER.warning("No existing auth");
             doAuth(request, response);
         } else {
-//            LOGGER.warning("AUTH is " + auth.getClass().getName());
-            LOGGER.warning("AUTH  = " + auth);
+            LOGGER.fine("Found existing Authentication in context: " + auth);
         }
 
         chain.doFilter(request, response);
