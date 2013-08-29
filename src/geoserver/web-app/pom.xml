@@ -5,14 +5,14 @@
 
   <parent>
     <groupId>it.geosolutions.geofence</groupId>
-    <artifactId>geofence-geoserver22</artifactId>
+    <artifactId>geofence-geoserver</artifactId>
     <version>2.2-SNAPSHOT</version>
   </parent>
 
   <groupId>it.geosolutions.geofence.geoserver</groupId>
-  <artifactId>geofence-web-app22</artifactId>
+  <artifactId>geofence-web-app</artifactId>
   <packaging>jar</packaging>
-  <name>GeoFence - GeoServer 2.2.x customized web app</name>
+  <name>GeoFence - GeoServer customized web app</name>
 
   <properties>
 

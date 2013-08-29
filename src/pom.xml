@@ -76,7 +76,7 @@
     <modules>
         <module>services</module>
         <module>gui</module>        
-        <module>geoserver22x</module>
+        <module>geoserver</module>
     </modules>
 
 
