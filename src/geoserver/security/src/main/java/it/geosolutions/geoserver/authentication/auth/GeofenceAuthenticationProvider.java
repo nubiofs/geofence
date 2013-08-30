@@ -80,7 +80,7 @@ public class GeofenceAuthenticationProvider extends GeoServerAuthenticationProvi
                     inTok.getPrincipal(), inTok.getCredentials(), roles);
 
             } else {
-                LOGGER.log(Level.WARNING, "User {0} NOT authenticated", inTok.getPrincipal());
+                LOGGER.log(Level.INFO, "User {0} NOT authenticated", inTok.getPrincipal());
             }
 
             return outTok;

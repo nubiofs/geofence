@@ -22,8 +22,10 @@ package it.geosolutions.geoserver.authentication.filter;
 import it.geosolutions.geofence.services.RuleReaderService;
 import it.geosolutions.geofence.services.dto.AuthUser;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Logger;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -34,8 +36,8 @@ import org.apache.commons.codec.binary.Base64;
 import org.geoserver.security.config.SecurityNamedServiceConfig;
 import org.geoserver.security.filter.GeoServerAuthenticationFilter;
 import org.geoserver.security.filter.GeoServerSecurityFilter;
+import org.geoserver.security.impl.GeoServerRole;
 import org.geotools.util.logging.Logging;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -107,18 +109,25 @@ public class GeoFenceAuthFilter extends GeoServerSecurityFilter
         if(authUser != null) {
             LOGGER.fine("Found user " + authUser);
             
-            String role = authUser.getRole() == AuthUser.Role.ADMIN ? ROOT_ROLE : USER_ROLE;            
-            Collection<GrantedAuthority> authorities = Arrays.asList(new GrantedAuthority[] { new SimpleGrantedAuthority(role) });
+            List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+            authorities.add(GeoServerRole.AUTHENTICATED_ROLE);
 
-            UsernamePasswordAuthenticationToken upa = new UsernamePasswordAuthenticationToken(authUser, basicUser, authorities);
+            if(authUser.getRole() == AuthUser.Role.ADMIN) {
+                authorities.add(GeoServerRole.ADMIN_ROLE);
+                authorities.add(new SimpleGrantedAuthority("ADMIN")); // needed for REST?!?
+            } else {
+                authorities.add(new SimpleGrantedAuthority(USER_ROLE)); // ??
+            }
+
+            UsernamePasswordAuthenticationToken upa = new UsernamePasswordAuthenticationToken(basicUser.name, basicUser.pw, authorities);
             SecurityContextHolder.getContext().setAuthentication(upa); 
             
         } else {
             LOGGER.fine("Anonymous access");
-        
-            Authentication authentication = new AnonymousAuthenticationToken("geoserver", "null",
-                    Arrays.asList(new GrantedAuthority[] { new SimpleGrantedAuthority(ANONYMOUS_ROLE) }));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//            Authentication authentication = new AnonymousAuthenticationToken("geoserver", "null",
+//                    Arrays.asList(new GrantedAuthority[] { new SimpleGrantedAuthority(ANONYMOUS_ROLE) }));
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
 
         }
     }
