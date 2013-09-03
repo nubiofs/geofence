@@ -11,14 +11,14 @@
         </param-value>
 	</context-param>
 
-<!--    <context-param>
-        <param-name>log4jConfigLocation</param-name>
-        <param-value>file:${token}/path/log4j.xml</param-value>
-    </context-param>-->
+    <context-param>
+        <param-name>log4jConfiguration</param-name>
+        <param-value>log4j.xml</param-value>
+    </context-param>
 
 	<!-- spring context loader -->
     <listener>
-        <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+        <listener-class>org.apache.logging.log4j.core.web.Log4jContextListener</listener-class>
     </listener>
 
     <listener>

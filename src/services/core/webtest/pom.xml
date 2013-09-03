@@ -97,11 +97,36 @@
             <groupId>dom4j</groupId>
             <artifactId>dom4j</artifactId>
         </dependency>
+<!--        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+        </dependency>-->
+
+        <!-- =============================================================== -->
+		<!-- Logging                                                         -->
+		<!-- =============================================================== -->
+
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-jcl</artifactId>
+            <version>2.0-beta7</version>
+        </dependency>
         <!-- =============================================================== -->
         <!-- HTTP UTILS -->
         <!-- =============================================================== -->
@@ -293,7 +318,7 @@
 					</webAppConfig>
 					<connectors>
 						<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-							<port>9191</port>
+							<port>8081</port>
 							<maxIdleTime>60000</maxIdleTime>
 						</connector>
 					</connectors>

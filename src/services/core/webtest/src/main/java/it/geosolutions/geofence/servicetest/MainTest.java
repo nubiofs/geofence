@@ -192,7 +192,13 @@ public class MainTest implements InitializingBean, ApplicationContextAware {
 
             List<ShortUser> users = userAdminService.getList(null,null,null);
             for (ShortUser loop : users) {
-                System.out.println("User -> " + loop);
+                LOGGER.info("   User -> " + loop);
+            }
+
+            LOGGER.info("===== Rules =====");
+            List<ShortRule> rules = ruleAdminService.getAll();
+            for (ShortRule shortRule : rules) {
+                LOGGER.info("   Rule -> " + shortRule);
             }
 
 
@@ -205,7 +211,7 @@ public class MainTest implements InitializingBean, ApplicationContextAware {
     public void instantiateAndRunSpringRemoting() {
         HttpInvokerProxyFactoryBean httpInvokerProxyFactoryBean = new HttpInvokerProxyFactoryBean();
         httpInvokerProxyFactoryBean.setServiceInterface(it.geosolutions.geofence.services.RuleReaderService.class);
-        httpInvokerProxyFactoryBean.setServiceUrl("http://localhost:9191/geofence/remoting/RuleReader");
+        httpInvokerProxyFactoryBean.setServiceUrl("http://localhost:8081/geofence/remoting/RuleReader");
         httpInvokerProxyFactoryBean.afterPropertiesSet();
         RuleReaderService rrs = (RuleReaderService) httpInvokerProxyFactoryBean.getObject();
 
