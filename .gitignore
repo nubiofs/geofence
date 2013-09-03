@@ -22,15 +22,13 @@ src/gui/web/war/WEB-INF/deploy/
 src/gui/web/war/WEB-INF/classes/
 src/gui/web/war/WEB-INF/lib/
 src/gui/web/war/geofence/
-src/geoserver21x/web-app/src/main/webapp/data/
-src/geoserver22x/web-app/src/main/webapp/data/
 
-src/geoserver21x/target
-src/geoserver21x/security/target
-src/geoserver21x/web-app/target
-src/geoserver22x/target
-src/geoserver22x/security/target
-src/geoserver22x/web-app/target
+src/geoserver/web-app/src/main/webapp/data/
+
+src/geoserverx/target
+src/geoserver/security/target
+src/geoserver/web-app/target
+
 src/gui/core/plugin/mapsui/target
 src/gui/core/plugin/target
 src/gui/core/plugin/userui/target
@@ -38,7 +36,9 @@ src/gui/core/target
 src/gui/core/resources/target
 src/gui/target
 src/gui/web/target
+
 src/target
+
 src/services/core/model/target
 src/services/core/persistence/target
 src/services/core/target
@@ -59,3 +59,4 @@ src/services/target
 /src/services/modules/rest/client/target/
 /src/csv2geofence/target/
 /src/samples/csv2geofence/target/
+/src/geoserver/security/target/
