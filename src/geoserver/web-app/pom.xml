@@ -50,7 +50,7 @@
     </dependency>
     <dependency>
       <groupId>it.geosolutions.geofence.geoserver</groupId>
-      <artifactId>geofence-security22</artifactId>
+      <artifactId>geofence-security</artifactId>
       <version>${project.version}</version>
     </dependency>
 
