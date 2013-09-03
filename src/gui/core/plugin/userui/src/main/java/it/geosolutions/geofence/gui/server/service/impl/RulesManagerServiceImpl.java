@@ -83,6 +83,7 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 import java.util.Collections;
+import org.springframework.dao.DuplicateKeyException;
 
 /**
  * The Class RulesManagerServiceImpl.
@@ -225,115 +226,43 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 	 */
 	public void saveRule(Rule rule) throws ApplicationException {
 
-		logger.info(rule.getRequest());
-		long count = checkUniqueness(rule);
+        if(logger.isDebugEnabled())
+            logger.debug("Trying to save rule " + rule);
 
-		if (count < 1) {
-			it.geosolutions.geofence.core.model.Rule rule2 = new it.geosolutions.geofence.core.model.Rule(
-					rule.getPriority(), getUser(rule.getUser()),
-					getProfile(rule.getProfile()),
-					getInstance(rule.getInstance()), "*".equals(rule
-							.getService()) ? null : rule.getService(),
-					"*".equals(rule.getRequest()) ? null : rule.getRequest(),
-					"*".equals(rule.getWorkspace()) ? null : rule
-							.getWorkspace(), "*".equals(rule.getLayer()) ? null
-							: rule.getLayer(), getAccessType(rule.getGrant()));
-			rule2.setId(rule.getId());
-			if (rule.getId() == -1) {
-				rule2.setId(null);
-				geofenceRemoteService.getRuleAdminService().insert(rule2);
-			} else {
-				try {
-					geofenceRemoteService.getRuleAdminService().update(rule2);
-				} catch (NotFoundServiceEx e) {
-					e.printStackTrace();
-				}
-			}
-		} else {
-			String message = "This rule is already present !";
+        it.geosolutions.geofence.core.model.Rule modelRule = new it.geosolutions.geofence.core.model.Rule(
+                rule.getPriority(), getUser(rule.getUser()),
+                getProfile(rule.getProfile()),
+                getInstance(rule.getInstance()),
+                "*".equals(rule.getService()) ? null : rule.getService(),
+                "*".equals(rule.getRequest()) ? null : rule.getRequest(),
+                "*".equals(rule.getWorkspace()) ? null : rule.getWorkspace(),
+                "*".equals(rule.getLayer()) ? null : rule.getLayer(),
+                getAccessType(rule.getGrant()));
+
+        try {
+            if (rule.getId() == -1) { // REQUEST FOR INSERT
+                modelRule.setId(null);
+                    geofenceRemoteService.getRuleAdminService().insert(modelRule);
+            } else {                  // REQUEST FOR UPDATE
+                long ruleId = rule.getId();
+                modelRule.setId(ruleId);
+                try {
+                    geofenceRemoteService.getRuleAdminService().update(modelRule);
+                    it.geosolutions.geofence.core.model.Rule loaded = geofenceRemoteService.getRuleAdminService().get(ruleId);
+                    if (! loaded.getAccess().name().equalsIgnoreCase(rule.getGrant())) {
+                        geofenceRemoteService.getRuleAdminService().setDetails(ruleId, null);
+                        geofenceRemoteService.getRuleAdminService().setLimits(ruleId, null);
+                    }
+                } catch (NotFoundServiceEx e) {
+                    logger.error("Error updating a rule", e);
+                    throw new ApplicationException("Error updating a rule");
+                }
+            }
+        } catch (DuplicateKeyException e) {
+			String message = "A similar rule is already present";
 			logger.error(message);
 			throw new ApplicationException(message);
-		}
-	}
-
-	/**
-	 * @param rule
-	 * @return long
-	 */
-	private long checkUniqueness(Rule rule) {
-		RuleFilter filter = new RuleFilter();
-
-		if ((rule.getUser() != null)
-				&& !rule.getUser().getName().equalsIgnoreCase("*")) {
-			filter.setUser(rule.getUser().getId());
-		} else {
-			filter.setUser(SpecialFilterType.DEFAULT);
-		}
-
-		if ((rule.getProfile() != null)
-				&& !rule.getProfile().getName().equalsIgnoreCase("*")) {
-			filter.setUserGroup(rule.getProfile().getId());
-		} else {
-			filter.setUserGroup(SpecialFilterType.DEFAULT);
-		}
-
-		if ((rule.getInstance() != null)
-				&& !rule.getInstance().getName().equalsIgnoreCase("*")) {
-			filter.setInstance(rule.getInstance().getId());
-		} else {
-			filter.setInstance(SpecialFilterType.DEFAULT);
-		}
-
-		if ((rule.getService() != null)
-				&& !rule.getService().equalsIgnoreCase("*")) {
-			filter.setService(rule.getService());
-		} else {
-			filter.setService(SpecialFilterType.DEFAULT);
-		}
-
-		if ((rule.getRequest() != null)
-				&& !rule.getRequest().equalsIgnoreCase("*")) {
-			filter.setRequest(rule.getRequest());
-		} else {
-			filter.setRequest(SpecialFilterType.DEFAULT);
-		}
-
-		if ((rule.getWorkspace() != null)
-				&& !rule.getWorkspace().equalsIgnoreCase("*")) {
-			filter.setWorkspace(rule.getWorkspace());
-		} else {
-			filter.setWorkspace(SpecialFilterType.DEFAULT);
-		}
-
-		if ((rule.getLayer() != null) && !rule.getLayer().equalsIgnoreCase("*")) {
-			filter.setLayer(rule.getLayer());
-		} else {
-			filter.setLayer(SpecialFilterType.DEFAULT);
-		}
-
-		long count = 0;
-
-		List<ShortRule> listShortRule = geofenceRemoteService
-				.getRuleAdminService().getList(filter, null, null);
-		Iterator<ShortRule> iterator = listShortRule.iterator();
-
-		while (iterator.hasNext()) {
-			ShortRule shortRule = iterator.next();
-			if (shortRule.getId() != rule.getId()) {
-				count++;
-			} else {
-				if (!shortRule.getAccess().name()
-						.equalsIgnoreCase(rule.getGrant())) {
-					long ruleId = rule.getId();
-					geofenceRemoteService.getRuleAdminService().setDetails(
-							ruleId, null);
-					geofenceRemoteService.getRuleAdminService().setLimits(
-							ruleId, null);
-				}
-			}
-		}
-
-		return count;
+        }
 	}
 
 	/*

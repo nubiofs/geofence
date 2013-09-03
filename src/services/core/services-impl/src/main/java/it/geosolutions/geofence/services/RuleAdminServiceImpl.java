@@ -31,6 +31,10 @@ import it.geosolutions.geofence.core.model.RuleLimits;
 import it.geosolutions.geofence.core.model.enums.GrantType;
 import it.geosolutions.geofence.core.model.enums.InsertPosition;
 import it.geosolutions.geofence.services.dto.RuleFilter;
+import static it.geosolutions.geofence.services.dto.RuleFilter.FilterType.ANY;
+import static it.geosolutions.geofence.services.dto.RuleFilter.FilterType.DEFAULT;
+import static it.geosolutions.geofence.services.dto.RuleFilter.FilterType.IDVALUE;
+import static it.geosolutions.geofence.services.dto.RuleFilter.FilterType.NAMEVALUE;
 import it.geosolutions.geofence.services.dto.RuleFilter.IdNameFilter;
 import it.geosolutions.geofence.services.dto.RuleFilter.NameFilter;
 import it.geosolutions.geofence.services.dto.ShortRule;
@@ -254,6 +258,20 @@ public class RuleAdminServiceImpl implements RuleAdminService {
     }
 
     @Override
+    public ShortRule getRule(RuleFilter filter) throws BadRequestServiceEx {
+        Search searchCriteria = buildFixedRuleSearch(filter);
+        List<Rule> found = ruleDAO.search(searchCriteria);
+        if(found.isEmpty())
+            return null;
+
+        if(found.size() > 1) {
+            LOGGER.error("Unexpected rule count for filter " + filter + " : " + found);
+        }
+
+        return convertToShortList(found).get(0);
+    }
+
+    @Override
     public List<Rule> getListFull(RuleFilter filter, Integer page, Integer entries) {
         Search searchCriteria = buildSearch(page, entries, filter);
         List<Rule> found = ruleDAO.search(searchCriteria);
@@ -366,6 +384,88 @@ public class RuleAdminServiceImpl implements RuleAdminService {
                     searchCriteria.addFilterOr(
                             Filter.isNull(fieldName),
                             Filter.equal(fieldName, filter.getName()));
+                } else {
+                    searchCriteria.addFilter(
+                            Filter.equal(fieldName, filter.getName()));
+                }
+                break;
+
+            case IDVALUE:
+            default:
+                throw new AssertionError();
+        }
+    }
+
+    //=========================================================================
+
+    private Search buildFixedRuleSearch(RuleFilter filter) {
+        Search searchCriteria = new Search(Rule.class);
+
+        if(filter != null) {
+            addFixedCriteria(searchCriteria, "gsuser", filter.getUser());
+            addFixedCriteria(searchCriteria, "userGroup", filter.getUserGroup());
+            addFixedCriteria(searchCriteria, "instance", filter.getInstance());
+
+            addFixedStringCriteria(searchCriteria, "service", filter.getService()); // see class' javadoc
+            addFixedStringCriteria(searchCriteria, "request", filter.getRequest()); // see class' javadoc
+            addFixedStringCriteria(searchCriteria, "workspace", filter.getWorkspace());
+            addFixedStringCriteria(searchCriteria, "layer", filter.getLayer());
+        }
+
+        return searchCriteria;
+    }
+
+
+    /**
+     * Add criteria for <B>searching</B>.
+     *
+     * We're dealing with IDs here, so <U>we'll suppose that the related object id field is called "id"</U>.
+     */
+    private void addFixedCriteria(Search searchCriteria, String fieldName, IdNameFilter filter) {
+        switch (filter.getType()) {
+            case ANY:
+                throw new BadRequestServiceEx(fieldName + " should be a fixed search and can't be ANY");
+
+            case DEFAULT:
+                searchCriteria.addFilterNull(fieldName);
+                break;
+
+            case IDVALUE:
+                if(filter.isIncludeDefault()) {
+                    throw new BadRequestServiceEx(fieldName + " should be a fixed search");
+                } else {
+                    searchCriteria.addFilter(
+                            Filter.equal(fieldName + ".id", filter.getId()));
+                }
+                break;
+
+            case NAMEVALUE:
+                if(filter.isIncludeDefault()) {
+                    throw new BadRequestServiceEx(fieldName + " should be a fixed search");
+
+                } else {
+                    searchCriteria.addFilter(
+                            Filter.equal(fieldName + ".name", filter.getName()));
+                }
+                break;
+
+            default:
+                throw new AssertionError();
+        }
+    }
+
+    private void addFixedStringCriteria(Search searchCriteria, String fieldName, NameFilter filter) {
+        switch (filter.getType()) {
+            case ANY:
+                throw new BadRequestServiceEx(fieldName + " should be a fixed search and can't be ANY");
+
+            case DEFAULT:
+                searchCriteria.addFilterNull(fieldName);
+                break;
+
+            case NAMEVALUE:
+                if(filter.isIncludeDefault()) {
+                    throw new BadRequestServiceEx(fieldName + " should be a fixed search");
                 } else {
                     searchCriteria.addFilter(
                             Filter.equal(fieldName, filter.getName()));
