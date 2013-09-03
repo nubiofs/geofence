@@ -127,13 +127,11 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
     boolean allowRemoteAndInlineLayers;
     boolean allowDynamicStyles;
 
-   	public GeofenceAccessManager(RuleReaderService rules, Catalog catalog,
-			String instanceName, boolean allowRemoteAndInlineLayers, boolean allowDynamicStyles) {
+   	public GeofenceAccessManager(RuleReaderService rules, Catalog catalog, String instanceName) {
+
         this.rules = rules;
         this.catalog = catalog;
         this.instanceName = instanceName;
-        this.allowRemoteAndInlineLayers = allowRemoteAndInlineLayers;
-        this.allowDynamicStyles = allowDynamicStyles;
 
         LOGGER.log(Level.INFO,
                 "Initializing the Geofence access manager with instance name {0}",
@@ -744,4 +742,11 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
         return instanceName;
     }
 
+    public void setAllowRemoteAndInlineLayers(boolean allowRemoteAndInlineLayers) {
+        this.allowRemoteAndInlineLayers = allowRemoteAndInlineLayers;
+    }
+
+    public void setAllowDynamicStyles(boolean allowDynamicStyles) {
+        this.allowDynamicStyles = allowDynamicStyles;
+    }
 }

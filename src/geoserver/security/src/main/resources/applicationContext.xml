@@ -47,8 +47,9 @@
 		<constructor-arg index="0" ref="ruleReaderService" />
 		<constructor-arg index="1" ref="rawCatalog" />
 		<constructor-arg index="2" value="${instanceName}" />
-		<constructor-arg index="3" value="${allowRemoteAndInlineLayers}" />
-		<constructor-arg index="4" value="${allowDynamicStyles}" />
+        
+        <property name="allowDynamicStyles" value="${allowDynamicStyles}"/>
+        <property name="allowRemoteAndInlineLayers" value="${allowRemoteAndInlineLayers}"/>
 	</bean>
 
     <!-- =================================================================== -->
