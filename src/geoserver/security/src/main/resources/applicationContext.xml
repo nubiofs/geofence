@@ -87,6 +87,7 @@
 
     <bean id="geofenceFilter" class="it.geosolutions.geoserver.authentication.filter.GeoFenceAuthFilterProvider">
         <property name="ruleReaderService" ref="ruleReaderService"/>
+        <property name="geofenceAuth" ref="geofenceAuth"/>
     </bean>
 
     <bean id="geofenceAuth" class="it.geosolutions.geoserver.authentication.auth.GeoFenceSecurityProvider">

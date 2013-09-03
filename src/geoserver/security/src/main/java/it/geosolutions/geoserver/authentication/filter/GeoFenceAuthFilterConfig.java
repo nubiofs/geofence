@@ -19,13 +19,14 @@
  */
 package it.geosolutions.geoserver.authentication.filter;
 
+import org.geoserver.security.config.SecurityAuthFilterConfig;
 import org.geoserver.security.config.SecurityFilterConfig;
 
 /**
  *
  * @author ETj (etj at geo-solutions.it)
  */
-public class GeoFenceAuthFilterConfig extends SecurityFilterConfig {
+public class GeoFenceAuthFilterConfig extends SecurityFilterConfig implements SecurityAuthFilterConfig{
 
     // just testing...
     private String geofenceUrl;

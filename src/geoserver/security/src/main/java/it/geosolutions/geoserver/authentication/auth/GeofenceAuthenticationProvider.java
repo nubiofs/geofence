@@ -29,16 +29,20 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.geoserver.security.GeoServerAuthenticationProvider;
 import org.geoserver.security.impl.GeoServerRole;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 /**
  * Authentication provider that delegates to GeoFence
  * @author ETj (etj at geo-solutions.it)
  */
-public class GeofenceAuthenticationProvider extends GeoServerAuthenticationProvider {
+public class GeofenceAuthenticationProvider 
+        extends GeoServerAuthenticationProvider
+        implements AuthenticationManager {
 
     private RuleReaderService ruleReaderService;
 
@@ -73,16 +77,21 @@ public class GeofenceAuthenticationProvider extends GeoServerAuthenticationProvi
                 List<GrantedAuthority> roles = new ArrayList<GrantedAuthority>();
                 roles.addAll(inTok.getAuthorities());
                 roles.add(GeoServerRole.AUTHENTICATED_ROLE);
-                if(authUser.getRole() == AuthUser.Role.ADMIN)
+                if(authUser.getRole() == AuthUser.Role.ADMIN) {
                     roles.add(GeoServerRole.ADMIN_ROLE);
+                    roles.add(new SimpleGrantedAuthority("ADMIN")); // needed for REST?!?
+                }
 
                 outTok = new UsernamePasswordAuthenticationToken(
                     inTok.getPrincipal(), inTok.getCredentials(), roles);
 
-            } else {
-                LOGGER.log(Level.INFO, "User {0} NOT authenticated", inTok.getPrincipal());
+            } else { // authUser == null
+                if("admin".equals(inTok.getPrincipal()) && "geoserver".equals(inTok.getCredentials())) {
+                    LOGGER.log(Level.FINE, "Default admin credentials NOT authenticated -- probably a frontend check");
+                } else {
+                    LOGGER.log(Level.INFO, "User {0} NOT authenticated", inTok.getPrincipal());
+                }
             }
-
             return outTok;
 
         } else {

@@ -38,7 +38,7 @@ public class GeoFenceSecurityProvider extends GeoServerSecurityProvider {
     }
 
     @Override
-    public GeoServerAuthenticationProvider createAuthenticationProvider(SecurityNamedServiceConfig config) {
+    public GeofenceAuthenticationProvider createAuthenticationProvider(SecurityNamedServiceConfig config) {
         GeofenceAuthenticationProvider authProv = new GeofenceAuthenticationProvider();
         authProv.setRuleReaderService(ruleReaderService);
         return authProv;

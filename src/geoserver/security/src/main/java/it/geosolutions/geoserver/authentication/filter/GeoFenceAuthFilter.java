@@ -19,22 +19,29 @@
  */
 package it.geosolutions.geoserver.authentication.filter;
 
-import it.geosolutions.geofence.services.RuleReaderService;
-import it.geosolutions.geofence.services.dto.AuthUser;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+
+import it.geosolutions.geofence.services.RuleReaderService;
+import it.geosolutions.geofence.services.dto.AuthUser;
+
+import it.geosolutions.geoserver.authentication.auth.GeoFenceSecurityProvider;
+import it.geosolutions.geoserver.authentication.auth.GeofenceAuthenticationProvider;
+
 import org.apache.commons.codec.binary.Base64;
+
+import org.geoserver.security.GeoServerSecurityManager;
 import org.geoserver.security.config.SecurityNamedServiceConfig;
 import org.geoserver.security.filter.GeoServerAuthenticationFilter;
+import org.geoserver.security.filter.GeoServerCompositeFilter;
 import org.geoserver.security.filter.GeoServerSecurityFilter;
 import org.geoserver.security.impl.GeoServerRole;
 import org.geotools.util.logging.Logging;
@@ -43,28 +50,30 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 /**
  *
  * @author ETj (etj at geo-solutions.it)
  */
-public class GeoFenceAuthFilter extends GeoServerSecurityFilter
-    implements GeoServerAuthenticationFilter {
+public class GeoFenceAuthFilter
+//        extends GeoServerSecurityFilter
+        extends GeoServerCompositeFilter
+        implements GeoServerAuthenticationFilter {
 
     static final Logger LOGGER = Logging.getLogger(GeoFenceAuthFilter.class);
 
     private RuleReaderService ruleReaderService;
+    private GeoFenceSecurityProvider geofenceAuth;
 
-    static final String ROOT_ROLE = "ROLE_ADMINISTRATOR";
-    static final String ANONYMOUS_ROLE = "ROLE_ANONYMOUS";
+//    static final String ROOT_ROLE = "ROLE_ADMINISTRATOR";
+//    static final String ANONYMOUS_ROLE = "ROLE_ANONYMOUS";
     static final String USER_ROLE = "ROLE_USER";
 
-    public static enum OnBadAuth {
-        SEND_401,
-        LOGIN_AS_ANON
-    }
+    private BasicAuthenticationEntryPoint aep;
 
-    private OnBadAuth onBadAuth = OnBadAuth.LOGIN_AS_ANON;
 
     @Override
     public void initializeFromConfig(SecurityNamedServiceConfig config) throws IOException {
@@ -72,21 +81,51 @@ public class GeoFenceAuthFilter extends GeoServerSecurityFilter
 
         GeoFenceAuthFilterConfig cfg = (GeoFenceAuthFilterConfig) config;
         // anything to set here? maybe the cache config
+
+        aep= new BasicAuthenticationEntryPoint();
+        aep.setRealmName(GeoServerSecurityManager.REALM);
+
+
+        try {
+            aep.afterPropertiesSet();
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
+
+//        BasicAuthenticationFilterConfig authConfig = (BasicAuthenticationFilterConfig) config;
+        SecurityNamedServiceConfig authCfg = securityManager.loadAuthenticationProviderConfig("geofence");
+        GeofenceAuthenticationProvider geofenceAuthProvider = geofenceAuth.createAuthenticationProvider(authCfg);
+        BasicAuthenticationFilter filter = new BasicAuthenticationFilter(geofenceAuthProvider ,aep);
+
+//        if (authConfig.isUseRememberMe()) {
+//            filter.setRememberMeServices(securityManager.getRememberMeService());
+//            GeoServerWebAuthenticationDetailsSource s = new GeoServerWebAuthenticationDetailsSource();
+//            filter.setAuthenticationDetailsSource(s);
+//        }
+        filter.afterPropertiesSet();
+        getNestedFilters().add(filter);
     }
 
+    @Override
+    public AuthenticationEntryPoint getAuthenticationEntryPoint() {
+        return aep;
+    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null) {
-            doAuth(request, response);
-        } else {
-            LOGGER.fine("Found existing Authentication in context: " + auth);
-        }
+        request.setAttribute(GeoServerSecurityFilter.AUTHENTICATION_ENTRY_POINT_HEADER, aep);
+        super.doFilter(request, response, chain);
 
-        chain.doFilter(request, response);
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        if (auth == null) {
+//            doAuth(request, response);
+//        } else {
+//            LOGGER.fine("Found existing Authentication in context: " + auth);
+//        }
+//
+//        chain.doFilter(request, response);
     }
 
     private void doAuth(ServletRequest request, ServletResponse response) {
@@ -203,16 +242,12 @@ public class GeoFenceAuthFilter extends GeoServerSecurityFilter
         return true;
     }
 
-    public void setOnBadAuth(OnBadAuth onBadAuth) {
-        this.onBadAuth = onBadAuth;
-    }
-
-    public void setOnBadAuth(String onBadAuth) {
-        this.onBadAuth = OnBadAuth.valueOf(onBadAuth);
-    }
-
     public void setRuleReaderService(RuleReaderService ruleReaderService) {
         this.ruleReaderService = ruleReaderService;
+    }
+
+    public void setGeofenceAuth(GeoFenceSecurityProvider geofenceAuth) {
+        this.geofenceAuth = geofenceAuth;
     }
 
 }
