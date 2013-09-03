@@ -68,6 +68,9 @@ public class ServicesTest extends GeofenceBaseTest
         response = getAsServletResponse("wfs?service=wfs&version=1.0.0&request=getfeature&typeName=" + getLayerId(MockData.GENERICENTITY));
         assertEquals(200, response.getStatusCode());
         assertEquals("text/xml", response.getContentType());
-        assertTrue(response.getOutputStreamContent().contains("Unknown namespace [sf]"));
+        String content = response.getOutputStreamContent();
+        LOGGER.info("Content: " + content);
+//        assertTrue(content.contains("Unknown namespace [sf]"));
+        assertTrue(content.contains("Feature type sf:GenericEntity unknown"));
     }
 }
