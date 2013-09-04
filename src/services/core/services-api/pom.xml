@@ -95,8 +95,7 @@
                     <artifactId>ehcache</artifactId>
                 </exclusion>                                            
             </exclusions>
-        </dependency> 
-          
+        </dependency>
 
         <dependency>
             <groupId>dom4j</groupId>

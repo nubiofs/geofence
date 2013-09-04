@@ -178,8 +178,6 @@ public class RuleDetailsEditDialog extends Dialog
     
     public void show(boolean loadModel)
     {
-        super.show();
-
         if (getModel() != null)
         {
 
@@ -191,15 +189,8 @@ public class RuleDetailsEditDialog extends Dialog
             {
                 setHeading("Editing Details for Rule #" + model.getPriority());
 
-                if (workspace.equals("*") && !layer.equalsIgnoreCase("*"))
-                {
-                    // AF: Refactor ... remove layer custom props
-                	/*TabItem layersCustomPropsItem = new LayerCustomPropsTabItem(RULE_LAYER_CUSTOM_PROPS_DIALOG_ID,
-                            model, rulesManagerServiceRemote);
-                    this.tabWidget.add(layersCustomPropsItem);
-                    this.tabWidget.setSelection(layersCustomPropsItem);*/
-                }
-                else
+                //if (workspace.equals("*") && !layer.equalsIgnoreCase("*"))
+                //else
                 {
                     TabItem ruleDetailsTabItem = new RuleDetailsTabItem(RULE_DETAILS_DIALOG_ID, model,
                             workspacesManagerServiceRemote, loadModel);
@@ -264,6 +255,9 @@ public class RuleDetailsEditDialog extends Dialog
 //                }
 //            }
         }
+        
+        super.show();
+
     }
 
     /**

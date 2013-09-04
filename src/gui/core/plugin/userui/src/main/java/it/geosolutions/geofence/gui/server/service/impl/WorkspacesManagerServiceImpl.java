@@ -174,9 +174,10 @@ public class WorkspacesManagerServiceImpl implements IWorkspacesManagerService
                     RESTAbstractList<NameLinkElem> layers = gsreader.getLayers();
 
                     if (workspace.equals("*")) { // load all layers
-                        for (NameLinkElem layerLink : layers) {
-                            sortedLayerNames.add(layerLink.getName());
-                         }
+                    	if (layers != null)
+                    		for (NameLinkElem layerLink : layers) {
+                    			sortedLayerNames.add(layerLink.getName());
+                    		}
                     } else {
                         if ((layers != null) && !layers.isEmpty()) {
 

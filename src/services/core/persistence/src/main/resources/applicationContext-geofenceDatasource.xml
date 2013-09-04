@@ -79,6 +79,8 @@
                 <entry key="hibernate.connection.autocommit" value="false" />
                 <entry key="hibernate.generate_statistics" value="false" />
                 <entry key="hibernate.default_schema" value="public" />
+                <entry key="hibernate.validator.apply_to_ddl" value="false" />
+				<entry key="hibernate.validator.autoregister_listeners" value="false" />  
             </map>
         </property>
     </bean>
