@@ -126,6 +126,7 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
     
     boolean allowRemoteAndInlineLayers;
     boolean allowDynamicStyles;
+    boolean grantWriteToWorkspacesToAuthenticatedUsers;
 
    	public GeofenceAccessManager(RuleReaderService rules, Catalog catalog, String instanceName) {
 
@@ -163,6 +164,7 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
 
                 return new WorkspaceAccessLimits(catalogMode, true, true);
             }
+            return new WorkspaceAccessLimits(catalogMode, true, grantWriteToWorkspacesToAuthenticatedUsers);
         }
 
         // further logic disabled because of https://github.com/geosolutions-it/geofence/issues/6
@@ -749,4 +751,21 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
     public void setAllowDynamicStyles(boolean allowDynamicStyles) {
         this.allowDynamicStyles = allowDynamicStyles;
     }
+
+	/**
+	 * @return the grantWriteToWorkspacesToAuthenticatedUsers
+	 */
+	public boolean isGrantWriteToWorkspacesToAuthenticatedUsers() {
+		return grantWriteToWorkspacesToAuthenticatedUsers;
+	}
+
+	/**
+	 * @param grantWriteToWorkspacesToAuthenticatedUsers the grantWriteToWorkspacesToAuthenticatedUsers to set
+	 */
+	public void setGrantWriteToWorkspacesToAuthenticatedUsers(
+			boolean grantWriteToWorkspacesToAuthenticatedUsers) {
+		this.grantWriteToWorkspacesToAuthenticatedUsers = grantWriteToWorkspacesToAuthenticatedUsers;
+	}
+    
+    
 }

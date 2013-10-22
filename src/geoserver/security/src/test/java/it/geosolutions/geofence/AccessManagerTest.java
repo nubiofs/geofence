@@ -54,6 +54,37 @@ public class AccessManagerTest extends GeofenceBaseTest
         assertNull(vl.getReadAttributes());
         assertNull(vl.getWriteAttributes());
     }
+    
+    public void testCiteCannotWriteOnWorkspace()
+    {
+    	manager.setGrantWriteToWorkspacesToAuthenticatedUsers(false);
+        UsernamePasswordAuthenticationToken user = new UsernamePasswordAuthenticationToken("cite",
+                "cite",
+                Arrays.asList(
+                        new GrantedAuthority[] { new SimpleGrantedAuthority("ROLE_AUTHENTICATED") } ));
+
+        // check workspace access
+        WorkspaceInfo citeWS = getCatalog().getWorkspaceByName(MockData.CITE_PREFIX);
+        WorkspaceAccessLimits wl = manager.getAccessLimits(user, citeWS);
+        assertTrue(wl.isReadable());
+        assertFalse(wl.isWritable());
+    }
+    
+    public void testCiteCanWriteOnWorkspace()
+    {
+    	manager.setGrantWriteToWorkspacesToAuthenticatedUsers(true);
+        UsernamePasswordAuthenticationToken user = new UsernamePasswordAuthenticationToken("cite",
+                "cite",
+                Arrays.asList(
+                        new GrantedAuthority[] { new SimpleGrantedAuthority("ROLE_AUTHENTICATED") } ));
+
+        // check workspace access
+        WorkspaceInfo citeWS = getCatalog().getWorkspaceByName(MockData.CITE_PREFIX);
+        WorkspaceAccessLimits wl = manager.getAccessLimits(user, citeWS);
+        assertTrue(wl.isReadable());
+        assertTrue(wl.isWritable());
+        manager.setGrantWriteToWorkspacesToAuthenticatedUsers(false);
+    }
 
     public void testAnonymousUser()
     {
