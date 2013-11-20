@@ -119,6 +119,12 @@
             <artifactId>persistence-api</artifactId>
             <scope>provided</scope>
         </dependency> -->
+        
+        <dependency>
+            <groupId>org.hibernatespatial</groupId>
+            <artifactId>hibernate-spatial-h2-geodb</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <!-- HIBERNATE-GENERIC-DAO -->
         <dependency>

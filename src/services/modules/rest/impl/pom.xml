@@ -141,6 +141,12 @@
             <artifactId>servlet-api</artifactId>
             <scope>test</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>org.hibernatespatial</groupId>
+            <artifactId>hibernate-spatial-h2-geodb</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
