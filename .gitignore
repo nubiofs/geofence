@@ -10,6 +10,7 @@ nb*.xml
 .project
 .settings
 *~
+target/
 
 src/gui/core/plugin/mapsui/gwt-unitCache/
 src/gui/core/plugin/mapsui/war/
