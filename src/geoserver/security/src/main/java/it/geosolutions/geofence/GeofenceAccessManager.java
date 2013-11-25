@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.common.collect.Lists;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.io.WKTReader;
@@ -128,6 +129,9 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
     boolean allowRemoteAndInlineLayers;
     boolean allowDynamicStyles;
     boolean grantWriteToWorkspacesToAuthenticatedUsers;
+    boolean useRolesToFilter;
+    String acceptedRoles;
+    List<String> roles = new ArrayList<String>();
 
    	public GeofenceAccessManager(RuleReaderService rules, Catalog catalog, String instanceName) {
 
@@ -270,14 +274,8 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
 
         // get the request infos
         RuleFilter ruleFilter = new RuleFilter(RuleFilter.SpecialFilterType.ANY);
-        if (username == null)
-        {
-            ruleFilter.setUser(RuleFilter.SpecialFilterType.DEFAULT);
-        }
-        else
-        {
-            ruleFilter.setUser(username);
-        }
+        setRuleFilterUserOrRole(user, ruleFilter);
+        
         ruleFilter.setInstance(instanceName);
         if (service != null)
         {
@@ -327,6 +325,32 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
     }
 
     /**
+	 * @param user
+	 */
+	private void setRuleFilterUserOrRole(Authentication user, RuleFilter ruleFilter) {
+		if(user != null) {
+			if(useRolesToFilter && roles.size() > 0) {
+				for(GrantedAuthority authority : user.getAuthorities()) {
+					if(roles.contains(authority.getAuthority())) {
+						ruleFilter.setUserGroup(authority.getAuthority());
+					}
+				}
+			} else {
+				String username = user.getName();
+				if (username == null)
+		        {
+		            ruleFilter.setUser(RuleFilter.SpecialFilterType.DEFAULT);
+		        }
+		        else
+		        {
+		            ruleFilter.setUser(username);
+		        }
+			}
+		}
+		
+	}
+
+	/**
      * @param resource
      * @param rule
      * @return
@@ -528,9 +552,9 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
                 throw new ServiceException("Unrecognized request object: " + ro);
             }
 
-            overrideGetMapRequest(gsRequest, service, request, username, getMap);
+            overrideGetMapRequest(gsRequest, service, request, user, getMap);
         } else if ((request != null) && "WMS".equalsIgnoreCase(service) && "GetLegendGraphic".equalsIgnoreCase(request)) {
-            overrideGetLegendGraphicRequest(gsRequest, operation, service, request, username);
+            overrideGetLegendGraphicRequest(gsRequest, operation, service, request, user);
 
         }
 
@@ -538,7 +562,7 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
     }
 
     void overrideGetLegendGraphicRequest(Request gsRequest, Operation operation,
-        String service, String request, String username) {
+        String service, String request, Authentication user) {
         // get the layer
         String layerName = (String) gsRequest.getKvp().get("LAYER");
         List<LayerInfo> layers = new ArrayList<LayerInfo>();
@@ -568,7 +592,7 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
 
             // get the rule, it contains default and allowed styles
             RuleFilter ruleFilter = new RuleFilter(RuleFilter.SpecialFilterType.ANY);
-            ruleFilter.setUser(username);
+            setRuleFilterUserOrRole(user, ruleFilter);            
             ruleFilter.setInstance(instanceName);
             ruleFilter.setService(service);
             ruleFilter.setRequest(request);
@@ -602,7 +626,7 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
     }
 
     private void overrideGetMapRequest(Request gsRequest, String service, String request, 
-        String username, GetMapRequest getMap)
+    		Authentication user, GetMapRequest getMap)
     {
 		if (gsRequest.getKvp().get("layers") == null
 				&& gsRequest.getKvp().get("sld") == null
@@ -642,8 +666,7 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
             // get the rule, it contains default and allowed styles
             RuleFilter ruleFilter = new RuleFilter(RuleFilter.SpecialFilterType.ANY);
 
-            if(username != null)
-                ruleFilter.setUser(username); // ?? maybe a DEFAULT here
+            setRuleFilterUserOrRole(user, ruleFilter);
             ruleFilter.setInstance(instanceName);
             ruleFilter.setService(service);
             ruleFilter.setRequest(request);
@@ -787,6 +810,34 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
 			boolean grantWriteToWorkspacesToAuthenticatedUsers) {
 		this.grantWriteToWorkspacesToAuthenticatedUsers = grantWriteToWorkspacesToAuthenticatedUsers;
 	}
-    
-    
+
+	/**
+	 * @return the useRolesToFilter
+	 */
+	public boolean isUseRolesToFilter() {
+		return useRolesToFilter;
+	}
+
+	/**
+	 * @param useRolesToFilter the useRolesToFilter to set
+	 */
+	public void setUseRolesToFilter(boolean useRolesToFilter) {
+		this.useRolesToFilter = useRolesToFilter;
+	}
+
+	/**
+	 * @return the acceptedRoles
+	 */
+	public String getAcceptedRoles() {
+		return acceptedRoles;
+	}
+
+	/**
+	 * @param acceptedRoles the acceptedRoles to set
+	 */
+	public void setAcceptedRoles(String acceptedRoles) {
+		roles = Lists.newArrayList(acceptedRoles.split(","));		
+		this.acceptedRoles = acceptedRoles;
+	}
+ 
 }
