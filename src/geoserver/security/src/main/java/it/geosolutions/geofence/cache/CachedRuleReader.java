@@ -67,7 +67,7 @@ public class CachedRuleReader implements RuleReaderService {
     private final CacheInitParams cacheInitParams = new CacheInitParams();
 
     public CachedRuleReader() {
-        LOGGER.setLevel(Level.ALL);
+        
     }
 
     /**
