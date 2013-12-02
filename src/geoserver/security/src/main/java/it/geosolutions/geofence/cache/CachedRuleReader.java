@@ -230,6 +230,11 @@ public class CachedRuleReader implements RuleReaderService {
         this.realRuleReaderService = realRuleReaderService;
     }
 
+    
+
+    public RuleReaderService getRealRuleReaderService() {
+        return realRuleReaderService;
+    }
 
     public CacheInitParams getCacheInitParams() {
         return cacheInitParams;
