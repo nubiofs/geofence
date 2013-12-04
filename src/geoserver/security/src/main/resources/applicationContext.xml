@@ -16,7 +16,8 @@
 	<bean id="geofence-gs-property-configurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations" value="classpath*:geofence-geoserver.properties" />
-		<property name="ignoreResourceNotFound" value="false" />
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
 	</bean>
 
 	<!-- TODO: add authorization to these requests using the hints at
