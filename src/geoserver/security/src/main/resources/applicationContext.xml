@@ -47,13 +47,17 @@
 <!--		<constructor-arg index="0" ref="ruleReaderService" />-->
 		<constructor-arg index="0" ref="ruleReaderService" />
 		<constructor-arg index="1" ref="rawCatalog" />
-		<constructor-arg index="2" value="${instanceName}" />
-        
-        <property name="allowDynamicStyles" value="${allowDynamicStyles}"/>
-        <property name="allowRemoteAndInlineLayers" value="${allowRemoteAndInlineLayers}"/>
-        <property name="grantWriteToWorkspacesToAuthenticatedUsers" value="${grantWriteToWorkspacesToAuthenticatedUsers}"/>
-        <property name="useRolesToFilter" value="${useRolesToFilter}"/>
-        <property name="acceptedRoles" value="${acceptedRoles}"/>
+		<constructor-arg index="2">
+		  <bean class="it.geosolutions.geofence.GeofenceAccessManagerConfiguration">
+		        <property name="instanceName" value="${instanceName}"/>
+		        <property name="servicesUrl" value="${servicesUrl}"/>
+		        <property name="allowDynamicStyles" value="${allowDynamicStyles}"/>
+		        <property name="allowRemoteAndInlineLayers" value="${allowRemoteAndInlineLayers}"/>
+		        <property name="grantWriteToWorkspacesToAuthenticatedUsers" value="${grantWriteToWorkspacesToAuthenticatedUsers}"/>
+		        <property name="useRolesToFilter" value="${useRolesToFilter}"/>
+		        <property name="acceptedRoles" value="${acceptedRoles}"/>
+		  </bean>
+		</constructor-arg>
 	</bean>
 
     <!-- =================================================================== -->
@@ -96,6 +100,17 @@
 
     <bean id="geofenceAuth" class="it.geosolutions.geoserver.authentication.auth.GeoFenceSecurityProvider">
         <property name="ruleReaderService" ref="ruleReaderService"/>
+    </bean>
+    
+    <!-- Admin page -->
+    <bean id="geofencePage" class="org.geoserver.web.MenuPageInfo">
+      <property name="id" value="geofencePage"/>
+      <property name="titleKey" value="GeofencePage.page.title"/>
+      <property name="descriptionKey" value="GeofencePage.page.description"/>
+      <property name="componentClass" value="it.geosolutions.geofence.web.GeofencePage"/>
+      <property name="category" ref="securityCategory" />
+      <property name="order" value="1000" />
+      <property name="icon" value="img/icons/geofence.png" />
     </bean>
 
 </beans>

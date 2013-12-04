@@ -1,5 +1,8 @@
 package it.geosolutions.geofence;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 
 import org.geoserver.catalog.Catalog;
@@ -57,7 +60,7 @@ public class AccessManagerTest extends GeofenceBaseTest
     
     public void testCiteCannotWriteOnWorkspace()
     {
-    	manager.setGrantWriteToWorkspacesToAuthenticatedUsers(false);
+    	manager.getConfiguration().setGrantWriteToWorkspacesToAuthenticatedUsers(false);
         UsernamePasswordAuthenticationToken user = new UsernamePasswordAuthenticationToken("cite",
                 "cite",
                 Arrays.asList(
@@ -72,7 +75,7 @@ public class AccessManagerTest extends GeofenceBaseTest
     
     public void testCiteCanWriteOnWorkspace()
     {
-    	manager.setGrantWriteToWorkspacesToAuthenticatedUsers(true);
+    	manager.getConfiguration().setGrantWriteToWorkspacesToAuthenticatedUsers(true);
         UsernamePasswordAuthenticationToken user = new UsernamePasswordAuthenticationToken("cite",
                 "cite",
                 Arrays.asList(
@@ -83,7 +86,7 @@ public class AccessManagerTest extends GeofenceBaseTest
         WorkspaceAccessLimits wl = manager.getAccessLimits(user, citeWS);
         assertTrue(wl.isReadable());
         assertTrue(wl.isWritable());
-        manager.setGrantWriteToWorkspacesToAuthenticatedUsers(false);
+        manager.getConfiguration().setGrantWriteToWorkspacesToAuthenticatedUsers(false);
     }
 
     public void testAnonymousUser()
@@ -206,4 +209,5 @@ public class AccessManagerTest extends GeofenceBaseTest
 
 
     }
+   
 }
