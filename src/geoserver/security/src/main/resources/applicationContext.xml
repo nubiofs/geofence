@@ -14,11 +14,30 @@
 
 
 	<bean id="geofence-gs-property-configurer"
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="locations" value="classpath*:geofence-geoserver.properties" />
+		class="it.geosolutions.geofence.config.GeoFencePropertyPlaceholderConfigurer">
+		<constructor-arg ref="dataDirectory"/>
+		<property name="locations">
+		  <list>
+		      <value>classpath*:geofence-geoserver.properties</value>
+		      <value>file:geofence/geofence-geoserver.properties</value>
+		  </list>
+		</property>
 		<property name="ignoreResourceNotFound" value="true" />
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 	</bean>
+	
+	<bean id="geofence-cache-property-configurer"
+        class="it.geosolutions.geofence.config.GeoFencePropertyPlaceholderConfigurer">
+        <constructor-arg ref="dataDirectory"/>
+        <property name="locations">
+          <list>
+              <value>classpath*:geofence-cache.properties</value>
+              <value>file:geofence/geofence-cache.properties</value>
+          </list>
+        </property>
+        <property name="ignoreResourceNotFound" value="true" />
+        <property name="ignoreUnresolvablePlaceholders" value="true" />
+    </bean>
 
 	<!-- TODO: add authorization to these requests using the hints at
 	     http://book.javanb.com/Professional-Java-Development-with-the-Spring-Framework/BBL0071.html
@@ -33,9 +52,10 @@
     </bean>
 
 	<bean id="cachedRuleReader" class="it.geosolutions.geofence.cache.CachedRuleReader" lazy-init="true" init-method="init">
-        <property name="cacheInitParams.size" value="1000"/>
-        <property name="cacheInitParams.refreshMilliSec" value="30000"/>
-        <property name="cacheInitParams.expireMilliSec" value="60000"/>
+	    <constructor-arg index="0" ref="geofence-cache-property-configurer" />
+        <property name="cacheInitParams.size" value="${cacheSize}"/>
+        <property name="cacheInitParams.refreshMilliSec" value="${cacheRefresh}"/>
+        <property name="cacheInitParams.expireMilliSec" value="${cacheExpire}"/>
 
         <property name="realRuleReaderService" ref="baseReaderService"/>
     </bean>
@@ -47,7 +67,8 @@
 <!--		<constructor-arg index="0" ref="ruleReaderService" />-->
 		<constructor-arg index="0" ref="ruleReaderService" />
 		<constructor-arg index="1" ref="rawCatalog" />
-		<constructor-arg index="2">
+		<constructor-arg index="2" ref="geofence-gs-property-configurer" />
+		<constructor-arg index="3">
 		  <bean class="it.geosolutions.geofence.GeofenceAccessManagerConfiguration">
 		        <property name="instanceName" value="${instanceName}"/>
 		        <property name="servicesUrl" value="${servicesUrl}"/>
@@ -82,17 +103,39 @@
             </map>
         </property>
     </bean>
-
+    
+    
     <bean id="ruleCacheStatsFinder" class="it.geosolutions.geofence.cache.rest.RuleCacheStatsFinder" >
         <constructor-arg index="0" ref="cachedRuleReader"/>
     </bean>
+    
+    
     <bean id="ruleCacheInvalidator" class="it.geosolutions.geofence.cache.rest.RuleCacheInvalidator" >
         <constructor-arg index="0" ref="cachedRuleReader"/>
     </bean>
 
+	<!-- =================================================================== -->
+    <!-- Next part is about REST command against accessManager -->
+    <!-- =================================================================== -->
+	<bean id="accessManagerMapping" class="org.geoserver.rest.RESTMapping">
+		<property name="routes">
+            <map>
+                <entry>
+                    <key>
+                        <value>/geofence/info</value>
+                    </key>
+                    <value>geofenceInfo</value>
+                </entry>
+            </map>
+        </property>
+	</bean>
+
+	<bean id="geofenceInfo" class="it.geosolutions.geofence.rest.GeoFenceInfo" >
+        <constructor-arg index="0" ref="geofenceRuleAccessManager"/>
+    </bean>
 
     <!-- geoserver auth mechanism -->
-
+	
     <bean id="geofenceFilter" class="it.geosolutions.geoserver.authentication.filter.GeoFenceAuthFilterProvider">
         <property name="ruleReaderService" ref="ruleReaderService"/>
         <property name="geofenceAuth" ref="geofenceAuth"/>

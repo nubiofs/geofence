@@ -109,4 +109,9 @@ public class InstancesManagerRemoteServiceImpl extends RemoteServiceServlet impl
         instancesManagerService.saveInstance(instance);
     }
 
+	public void testConnection(it.geosolutions.geofence.gui.client.model.GSInstance instance)  throws ApplicationException {
+		instancesManagerService.testConnection(instance);
+		
+	}
+
 }

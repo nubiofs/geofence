@@ -19,6 +19,7 @@
  */
 package it.geosolutions.geofence;
 
+import it.geosolutions.geofence.config.GeoFencePropertyPlaceholderConfigurer;
 import it.geosolutions.geofence.services.RuleReaderService;
 import it.geosolutions.geofence.utils.GeofenceTestUtils;
 
@@ -31,12 +32,15 @@ import java.util.logging.Level;
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.geoserver.test.GeoServerTestSupport;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 
 public class AccessManagerConfigTest extends GeoServerTestSupport {
 
 
     protected GeofenceAccessManager manager;
     protected RuleReaderService geofenceService;
+    GeoFencePropertyPlaceholderConfigurer configurer;
 
     @Override
     protected void oneTimeSetUp() throws Exception {
@@ -63,13 +67,14 @@ public class AccessManagerConfigTest extends GeoServerTestSupport {
         // get the beans we use for testing
         manager = (GeofenceAccessManager) applicationContext.getBean("geofenceRuleAccessManager");
         geofenceService = (RuleReaderService) applicationContext.getBean("ruleReaderService");
+        configurer = (GeoFencePropertyPlaceholderConfigurer) applicationContext.getBean("geofence-gs-property-configurer");
+        configurer.setLocation(new UrlResource(this.getClass().getResource("/test-config.properties")));
     }
 
 
     public void testSave() throws IOException, URISyntaxException {
         GeofenceTestUtils.emptyFile("test-config.properties");
        
-        manager.setConfigurationFileName("test-config.properties");
         GeofenceAccessManagerConfiguration config = new GeofenceAccessManagerConfiguration();
         config.setInstanceName("TEST_INSTANCE");
         config.setServicesUrl("http://fakeservice");

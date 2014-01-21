@@ -194,6 +194,14 @@ public class InstanceGridWidget extends GeofenceGridWidget<GSInstance>
         removeActionColumn.setMenuDisabled(true);
         removeActionColumn.setSortable(false);
         configs.add(removeActionColumn);
+        
+        ColumnConfig testConnectionActionColumn = new ColumnConfig();
+        testConnectionActionColumn.setId("testConnection");
+        testConnectionActionColumn.setWidth(80);
+        testConnectionActionColumn.setRenderer(this.createInstanceTestConnectionButton());
+        testConnectionActionColumn.setMenuDisabled(true);
+        testConnectionActionColumn.setSortable(false);
+        configs.add(testConnectionActionColumn);
 
         return new ColumnModel(configs);
     }
@@ -777,6 +785,65 @@ public class InstanceGridWidget extends GeofenceGridWidget<GSInstance>
                         });
 
                     return removeInstanceButton;
+                }
+
+            };
+
+        return buttonRendered;
+    }
+    
+    /**
+     * Creates the instance delete button.
+     *
+     * @return the grid cell renderer
+     */
+    private GridCellRenderer<GSInstance> createInstanceTestConnectionButton()
+    {
+        GridCellRenderer<GSInstance> buttonRendered = new GridCellRenderer<GSInstance>()
+            {
+
+                private boolean init;
+
+                public Object render(final GSInstance model, String property, ColumnData config,
+                    int rowIndex, int colIndex, ListStore<GSInstance> store, Grid<GSInstance> grid)
+                {
+
+                    if (!init)
+                    {
+                        init = true;
+                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<GSInstance>>()
+                            {
+
+                                public void handleEvent(GridEvent<GSInstance> be)
+                                {
+                                    for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
+                                    {
+                                        if ((be.getGrid().getView().getWidget(i, be.getColIndex()) != null) &&
+                                                (be.getGrid().getView().getWidget(i, be.getColIndex()) instanceof BoxComponent))
+                                        {
+                                            ((BoxComponent) be.getGrid().getView().getWidget(i,
+                                                    be.getColIndex())).setWidth(be.getWidth() - 10);
+                                        }
+                                    }
+                                }
+                            });
+                    }
+
+                    // TODO: generalize this!
+                    Button testConnectionButton = new Button("Test");
+                    testConnectionButton.setIcon(Resources.ICONS.test());
+
+                    testConnectionButton.addListener(Events.OnClick, new Listener<ButtonEvent>()
+                        {
+
+                            public void handleEvent(ButtonEvent be)
+                            {
+                            	Dispatcher.forwardEvent(GeofenceEvents.TEST_CONNECTION, model);
+                                
+                            }
+                        });
+
+                    return testConnectionButton;
                 }
 
             };

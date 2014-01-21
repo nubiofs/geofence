@@ -79,5 +79,12 @@ public interface IInstancesManagerService
      *            the instance
      */
     public void saveInstance(GSInstance instance);
+    
+    /**
+     * Test connection to instance.
+     * 
+     * @param url
+     */
+    public void testConnection(it.geosolutions.geofence.gui.client.model.GSInstance instance) throws ApplicationException;
 
 }

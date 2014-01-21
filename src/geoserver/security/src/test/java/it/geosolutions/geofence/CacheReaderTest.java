@@ -19,15 +19,23 @@
  */
 package it.geosolutions.geofence;
 
+import it.geosolutions.geofence.cache.CacheInitParams;
 import it.geosolutions.geofence.cache.CachedRuleReader;
-import com.google.common.base.Ticker;
-
+import it.geosolutions.geofence.config.GeoFencePropertyPlaceholderConfigurer;
 import it.geosolutions.geofence.services.RuleReaderService;
 import it.geosolutions.geofence.services.dto.AccessInfo;
 import it.geosolutions.geofence.services.dto.RuleFilter;
+import it.geosolutions.geofence.utils.GeofenceTestUtils;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.geotools.util.logging.Logging;
+import org.springframework.core.io.UrlResource;
+
+import com.google.common.base.Ticker;
 
 /**
  *
@@ -38,12 +46,14 @@ public class CacheReaderTest extends GeofenceBaseTest {
     static final Logger LOGGER = Logging.getLogger(CacheReaderTest.class);
 
     private RuleReaderService realReader;
-
+    private GeoFencePropertyPlaceholderConfigurer configurer;
     @Override
     protected void setUpInternal() throws Exception {
         super.setUpInternal();
 
         realReader = (RuleReaderService) applicationContext.getBean("ruleReaderService");
+        configurer = (GeoFencePropertyPlaceholderConfigurer) applicationContext.getBean("geofence-cache-property-configurer");
+        configurer.setLocation(new UrlResource(this.getClass().getResource("/test-cache-config.properties")));
     }
 
     static class CustomTicker extends Ticker {
@@ -63,7 +73,7 @@ public class CacheReaderTest extends GeofenceBaseTest {
     public void IGNOREtestSize() {
         CustomTicker ticker = new CustomTicker();
 
-        CachedRuleReader cachedRuleReader = new CachedRuleReader();
+        CachedRuleReader cachedRuleReader = new CachedRuleReader(configurer);
         cachedRuleReader.setRealRuleReaderService(realReader);
 
         cachedRuleReader.getCacheInitParams().setSize(2);
@@ -153,7 +163,7 @@ public class CacheReaderTest extends GeofenceBaseTest {
     public void testExpire() throws InterruptedException {
         CustomTicker ticker = new CustomTicker();
 
-        CachedRuleReader cachedRuleReader = new CachedRuleReader();
+        CachedRuleReader cachedRuleReader = new CachedRuleReader(configurer);
         cachedRuleReader.setRealRuleReaderService(realReader);
 
         cachedRuleReader.getCacheInitParams().setSize(100);
@@ -230,6 +240,20 @@ public class CacheReaderTest extends GeofenceBaseTest {
         ticker.setMillisec(2000);
         cachedRuleReader.getAccessInfo(filter1);
         System.out.println(cachedRuleReader.getStats());
+    }
+    
+    public void testSave() throws IOException, URISyntaxException {
+        GeofenceTestUtils.emptyFile("test-cache-config.properties");
+       
+        CachedRuleReader cachedRuleReader = new CachedRuleReader(configurer);
+        CacheInitParams params = new CacheInitParams();
+        params.setSize(100);
+        params.setRefreshMilliSec(500);
+        params.setExpireMilliSec(1000);
+        
+        cachedRuleReader.saveConfiguration(params);
+        String content = GeofenceTestUtils.readConfig("test-cache-config.properties");
+        assertEquals("cacheSize=100cacheRefresh=500cacheExpire=1000", content);
     }
 
 }

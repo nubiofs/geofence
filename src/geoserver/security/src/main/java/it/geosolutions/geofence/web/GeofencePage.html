@@ -57,6 +57,18 @@
 	            <span><wicket:message key="cacheSettings"></wicket:message></span>
 	          </legend>
 	          <ul>
+	          <li>
+                  <label for="cacheSize"><wicket:message key="cacheSize"></wicket:message></label>
+                  <input id="cacheSize" wicket:id="cacheSize" type="text" class="text"></input>
+                </li>
+                <li>
+                  <label for="cacheRefresh"><wicket:message key="cacheRefresh"></wicket:message></label>
+                  <input id="cacheRefresh" wicket:id="cacheRefresh" type="text" class="text"></input>
+                </li>
+                <li>
+                  <label for="cacheExpire"><wicket:message key="cacheExpire"></wicket:message></label>
+                  <input id="cacheExpire" wicket:id="cacheExpire" type="text" class="text"></input>
+                </li>
 	           <li>
 	               <div wicket:id="rulestats"></div>
 	               <div wicket:id="userstats"></div>

@@ -21,6 +21,7 @@ package it.geosolutions.geofence.web;
 
 import it.geosolutions.geofence.GeofenceAccessManager;
 import it.geosolutions.geofence.GeofenceAccessManagerConfiguration;
+import it.geosolutions.geofence.cache.CacheInitParams;
 import it.geosolutions.geofence.cache.CachedRuleReader;
 import it.geosolutions.geofence.services.RuleReaderService;
 import it.geosolutions.geofence.services.dto.RuleFilter;
@@ -62,13 +63,20 @@ public class GeofencePage extends GeoServerSecuredPage {
      */
     private GeofenceAccessManagerConfiguration config;
     
+    private CacheInitParams cacheParams;
+    
     public GeofencePage() {
         // extracts cfg object from the registered probe instance
         config = GeoServerExtensions.bean(GeofenceAccessManager.class)
                 .getConfiguration();
+        
+        CachedRuleReader cacheRuleReader = GeoServerExtensions
+                .bean(CachedRuleReader.class);
+        
+        cacheParams = cacheRuleReader.getCacheInitParams().clone();
     
         final IModel<GeofenceAccessManagerConfiguration> managerModel = getAccessManagerModel();
-    
+        final IModel<CacheInitParams> cacheModel = getCacheModel();
         Form<IModel<GeofenceAccessManagerConfiguration>> form = new Form<IModel<GeofenceAccessManagerConfiguration>>(
                 "form",
                 new CompoundPropertyModel<IModel<GeofenceAccessManagerConfiguration>>(
@@ -91,7 +99,7 @@ public class GeofencePage extends GeoServerSecuredPage {
                     List<ShortRule> rules = ruleReader.getMatchingRules(new RuleFilter());
                     
                     info(new StringResourceModel(GeofencePage.class.getSimpleName() + 
-                            ".cacheInvalidated", null).getObject());
+                            ".connectionSuccessful", null).getObject());
                 } catch(Exception e) {
                     error(e);
                     LOGGER.log(Level.WARNING, e.getMessage(), e);
@@ -133,6 +141,8 @@ public class GeofencePage extends GeoServerSecuredPage {
                     // save the changed configuration
                     GeoServerExtensions.bean(GeofenceAccessManager.class)
                             .saveConfiguration(config);
+                    GeoServerExtensions.bean(CachedRuleReader.class)
+                            .saveConfiguration(cacheParams);
                     doReturn();
                 } catch (Exception e) {
                     LOGGER.log(Level.WARNING, "Save error", e);
@@ -154,10 +164,18 @@ public class GeofencePage extends GeoServerSecuredPage {
         form.add(cancel);
         
         
-        CachedRuleReader cacheRuleReader = GeoServerExtensions
-                .bean(CachedRuleReader.class);
+        
         
 
+        form.add(new TextField<Long>("cacheSize", new PropertyModel<Long>(
+                cacheModel, "size")).setRequired(true));
+        
+        form.add(new TextField<Long>("cacheRefresh", new PropertyModel<Long>(
+                cacheModel, "refreshMilliSec")).setRequired(true));
+        
+        form.add(new TextField<Long>("cacheExpire", new PropertyModel<Long>(
+                cacheModel, "expireMilliSec")).setRequired(true));
+        
         final Model<String> ruleStatsModel = new Model(getStats(cacheRuleReader));
         final Label ruleStats = new Label("rulestats", ruleStatsModel);
         ruleStats.setOutputMarkupId(true); 
@@ -233,6 +251,15 @@ public class GeofencePage extends GeoServerSecuredPage {
      */
     private IModel<GeofenceAccessManagerConfiguration> getAccessManagerModel() {
         return new Model<GeofenceAccessManagerConfiguration>(config);
+    }
+    
+    /**
+     * Creates a new wicket model from the configuration object.
+     * 
+     * @return
+     */
+    private IModel<CacheInitParams> getCacheModel() {
+        return new Model<CacheInitParams>(cacheParams);
     }
 
 

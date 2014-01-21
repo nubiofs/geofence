@@ -273,4 +273,12 @@ public interface GeofenceIcons extends ImageBundle {
      */
     @Resource("watches.png")
     AbstractImagePrototype searchWatches();
+    
+    /**
+     * Test connection.
+     * 
+     * @return the abstract image prototype
+     */
+    @Resource("link_go.png")
+    AbstractImagePrototype test();
 }

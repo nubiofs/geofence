@@ -38,12 +38,26 @@ import it.geosolutions.geofence.gui.client.model.data.rpc.RpcPageLoadResult;
 import it.geosolutions.geofence.gui.server.service.IInstancesManagerService;
 import it.geosolutions.geofence.gui.service.GeofenceRemoteService;
 import it.geosolutions.geofence.services.dto.ShortInstance;
+import it.geosolutions.geofence.services.exception.BadRequestServiceEx;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
+import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.ConnectException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.httpclient.Credentials;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -172,6 +186,71 @@ public class InstancesManagerServiceImpl implements IInstancesManagerService {
 		}
 	}
 
+
+	public void testConnection(it.geosolutions.geofence.gui.client.model.GSInstance instance) throws ApplicationException {
+		try {
+			String response = getURL(instance.getBaseURL() + "/rest/geofence/info", instance.getUsername(), instance.getPassword());
+			if(response != null) {
+				if(!response.equals(instance.getName())) {
+					logger.error("Wrong instance name: " + response);
+					throw new ApplicationException("Wrong instance name: " + instance.getName() + ", should be :" + response);
+				}
+			} else {
+				throw new ApplicationException("Error contacting GeoServer");
+			}			
+		} catch (MalformedURLException e) {
+			logger.error(e.getLocalizedMessage(), e.getCause());
+			throw new ApplicationException(e.getLocalizedMessage(),
+					e.getCause());
+		}
+	}
+	
+	public String getURL(String url, String username, String pw) throws MalformedURLException {
+
+        GetMethod httpMethod = null;
+		try {
+            HttpClient client = new HttpClient();
+            setAuth(client, url, username, pw);
+			httpMethod = new GetMethod(url);
+			client.getHttpConnectionManager().getParams().setConnectionTimeout(5000);
+			int status = client.executeMethod(httpMethod);
+			if(status == HttpStatus.SC_OK) {
+                InputStream is = httpMethod.getResponseBodyAsStream();
+				String response = IOUtils.toString(is);
+				if(response.trim().length()==0) { // sometime gs rest fails
+					logger.warn("ResponseBody is empty");
+					return null;
+				} else {
+                    return response;
+                }
+			} else {
+				logger.info("("+status+") " + HttpStatus.getStatusText(status) + " -- " + url );
+			}
+		} catch (ConnectException e) {
+			logger.info("Couldn't connect to ["+url+"]");
+		} catch (IOException e) {
+			logger.info("Error talking to ["+url+"]", e);
+		} finally {
+            if(httpMethod != null)
+                httpMethod.releaseConnection();
+        }
+
+		return null;
+	}
+	
+	private void setAuth(HttpClient client, String url, String username, String pw) throws MalformedURLException {
+        URL u = new URL(url);
+        if(username != null && pw != null) {
+            Credentials defaultcreds = new UsernamePasswordCredentials(username, pw);
+            client.getState().setCredentials(new AuthScope(u.getHost(), u.getPort()), defaultcreds);
+            client.getParams().setAuthenticationPreemptive(true); // GS2 by default always requires authentication
+        } else {
+            if(logger.isDebugEnabled()) {
+                logger.debug("Not setting credentials to access to " + url);
+            }
+        }
+    }
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -216,4 +295,5 @@ public class InstancesManagerServiceImpl implements IInstancesManagerService {
 			}
 		}
 	}
+
 }

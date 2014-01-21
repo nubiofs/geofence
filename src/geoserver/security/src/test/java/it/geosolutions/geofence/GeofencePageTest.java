@@ -20,6 +20,8 @@
 package it.geosolutions.geofence;
 
 
+import it.geosolutions.geofence.config.GeoFencePropertyPlaceholderConfigurer;
+import it.geosolutions.geofence.services.RuleReaderService;
 import it.geosolutions.geofence.utils.GeofenceTestUtils;
 import it.geosolutions.geofence.web.GeofencePage;
 
@@ -33,36 +35,47 @@ import org.apache.wicket.util.tester.FormTester;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.web.GeoServerHomePage;
 import org.geoserver.web.GeoServerWicketTestSupport;
+import org.springframework.core.io.UrlResource;
 
 public class GeofencePageTest extends GeoServerWicketTestSupport {
-    @Override
-    public void oneTimeSetUp() throws Exception {
-        super.oneTimeSetUp();
-        GeoServerExtensions.bean(GeofenceAccessManager.class)
-                .setConfigurationFileName("test-config.properties");
-        
-    }
     
+    GeoFencePropertyPlaceholderConfigurer configurer;
+    GeoFencePropertyPlaceholderConfigurer cacheConfigurer;
+
+    @Override
+    protected void setUpInternal() throws Exception {
+        super.setUpInternal();
+    
+        // get the beans we use for testing
+        configurer = (GeoFencePropertyPlaceholderConfigurer) applicationContext.getBean("geofence-gs-property-configurer");
+        configurer.setLocation(new UrlResource(this.getClass().getResource("/test-config.properties")));
+        cacheConfigurer = (GeoFencePropertyPlaceholderConfigurer) applicationContext.getBean("geofence-cache-property-configurer");
+        cacheConfigurer.setLocation(new UrlResource(this.getClass().getResource("/test-cache-config.properties")));
+    }
     
 
     public void testSave() throws URISyntaxException, IOException {
         GeofenceTestUtils.emptyFile("test-config.properties");
+        GeofenceTestUtils.emptyFile("test-cache-config.properties");
         login();
         tester.startPage(GeofencePage.class);
         FormTester ft = tester.newFormTester("form");
         ft.submit("submit");
         tester.assertRenderedPage(GeoServerHomePage.class);
         assertTrue(GeofenceTestUtils.readConfig("test-config.properties").length() > 0);
+        assertTrue(GeofenceTestUtils.readConfig("test-cache-config.properties").length() > 0);
     }
     
     public void testCancel() throws URISyntaxException, IOException {
         GeofenceTestUtils.emptyFile("test-config.properties");
+        GeofenceTestUtils.emptyFile("test-cache-config.properties");
         login();
         tester.startPage(GeofencePage.class);
         FormTester ft = tester.newFormTester("form");
         ft.submit("cancel");
         tester.assertRenderedPage(GeoServerHomePage.class);
         assertTrue(GeofenceTestUtils.readConfig("test-config.properties").length() == 0);
+        assertTrue(GeofenceTestUtils.readConfig("test-cache-config.properties").length() == 0);
     }
     
     public void testErrorEmptyInstance()  {
@@ -97,6 +110,28 @@ public class GeofencePageTest extends GeoServerWicketTestSupport {
         tester.clickLink("form:test", true);
         
         tester.assertContains("RemoteAccessException");
+    }
+    
+    public void testErrorEmptyCacheSize()  {
+        login();
+        tester.startPage(GeofencePage.class);
+        FormTester ft = tester.newFormTester("form");
+        ft.setValue("cacheSize", "");
+        ft.submit("submit");
+        tester.assertRenderedPage(GeofencePage.class);
+        
+        tester.assertContains("is required");
+    }
+    
+    public void testErrorWrongCacheSize()  {
+        login();
+        tester.startPage(GeofencePage.class);
+        FormTester ft = tester.newFormTester("form");
+        ft.setValue("cacheSize", "A");
+        ft.submit("submit");
+        tester.assertRenderedPage(GeofencePage.class);
+        
+        tester.assertContains("long");
     }
     
     public void testInvalidateCache()  {
