@@ -32,12 +32,12 @@
  */
 package it.geosolutions.geofence.gui.client.service;
 
+import it.geosolutions.geofence.gui.client.ApplicationException;
+import it.geosolutions.geofence.gui.client.model.GSInstance;
+
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-
-import it.geosolutions.geofence.gui.client.ApplicationException;
-import it.geosolutions.geofence.gui.client.model.GSInstance;
 
 
 /**
@@ -87,5 +87,13 @@ public interface InstancesManagerRemoteService extends RemoteService
      *            the async callback
      */
     public void deleteInstance(GSInstance instance);
+    
+    /**
+     * Test connection with instance.
+     * 
+     * @param url
+     * @param callback
+     */
+    public void testConnection( it.geosolutions.geofence.gui.client.model.GSInstance instance) throws ApplicationException;
 
 }

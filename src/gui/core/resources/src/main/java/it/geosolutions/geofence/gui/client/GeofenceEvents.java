@@ -432,6 +432,9 @@ public class GeofenceEvents {
     /** The Constant SHOW_UPLOAD_WIDGET. */
     public static final EventType SHOW_UPLOAD_WIDGET = new EventType();
     
+    /** The Constant TEST_CONNECTION. */
+    public static final EventType TEST_CONNECTION = new EventType();
+    
     /** The Constant TRIGGER_WATCH. */
     public static final EventType TRIGGER_WATCH = new EventType();
     

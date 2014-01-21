@@ -88,7 +88,7 @@ public class InstanceController extends Controller
 
             GeofenceEvents.CREATE_NEW_INSTANCE,
 
-
+            GeofenceEvents.TEST_CONNECTION,
 
 
             GeofenceEvents.ATTACH_BOTTOM_TAB_WIDGETS);
@@ -136,6 +136,11 @@ public class InstanceController extends Controller
         if (event.getType() == GeofenceEvents.DELETE_INSTANCE)
         {
             onDeleteInstance(event);
+        }
+        
+        if (event.getType() == GeofenceEvents.TEST_CONNECTION)
+        {
+            onTestConnection(event);
         }
 
         forwardToView(instancesView, event);
@@ -254,6 +259,49 @@ public class InstanceController extends Controller
             }
         }
     }
+    
+    /**
+    *
+    * @param event
+    */
+   private void onTestConnection(AppEvent event)
+   {
+       if (tabWidget != null)
+       {
+
+           InstancesTabItem instancesTabItem = (InstancesTabItem) tabWidget.getItemByItemId(INSTANCES_TAB_ITEM_ID);
+           final InstanceGridWidget instancesInfoWidget =
+               instancesTabItem.getInstanceManagementWidget().getInstancesInfo();
+           final Grid<GSInstance> grid = instancesInfoWidget.getGrid();
+
+           if ((grid != null) && (grid.getStore() != null) && (event.getData() != null) && (event.getData() instanceof GSInstance))
+           {
+
+               GSInstance instance = event.getData();
+               
+               instancesManagerServiceRemote.testConnection(instance, new AsyncCallback<Void>()
+                       {
+
+                   public void onFailure(Throwable caught)
+                   {
+
+                       Dispatcher.forwardEvent(GeofenceEvents.SEND_ERROR_MESSAGE,
+                           new String[] {  /* TODO: I18nProvider.getMessages().ruleServiceName() */"Instance Service",
+                               /* TODO: I18nProvider.getMessages().ruleFetchFailureMessage() */ "Error occurred testing connection to Instance ("+caught.getMessage()+")!" });
+                   }
+
+                   public void onSuccess(Void result)
+                   {
+
+                	   Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
+                               new String[] {  /* TODO: I18nProvider.getMessages().ruleServiceName() */"Instance Service",
+                                   /* TODO: I18nProvider.getMessages().ruleFetchFailureMessage() */ "Connection to Instance succesful!" });
+                   }
+               });
+               
+           }
+       }
+   }
 
     /**
      * Forward to tab widget.

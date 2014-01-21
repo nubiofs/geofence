@@ -19,32 +19,34 @@
  */
 package it.geosolutions.geofence.cache;
 
+import it.geosolutions.geofence.config.GeoFencePropertyPlaceholderConfigurer;
+import it.geosolutions.geofence.services.RuleReaderService;
+import it.geosolutions.geofence.services.dto.AccessInfo;
+import it.geosolutions.geofence.services.dto.AuthUser;
+import it.geosolutions.geofence.services.dto.RuleFilter;
+import it.geosolutions.geofence.services.dto.ShortRule;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.geotools.util.logging.Logging;
+
 import com.google.common.base.Ticker;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.CacheStats;
 import com.google.common.cache.LoadingCache;
-
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.ListenableFutureTask;
-import it.geosolutions.geofence.services.RuleReaderService;
-import it.geosolutions.geofence.services.dto.AccessInfo;
-import it.geosolutions.geofence.services.dto.RuleFilter;
-import it.geosolutions.geofence.services.dto.ShortRule;
-
-import it.geosolutions.geofence.GeofenceAccessManager;
-import it.geosolutions.geofence.services.dto.AuthUser;
-import java.util.concurrent.ExecutionException;
-import org.geotools.util.logging.Logging;
-
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * A delegating {@link it.geosolutions.georepo.services.RuleReaderService} with caching capabilities.
@@ -66,8 +68,10 @@ public class CachedRuleReader implements RuleReaderService {
 
     private final CacheInitParams cacheInitParams = new CacheInitParams();
 
-    public CachedRuleReader() {
-        
+    GeoFencePropertyPlaceholderConfigurer configurer;
+    
+    public CachedRuleReader(GeoFencePropertyPlaceholderConfigurer configurer) {
+        this.configurer = configurer;
     }
 
     /**
@@ -263,49 +267,7 @@ public class CachedRuleReader implements RuleReaderService {
         return ruleCache.stats().toString();
     }
 
-    public class CacheInitParams {
-        long size = 100;
-        long refreshMilliSec = 15000;
-        long expireMilliSec  = 30000;
-        Ticker customTicker = null; // testing only
-
-        public long getExpireMilliSec() {
-            return expireMilliSec;
-        }
-
-        public void setExpireMilliSec(long expireMilliSec) {
-            this.expireMilliSec = expireMilliSec;
-        }
-
-        public long getRefreshMilliSec() {
-            return refreshMilliSec;
-        }
-
-        public void setRefreshMilliSec(long refreshMilliSec) {
-            this.refreshMilliSec = refreshMilliSec;
-        }
-
-        public long getSize() {
-            return size;
-        }
-
-        public void setSize(long size) {
-            this.size = size;
-        }
-
-        public Ticker getCustomTicker() {
-            return customTicker;
-        }
-
-        public void setCustomTicker(Ticker customTicker) {
-            this.customTicker = customTicker;
-        }
-
-        @Override
-        public String toString() {
-            return "Init[size=" + size + " refrMsec=" + refreshMilliSec + ", expMsec=" + expireMilliSec + ']';
-        }
-    }
+    
 
     @Override
     public String toString() {
@@ -390,4 +352,40 @@ public class CachedRuleReader implements RuleReaderService {
         }
     
     }
+
+    /**
+     * @param params
+     * @throws IOException 
+     */
+    public void saveConfiguration(CacheInitParams params) throws IOException {
+        cacheInitParams.setSize(params.getSize());
+        cacheInitParams.setRefreshMilliSec(params.getRefreshMilliSec());
+        cacheInitParams.setExpireMilliSec(params.getExpireMilliSec());
+        
+        init();
+        
+        File configurationFile =  configurer.getConfigFile();
+        if (configurationFile != null && configurationFile.exists()
+                && configurationFile.canWrite()) {
+            BufferedWriter writer = null;
+            try {
+                writer = new BufferedWriter(new FileWriter(configurationFile));
+                writer.write("cacheSize=" + params.getSize()
+                        + "\n");
+                writer.write("cacheRefresh=" + params.getRefreshMilliSec()
+                        + "\n");
+                writer.write("cacheExpire=" + params.getExpireMilliSec() 
+                        + "\n");
+                
+            } finally {
+                if (writer != null) {
+                    writer.close();
+                }
+            }
+        } else {
+            throw new IOException("Cannot save GeoFence cache configuration file");
+        }
+    }
+
+ 
 }

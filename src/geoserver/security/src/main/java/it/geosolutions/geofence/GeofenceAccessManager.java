@@ -19,6 +19,7 @@
  */
 package it.geosolutions.geofence;
 
+import it.geosolutions.geofence.config.GeoFencePropertyPlaceholderConfigurer;
 import it.geosolutions.geofence.core.model.LayerAttribute;
 import it.geosolutions.geofence.core.model.enums.AccessType;
 import it.geosolutions.geofence.core.model.enums.GrantType;
@@ -108,9 +109,6 @@ import com.vividsolutions.jts.io.WKTReader;
 public class GeofenceAccessManager implements ResourceAccessManager, DispatcherCallback
 {
 
-    // default configuration file name (can be changed for testing purposes)
-    private String configurationFileName = "geofence-geoserver.properties";
-
     static final Logger LOGGER = Logging.getLogger(GeofenceAccessManager.class);
 
     /**
@@ -134,13 +132,18 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
 
     GeofenceAccessManagerConfiguration configuration;
     
+    GeoFencePropertyPlaceholderConfigurer configurer;
+        
     // list of accepted roles, for the useRolesToFilter option
     List<String> roles = new ArrayList<String>();
 
-   public GeofenceAccessManager(RuleReaderService rules, Catalog catalog, GeofenceAccessManagerConfiguration configuration) {
+    public GeofenceAccessManager(RuleReaderService rules, Catalog catalog,
+            GeoFencePropertyPlaceholderConfigurer configurer,
+            GeofenceAccessManagerConfiguration configuration) {
 
         this.rules = rules;
         this.catalog = catalog;
+        this.configurer = configurer;
         setConfiguration(configuration);
     }
    
@@ -151,22 +154,7 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
     public GeofenceAccessManagerConfiguration getConfiguration() {
         return configuration.clone();
     }
-    /**
-     * Configuration file name (can be changed for testing purposes).
-     * @return
-     */
-    public String getConfigurationFileName() {
-        return configurationFileName;
-    }
-
-    /**
-     * Configuration file name (can be changed for testing purposes).
-     * 
-     * @param configurationFileName
-     */
-    public void setConfigurationFileName(String configurationFileName) {
-        this.configurationFileName = configurationFileName;
-    }
+    
 
     /**
      * Updates the configuration.
@@ -205,56 +193,37 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
     public void saveConfiguration(GeofenceAccessManagerConfiguration configuration)
             throws IOException {
         setConfiguration(configuration);
-        File configurationFile;
-        try {
-            configurationFile = findConfigurationFile();
-            if (configurationFile != null && configurationFile.exists()
-                    && configurationFile.canWrite()) {
-                BufferedWriter writer = null;
-                try {
-                    writer = new BufferedWriter(new FileWriter(configurationFile));
-                    writer.write("instanceName=" + configuration.getInstanceName()
-                            + "\n");
-                    writer.write("servicesUrl=" + configuration.getServicesUrl()
-                            + "\n");
-                    writer.write("allowRemoteAndInlineLayers="
-                            + configuration.isAllowRemoteAndInlineLayers() + "\n");
-                    writer.write("allowDynamicStyles="
-                            + configuration.isAllowDynamicStyles() + "\n");
-                    writer.write("grantWriteToWorkspacesToAuthenticatedUsers="
-                            + configuration
-                                    .isGrantWriteToWorkspacesToAuthenticatedUsers()
-                            + "\n");
-                    writer.write("useRolesToFilter="
-                            + configuration.isUseRolesToFilter() + "\n");
-                    writer.write("acceptedRoles="
-                            + configuration.getAcceptedRoles() + "\n");
-                } finally {
-                    if (writer != null) {
-                        writer.close();
-                    }
+        File configurationFile =  configurer.getConfigFile();
+        if (configurationFile != null && configurationFile.exists()
+                && configurationFile.canWrite()) {
+            BufferedWriter writer = null;
+            try {
+                writer = new BufferedWriter(new FileWriter(configurationFile));
+                writer.write("instanceName=" + configuration.getInstanceName()
+                        + "\n");
+                writer.write("servicesUrl=" + configuration.getServicesUrl()
+                        + "\n");
+                writer.write("allowRemoteAndInlineLayers="
+                        + configuration.isAllowRemoteAndInlineLayers() + "\n");
+                writer.write("allowDynamicStyles="
+                        + configuration.isAllowDynamicStyles() + "\n");
+                writer.write("grantWriteToWorkspacesToAuthenticatedUsers="
+                        + configuration
+                                .isGrantWriteToWorkspacesToAuthenticatedUsers()
+                        + "\n");
+                writer.write("useRolesToFilter="
+                        + configuration.isUseRolesToFilter() + "\n");
+                writer.write("acceptedRoles="
+                        + configuration.getAcceptedRoles() + "\n");
+            } finally {
+                if (writer != null) {
+                    writer.close();
                 }
-            } else {
-                throw new IOException("Cannot save GeoFence configuration file");
             }
-        } catch (URISyntaxException e) {
-            throw new IOException(e);
+        } else {
+            throw new IOException("Cannot save GeoFence configuration file");
         }
-        
-    }
-
-    /**
-     * Finds the configuration file on classpath.
-     * 
-     * @return
-     * @throws URISyntaxException
-     */
-    private File findConfigurationFile() throws URISyntaxException {
-        URL resource = getClass().getResource("/" + configurationFileName);
-        if(resource == null) {
-            return null;
-        }
-        return new File(resource.toURI());
+       
     }
 
 
