@@ -408,30 +408,35 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
     }
 
     /**
-	 * @param user
-	 */
-	private void setRuleFilterUserOrRole(Authentication user, RuleFilter ruleFilter) {
-		if(user != null) {
-			if(configuration.isUseRolesToFilter() && roles.size() > 0) {
-				for(GrantedAuthority authority : user.getAuthorities()) {
-					if(roles.contains(authority.getAuthority())) {
-						ruleFilter.setUserGroup(authority.getAuthority());
-					}
-				}
-			} else {
-				String username = user.getName();
-				if (username == null)
-		        {
-		            ruleFilter.setUser(RuleFilter.SpecialFilterType.DEFAULT);
-		        }
-		        else
-		        {
-		            ruleFilter.setUser(username);
-		        }
-			}
-		}
-		
-	}
+     * @param user
+     */
+    private void setRuleFilterUserOrRole(Authentication user, RuleFilter ruleFilter) {
+        if (user != null) {
+            if (configuration.isUseRolesToFilter() && roles.size() > 0) {
+                
+                String role = "UNKNOWN";
+                for (GrantedAuthority authority : user.getAuthorities()) {
+                    if (roles.contains(authority.getAuthority())) {
+                        role = authority.getAuthority();
+                        
+                    }
+                }
+                LOGGER.log(Level.FINE, "Setting role for filter: {0}",
+                        new Object[] { role });
+                ruleFilter.setUserGroup(role);
+            } else {
+                String username = user.getName();
+                if (username == null) {
+                    ruleFilter.setUser(RuleFilter.SpecialFilterType.DEFAULT);
+                } else {
+                    LOGGER.log(Level.FINE, "Setting user for filter: {0}",
+                            new Object[] { username });                    
+                    ruleFilter.setUser(username);
+                }
+            }
+        }
+    
+    }
 
 	/**
      * @param resource
