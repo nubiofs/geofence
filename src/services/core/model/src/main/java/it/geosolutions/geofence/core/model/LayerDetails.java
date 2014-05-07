@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  * 
  *  GPLv3 + Classpath exception
@@ -22,6 +22,7 @@ package it.geosolutions.geofence.core.model;
 
 import com.vividsolutions.jts.geom.MultiPolygon;
 import it.geosolutions.geofence.core.model.adapter.MultiPolygonAdapter;
+import it.geosolutions.geofence.core.model.enums.CatalogMode;
 import it.geosolutions.geofence.core.model.enums.LayerType;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -89,6 +90,10 @@ public class LayerDetails implements Serializable {
 	@Column(name = "area")
 	private MultiPolygon area;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "catalog_mode", nullable = true)
+    private CatalogMode catalogMode;
+
     @OneToOne(optional=false)
 //    @Check(constraints="rule.access='LIMIT'") // ??? check this
     @ForeignKey(name="fk_details_rule")
@@ -125,6 +130,14 @@ public class LayerDetails implements Serializable {
         this.area = area;
     }
 
+    public CatalogMode getCatalogMode() {
+        return catalogMode;
+    }
+
+    public void setCatalogMode(CatalogMode catalogMode) {
+        this.catalogMode = catalogMode;
+    }
+    
     public String getCqlFilterRead() {
         return cqlFilterRead;
     }
@@ -200,6 +213,7 @@ public class LayerDetails implements Serializable {
                 + " defStyle=" + defaultStyle
                 + " cqlr=" + cqlFilterRead
                 + " cqlw=" + cqlFilterWrite
+                + " catmode" + catalogMode
                 + " area=" + area
                 + " rule=" + rule
                 + " attrs=" + attributes

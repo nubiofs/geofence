@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -21,45 +21,41 @@ package it.geosolutions.geofence.services;
 
 import com.googlecode.genericdao.search.Filter;
 import com.googlecode.genericdao.search.Search;
-
-import it.geosolutions.geofence.services.dto.AccessInfo;
-import it.geosolutions.geofence.services.dto.RuleFilter.IdNameFilter;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-
 import com.vividsolutions.jts.geom.Geometry;
 import it.geosolutions.geofence.core.dao.GSUserDAO;
 import it.geosolutions.geofence.core.dao.LayerDetailsDAO;
-import it.geosolutions.geofence.core.dao.UserGroupDAO;
 import it.geosolutions.geofence.core.dao.RuleDAO;
+import it.geosolutions.geofence.core.dao.UserGroupDAO;
 import it.geosolutions.geofence.core.model.GSUser;
 import it.geosolutions.geofence.core.model.LayerAttribute;
 import it.geosolutions.geofence.core.model.LayerDetails;
-import it.geosolutions.geofence.core.model.UserGroup;
 import it.geosolutions.geofence.core.model.Rule;
 import it.geosolutions.geofence.core.model.RuleLimits;
+import it.geosolutions.geofence.core.model.UserGroup;
 import it.geosolutions.geofence.core.model.enums.AccessType;
+import it.geosolutions.geofence.core.model.enums.CatalogMode;
 import it.geosolutions.geofence.core.model.enums.GrantType;
+import it.geosolutions.geofence.services.dto.AccessInfo;
 import it.geosolutions.geofence.services.dto.AuthUser;
 import it.geosolutions.geofence.services.dto.RuleFilter;
 import it.geosolutions.geofence.services.dto.RuleFilter.FilterType;
+import it.geosolutions.geofence.services.dto.RuleFilter.IdNameFilter;
 import it.geosolutions.geofence.services.dto.RuleFilter.NameFilter;
 import it.geosolutions.geofence.services.dto.RuleFilter.SpecialFilterType;
 import it.geosolutions.geofence.services.dto.ShortRule;
 import it.geosolutions.geofence.services.exception.BadRequestServiceEx;
 import it.geosolutions.geofence.services.util.AccessInfoInternal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -179,6 +175,8 @@ public class RuleReaderServiceImpl implements RuleReaderService {
 
                 ret.setCqlFilterRead(unionCQL(baseAccess.getCqlFilterRead(), moreAccess.getCqlFilterRead()));
                 ret.setCqlFilterWrite(unionCQL(baseAccess.getCqlFilterWrite(), moreAccess.getCqlFilterWrite()));
+
+                ret.setCatalogMode(getLarger(baseAccess.getCatalogMode(), moreAccess.getCatalogMode()));
 
                 if(baseAccess.getDefaultStyle() == null || moreAccess.getDefaultStyle()==null)
                     ret.setDefaultStyle(null);
@@ -377,13 +375,12 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         AccessInfoInternal accessInfo = new AccessInfoInternal(GrantType.ALLOW);
 
         Geometry area = intersect(limits);
-
-//        Geometry userArea = getUserArea(userFilter);
-//        area = intersect(area, userArea);
+        CatalogMode cmode = resolveCatalogMode(limits);
 
         LayerDetails details = rule.getLayerDetails();
         if(details != null ) {
             area = intersect(area, details.getArea());
+            cmode = getStricter(cmode, details.getCatalogMode());
 
             accessInfo.setAttributes(details.getAttributes());
             accessInfo.setCqlFilterRead(details.getCqlFilterRead());
@@ -392,8 +389,8 @@ public class RuleReaderServiceImpl implements RuleReaderService {
             accessInfo.setAllowedStyles(details.getAllowedStyles());
         }
 
+        accessInfo.setCatalogMode(cmode);
 
-        //        accessInfo.setArea(area);
         if (area != null) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Attaching an area to Accessinfo: " + area.getClass().getName() + " " + area.toString());
@@ -441,6 +438,50 @@ public class RuleReaderServiceImpl implements RuleReaderService {
             return g2;
         }
     }
+
+    /**
+     * Returns the stricter catalog mode.
+     */
+    private CatalogMode resolveCatalogMode(List<RuleLimits> limits) {
+        CatalogMode ret = null;
+        for (RuleLimits limit : limits) {
+            ret = getStricter(ret, limit.getCatalogMode());
+        }
+        return ret;
+    }
+
+    protected static CatalogMode getStricter(CatalogMode m1, CatalogMode m2) {
+
+        if(m1 == null)
+            return m2;
+        if(m2 == null)
+            return m1;
+
+        if(CatalogMode.HIDE == m1 || CatalogMode.HIDE == m2)
+            return CatalogMode.HIDE;
+
+        if(CatalogMode.MIXED == m1 || CatalogMode.MIXED == m2)
+            return CatalogMode.MIXED;
+
+        return CatalogMode.CHALLENGE;
+    }
+
+    protected static CatalogMode getLarger(CatalogMode m1, CatalogMode m2) {
+
+        if(m1 == null)
+            return m2;
+        if(m2 == null)
+            return m1;
+
+        if(CatalogMode.CHALLENGE == m1 || CatalogMode.CHALLENGE == m2)
+            return CatalogMode.CHALLENGE;
+
+        if(CatalogMode.MIXED == m1 || CatalogMode.MIXED == m2)
+            return CatalogMode.MIXED;
+
+        return CatalogMode.HIDE;
+    }
+
 
     //==========================================================================
 

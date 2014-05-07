@@ -21,14 +21,15 @@
 package it.geosolutions.geofence.services.util;
 
 import java.io.Serializable;
-import java.util.Map;
 import java.util.Set;
 
 import com.vividsolutions.jts.geom.Geometry;
 
 import it.geosolutions.geofence.core.model.LayerAttribute;
+import it.geosolutions.geofence.core.model.enums.CatalogMode;
 import it.geosolutions.geofence.core.model.enums.GrantType;
 import it.geosolutions.geofence.services.dto.AccessInfo;
+import it.geosolutions.geofence.services.dto.CatalogModeDTO;
 
 
 /**
@@ -59,6 +60,8 @@ public class AccessInfoInternal implements Serializable {
 
 //    private Geometry area;
     private Geometry area;
+
+    private CatalogMode catalogMode;
 
     private String defaultStyle;
 
@@ -132,6 +135,14 @@ public class AccessInfoInternal implements Serializable {
         this.allowedStyles = allowedStyles;
     }
 
+    public CatalogMode getCatalogMode() {
+        return catalogMode;
+    }
+
+    public void setCatalogMode(CatalogMode catalogMode) {
+        this.catalogMode = catalogMode;
+    }
+
     public GrantType getGrant() {
         return grant;
     }
@@ -153,10 +164,26 @@ public class AccessInfoInternal implements Serializable {
         ret.setCqlFilterWrite(cqlFilterWrite);
         if(area != null)
             ret.setAreaWkt(area.toText());
+        ret.setCatalogMode(mapCatalogModeDTO(catalogMode));
 
         return ret;
     }
 
+    protected static CatalogModeDTO mapCatalogModeDTO(CatalogMode cm) {
+        if(cm == null)
+            return null;
+        switch (cm) {
+            case CHALLENGE:
+                return CatalogModeDTO.CHALLENGE;
+            case HIDE:
+                return CatalogModeDTO.HIDE;
+            case MIXED:
+                return CatalogModeDTO.MIXED;
+            default:
+                return null;
+        }
+    }
+    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getClass().getSimpleName())
@@ -178,6 +205,9 @@ public class AccessInfoInternal implements Serializable {
 //        }
         if (area != null) {
             sb.append(" area:defined");
+        }
+        if (catalogMode != null) {
+            sb.append(" cmode:").append(catalogMode);
         }
         if (allowedStyles != null && ! allowedStyles.isEmpty()) {
             sb.append(" allSty:").append(allowedStyles); // needs decoding?

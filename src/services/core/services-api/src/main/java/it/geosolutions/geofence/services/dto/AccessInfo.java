@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -53,6 +53,8 @@ public class AccessInfo implements Serializable {
 //    private Geometry area;
     private String areaWkt;
 
+    private CatalogModeDTO catalogMode;
+
     private String defaultStyle;
 
     private String cqlFilterRead;
@@ -69,14 +71,6 @@ public class AccessInfo implements Serializable {
         this.grant = grant;
     }
 
-//    public Geometry getArea() {
-//        return area;
-//    }
-//
-//    public void setArea(Geometry area) {
-//        this.area = area;
-//    }
-
     public String getAreaWkt() {
         return areaWkt;
     }
@@ -91,6 +85,14 @@ public class AccessInfo implements Serializable {
 
     public void setAttributes(Set<LayerAttribute> attributes) {
         this.attributes = attributes;
+    }
+
+    public CatalogModeDTO getCatalogMode() {
+        return catalogMode;
+    }
+
+    public void setCatalogMode(CatalogModeDTO catalogMode) {
+        this.catalogMode = catalogMode;
     }
 
     public String getCqlFilterRead() {
@@ -149,13 +151,11 @@ public class AccessInfo implements Serializable {
         if (cqlFilterWrite != null) {
             sb.append(" cqlW:").append(cqlFilterWrite);
         }
-//        if (area != null) {
-//            sb.append(" area: [")
-//                    .append(area.getNumPoints()).append(" vertices, (")
-//                    .append(area.getCoordinate().x).append(',').append(area.getCoordinate().y).append(')');
-//        }
         if (areaWkt != null) {
             sb.append(" areaWkt:defined");
+        }
+        if (catalogMode != null) {
+            sb.append(" cmode:").append(catalogMode);
         }
         if (allowedStyles != null && ! allowedStyles.isEmpty()) {
             sb.append(" allSty:").append(allowedStyles); // needs decoding?

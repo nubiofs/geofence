@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  * 
  *  GPLv3 + Classpath exception
@@ -22,10 +22,13 @@ package it.geosolutions.geofence.core.model;
 
 import com.vividsolutions.jts.geom.MultiPolygon;
 import it.geosolutions.geofence.core.model.adapter.MultiPolygonAdapter;
+import it.geosolutions.geofence.core.model.enums.CatalogMode;
 import it.geosolutions.geofence.core.model.enums.GrantType;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -69,6 +72,10 @@ public class RuleLimits implements Serializable {
 	@Column(name = "area")
 	private MultiPolygon allowedArea;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "catalog_mode", nullable = true)
+    private CatalogMode catalogMode;
+
     @XmlJavaTypeAdapter(MultiPolygonAdapter.class)
     public MultiPolygon getAllowedArea() {
         return allowedArea;
@@ -76,6 +83,14 @@ public class RuleLimits implements Serializable {
 
     public void setAllowedArea(MultiPolygon allowedArea) {
         this.allowedArea = allowedArea;
+    }
+
+    public CatalogMode getCatalogMode() {
+        return catalogMode;
+    }
+
+    public void setCatalogMode(CatalogMode catalogMode) {
+        this.catalogMode = catalogMode;
     }
 
     public Long getId() {
@@ -97,6 +112,11 @@ public class RuleLimits implements Serializable {
 
     @Override
     public String toString() {
-        return "RuleLimits{" + "id=" + id + " rule=" + rule + " allowedArea=" + allowedArea + '}';
+        return "RuleLimits["
+                + "id=" + id
+                + " rule=" + rule
+                + " allowedArea=" + allowedArea
+                + (catalogMode == null ? "" : (" mode="+catalogMode))
+                + ']';
     }
 }
