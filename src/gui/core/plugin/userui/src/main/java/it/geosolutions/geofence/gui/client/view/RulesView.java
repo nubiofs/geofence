@@ -1172,10 +1172,12 @@ public class RulesView extends View {
 			if (ruleDetailsTabItem != null) {
 				final RuleDetailsInfoWidget ruleDetailsInfoWidget = ruleDetailsTabItem
 						.getRuleDetailsWidget().getRuleDetailsInfo();
-				ruleDetailsInfoWidget.getAllowedArea().setValue(
-						"SRID=4326;" + area);
+
+                // ETJ: FIXME
+				ruleDetailsInfoWidget.getAllowedArea().setValue("SRID=4326;" + area);
 				
-				rulesManagerServiceRemote.getLayerDetailsInfo(rule, new AsyncCallback<LayerDetailsInfo>() {
+				rulesManagerServiceRemote.getLayerDetailsInfo(rule,
+                        new AsyncCallback<LayerDetailsInfo>() {
 
 					public void onFailure(Throwable caught) {
 						Dispatcher.forwardEvent(GeofenceEvents.SEND_ERROR_MESSAGE,
@@ -1186,6 +1188,7 @@ public class RulesView extends View {
 					public void onSuccess(LayerDetailsInfo result) {
 						result.setAllowedArea(area);
 						result.setSrid("4326");
+                        // ETJ: FIXME: may be binding incomplete bean
 						ruleDetailsInfoWidget.bindModelData(result);
 						ruleDetailsInfoWidget.getRuleDetailsWidget().enableSaveButton();						
 					}
@@ -1195,12 +1198,8 @@ public class RulesView extends View {
 			if (ruleLimitsTabItem != null) {
 				final RuleLimitsInfoWidget ruleLimitsInfoWidget = ruleLimitsTabItem
 						.getRuleLimitsWidget().getRuleLimitsInfo();
-				ruleLimitsInfoWidget.getAllowedArea().setValue(
-						"SRID=4326;" + area);
-				LayerLimitsInfo layerLimitsInfo = new LayerLimitsInfo();
-				layerLimitsInfo.setAllowedArea(area);
-				layerLimitsInfo.setSrid("4326");
-				ruleLimitsInfoWidget.bindModelData(layerLimitsInfo);
+
+                ruleLimitsInfoWidget.setArea(area, "4326");
 				ruleLimitsInfoWidget.getRuleLimitsWidget().enableSaveButton();
 			}
 		}

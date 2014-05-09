@@ -24,6 +24,8 @@ public class LayerLimitsInfo extends BeanModel implements IsSerializable
 
     private String srid;
 
+    private ClientCatalogMode catalogMode;
+
 
     /**
      * Instantiates a new limits.
@@ -83,6 +85,15 @@ public class LayerLimitsInfo extends BeanModel implements IsSerializable
         set(BeanKeyValue.LAYER_ALLOWED_AREA_SRID.getValue(), this.srid);
     }
 
+    public ClientCatalogMode getCatalogMode() {
+        return catalogMode;
+    }
+
+    public void setCatalogMode(ClientCatalogMode catalogMode) {
+        this.catalogMode = catalogMode;
+        set(BeanKeyValue.CATALOG_MODE.getValue(), catalogMode);
+    }
+
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
@@ -94,6 +105,7 @@ public class LayerLimitsInfo extends BeanModel implements IsSerializable
         result = (prime * result) + ((ruleId == null) ? 0 : ruleId.hashCode());
         result = (prime * result) + ((allowedArea == null) ? 0 : allowedArea.hashCode());
         result = (prime * result) + ((srid == null) ? 0 : srid.hashCode());
+        result = (prime * result) + ((catalogMode == null) ? 0 : catalogMode.hashCode());
 
         return result;
     }
@@ -102,68 +114,36 @@ public class LayerLimitsInfo extends BeanModel implements IsSerializable
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-    public boolean equals(Object obj)
-    {
-        if (this == obj)
-        {
-            return true;
-        }
-        if (obj == null)
-        {
+    public boolean equals(Object obj) {
+        if (obj == null) {
             return false;
         }
-        if (!(obj instanceof Grant))
-        {
+        if (getClass() != obj.getClass()) {
             return false;
         }
-
-        LayerLimitsInfo other = (LayerLimitsInfo) obj;
-
-        if (ruleId == null)
-        {
-            if (other.ruleId != null)
-            {
-                return false;
-            }
-        }
-        else if (!ruleId.equals(other.ruleId))
-        {
+        final LayerLimitsInfo other = (LayerLimitsInfo) obj;
+        if (this.ruleId != other.ruleId && (this.ruleId == null || !this.ruleId.equals(other.ruleId))) {
             return false;
         }
-
-        if (allowedArea == null)
-        {
-            if (other.allowedArea != null)
-            {
-                return false;
-            }
-        }
-        else if (!allowedArea.equals(other.allowedArea))
-        {
+        if ((this.allowedArea == null) ? (other.allowedArea != null) : !this.allowedArea.equals(other.allowedArea)) {
             return false;
         }
-
-        if (srid == null)
-        {
-            if (other.srid != null)
-            {
-                return false;
-            }
-        }
-        else if (!srid.equals(other.srid))
-        {
+        if ((this.srid == null) ? (other.srid != null) : !this.srid.equals(other.srid)) {
             return false;
         }
-
+        if (this.catalogMode != other.catalogMode && (this.catalogMode == null || !this.catalogMode.equals(other.catalogMode))) {
+            return false;
+        }
         return true;
     }
+
+
 
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("LayerLimitsForm [");
 
@@ -178,6 +158,10 @@ public class LayerLimitsInfo extends BeanModel implements IsSerializable
         if (srid != null)
         {
             builder.append("srid=").append(srid).append(", ");
+        }
+        if (catalogMode != null)
+        {
+            builder.append("mode=").append(catalogMode).append(", ");
         }
 
         builder.append("]");

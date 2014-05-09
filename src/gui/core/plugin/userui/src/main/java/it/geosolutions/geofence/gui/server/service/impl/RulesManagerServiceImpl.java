@@ -82,6 +82,9 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
+import it.geosolutions.geofence.core.model.enums.CatalogMode;
+import it.geosolutions.geofence.gui.client.model.data.ClientCatalogMode;
+import it.geosolutions.geofence.services.dto.CatalogModeDTO;
 import java.util.Collections;
 import org.springframework.dao.DuplicateKeyException;
 
@@ -92,7 +95,7 @@ import org.springframework.dao.DuplicateKeyException;
 public class RulesManagerServiceImpl implements IRulesManagerService {
 
 	/** The logger. */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final static Logger logger = LoggerFactory.getLogger(RulesManagerServiceImpl.class);
 
 	/** The geofence remote service. */
 	@Autowired
@@ -952,6 +955,9 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 				ruleLimits.setAllowedArea(null);
 			}
 
+            CatalogMode cm = fromClientCM(layerLimitsForm.getCatalogMode());
+            ruleLimits.setCatalogMode(cm);
+
 			geofenceRemoteService.getRuleAdminService().setLimits(ruleId,
 					ruleLimits);
 
@@ -965,6 +971,43 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 
 		return layerLimitsForm;
 	}
+
+    private static ClientCatalogMode toClientCM(CatalogMode mode) {
+        ClientCatalogMode ccm = ClientCatalogMode.DEFAULT;
+
+        if(mode != null ) {
+            switch(mode) {
+                case CHALLENGE: 
+                    ccm = ClientCatalogMode.CHALLENGE;
+                    break;
+                case MIXED: 
+                    ccm = ClientCatalogMode.MIXED;
+                    break;
+                case HIDE: 
+                    ccm = ClientCatalogMode.HIDE;
+                    break;
+                default:
+                    ccm = ClientCatalogMode.DEFAULT;
+            }
+        }
+
+        return ccm;
+    }
+
+    private static CatalogMode fromClientCM(ClientCatalogMode ccm) {
+        CatalogMode cm = null;
+        if(ccm == null || ClientCatalogMode.NAME_DEFAULT.equals(ccm.getCatalogMode()))
+            cm = null;
+        else if (ClientCatalogMode.NAME_HIDE.equals(ccm.getCatalogMode()))
+            cm = CatalogMode.HIDE;
+        else if (ClientCatalogMode.NAME_CHALLENGE.equals(ccm.getCatalogMode()))
+            cm = CatalogMode.CHALLENGE;
+        else if (ClientCatalogMode.NAME_MIXED.equals(ccm.getCatalogMode()))
+            cm = CatalogMode.MIXED;
+        else
+            logger.warn("Unknown catalog mode " + ccm);
+        return cm;
+    }
 
 	/*
 	 * (non-Javadoc)
@@ -994,6 +1037,9 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 					layerLimitsInfo.setAllowedArea(null);
 					layerLimitsInfo.setSrid(null);
 				}
+
+                ClientCatalogMode ccm = toClientCM(ruleLimits.getCatalogMode());
+                layerLimitsInfo.setCatalogMode(ccm);
 			}
 		} catch (NotFoundServiceEx e) {
 			logger.error(e.getMessage(), e);

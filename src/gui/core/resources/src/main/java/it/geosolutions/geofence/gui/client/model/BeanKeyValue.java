@@ -68,6 +68,8 @@ public enum BeanKeyValue {
     /** The GRANT. */
     GRANT("grant"),
 
+    CATALOG_MODE("catalogMode"),
+
     /** The DATE creation. */
     DATE_CREATION("dateCreation"),
 
