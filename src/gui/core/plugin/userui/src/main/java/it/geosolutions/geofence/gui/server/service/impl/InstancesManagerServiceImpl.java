@@ -192,8 +192,13 @@ public class InstancesManagerServiceImpl implements IInstancesManagerService {
 			String response = getURL(instance.getBaseURL() + "/rest/geofence/info", instance.getUsername(), instance.getPassword());
 			if(response != null) {
 				if(!response.equals(instance.getName())) {
-					logger.error("Wrong instance name: " + response);
-					throw new ApplicationException("Wrong instance name: " + instance.getName() + ", should be :" + response);
+                    if(response.contains("Geoserver Configuration API")) { // some heuristic here
+                        logger.error("GeoFence probe not installed on " + instance.getName());
+                        throw new ApplicationException("GeoFence probe not installed on " + instance.getName());
+                    } else {
+                        logger.error("Wrong instance name: " + response);
+                        throw new ApplicationException("Wrong instance name: " + instance.getName() + ", should be :" + response);
+                    }
 				}
 			} else {
 				throw new ApplicationException("Error contacting GeoServer");
