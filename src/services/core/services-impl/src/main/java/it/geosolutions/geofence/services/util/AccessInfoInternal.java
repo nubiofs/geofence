@@ -30,6 +30,7 @@ import it.geosolutions.geofence.core.model.enums.CatalogMode;
 import it.geosolutions.geofence.core.model.enums.GrantType;
 import it.geosolutions.geofence.services.dto.AccessInfo;
 import it.geosolutions.geofence.services.dto.CatalogModeDTO;
+import java.util.HashSet;
 
 
 /**
@@ -158,8 +159,8 @@ public class AccessInfoInternal implements Serializable {
 
         ret.setGrant(grant);
         ret.setDefaultStyle(defaultStyle);
-        ret.setAllowedStyles(allowedStyles);
-        ret.setAttributes(attributes);
+        ret.setAllowedStyles(allowedStyles == null? null : new HashSet(allowedStyles)); // new Set will prevent marshalling hibernate classes
+        ret.setAttributes(attributes == null ? null : new HashSet<LayerAttribute>(attributes));
         ret.setCqlFilterRead(cqlFilterRead);
         ret.setCqlFilterWrite(cqlFilterWrite);
         if(area != null)
