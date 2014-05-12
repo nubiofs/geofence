@@ -32,6 +32,7 @@ public class LayerDetailsInfo extends BeanModel implements IsSerializable
 
     private String srid;
 
+    private ClientCatalogMode catalogMode;
 
     /**
      * Instantiates a new style.
@@ -162,6 +163,16 @@ public class LayerDetailsInfo extends BeanModel implements IsSerializable
         set(BeanKeyValue.RULE_ALLOWED_AREA_SRID.getValue(), this.srid);
     }
 
+    public ClientCatalogMode getCatalogMode() {
+        return catalogMode;
+    }
+
+    public void setCatalogMode(ClientCatalogMode catalogMode) {
+        this.catalogMode = catalogMode;
+        set(BeanKeyValue.CATALOG_MODE.getValue(), this.catalogMode);
+    }
+
+
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
@@ -176,6 +187,7 @@ public class LayerDetailsInfo extends BeanModel implements IsSerializable
         result = (prime * result) + ((cqlFilterWrite == null) ? 0 : cqlFilterWrite.hashCode());
         result = (prime * result) + ((allowedArea == null) ? 0 : allowedArea.hashCode());
         result = (prime * result) + ((srid == null) ? 0 : srid.hashCode());
+        result = (prime * result) + ((catalogMode == null) ? 0 : catalogMode.hashCode());
 
         return result;
     }
@@ -273,6 +285,18 @@ public class LayerDetailsInfo extends BeanModel implements IsSerializable
             return false;
         }
 
+        if (catalogMode == null)
+        {
+            if (other.catalogMode != null)
+            {
+                return false;
+            }
+        }
+        else if (!catalogMode.equals(other.catalogMode))
+        {
+            return false;
+        }
+
         return true;
     }
 
@@ -308,6 +332,10 @@ public class LayerDetailsInfo extends BeanModel implements IsSerializable
         if (srid != null)
         {
             builder.append("srid=").append(srid).append(", ");
+        }
+        if (catalogMode != null)
+        {
+            builder.append("cmode=").append(catalogMode).append(", ");
         }
 
         builder.append("]");

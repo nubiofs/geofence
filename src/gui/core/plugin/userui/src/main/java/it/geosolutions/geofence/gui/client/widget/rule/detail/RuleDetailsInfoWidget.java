@@ -1,11 +1,6 @@
-/*
- * $ Header: it.geosolutions.geofence.gui.client.widget.rule.detail.RuleDetailsInfoWidget,v. 0.1 25-feb-2011 16.30.38 created by afabiani <alessio.fabiani at geo-solutions.it> $
- * $ Revision: 0.1 $
- * $ Date: 25-feb-2011 16.30.38 $
+/* ====================================================================
  *
- * ====================================================================
- *
- * Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ * Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
  * http://www.geo-solutions.it
  *
  * GPLv3 + Classpath exception
@@ -63,6 +58,10 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import it.geosolutions.geofence.gui.client.model.data.ClientCatalogMode;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -92,10 +91,15 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
     /** The cql filter write. */
     private TextArea cqlFilterWrite;
 
+    private ComboBox<ClientCatalogMode> catalogModeBox;
+
     /** The allowed area. */
     private TextArea allowedArea;
 
 	private Button draw;
+
+    private Map<String, ClientCatalogMode> nameMode = new HashMap<String, ClientCatalogMode>();
+
 
     /**
      * Instantiates a new rule details info widget.
@@ -110,12 +114,12 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
     public RuleDetailsInfoWidget(Rule model, WorkspacesManagerRemoteServiceAsync workspacesService,
         RuleDetailsWidget ruleDetailsWidget)
     {
-
-        super();
         this.theRule = model;
         this.workspacesService = workspacesService;
         this.ruleDetailsWidget = ruleDetailsWidget;
         formPanel = createFormPanel();
+
+        initModeMap();
     }
 
     /* (non-Javadoc)
@@ -194,6 +198,29 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
             });
 
         fieldSet.add(cqlFilterWrite);
+
+
+        catalogModeBox = new ComboBox<ClientCatalogMode>();
+        catalogModeBox.setFieldLabel("Catalog Mode");
+        catalogModeBox.setId(BeanKeyValue.CATALOG_MODE.getValue());
+        catalogModeBox.setName(BeanKeyValue.CATALOG_MODE.getValue());
+        catalogModeBox.setDisplayField(BeanKeyValue.CATALOG_MODE.getValue());
+        catalogModeBox.setWidth(70);
+        catalogModeBox.setEditable(false);
+        catalogModeBox.setStore(getAvailableCatalogModes());
+        catalogModeBox.setTriggerAction(ComboBox.TriggerAction.ALL);
+
+        catalogModeBox.addListener(Events.Select,
+                new Listener<FieldEvent>()
+                    {
+                        public void handleEvent(FieldEvent be) {
+                            ruleDetailsWidget.enableSaveButton();
+                        }
+                    }
+                );
+
+        fieldSet.add(catalogModeBox);
+
 
         allowedArea = new TextArea();
         allowedArea.setFieldLabel("Allowed Area");
@@ -280,6 +307,8 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
             layerDetailsForm.setDefaultStyle(null);
         }
 
+        layerDetailsForm.setCatalogMode(catalogModeBox.getValue());
+
         layerDetailsForm.setRuleId(theRule.getId());
 
         return layerDetailsForm;
@@ -327,6 +356,21 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
         {
             allowedArea.setValue("SRID=" + srid + ";" + area);
         }
+
+        if(layerDetailsInfo.getCatalogMode() != null) {
+
+            // get local instance
+            ClientCatalogMode lcm = nameMode.get(layerDetailsInfo.getCatalogMode().getCatalogMode());
+            catalogModeBox.setValue(lcm);
+
+        } else {
+            catalogModeBox.setValue(ClientCatalogMode.DEFAULT);
+
+            Dispatcher.forwardEvent(
+                GeofenceEvents.SEND_INFO_MESSAGE, new String[] {
+                        "Info", "CatalogMode is null"});
+        }
+
     }
 
     /**
@@ -358,6 +402,22 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
         return geoserverStyles;
     }
 
+    private ListStore<ClientCatalogMode> getAvailableCatalogModes()
+    {
+        ListStore<ClientCatalogMode> ret = new ListStore<ClientCatalogMode>();
+        List<ClientCatalogMode> list = new ArrayList<ClientCatalogMode>();
+
+        list.add(ClientCatalogMode.DEFAULT);
+        list.add(ClientCatalogMode.HIDE);
+        list.add(ClientCatalogMode.MIXED);
+        list.add(ClientCatalogMode.CHALLENGE);
+
+        ret.add(list);
+
+        return ret;
+    }
+
+
     /**
 	 * @param allowedArea the allowedArea to set
 	 */
@@ -388,6 +448,13 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
     {
         this.cqlFilterRead.enable();
         this.cqlFilterWrite.enable();
+    }
+
+    private void initModeMap() {
+        nameMode.put(ClientCatalogMode.NAME_DEFAULT, ClientCatalogMode.DEFAULT);
+        nameMode.put(ClientCatalogMode.NAME_HIDE, ClientCatalogMode.HIDE);
+        nameMode.put(ClientCatalogMode.NAME_MIXED, ClientCatalogMode.MIXED);
+        nameMode.put(ClientCatalogMode.NAME_CHALLENGE, ClientCatalogMode.CHALLENGE);
     }
 
 }

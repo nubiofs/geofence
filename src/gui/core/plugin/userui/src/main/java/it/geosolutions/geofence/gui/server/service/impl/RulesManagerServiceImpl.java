@@ -1,11 +1,6 @@
-/*
- * $ Header: it.geosolutions.geofence.gui.server.service.impl.RulesManagerServiceImpl,v. 0.1 9-feb-2011 13.03.26 created by afabiani <alessio.fabiani at geo-solutions.it> $
- * $ Revision: 0.1 $
- * $ Date: 9-feb-2011 13.03.26 $
+/* ====================================================================
  *
- * ====================================================================
- *
- * Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ * Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
  * http://www.geo-solutions.it
  *
  * GPLv3 + Classpath exception
@@ -67,8 +62,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,8 +77,6 @@ import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 import it.geosolutions.geofence.core.model.enums.CatalogMode;
 import it.geosolutions.geofence.gui.client.model.data.ClientCatalogMode;
-import it.geosolutions.geofence.services.dto.CatalogModeDTO;
-import java.util.Collections;
 import org.springframework.dao.DuplicateKeyException;
 
 /**
@@ -729,41 +720,52 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 			LayerDetailsInfo layerDetailsInfo, List<LayerStyle> layerStyles) {
 
 		Long ruleId = layerDetailsInfo.getRuleId();
-		LayerDetails layerDetails = null;
+		LayerDetails oldDetails;
 
 		try {
-			layerDetails = geofenceRemoteService.getRuleAdminService()
+			oldDetails = geofenceRemoteService.getRuleAdminService()
 					.get(ruleId).getLayerDetails();
 
-			LayerDetails details = null;
-			if (layerDetails == null) {
+			LayerDetails details;
+			if (oldDetails == null) {
+                logger.info("Creating new details for rule " + ruleId);
 				details = new LayerDetails();
+
+                it.geosolutions.geofence.core.model.Rule rule = geofenceRemoteService
+                        .getRuleAdminService().get(ruleId);
+                it.geosolutions.geofence.core.model.GSInstance gsInstance = rule
+                        .getInstance();
+                GeoServerRESTReader gsreader = new GeoServerRESTReader(
+                        gsInstance.getBaseURL(), gsInstance.getUsername(),
+                        gsInstance.getPassword());
+                RESTLayer layer = gsreader.getLayer(rule.getLayer());
+
+
+                if (layer.getType().equals(RESTLayer.TYPE.VECTOR)) {
+                    details.setType(LayerType.VECTOR);
+                } else {
+                    details.setType(LayerType.RASTER);
+                }
 			} else {
-				details = layerDetails;
+				details = oldDetails;
 			}
 
-			it.geosolutions.geofence.core.model.Rule rule = geofenceRemoteService
-					.getRuleAdminService().get(ruleId);
-			it.geosolutions.geofence.core.model.GSInstance gsInstance = rule
-					.getInstance();
-			GeoServerRESTReader gsreader = new GeoServerRESTReader(
-					gsInstance.getBaseURL(), gsInstance.getUsername(),
-					gsInstance.getPassword());
-			RESTLayer layer = gsreader.getLayer(rule.getLayer());
 
 			// ///////////////////////////////////
 			// Saving the layer details info
 			// ///////////////////////////////////
 
-			if (layer.getType().equals(RESTLayer.TYPE.VECTOR)) {
-				details.setType(LayerType.VECTOR);
+			if (details.getType().equals(LayerType.VECTOR)) {
 				details.setCqlFilterRead(layerDetailsInfo.getCqlFilterRead());
 				details.setCqlFilterWrite(layerDetailsInfo.getCqlFilterWrite());
 			} else {
-				details.setType(LayerType.RASTER);
+				// todo: set cql filters to null?
 			}
 
 			details.setDefaultStyle(layerDetailsInfo.getDefaultStyle());
+
+            CatalogMode cm = fromClientCM(layerDetailsInfo.getCatalogMode());
+            details.setCatalogMode(cm);
 
 			String allowedArea = layerDetailsInfo.getAllowedArea();
 			if (allowedArea != null) {
@@ -806,7 +808,7 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 				}
 			}
 
-			if (layerDetails == null) {
+			if (oldDetails == null) {
 				details.setAllowedStyles(allowedStyles);
 			} else {
 				geofenceRemoteService.getRuleAdminService().setAllowedStyles(
@@ -854,6 +856,9 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 						.getCqlFilterWrite());
 				layerDetailsInfo
 						.setDefaultStyle(layerDetails.getDefaultStyle());
+
+                ClientCatalogMode ccm = toClientCM(layerDetails.getCatalogMode());
+                layerDetailsInfo.setCatalogMode(ccm);
 
 				MultiPolygon the_geom = null;
 				Geometry geometry = layerDetails.getArea();
