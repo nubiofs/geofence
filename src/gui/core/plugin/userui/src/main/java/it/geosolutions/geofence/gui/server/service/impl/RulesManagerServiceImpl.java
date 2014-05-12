@@ -730,26 +730,37 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 			if (oldDetails == null) {
                 logger.info("Creating new details for rule " + ruleId);
 				details = new LayerDetails();
+			} else {
+				details = oldDetails;
+			}
 
-                it.geosolutions.geofence.core.model.Rule rule = geofenceRemoteService
-                        .getRuleAdminService().get(ruleId);
-                it.geosolutions.geofence.core.model.GSInstance gsInstance = rule
-                        .getInstance();
-                GeoServerRESTReader gsreader = new GeoServerRESTReader(
-                        gsInstance.getBaseURL(), gsInstance.getUsername(),
-                        gsInstance.getPassword());
-                RESTLayer layer = gsreader.getLayer(rule.getLayer());
+            // Reload layer info from GeoServer
+            // (in the rule we may have changed the layer)
 
+            it.geosolutions.geofence.core.model.Rule rule = geofenceRemoteService
+                    .getRuleAdminService().get(ruleId);
+            it.geosolutions.geofence.core.model.GSInstance gsInstance = rule
+                    .getInstance();
+            GeoServerRESTReader gsreader = new GeoServerRESTReader(
+                    gsInstance.getBaseURL(), gsInstance.getUsername(),
+                    gsInstance.getPassword());
+            RESTLayer layer = gsreader.getLayer(rule.getLayer());
 
+            if(layer != null) {
                 if (layer.getType().equals(RESTLayer.TYPE.VECTOR)) {
                     details.setType(LayerType.VECTOR);
                 } else {
                     details.setType(LayerType.RASTER);
                 }
-			} else {
-				details = oldDetails;
-			}
-
+            } else {
+                // error encountered while loading data from GeoServer
+                if(oldDetails == null) {
+                    logger.error("Error loading layer info from GeoServer");
+                    throw new ApplicationException("Error loading layer info from GeoServer");
+                } else {
+                    logger.warn("Error reloading layer info from GeoServer");
+                }
+            }
 
 			// ///////////////////////////////////
 			// Saving the layer details info

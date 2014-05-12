@@ -124,7 +124,7 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
         WRITE
     }
 
-    CatalogMode catalogMode = CatalogMode.HIDE;
+    static final CatalogMode DEFAULT_CATALOG_MODE = CatalogMode.HIDE;
 
     RuleReaderService rules;
 
@@ -250,13 +250,13 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
                 LOGGER.log(Level.FINE, "Admin level access, returning "
                         + "full rights for workspace {0}", workspace.getName());
 
-                return new WorkspaceAccessLimits(catalogMode, true, true);
+                return new WorkspaceAccessLimits(DEFAULT_CATALOG_MODE, true, true);
             }
-            return new WorkspaceAccessLimits(catalogMode, true, configuration.isGrantWriteToWorkspacesToAuthenticatedUsers());
+            return new WorkspaceAccessLimits(DEFAULT_CATALOG_MODE, true, configuration.isGrantWriteToWorkspacesToAuthenticatedUsers());
         }
 
         // further logic disabled because of https://github.com/geosolutions-it/geofence/issues/6
-        return new WorkspaceAccessLimits(catalogMode, true, false);
+        return new WorkspaceAccessLimits(DEFAULT_CATALOG_MODE, true, false);
     }
 
     InetAddress getSourceAddress(Request owsRequest) {
@@ -287,9 +287,9 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
 
     private WorkspaceAccessLimits buildAccessLimits(WorkspaceInfo workspace, AccessInfo rule) {
         if (rule == null) {
-            return new WorkspaceAccessLimits(catalogMode, true, true);
+            return new WorkspaceAccessLimits(DEFAULT_CATALOG_MODE, true, true);
         } else {
-            return new WorkspaceAccessLimits(catalogMode, rule.getGrant() == GrantType.ALLOW, rule.getGrant() == GrantType.ALLOW);
+            return new WorkspaceAccessLimits(DEFAULT_CATALOG_MODE, rule.getGrant() == GrantType.ALLOW, rule.getGrant() == GrantType.ALLOW);
         }
     }
 
@@ -496,6 +496,24 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
                 throw new RuntimeException("Failed to reproject the restricted area to the layer's native SRS", e);
             }
         }
+
+        CatalogMode catalogMode = DEFAULT_CATALOG_MODE;
+        
+        if(rule.getCatalogMode() != null) {
+            switch(rule.getCatalogMode()) {
+                case CHALLENGE: 
+                    catalogMode = CatalogMode.CHALLENGE;
+                    break;
+                case HIDE:
+                    catalogMode = CatalogMode.HIDE;
+                    break;
+                case MIXED:
+                    catalogMode = CatalogMode.MIXED;
+                    break;
+            }
+        }
+
+        LOGGER.log(Level.FINE, "Returning mode {0} for resource {1}", new Object[] { catalogMode, resource });
 
         if (resource instanceof FeatureTypeInfo)
         {
