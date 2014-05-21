@@ -40,11 +40,12 @@ import it.geosolutions.geofence.services.dto.AuthUser;
 import it.geosolutions.geofence.services.dto.RuleFilter;
 import it.geosolutions.geofence.services.dto.RuleFilter.FilterType;
 import it.geosolutions.geofence.services.dto.RuleFilter.IdNameFilter;
-import it.geosolutions.geofence.services.dto.RuleFilter.NameFilter;
+import it.geosolutions.geofence.services.dto.RuleFilter.TextFilter;
 import it.geosolutions.geofence.services.dto.RuleFilter.SpecialFilterType;
 import it.geosolutions.geofence.services.dto.ShortRule;
 import it.geosolutions.geofence.services.exception.BadRequestServiceEx;
 import it.geosolutions.geofence.services.util.AccessInfoInternal;
+import it.geosolutions.geofence.services.util.IPUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -82,10 +83,11 @@ public class RuleReaderServiceImpl implements RuleReaderService {
     @Deprecated
     public List<ShortRule> getMatchingRules(
                     String userName, String profileName, String instanceName,
+                    String sourceAddress,
                     String service, String request,
                     String workspace, String layer) {
 
-        return getMatchingRules(new RuleFilter(userName, profileName, instanceName, service, request, workspace, layer));
+        return getMatchingRules(new RuleFilter(userName, profileName, instanceName, sourceAddress, service, request, workspace, layer));
     }
 
     /**
@@ -119,8 +121,11 @@ public class RuleReaderServiceImpl implements RuleReaderService {
      */
     @Override
     @Deprecated
-    public AccessInfo getAccessInfo(String userName, String profileName, String instanceName, String service, String request, String workspace, String layer) {
-        return getAccessInfo(new RuleFilter(userName, profileName, instanceName, service, request, workspace, layer));
+    public AccessInfo getAccessInfo(String userName, String profileName, String instanceName, 
+            String sourceAddress,
+            String service, String request,
+            String workspace, String layer) {
+        return getAccessInfo(new RuleFilter(userName, profileName, instanceName, sourceAddress, service, request, workspace, layer));
     }
 
     @Override
@@ -603,9 +608,66 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         addStringCriteria(searchCriteria, "request", filter.getRequest()); // see class' javadoc
         addStringCriteria(searchCriteria, "workspace", filter.getWorkspace());
         addStringCriteria(searchCriteria, "layer", filter.getLayer());
+
         List<Rule> found = ruleDAO.search(searchCriteria);
+        found = filterByAddress(filter, found);
+
         return found;
     }
+
+    /**
+     * Filters out rules not matching with ip address filter.
+     *
+     * IP address filtering is not performed by DAO at the moment, so we'll have to filter out
+     * such results by hand.
+     */
+    protected static List<Rule> filterByAddress(RuleFilter filter, List<Rule> rules) {
+
+        FilterType type = filter.getSourceAddress().getType();
+
+        if(type == FilterType.ANY )
+            return rules;
+        
+        String ipvalue = null;
+        if(type == FilterType.NAMEVALUE) {
+            ipvalue = filter.getSourceAddress().getText();
+            if(! IPUtils.isAddressValid(ipvalue)) {
+                LOGGER.error("Bad address filter " + ipvalue);
+                return Collections.EMPTY_LIST;
+            }
+        }
+
+        List<Rule> ret = new ArrayList<Rule>(rules.size());
+
+        for (Rule rule : rules) {
+            switch(type) {
+                case DEFAULT:
+                    if(rule.getAddressRange() == null) {
+                        ret.add(rule);
+                    }
+                    break;
+
+                case NAMEVALUE:
+                    if(rule.getAddressRange() != null) {
+                        if( rule.getAddressRange().match(ipvalue)) {
+                            ret.add(rule);                            
+                        }
+                    } else if ( filter.getSourceAddress().isIncludeDefault()) {
+                        ret.add(rule);
+                    }
+
+                    break;
+
+                case IDVALUE:
+                default:
+                    LOGGER.error("Bad address filter type" + type);
+                    return Collections.EMPTY_LIST;
+            }
+        }
+
+        return ret;
+    }
+
 
     private void addCriteria(Search searchCriteria, String fieldName, IdNameFilter filter) {
         switch (filter.getType()) {
@@ -633,7 +695,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         }
     }
 
-    private void addStringCriteria(Search searchCriteria, String fieldName, NameFilter filter) {
+    private void addStringCriteria(Search searchCriteria, String fieldName, TextFilter filter) {
         switch (filter.getType()) {
             case ANY:
                 break; // no filtering
@@ -645,7 +707,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
             case NAMEVALUE:
                 searchCriteria.addFilterOr(
                         Filter.isNull(fieldName),
-                        Filter.equal(fieldName, filter.getName()));
+                        Filter.equal(fieldName, filter.getText()));
                 break;
 
             case IDVALUE:
@@ -653,39 +715,6 @@ public class RuleReaderServiceImpl implements RuleReaderService {
                 throw new AssertionError();
         }
     }
-
-//    /**
-//     * Add criteria for <B>matching</B> names:
-//     * <UL>
-//     * <LI><STRIKE>null names will not be accepted: that is: user, profile, instance are required (note you can trick this check by setting empty strings)</STRIKE>a null param will match everything</LI>
-//     * <LI>a valid string will match that specific value and any rules with that name set to null</LI>
-//     * </UL>
-//     * We're dealing with <TT><I>name</I></TT>s here, so <U>we'll suppose that the related object's name field is called "<TT>name</TT>"</U>.
-//     */
-//    protected void addCriteria(Search searchCriteria, String name, String fieldName) throws BadRequestServiceEx {
-//        if (name == null)
-//            return; // TODO: check desired behaviour
-////            throw new BadRequestServiceEx(fieldName + " is null");
-//
-//        searchCriteria.addFilterOr(
-//                Filter.isNull(fieldName),
-//                Filter.equal(fieldName + ".name", name));
-//    }
-//
-//    /**
-//     * Add criteria for <B>matching</B>:
-//     * <UL>
-//     * <LI>null values will not add a constraint criteria</LI>
-//     * <LI>any string will match that specific value and any rules with that field set to null</LI>
-//     * </UL>
-//     */
-//    protected void addStringMatchCriteria(Search searchCriteria, String value, String fieldName) throws BadRequestServiceEx {
-//        if(value != null) {
-//            searchCriteria.addFilterOr(
-//                    Filter.isNull(fieldName),
-//                    Filter.equal(fieldName, value));
-//        }
-//    }
 
     // ==========================================================================
 

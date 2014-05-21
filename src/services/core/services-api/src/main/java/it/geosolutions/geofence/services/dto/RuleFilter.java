@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -22,7 +22,6 @@ package it.geosolutions.geofence.services.dto;
 import it.geosolutions.geofence.core.model.Rule;
 
 import java.io.Serializable;
-import java.net.InetAddress;
 
 
 /**
@@ -62,11 +61,11 @@ public class RuleFilter implements Serializable {
     private final IdNameFilter user;
     private final IdNameFilter userGroup;
     private final IdNameFilter instance;
-    private final NameFilter service;
-    private final NameFilter request;
-    private final NameFilter workspace;
-    private final NameFilter layer;
-    private InetAddress sourceAddress;
+    private final TextFilter sourceAddress;
+    private final TextFilter service;
+    private final TextFilter request;
+    private final TextFilter workspace;
+    private final TextFilter layer;
 
     public RuleFilter() {
         this(SpecialFilterType.DEFAULT);
@@ -85,10 +84,11 @@ public class RuleFilter implements Serializable {
         user = new IdNameFilter(ft);
         userGroup = new IdNameFilter(ft);
         instance = new IdNameFilter(ft);
-        service = new NameFilter(ft, true);
-        request = new NameFilter(ft, true);
-        workspace = new NameFilter(ft);
-        layer = new NameFilter(ft);
+        sourceAddress = new TextFilter(ft);
+        service = new TextFilter(ft, true);
+        request = new TextFilter(ft, true);
+        workspace = new TextFilter(ft);
+        layer = new TextFilter(ft);
     }
 
     public RuleFilter(SpecialFilterType type, boolean includeDefault) {
@@ -97,13 +97,15 @@ public class RuleFilter implements Serializable {
         user = new IdNameFilter(ft, includeDefault);
         userGroup = new IdNameFilter(ft, includeDefault);
         instance = new IdNameFilter(ft, includeDefault);
-        service = new NameFilter(ft, true);
+        sourceAddress = new TextFilter(ft);
+        sourceAddress.setIncludeDefault(includeDefault);
+        service = new TextFilter(ft, true);
         service.setIncludeDefault(includeDefault);
-        request = new NameFilter(ft, true);
+        request = new TextFilter(ft, true);
         request.setIncludeDefault(includeDefault);
-        workspace = new NameFilter(ft);
+        workspace = new TextFilter(ft);
         workspace.setIncludeDefault(includeDefault);
-        layer = new NameFilter(ft);
+        layer = new TextFilter(ft);
         layer.setIncludeDefault(includeDefault);
     }
 
@@ -114,7 +116,9 @@ public class RuleFilter implements Serializable {
      *
      * @deprecated Please use plain setters if you want to handle by hand special values or filter conditions.
      */
-    public RuleFilter(String userName, String groupName, String instanceName, String service, String request,
+    public RuleFilter(String userName, String groupName, String instanceName,
+            String sourceAddress,
+            String service, String request,
             String workspace, String layer) {
         this(SpecialFilterType.DEFAULT);
 
@@ -122,6 +126,7 @@ public class RuleFilter implements Serializable {
         this.user.setHeuristically(userName);
         this.userGroup.setHeuristically(groupName);
         this.instance.setHeuristically(instanceName);
+        this.sourceAddress.setHeuristically(sourceAddress);
 
         this.service.setHeuristically(service);
         this.request.setHeuristically(request);
@@ -136,13 +141,16 @@ public class RuleFilter implements Serializable {
      *
      * @deprecated Please use plain setters if you want to handle by hand special values or filter conditions.
      */
-    public RuleFilter(Long userId, Long groupId, Long instanceId, String service, String request, String workspace,
+    public RuleFilter(Long userId, Long groupId, Long instanceId,
+            String sourceAddress,
+            String service, String request, String workspace,
             String layer) {
         this(SpecialFilterType.DEFAULT);
 
         this.user.setHeuristically(userId);
         this.userGroup.setHeuristically(groupId);
         this.instance.setHeuristically(instanceId);
+        this.sourceAddress.setHeuristically(sourceAddress);
 
         this.service.setHeuristically(service);
         this.request.setHeuristically(request);
@@ -201,8 +209,18 @@ public class RuleFilter implements Serializable {
         return this;
     }
 
+    public RuleFilter setSourceAddress(String dotted) {
+        sourceAddress.setText(dotted);
+        return this;
+    }
+
+    public RuleFilter setSourceAddress(SpecialFilterType type) {
+        sourceAddress.setType(type);
+        return this;
+    }
+
     public RuleFilter setService(String name) {
-        service.setName(name);
+        service.setText(name);
         return this;
     }
 
@@ -212,7 +230,7 @@ public class RuleFilter implements Serializable {
     }
 
     public RuleFilter setRequest(String name) {
-        request.setName(name);
+        request.setText(name);
         return this;
     }
 
@@ -222,7 +240,7 @@ public class RuleFilter implements Serializable {
     }
 
     public RuleFilter setWorkspace(String name) {
-        workspace.setName(name);
+        workspace.setText(name);
         return this;
     }
 
@@ -232,7 +250,7 @@ public class RuleFilter implements Serializable {
     }
 
     public RuleFilter setLayer(String name) {
-        layer.setName(name);
+        layer.setText(name);
         return this;
     }
 
@@ -245,7 +263,11 @@ public class RuleFilter implements Serializable {
         return instance;
     }
 
-    public NameFilter getLayer() {
+    public TextFilter getSourceAddress() {
+        return sourceAddress;
+    }
+
+    public TextFilter getLayer() {
         return layer;
     }
 
@@ -253,11 +275,11 @@ public class RuleFilter implements Serializable {
         return userGroup;
     }
 
-    public NameFilter getRequest() {
+    public TextFilter getRequest() {
         return request;
     }
 
-    public NameFilter getService() {
+    public TextFilter getService() {
         return service;
     }
 
@@ -265,18 +287,20 @@ public class RuleFilter implements Serializable {
         return user;
     }
 
-    public NameFilter getWorkspace() {
+    public TextFilter getWorkspace() {
         return workspace;
     }
 
-    public InetAddress getSourceAddress() {
-        return sourceAddress;
-    }
 
-    public RuleFilter setSourceAddress(InetAddress sourceAddress) {
-        this.sourceAddress = sourceAddress;
-        return this;
-    }
+
+//    public InetAddress getSourceAddress() {
+//        return sourceAddress;
+//    }
+//
+//    public RuleFilter setSourceAddress(InetAddress sourceAddress) {
+//        this.sourceAddress = sourceAddress;
+//        return this;
+//    }
 
     @Override
     public boolean equals(Object obj) {
@@ -318,6 +342,7 @@ public class RuleFilter implements Serializable {
         hash = 37 * hash + (this.user != null ? this.user.hashCode() : 0);
         hash = 37 * hash + (this.userGroup != null ? this.userGroup.hashCode() : 0);
         hash = 37 * hash + (this.instance != null ? this.instance.hashCode() : 0);
+        hash = 37 * hash + (this.sourceAddress != null ? this.sourceAddress.hashCode() : 0);
         hash = 37 * hash + (this.service != null ? this.service.hashCode() : 0);
         hash = 37 * hash + (this.request != null ? this.request.hashCode() : 0);
         hash = 37 * hash + (this.workspace != null ? this.workspace.hashCode() : 0);
@@ -337,17 +362,18 @@ public class RuleFilter implements Serializable {
         sb.append(" req:").append(request);
         sb.append(" ws:").append(workspace);
         sb.append(" layer:").append(layer);
-        sb.append(" srcaddr:");
-        if ( sourceAddress == null ) {
-            sb.append('-');
-        } else {
-            sb.append(sourceAddress);
-        }
+        sb.append(" ip:").append(sourceAddress);
         sb.append(']');
 
         return sb.toString();
     }
 
+    /**
+     * A filter that can be either:
+     *  - an id
+     *  - a string
+     *  - a special constraint (DEFAULT, ANY)
+     */
     public static class IdNameFilter implements Serializable {
 
         private static final long serialVersionUID = -5984311150423659545L;
@@ -497,10 +523,13 @@ public class RuleFilter implements Serializable {
         }
     }
 
-    public static class NameFilter implements Serializable {
+    /**
+     * Contains a fixed text OR a special filtering condition (i.e. ANY, DEFAULT).
+     */
+    public static class TextFilter implements Serializable {
 
         private static final long serialVersionUID = 6565336016075974626L;
-        private String name;
+        private String text;
         private FilterType type;
         private boolean forceUppercase = false;
         /**
@@ -508,28 +537,28 @@ public class RuleFilter implements Serializable {
          */
         private boolean includeDefault = false;
 
-        public NameFilter(FilterType type) {
+        public TextFilter(FilterType type) {
             this.type = type;
         }
 
-        public NameFilter(FilterType type, boolean forceUppercase) {
+        public TextFilter(FilterType type, boolean forceUppercase) {
             this.type = type;
             this.forceUppercase = forceUppercase;
         }
 
-        public void setHeuristically(String name) {
-            if ( name == null ) {
+        public void setHeuristically(String text) {
+            if ( text == null ) {
                 this.type = FilterType.DEFAULT;
-            } else if ( name.equals("*") ) {
+            } else if ( text.equals("*") ) {
                 this.type = FilterType.ANY;
             } else {
                 this.type = FilterType.NAMEVALUE;
-                this.name = forceUppercase ? name.toUpperCase() : name;
+                this.text = forceUppercase ? text.toUpperCase() : text;
             }
         }
 
-        public void setName(String name) {
-            this.name = forceUppercase ? name.toUpperCase() : name;
+        public void setText(String name) {
+            this.text = forceUppercase ? name.toUpperCase() : name;
             this.type = FilterType.NAMEVALUE;
         }
 
@@ -537,8 +566,8 @@ public class RuleFilter implements Serializable {
             this.type = type.getRelatedType();
         }
 
-        public String getName() {
-            return name;
+        public String getText() {
+            return text;
         }
 
         public FilterType getType() {
@@ -561,8 +590,8 @@ public class RuleFilter implements Serializable {
             if (getClass() != obj.getClass()) {
                 return false;
             }
-            final NameFilter other = (NameFilter) obj;
-            if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+            final TextFilter other = (TextFilter) obj;
+            if ((this.text == null) ? (other.text != null) : !this.text.equals(other.text)) {
                 return false;
             }
             if (this.type != other.type) {
@@ -580,7 +609,7 @@ public class RuleFilter implements Serializable {
         @Override
         public int hashCode() {
             int hash = 3;
-            hash = 61 * hash + (this.name != null ? this.name.hashCode() : 0);
+            hash = 61 * hash + (this.text != null ? this.text.hashCode() : 0);
             hash = 61 * hash + (this.type != null ? this.type.hashCode() : 0);
             hash = 61 * hash + (this.forceUppercase ? 1 : 0);
             hash = 61 * hash + (this.includeDefault ? 1 : 0);
@@ -595,7 +624,10 @@ public class RuleFilter implements Serializable {
                     return type.toString();
 
                 case NAMEVALUE:
-                    return "name" + (includeDefault?"+:":":") + name == null ? "(null)" : name.isEmpty() ? "(empty)" : name;
+                    return (text == null ? "(null)"
+                            : text.isEmpty() ? "(empty)"
+                            : '"'+text+'"')
+                            + (includeDefault?"+":"") ;
 
                 case IDVALUE:
                 default:

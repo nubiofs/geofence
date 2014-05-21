@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -78,7 +78,7 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
         UserGroup p1 = createUserGroup("p1");
         UserGroup p2 = createUserGroup("p2");
 
-        Rule rule = new Rule(10, null, p1,null, "s1", "r1", "w1", "l1", GrantType.ALLOW);
+        Rule rule = new Rule(10, null, p1,null,null, "s1", "r1", "w1", "l1", GrantType.ALLOW);
         ruleAdminService.insert(rule);
 
         {
@@ -111,9 +111,9 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
 
         UserGroup p1 = createUserGroup("p1");
 
-        Rule r1 = new Rule(10, null, p1, null, "s1", "r1", "w1", "l1", GrantType.ALLOW);
-        Rule r2 = new Rule(20, null, p1, null, "s2", "r2", "w2", "l2", GrantType.ALLOW);
-        Rule r3 = new Rule(30, null, p1, null, "s3", "r3", "w3", "l3", GrantType.ALLOW);
+        Rule r1 = new Rule(10, null, p1, null,null, "s1", "r1", "w1", "l1", GrantType.ALLOW);
+        Rule r2 = new Rule(20, null, p1, null,null, "s2", "r2", "w2", "l2", GrantType.ALLOW);
+        Rule r3 = new Rule(30, null, p1, null,null, "s3", "r3", "w3", "l3", GrantType.ALLOW);
 
         ruleAdminService.insert(r1);
         ruleAdminService.insert(r2);
@@ -129,10 +129,10 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
         UserGroup p1 = createUserGroup("p1");
         UserGroup p2 = createUserGroup("p2");
 
-        Rule r1 = new Rule(10, null, p1, null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
-        Rule r2 = new Rule(20, null, p2, null,      "s1", "r2", "w2", "l2", GrantType.ALLOW);
-        Rule r3 = new Rule(30, null, p1, null,      "s3", "r3", "w3", "l3", GrantType.ALLOW);
-        Rule r4 = new Rule(40, null, p1, null,      null, null, null, null, GrantType.ALLOW);
+        Rule r1 = new Rule(10, null, p1, null,null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
+        Rule r2 = new Rule(20, null, p2, null,null,      "s1", "r2", "w2", "l2", GrantType.ALLOW);
+        Rule r3 = new Rule(30, null, p1, null,null,      "s3", "r3", "w3", "l3", GrantType.ALLOW);
+        Rule r4 = new Rule(40, null, p1, null,null,      null, null, null, null, GrantType.ALLOW);
 
         ruleAdminService.insert(r1);
         ruleAdminService.insert(r2);
@@ -160,10 +160,10 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
         UserGroup p1 = createUserGroup("p1");
         UserGroup p2 = createUserGroup("p2");
 
-        Rule r1 = new Rule(10, null, p1, null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
-        Rule r2 = new Rule(20, null, p2, null,      "s1", "r2", "w2", "l2", GrantType.ALLOW);
-        Rule r3 = new Rule(30, null, p1, null,      "s3", "r3", "w3", "l3", GrantType.ALLOW);
-        Rule r4 = new Rule(40, null, p1, null,      null, null, null, null, GrantType.ALLOW);
+        Rule r1 = new Rule(10, null, p1, null,null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
+        Rule r2 = new Rule(20, null, p2, null,null,      "s1", "r2", "w2", "l2", GrantType.ALLOW);
+        Rule r3 = new Rule(30, null, p1, null,null,      "s3", "r3", "w3", "l3", GrantType.ALLOW);
+        Rule r4 = new Rule(40, null, p1, null,null,      null, null, null, null, GrantType.ALLOW);
 
         ruleAdminService.insert(r1);
         ruleAdminService.insert(r2);
@@ -193,7 +193,7 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
         final Long id;
 
         {
-            Rule r1 = new Rule(10, null, null, null,      "s1", "r1", "w1", "l1", GrantType.LIMIT);
+            Rule r1 = new Rule(10, null, null, null,null,      "s1", "r1", "w1", "l1", GrantType.LIMIT);
             ruleAdminService.insert(r1);
             id = r1.getId();
         }
@@ -257,7 +257,7 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
         }
 
         final Long id;
-        Rule r1 = new Rule(10, null, null, null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
+        Rule r1 = new Rule(10, null, null, null,null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
         ruleAdminService.insert(r1);
         id = r1.getId();
 
@@ -275,7 +275,7 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
         final Long id;
 
         {
-            Rule r1 = new Rule(10, null, null, null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
+            Rule r1 = new Rule(10, null, null, null,null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
             ruleAdminService.insert(r1);
             id = r1.getId();
         }
@@ -361,7 +361,7 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
         final Long id;
 
         {
-            Rule r1 = new Rule(10, null, null, null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
+            Rule r1 = new Rule(10, null, null, null,null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
             ruleAdminService.insert(r1);
             id = r1.getId();
         }
@@ -450,7 +450,7 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
         final Long id;
 
         {
-            Rule r1 = new Rule(10, null, null, null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
+            Rule r1 = new Rule(10, null, null, null,null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
             ruleAdminService.insert(r1);
             id = r1.getId();
         }
@@ -528,7 +528,7 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
         }
 
         try {
-            Rule r1 = new Rule(10, null, null, null,      "s1", "r1", "w1", "l1", GrantType.DENY);
+            Rule r1 = new Rule(10, null, null, null,null,      "s1", "r1", "w1", "l1", GrantType.DENY);
             ruleAdminService.insert(r1);
             Long id1 = r1.getId();
 
@@ -540,7 +540,7 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
         }
 
         try {
-            Rule r1 = new Rule(10, null, null, null,      "s1", "r1", "w1", null, GrantType.ALLOW);
+            Rule r1 = new Rule(10, null, null, null,null,      "s1", "r1", "w1", null, GrantType.ALLOW);
             ruleAdminService.insert(r1);
             Long id1 = r1.getId();
 
@@ -558,7 +558,7 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
         final Long lid1;
 
         {
-            Rule r1 = new Rule(10, null, null, null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
+            Rule r1 = new Rule(10, null, null, null,null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
             ruleAdminService.insert(r1);
             id = r1.getId();
 
@@ -609,10 +609,10 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
     public void testShift() {
         assertEquals(0, ruleAdminService.getCountAll());
 
-        Rule r1 = new Rule(10, null, null, null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
-        Rule r2 = new Rule(20, null, null, null,      "s2", "r2", "w2", "l2", GrantType.ALLOW);
-        Rule r3 = new Rule(30, null, null, null,      "s3", "r3", "w3", "l3", GrantType.ALLOW);
-        Rule r4 = new Rule(40, null, null, null,      "s4", "r3", "w3", "l3", GrantType.ALLOW);
+        Rule r1 = new Rule(10, null, null, null,null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
+        Rule r2 = new Rule(20, null, null, null,null,      "s2", "r2", "w2", "l2", GrantType.ALLOW);
+        Rule r3 = new Rule(30, null, null, null,null,      "s3", "r3", "w3", "l3", GrantType.ALLOW);
+        Rule r4 = new Rule(40, null, null, null,null,      "s4", "r3", "w3", "l3", GrantType.ALLOW);
 
         ruleAdminService.insert(r1);
         ruleAdminService.insert(r2);
@@ -633,9 +633,9 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
     public void testSwap() {
         assertEquals(0, ruleAdminService.getCountAll());
 
-        Rule r1 = new Rule(10, null, null, null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
-        Rule r2 = new Rule(20, null, null, null,      "s2", "r2", "w2", "l2", GrantType.ALLOW);
-        Rule r3 = new Rule(30, null, null, null,      "s3", "r3", "w3", "l3", GrantType.ALLOW);
+        Rule r1 = new Rule(10, null, null, null,null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
+        Rule r2 = new Rule(20, null, null, null,null,      "s2", "r2", "w2", "l2", GrantType.ALLOW);
+        Rule r3 = new Rule(30, null, null, null,null,      "s3", "r3", "w3", "l3", GrantType.ALLOW);
 
         ruleAdminService.insert(r1);
         ruleAdminService.insert(r2);

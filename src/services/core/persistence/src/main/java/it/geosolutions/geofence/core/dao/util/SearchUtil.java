@@ -28,7 +28,11 @@ import it.geosolutions.geofence.core.model.IPAddressRange;
  * @author ETj (etj at geo-solutions.it)
  */
 public class SearchUtil {
-    
+
+    /**
+     * Adds a search field for finding the precise addressrange instance.
+     * Does <b>NOT</b> search for an address in a range.
+     */
     public static void addAddressRangeSearch(Search search, IPAddressRange addressRange) {
         if(addressRange != null ) {
             // it's embedded

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -36,7 +36,7 @@ import static it.geosolutions.geofence.services.dto.RuleFilter.FilterType.DEFAUL
 import static it.geosolutions.geofence.services.dto.RuleFilter.FilterType.IDVALUE;
 import static it.geosolutions.geofence.services.dto.RuleFilter.FilterType.NAMEVALUE;
 import it.geosolutions.geofence.services.dto.RuleFilter.IdNameFilter;
-import it.geosolutions.geofence.services.dto.RuleFilter.NameFilter;
+import it.geosolutions.geofence.services.dto.RuleFilter.TextFilter;
 import it.geosolutions.geofence.services.dto.ShortRule;
 
 import java.util.ArrayList;
@@ -370,7 +370,7 @@ public class RuleAdminServiceImpl implements RuleAdminService {
         }
     }
 
-    private void addStringCriteria(Search searchCriteria, String fieldName, NameFilter filter) {
+    private void addStringCriteria(Search searchCriteria, String fieldName, TextFilter filter) {
         switch (filter.getType()) {
             case ANY:
                 break; // no filtering
@@ -383,10 +383,10 @@ public class RuleAdminServiceImpl implements RuleAdminService {
                 if(filter.isIncludeDefault()) {
                     searchCriteria.addFilterOr(
                             Filter.isNull(fieldName),
-                            Filter.equal(fieldName, filter.getName()));
+                            Filter.equal(fieldName, filter.getText()));
                 } else {
                     searchCriteria.addFilter(
-                            Filter.equal(fieldName, filter.getName()));
+                            Filter.equal(fieldName, filter.getText()));
                 }
                 break;
 
@@ -454,7 +454,7 @@ public class RuleAdminServiceImpl implements RuleAdminService {
         }
     }
 
-    private void addFixedStringCriteria(Search searchCriteria, String fieldName, NameFilter filter) {
+    private void addFixedStringCriteria(Search searchCriteria, String fieldName, TextFilter filter) {
         switch (filter.getType()) {
             case ANY:
                 throw new BadRequestServiceEx(fieldName + " should be a fixed search and can't be ANY");
@@ -468,7 +468,7 @@ public class RuleAdminServiceImpl implements RuleAdminService {
                     throw new BadRequestServiceEx(fieldName + " should be a fixed search");
                 } else {
                     searchCriteria.addFilter(
-                            Filter.equal(fieldName, filter.getName()));
+                            Filter.equal(fieldName, filter.getText()));
                 }
                 break;
 

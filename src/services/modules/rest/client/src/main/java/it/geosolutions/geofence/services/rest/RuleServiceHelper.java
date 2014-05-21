@@ -47,8 +47,8 @@ public class RuleServiceHelper {
 
 
     public long count(RuleFilter.IdNameFilter userFilter, RuleFilter.IdNameFilter groupFilter, RuleFilter.IdNameFilter instanceFilter,
-                RuleFilter.NameFilter serviceFilter, RuleFilter.NameFilter requestFilter,
-                RuleFilter.NameFilter workspaceFilter, RuleFilter.NameFilter layerFilter) {
+                RuleFilter.TextFilter serviceFilter, RuleFilter.TextFilter requestFilter,
+                RuleFilter.TextFilter workspaceFilter, RuleFilter.TextFilter layerFilter) {
 
         return ruleService.count(
 //                userFilter==null?null:userFilter.getType()==RuleFilter.FilterType.IDVALUE?userFilter.getId():null,
@@ -103,14 +103,14 @@ public class RuleServiceHelper {
                     (filter.isIncludeDefault() || filter .getType()==RuleFilter.FilterType.DEFAULT);
     }
 
-    private static String getFilterName(RuleFilter.NameFilter filter) {
+    private static String getFilterName(RuleFilter.TextFilter filter) {
         return filter==null?
                     null:
                     filter.getType()==RuleFilter.FilterType.NAMEVALUE?
-                        filter.getName():
+                        filter.getText():
                         null;
     }
-    private static Boolean getFilterDefault(RuleFilter.NameFilter filter) {
+    private static Boolean getFilterDefault(RuleFilter.TextFilter filter) {
         return filter==null?
                     null:
                     (filter.isIncludeDefault() || filter .getType()==RuleFilter.FilterType.DEFAULT);
@@ -131,8 +131,8 @@ public class RuleServiceHelper {
     public RESTOutputRuleList get(
                 Integer page, Integer entries, boolean full,
                 RuleFilter.IdNameFilter userFilter, RuleFilter.IdNameFilter groupFilter, RuleFilter.IdNameFilter instanceFilter,
-                RuleFilter.NameFilter serviceFilter, RuleFilter.NameFilter requestFilter,
-                RuleFilter.NameFilter workspaceFilter, RuleFilter.NameFilter layerFilter) {
+                RuleFilter.TextFilter serviceFilter, RuleFilter.TextFilter requestFilter,
+                RuleFilter.TextFilter workspaceFilter, RuleFilter.TextFilter layerFilter) {
 
         return ruleService.get(page,entries,full,
                 getFilterId(userFilter),      getFilterName(userFilter),     getFilterDefault(userFilter),

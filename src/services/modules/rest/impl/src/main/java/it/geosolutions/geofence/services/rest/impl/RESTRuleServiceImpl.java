@@ -30,7 +30,7 @@ import it.geosolutions.geofence.core.model.Rule;
 import it.geosolutions.geofence.core.model.enums.InsertPosition;
 import it.geosolutions.geofence.services.dto.RuleFilter;
 import it.geosolutions.geofence.services.dto.RuleFilter.IdNameFilter;
-import it.geosolutions.geofence.services.dto.RuleFilter.NameFilter;
+import it.geosolutions.geofence.services.dto.RuleFilter.TextFilter;
 import it.geosolutions.geofence.services.dto.RuleFilter.SpecialFilterType;
 import it.geosolutions.geofence.services.exception.BadRequestServiceEx;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
@@ -417,10 +417,10 @@ public class RESTRuleServiceImpl
         }
     }
 
-    private void setFilter(NameFilter filter, String name, Boolean includeDefault) {
+    private void setFilter(TextFilter filter, String name, Boolean includeDefault) {
 
         if (name != null) {
-            filter.setName(name);
+            filter.setText(name);
             if (includeDefault != null) {
                 filter.setIncludeDefault(includeDefault);
             }
