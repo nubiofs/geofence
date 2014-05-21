@@ -22,20 +22,19 @@ package it.geosolutions.geofence.core.dao;
 
 import com.googlecode.genericdao.search.Search;
 import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
 import static it.geosolutions.geofence.core.dao.BaseDAOTest.ruleDAO;
+import it.geosolutions.geofence.core.dao.util.SearchUtil;
 import it.geosolutions.geofence.core.model.GSUser;
+import it.geosolutions.geofence.core.model.IPAddressRange;
 import it.geosolutions.geofence.core.model.LayerAttribute;
 import it.geosolutions.geofence.core.model.LayerDetails;
 import it.geosolutions.geofence.core.model.Rule;
 import it.geosolutions.geofence.core.model.enums.AccessType;
 import it.geosolutions.geofence.core.model.enums.GrantType;
 import it.geosolutions.geofence.core.model.enums.InsertPosition;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
@@ -242,7 +241,7 @@ public class RuleDAOTest extends BaseDAOTest {
         final Long id;
 
         {
-            Rule r1 = new Rule(10, null, null, null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
+            Rule r1 = new Rule(10, null, null, null, null,     "s1", "r1", "w1", "l1", GrantType.ALLOW);
 //            ruleAdminService.insert(r1);
             ruleDAO.persist(r1);
             id = r1.getId();
@@ -403,13 +402,11 @@ public class RuleDAOTest extends BaseDAOTest {
 
 
     @Test
-    public void testDupRule() throws Exception {
+    public void testDupRuleTest() throws Exception {
 
-        long uid;
-        long rid;
         {
-            Rule rule1 = new Rule(10, null, null, null, "s", null, null, null, GrantType.ALLOW);
-            Rule rule2 = new Rule(10, null, null, null, "s", null, null, null, GrantType.ALLOW);
+            Rule rule1 = new Rule(10, null, null, null, null, "s", null, null, null, GrantType.ALLOW);
+            Rule rule2 = new Rule(10, null, null, null, null, "s", null, null, null, GrantType.ALLOW);
 
             ruleDAO.persist(rule1);
 
@@ -424,13 +421,48 @@ public class RuleDAOTest extends BaseDAOTest {
     }
 
     @Test
+    public void testDupRule2Test() throws Exception {
+        {
+            Rule rule1 = new Rule(10, null, null, null, new IPAddressRange("1.2.3.4/32"), "s", null, null, null, GrantType.ALLOW);
+            Rule rule2 = new Rule(10, null, null, null, new IPAddressRange("1.2.3.4/32"), "s", null, null, null, GrantType.ALLOW);
+
+            ruleDAO.persist(rule1);
+
+            try {
+                ruleDAO.persist(rule2);
+                fail("Dup'd rule not detected (addressRange)");
+            } catch (Exception e) {
+                // ok
+            }
+        }
+    }
+
+    @Test
+    public void testDupRule3Test() throws Exception {
+        {
+            Rule rule1 = new Rule(10, null, null, null, new IPAddressRange("1.2.3.5/32"), "s", null, null, null, GrantType.ALLOW);
+            Rule rule2 = new Rule(10, null, null, null, new IPAddressRange("1.2.3.4/32"), "s", null, null, null, GrantType.ALLOW);
+
+            ruleDAO.persist(rule1);
+
+            try {
+                ruleDAO.persist(rule2);
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail("Invalid dup'd rule (addressRange)");
+            }
+        }
+    }
+
+
+    @Test
     public void testShift() {
         assertEquals(0, ruleDAO.count(new Search(Rule.class)));
 
-        Rule r1 = new Rule(10, null, null, null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
-        Rule r2 = new Rule(20, null, null, null,      "s2", "r2", "w2", "l2", GrantType.ALLOW);
-        Rule r3 = new Rule(30, null, null, null,      "s3", "r3", "w3", "l3", GrantType.ALLOW);
-        Rule r4 = new Rule(40, null, null, null,      "s4", "r3", "w3", "l3", GrantType.ALLOW);
+        Rule r1 = new Rule(10, null, null, null, null,     "s1", "r1", "w1", "l1", GrantType.ALLOW);
+        Rule r2 = new Rule(20, null, null, null, null,     "s2", "r2", "w2", "l2", GrantType.ALLOW);
+        Rule r3 = new Rule(30, null, null, null, null,     "s3", "r3", "w3", "l3", GrantType.ALLOW);
+        Rule r4 = new Rule(40, null, null, null, null,     "s4", "r3", "w3", "l3", GrantType.ALLOW);
 
         ruleDAO.persist(r1);
         ruleDAO.persist(r2);
@@ -455,9 +487,9 @@ public class RuleDAOTest extends BaseDAOTest {
     public void testSwap() {
         assertEquals(0, ruleDAO.count(new Search(Rule.class)));
 
-        Rule r1 = new Rule(10, null, null, null,      "s1", "r1", "w1", "l1", GrantType.ALLOW);
-        Rule r2 = new Rule(20, null, null, null,      "s2", "r2", "w2", "l2", GrantType.ALLOW);
-        Rule r3 = new Rule(30, null, null, null,      "s3", "r3", "w3", "l3", GrantType.ALLOW);
+        Rule r1 = new Rule(10, null, null, null, null,     "s1", "r1", "w1", "l1", GrantType.ALLOW);
+        Rule r2 = new Rule(20, null, null, null, null,     "s2", "r2", "w2", "l2", GrantType.ALLOW);
+        Rule r3 = new Rule(30, null, null, null, null,     "s3", "r3", "w3", "l3", GrantType.ALLOW);
 
         ruleDAO.persist(r1);
         ruleDAO.persist(r2);
@@ -476,7 +508,7 @@ public class RuleDAOTest extends BaseDAOTest {
         long id1;
         {
             assertEquals(0, ruleDAO.count(new Search(Rule.class)));
-            Rule rule1 = new Rule(1000, null, null, null, "s", null, null, null, GrantType.ALLOW);
+            Rule rule1 = new Rule(1000, null, null, null, null, "s", null, null, null, GrantType.ALLOW);
             ruleDAO.persist(rule1, InsertPosition.FROM_START);
             id1 = rule1.getId();
         }
@@ -488,35 +520,104 @@ public class RuleDAOTest extends BaseDAOTest {
         }
 
 
-        ruleDAO.persist(new Rule(10, null, null, null, "s10", null, null, null, GrantType.ALLOW));
-        ruleDAO.persist(new Rule(20, null, null, null, "s20", null, null, null, GrantType.ALLOW));
+        ruleDAO.persist(new Rule(10, null, null, null, null, "s10", null, null, null, GrantType.ALLOW));
+        ruleDAO.persist(new Rule(20, null, null, null, null, "s20", null, null, null, GrantType.ALLOW));
 
         {
             assertEquals(3, ruleDAO.count(new Search(Rule.class)));
-            Rule rule1 = new Rule(1000, null, null, null, "sZ", null, null, null, GrantType.ALLOW);
+            Rule rule1 = new Rule(1000, null, null, null, null, "sZ", null, null, null, GrantType.ALLOW);
             long pri = ruleDAO.persist(rule1, InsertPosition.FROM_START);
             assertEquals(21, pri);
         }
 
         {
-            Rule rule1 = new Rule(1, null, null, null, "second", null, null, null, GrantType.ALLOW);
+            Rule rule1 = new Rule(1, null, null, null, null, "second", null, null, null, GrantType.ALLOW);
             long pri = ruleDAO.persist(rule1, InsertPosition.FROM_START);
             assertEquals(10, pri);
         }
 
         {
-            Rule rule1 = new Rule(0, null, null, null, "last", null, null, null, GrantType.ALLOW);
+            Rule rule1 = new Rule(0, null, null, null, null, "last", null, null, null, GrantType.ALLOW);
             long pri = ruleDAO.persist(rule1, InsertPosition.FROM_END);
             assertEquals(23, pri);
         }
 
         {
-            Rule rule1 = new Rule(1, null, null, null, "last2", null, null, null, GrantType.ALLOW);
+            Rule rule1 = new Rule(1, null, null, null, null, "last2", null, null, null, GrantType.ALLOW);
             long pri = ruleDAO.persist(rule1, InsertPosition.FROM_END);
             assertEquals(23, pri);
         }
 
 
+    }
+
+
+    @Test
+    public void testIPRangeTest() throws Exception {
+
+        Long uid;
+        Long rid;
+        {
+
+            GSUser user = createUserAndGroup("rule_test");
+            userDAO.persist(user);
+
+            Rule rule = new Rule();
+            rule.setGsuser(user);
+            rule.setPriority(0);
+            rule.setAddressRange(new IPAddressRange("10.11.0.0/16"));
+            rule.setAccess(GrantType.ALLOW);
+            ruleDAO.persist(rule);
+
+            rid = rule.getId();
+            uid = rule.getGsuser().getId();
+        }
+
+        // test save & load by id
+        {
+            Rule loaded = ruleDAO.find(rid);
+            assertNotNull("Can't retrieve rule", loaded);
+
+            assertNotNull(loaded.getAddressRange());
+            assertEquals("10.11.0.0/16", loaded.getAddressRange().getCidrSignature());
+        }
+
+        //test search
+        {
+            Search s = new Search(Rule.class);
+
+            SearchUtil.addAddressRangeSearch(s, new IPAddressRange("10.11.0.0/16"));
+
+            List<Rule> loadedList = ruleDAO.search(s);
+            assertEquals(1, loadedList.size());
+
+            Rule loaded = loadedList.get(0);
+
+            // DO UPDATE
+            loaded.setAddressRange(new IPAddressRange("111.222.223.0/24"));
+            ruleDAO.merge(loaded);
+        }
+
+        // test update
+        {
+            Rule loaded = ruleDAO.find(rid);
+            assertNotNull("Can't retrieve rule", loaded);
+
+            assertNotNull(loaded.getAddressRange());
+            assertEquals("111.222.223.0/24", loaded.getAddressRange().getCidrSignature());
+
+            // DO REMOVE
+            loaded.setAddressRange(null);
+            ruleDAO.merge(loaded);
+        }
+
+        // test remove
+        {
+            Rule loaded = ruleDAO.find(rid);
+            assertNotNull("Can't retrieve rule", loaded);
+
+            assertNull(loaded.getAddressRange());
+        }
     }
 
 }

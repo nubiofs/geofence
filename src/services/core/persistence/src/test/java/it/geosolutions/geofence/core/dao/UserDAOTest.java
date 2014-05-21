@@ -25,6 +25,7 @@ import it.geosolutions.geofence.core.model.GSUser;
 import it.geosolutions.geofence.core.model.UserGroup;
 import java.util.Set;
 
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
@@ -38,7 +39,7 @@ public class UserDAOTest extends BaseDAOTest {
 
         long id;
         {
-            GSUser user = createUserAndGroup(getName());
+            GSUser user = createUserAndGroup(name.getMethodName());
             userDAO.persist(user);
             id = user.getId();
         }
@@ -110,10 +111,10 @@ public class UserDAOTest extends BaseDAOTest {
         Long gid1, gid2;
         Long uid1;
         {
-            UserGroup g1 = createUserGroup(getName()+"1");
+            UserGroup g1 = createUserGroup(name.getMethodName()+"1");
             gid1 = g1.getId();
             
-            UserGroup g2 = createUserGroup(getName()+"2");
+            UserGroup g2 = createUserGroup(name.getMethodName()+"2");
             gid2 = g2.getId();
 
             GSUser u1 = createUser("u0", g1);

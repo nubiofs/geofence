@@ -28,23 +28,29 @@ import it.geosolutions.geofence.core.model.GFUser;
 import it.geosolutions.geofence.core.model.UserGroup;
 import java.util.List;
 
-import junit.framework.TestCase;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import it.geosolutions.geofence.core.model.GSUser;
 import it.geosolutions.geofence.core.model.Rule;
 
+import org.junit.Before;
+import static org.junit.Assert.*;
+import org.junit.rules.TestName;
+import org.junit.Test;
+
 /**
  *
  * @author ETj (etj at geo-solutions.it)
  */
-public abstract class BaseDAOTest extends TestCase {
+public abstract class BaseDAOTest  {
     protected final Logger LOGGER;
+
+    @org.junit.Rule
+    public TestName name = new TestName();
 
     protected static GSUserDAO userDAO;
     protected static GFUserDAO gfUserDAO;
@@ -76,13 +82,12 @@ public abstract class BaseDAOTest extends TestCase {
         }
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        LOGGER.info("################ Running " + getClass().getSimpleName() + "::" + getName() );
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
+        LOGGER.info("################ Running " + getClass().getSimpleName() + "::" + name.getMethodName() );
 
         removeAll();
-        LOGGER.info("##### Ending setup for " + getName() + " ###----------------------");
+        LOGGER.info("##### Ending setup for " + name.getMethodName() + " ###----------------------");
     }
 
     @Test

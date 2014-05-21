@@ -22,6 +22,7 @@ package it.geosolutions.geofence.core.dao;
 
 import it.geosolutions.geofence.core.model.UserGroup;
 
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
@@ -35,7 +36,7 @@ public class UserGroupDAOTest extends BaseDAOTest {
 
         long id;
         {
-            UserGroup group = createUserGroup(getName());
+            UserGroup group = createUserGroup(name.getMethodName());
             id = group.getId();
         }
 
@@ -43,7 +44,7 @@ public class UserGroupDAOTest extends BaseDAOTest {
         {
             UserGroup loaded = userGroupDAO.find(id);
             assertNotNull("Can't retrieve userGroup", loaded);
-            assertEquals(getName(), loaded.getName());
+            assertEquals(name.getMethodName(), loaded.getName());
         }
 
         userGroupDAO.removeById(id);
@@ -55,14 +56,14 @@ public class UserGroupDAOTest extends BaseDAOTest {
 
         long id;
         {
-            UserGroup group = createUserGroup(getName());
+            UserGroup group = createUserGroup(name.getMethodName());
             id = group.getId();
         }
 
         {
             UserGroup loaded = userGroupDAO.find(id);
             assertNotNull("Can't retrieve userGroup", loaded);
-            assertEquals(getName(), loaded.getName());
+            assertEquals(name.getMethodName(), loaded.getName());
 
             loaded.setName("aNewName");
             userGroupDAO.merge(loaded);

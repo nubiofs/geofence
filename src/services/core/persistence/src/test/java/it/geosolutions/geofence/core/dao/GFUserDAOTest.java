@@ -22,6 +22,7 @@ package it.geosolutions.geofence.core.dao;
 
 import it.geosolutions.geofence.core.model.GFUser;
 
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
@@ -38,7 +39,7 @@ public class GFUserDAOTest extends BaseDAOTest {
         long id;
         {
             GFUser user = new GFUser();
-            user.setName(getName());
+            user.setName(name.getMethodName());
             gfUserDAO.persist(user);
             id = user.getId();
         }

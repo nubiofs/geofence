@@ -28,6 +28,7 @@ import com.googlecode.genericdao.search.ISearch;
 import com.googlecode.genericdao.search.Search;
 
 import it.geosolutions.geofence.core.dao.RuleDAO;
+import static it.geosolutions.geofence.core.dao.util.SearchUtil.*;
 import it.geosolutions.geofence.core.model.Rule;
 
 import it.geosolutions.geofence.core.model.enums.GrantType;
@@ -177,15 +178,9 @@ public class RuleDAOImpl extends BaseDAO<Rule, Long> implements RuleDAO {
         addSearchField(search, "workspace", rule.getWorkspace());
         addSearchField(search, "layer", rule.getLayer());
 
-        return search;
-    }
+        addAddressRangeSearch(search, rule.getAddressRange());
 
-    private void addSearchField(Search search, String field, Object o) {
-        if ( o == null ) {
-            search.addFilterNull(field);
-        } else {
-            search.addFilterEqual(field, o);
-        }
+        return search;
     }
 
     @Override
