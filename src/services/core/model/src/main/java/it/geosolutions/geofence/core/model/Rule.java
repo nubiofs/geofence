@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -24,8 +24,11 @@ import it.geosolutions.geofence.core.model.adapter.FKUserGroupAdapter;
 import it.geosolutions.geofence.core.model.adapter.FKUserAdapter;
 import it.geosolutions.geofence.core.model.enums.GrantType;
 import java.io.Serializable;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -79,7 +82,7 @@ import org.hibernate.annotations.Index;
         @UniqueConstraint(columnNames = {"gsuser_id", "usergroup_id", "instance_id", "service", "request", "workspace", "layer"})})
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Rule")
 @XmlRootElement(name = "Rule")
-@XmlType(propOrder={"id","priority","gsuser","userGroup","instance","service","request","workspace","layer","access","layerDetails","ruleLimits"})
+@XmlType(propOrder={"id","priority","gsuser","userGroup","instance","addressRange","service","request","workspace","layer","access","layerDetails","ruleLimits"})
 public class Rule implements Identifiable, Serializable {
 
     private static final long serialVersionUID = -5127129225384707164L;
@@ -111,6 +114,14 @@ public class Rule implements Identifiable, Serializable {
     @Index(name = "idx_rule_service")
     private String service;
 
+    @Embedded
+    @AttributeOverrides({
+        @AttributeOverride(name="low", column=@Column(name="ip_low")),
+        @AttributeOverride(name="high", column=@Column(name="ip_high")),
+        @AttributeOverride(name="size", column=@Column(name="ip_size"))
+      })
+    private IPAddressRange addressRange;
+
     @Column
     @Index(name = "idx_rule_request")
     private String request;
@@ -138,11 +149,16 @@ public class Rule implements Identifiable, Serializable {
     public Rule() {
     }
 
-    public Rule(long priority, GSUser gsuser, UserGroup userGroup, GSInstance instance, String service, String request, String workspace, String layer, GrantType access) {
+//    public Rule(long priority, GSUser gsuser, UserGroup userGroup, GSInstance instance, String service, String request, String workspace, String layer, GrantType access) {
+//    }
+
+    public Rule(long priority, GSUser gsuser, UserGroup userGroup, GSInstance instance, IPAddressRange addressRange,
+                               String service, String request, String workspace, String layer, GrantType access) {
         this.priority = priority;
         this.gsuser = gsuser;
         this.userGroup = userGroup;
         this.instance = instance;
+        this.addressRange = addressRange;
         this.service = service;
         this.request = request;
         this.workspace = workspace;
@@ -156,6 +172,14 @@ public class Rule implements Identifiable, Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public IPAddressRange getAddressRange() {
+        return addressRange;
+    }
+
+    public void setAddressRange(IPAddressRange addressRange) {
+        this.addressRange = addressRange;
     }
 
     public long getPriority() {
@@ -277,6 +301,10 @@ public class Rule implements Identifiable, Serializable {
             sb.append(" iName:").append(prepare(instance.getName()));
         }
 
+        if (addressRange != null) {
+            sb.append(" addr:").append(addressRange.getCidrSignature());
+        }
+
         if (service != null) {
             sb.append(" srv:").append(service);
         }
@@ -297,6 +325,7 @@ public class Rule implements Identifiable, Serializable {
         return sb.toString();
 
     }
+    
     private static String prepare(String s) {
         if(s==null)
             return "(null)";
