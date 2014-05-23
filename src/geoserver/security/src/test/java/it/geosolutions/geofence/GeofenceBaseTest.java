@@ -83,7 +83,7 @@ public abstract class GeofenceBaseTest extends GeoServerTestSupport {
 
     protected boolean isGeoFenceAvailable() {
         try {
-            geofenceService.getMatchingRules(null, null, null, null, null, null, null);
+            geofenceService.getMatchingRules(null, null, null, null, null, null, null, null);
             return true;
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Error connecting to GeoFence", e);

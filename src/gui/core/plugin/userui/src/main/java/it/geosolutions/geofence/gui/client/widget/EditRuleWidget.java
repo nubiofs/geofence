@@ -1,11 +1,6 @@
-/*
- * $ Header: it.geosolutions.geofence.gui.client.widget.EditRuleWidget,v. 0.1 25-feb-2011 16.31.40 created by afabiani <alessio.fabiani at geo-solutions.it> $
- * $ Revision: 0.1 $
- * $ Date: 25-feb-2011 16.31.40 $
+/* ====================================================================
  *
- * ====================================================================
- *
- * Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ * Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
  * http://www.geo-solutions.it
  *
  * GPLv3 + Classpath exception
@@ -89,30 +84,42 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Widget;
+import java.util.regex.Pattern;
 
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class EditRuleWidget.
+ *
+ *  Note:
+ * There's a bug preventing the proper header alignment:
+ * http://www.sencha.com/forum/showthread.php?234952-Sencha-Ext-GWT-grid-columns-not-aligned-with-grid-header
  */
 public class EditRuleWidget extends GeofenceFormWidget
 {
 
+	private static final int COLUMN_HEADER_OFFSET = 20;
+
     /** The column priority width. */
-    private static final int COLUMN_PRIORITY_WIDTH = 30;
+    private static final int COLUMN_PRIORITY_WIDTH = 60;
 
     /** The Constant COLUMN_USER_WIDTH. */
     private static final int COLUMN_USER_WIDTH = 130; // 130;
 
     /** The Constant COLUMN_PROFILE_WIDTH. */
-    private static final int COLUMN_PROFILE_WIDTH = 130; // 160;
+    private static final int COLUMN_GROUPS_WIDTH = 110; // 160;
 
     /** The Constant COLUMN_INSTANCE_WIDTH. */
     private static final int COLUMN_INSTANCE_WIDTH = 150; // 160;
 
+    private static final int COLUMN_IPRANGE_WIDTH = 150; // 160;
+
     /** The Constant COLUMN_SERVICE_WIDTH. */
-    private static final int COLUMN_SERVICE_WIDTH = 120; // 100;
+    private static final int COLUMN_SERVICE_WIDTH = 100; // 100;
 
     /** The Constant COLUMN_REQUEST_WIDTH. */
     private static final int COLUMN_REQUEST_WIDTH = 180; // 190;
@@ -262,23 +269,18 @@ public class EditRuleWidget extends GeofenceFormWidget
      *
      * @see it.geosolutions.geofence.gui.client.form.IForm#execute()
      */
-    public void execute()
-    {
+    public void execute() {
         this.saveStatus.setBusy("Operation in progress");
 
-        if (status.equals("UPDATE"))
-        {
+        if (status.equals("UPDATE")) {
             Dispatcher.forwardEvent(GeofenceEvents.RULE_SAVE, model);
             onExecute = true;
-        }
-        else
-        {
+        } else {
             Dispatcher.forwardEvent(GeofenceEvents.RULE_ADD, model);
             onExecute = true;
         }
 
-        if (this.closeOnSubmit)
-        {
+        if (this.closeOnSubmit) {
             cancel();
         }
 
@@ -310,125 +312,155 @@ public class EditRuleWidget extends GeofenceFormWidget
     {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig rulePriorityColumn = new ColumnConfig();
-        rulePriorityColumn.setId(BeanKeyValue.PRIORITY.getValue());
-        rulePriorityColumn.setWidth(COLUMN_PRIORITY_WIDTH);
-        rulePriorityColumn.setRenderer(this.createPriorityCustomField()); // CustomField//createUsersComboBox
-        rulePriorityColumn.setMenuDisabled(false);
-        rulePriorityColumn.setSortable(true);
-        configs.add(rulePriorityColumn);
+        ColumnConfig priCol = new ColumnConfig();
+        priCol.setId(BeanKeyValue.PRIORITY.getValue());
+        priCol.setWidth(COLUMN_PRIORITY_WIDTH);
+        priCol.setRenderer(this.createPriorityRenderer());
+        priCol.setMenuDisabled(true);
+        priCol.setSortable(false);
+        configs.add(priCol);
 
-        ColumnConfig ruleUserColumn = new ColumnConfig();
-        ruleUserColumn.setId(BeanKeyValue.USER.getValue());
-        ruleUserColumn.setHeader("User");
-        ruleUserColumn.setWidth(COLUMN_USER_WIDTH);
-        ruleUserColumn.setRenderer(this.createUsersComboBox());
-        ruleUserColumn.setMenuDisabled(true);
-        ruleUserColumn.setSortable(false);
-        configs.add(ruleUserColumn);
+        ColumnConfig userCol = new ColumnConfig();
+        userCol.setId(BeanKeyValue.USER.getValue());
+        userCol.setHeader("User");
+        userCol.setWidth(COLUMN_USER_WIDTH);
+        userCol.setRenderer(this.createUsersRenderer());
+        userCol.setMenuDisabled(true);
+        userCol.setSortable(false);
+        configs.add(userCol);
 
-        ColumnConfig ruleProfileColumn = new ColumnConfig();
-        ruleProfileColumn.setId(BeanKeyValue.PROFILE.getValue());
-        ruleProfileColumn.setHeader("Group");
-        ruleProfileColumn.setWidth(COLUMN_PROFILE_WIDTH);
-        ruleProfileColumn.setRenderer(this.createProfilesComboBox());
-        ruleProfileColumn.setMenuDisabled(true);
-        ruleProfileColumn.setSortable(false);
-        configs.add(ruleProfileColumn);
+        ColumnConfig groupCol = new ColumnConfig();
+        groupCol.setId(BeanKeyValue.PROFILE.getValue());
+        groupCol.setHeader("Group");
+        groupCol.setWidth(COLUMN_GROUPS_WIDTH);
+        groupCol.setRenderer(this.createGroupsRenderer());
+        groupCol.setMenuDisabled(true);
+        groupCol.setSortable(false);
+        configs.add(groupCol);
 
-        ColumnConfig ruleInstanceColumn = new ColumnConfig();
-        ruleInstanceColumn.setId(BeanKeyValue.INSTANCE.getValue());
-        ruleInstanceColumn.setHeader("Instance");
-        ruleInstanceColumn.setWidth(COLUMN_INSTANCE_WIDTH);
-        ruleInstanceColumn.setRenderer(this.createInstancesComboBox());
-        ruleInstanceColumn.setMenuDisabled(true);
-        ruleInstanceColumn.setSortable(false);
-        configs.add(ruleInstanceColumn);
+        ColumnConfig instanceCol = new ColumnConfig();
+        instanceCol.setId(BeanKeyValue.INSTANCE.getValue());
+        instanceCol.setHeader("Instance");
+        instanceCol.setWidth(COLUMN_INSTANCE_WIDTH);
+        instanceCol.setRenderer(this.createInstancesRenderer());
+        instanceCol.setMenuDisabled(true);
+        instanceCol.setSortable(false);
+        configs.add(instanceCol);
 
-        ColumnConfig ruleServiceColumn = new ColumnConfig();
-        ruleServiceColumn.setId(BeanKeyValue.SERVICE.getValue());
-        ruleServiceColumn.setHeader("Service");
-        ruleServiceColumn.setWidth(COLUMN_SERVICE_WIDTH);
-        ruleServiceColumn.setRenderer(this.createServicesComboBox());
-        ruleServiceColumn.setMenuDisabled(true);
-        ruleServiceColumn.setSortable(false);
-        configs.add(ruleServiceColumn);
+        ColumnConfig ipRangeCol = new ColumnConfig();
+        ipRangeCol.setId(BeanKeyValue.SOURCE_IP_RANGE.getValue());
+        ipRangeCol.setHeader("Src IP range");
+        ipRangeCol.setWidth(COLUMN_IPRANGE_WIDTH);
+        ipRangeCol.setRenderer(new IPRangeRenderer());
+        ipRangeCol.setMenuDisabled(true);
+        ipRangeCol.setSortable(false);
+        configs.add(ipRangeCol);
 
-        ColumnConfig ruleServiceRequestColumn = new ColumnConfig();
-        ruleServiceRequestColumn.setId(BeanKeyValue.REQUEST.getValue());
-        ruleServiceRequestColumn.setHeader("Request");
-        ruleServiceRequestColumn.setWidth(COLUMN_REQUEST_WIDTH);
-        ruleServiceRequestColumn.setRenderer(this.createServicesRequestComboBox());
-        ruleServiceRequestColumn.setMenuDisabled(true);
-        ruleServiceRequestColumn.setSortable(false);
-        configs.add(ruleServiceRequestColumn);
+        ColumnConfig serviceCol = new ColumnConfig();
+        serviceCol.setId(BeanKeyValue.SERVICE.getValue());
+        serviceCol.setHeader("Service");
+        serviceCol.setWidth(COLUMN_SERVICE_WIDTH);
+        serviceCol.setRenderer(this.createServicesRenderer());
+        serviceCol.setMenuDisabled(true);
+        serviceCol.setSortable(false);
+        configs.add(serviceCol);
 
-        ColumnConfig ruleServiceWorkspacesColumn = new ColumnConfig();
-        ruleServiceWorkspacesColumn.setId(BeanKeyValue.WORKSPACE.getValue());
-        ruleServiceWorkspacesColumn.setHeader("Workspace");
-        ruleServiceWorkspacesColumn.setWidth(COLUMN_WORKSPACE_WIDTH);
-        ruleServiceWorkspacesColumn.setRenderer(this.createServiceWorkspacesComboBox());
-        ruleServiceWorkspacesColumn.setMenuDisabled(true);
-        ruleServiceWorkspacesColumn.setSortable(false);
-        configs.add(ruleServiceWorkspacesColumn);
+        ColumnConfig reqCol = new ColumnConfig();
+        reqCol.setId(BeanKeyValue.REQUEST.getValue());
+        reqCol.setHeader("Request");
+        reqCol.setWidth(COLUMN_REQUEST_WIDTH);
+        reqCol.setRenderer(this.createRequestRenderer());
+        reqCol.setMenuDisabled(true);
+        reqCol.setSortable(false);
+        configs.add(reqCol);
 
-        ColumnConfig ruleWorkspaceLayersColumn = new ColumnConfig();
-        ruleWorkspaceLayersColumn.setId(BeanKeyValue.LAYER.getValue());
-        ruleWorkspaceLayersColumn.setHeader("Layer");
-        ruleWorkspaceLayersColumn.setWidth(COLUMN_LAYER_WIDTH);
-        ruleWorkspaceLayersColumn.setRenderer(this.createWorkspacesLayersComboBox());
-        ruleWorkspaceLayersColumn.setMenuDisabled(true);
-        ruleWorkspaceLayersColumn.setSortable(false);
-        configs.add(ruleWorkspaceLayersColumn);
+        ColumnConfig wsCol = new ColumnConfig();
+        wsCol.setId(BeanKeyValue.WORKSPACE.getValue());
+        wsCol.setHeader("Workspace");
+        wsCol.setWidth(COLUMN_WORKSPACE_WIDTH);
+        wsCol.setRenderer(this.createWorkspacesRenderer());
+        wsCol.setMenuDisabled(true);
+        wsCol.setSortable(false);
+        configs.add(wsCol);
 
-        ColumnConfig ruleGrantsColumn = new ColumnConfig();
-        ruleGrantsColumn.setId(BeanKeyValue.GRANT.getValue());
-        ruleGrantsColumn.setHeader("Grant");
-        ruleGrantsColumn.setWidth(COLUMN_GRANT_WIDTH);
-        ruleGrantsColumn.setRenderer(this.createGrantsComboBox());
-        ruleGrantsColumn.setMenuDisabled(true);
-        ruleGrantsColumn.setSortable(false);
-        configs.add(ruleGrantsColumn);
+        ColumnConfig layerCol = new ColumnConfig();
+        layerCol.setId(BeanKeyValue.LAYER.getValue());
+        layerCol.setHeader("Layer");
+        layerCol.setWidth(COLUMN_LAYER_WIDTH);
+        layerCol.setRenderer(this.createLayersRenderer());
+        layerCol.setMenuDisabled(true);
+        layerCol.setSortable(false);
+        configs.add(layerCol);
+
+        ColumnConfig grantCol = new ColumnConfig();
+        grantCol.setId(BeanKeyValue.GRANT.getValue());
+        grantCol.setHeader("Grant");
+        grantCol.setWidth(COLUMN_GRANT_WIDTH);
+        grantCol.setRenderer(this.createGrantsRenderer());
+        grantCol.setMenuDisabled(true);
+        grantCol.setSortable(false);
+        configs.add(grantCol);
 
         return new ColumnModel(configs);
     }
 
+
+    class ResizeListener implements Listener<GridEvent<Rule>> {
+        private final int offset;
+
+        public ResizeListener(int offset) {
+            this.offset = offset;
+        }
+
+        public void handleEvent(GridEvent<Rule> be) {
+
+            Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
+                new String[]{"DEBUG","Resizing " + be.getGrid().getColumnModel().getColumnId(be.getColIndex())});
+
+            for (int i = 0; i < be.getGrid().getStore().getCount(); i++) { // there should be only 1 row
+
+                // let's force a resize on all the columns
+                for (int col = 0; col < be.getGrid().getColumnModel().getColumnCount(); col++) {
+
+//                    final Widget widget = be.getGrid().getView().getWidget(i, be.getColIndex());
+
+                    final Widget widget = be.getGrid().getView().getWidget(i, col);
+
+//                    Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
+//                        new String[]{"DEBUG","Resizing " + widget.getClass().getName() + "--" + widget.getTitle()});
+
+                    int colWidth = be.getGrid().getColumnModel().getColumn(col).getWidth();
+
+                    if ((widget != null) && (widget instanceof BoxComponent)) {
+//                        ((BoxComponent) widget).setWidth(be.getWidth() - offset);
+                        ((BoxComponent) widget).setWidth(colWidth - offset);
+                    }
+                }
+            }
+        }
+    }
+    
     /**
      * Creates the priority custom field.
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<Rule> createPriorityCustomField()
+    private GridCellRenderer<Rule> createPriorityRenderer()
     {
         GridCellRenderer<Rule> comboRendered = new GridCellRenderer<Rule>()
             {
 
-                private boolean init;
+//                private boolean init;
 
                 public Object render(final Rule model, String property, ColumnData config,
                     int rowIndex, int colIndex, ListStore<Rule> store, Grid<Rule> grid)
                 {
 
-                    if (!init)
-                    {
-                        init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<Rule>>()
-                            {
-
-                                public void handleEvent(GridEvent<Rule> be)
-                                {
-                                    for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
-                                    {
-                                        if ((be.getGrid().getView().getWidget(i, be.getColIndex()) != null) &&
-                                                (be.getGrid().getView().getWidget(i, be.getColIndex()) instanceof BoxComponent))
-                                        {
-                                            ((BoxComponent) be.getGrid().getView().getWidget(i,
-                                                    be.getColIndex())).setWidth(be.getWidth() - 10);
-                                        }
-                                    }
-                                }
-                            });
-                    }
+//                    if (!init)
+//                    {
+//                        init = true;
+//                        grid.addListener(Events.ColumnResize, new ResizeListener(10));
+//                    }
 
                     // TODO: generalize this!
                     ArrayList<Rule> list = new ArrayList<Rule>();
@@ -439,25 +471,26 @@ public class EditRuleWidget extends GeofenceFormWidget
                         list.add(rule);
                     }
 
-                    final TextField<String> priorityCustomField = new TextField<String>(); // (ListField)
-                    priorityCustomField.setId("rulePriorityCombo");
-                    priorityCustomField.setName("rulePriorityCombo");
-                    priorityCustomField.setEmptyText("*");
-                    priorityCustomField.setFieldLabel(BeanKeyValue.PRIORITY.getValue()); // DisplayField
-                    priorityCustomField.setValue(BeanKeyValue.PRIORITY.getValue());
-                    priorityCustomField.setReadOnly(false);
+                    final TextField<String> field = new TextField<String>(); // (ListField)
+                    field.setId("editRulePriority");
+                    field.setName("editRulePriority");
+                    field.setEmptyText("*");
+                    field.setFieldLabel(BeanKeyValue.PRIORITY.getValue()); // DisplayField
+                    field.setValue(BeanKeyValue.PRIORITY.getValue());
+                    field.setReadOnly(false);
 
-                    priorityCustomField.setWidth(COLUMN_PRIORITY_WIDTH - 10);
-                    priorityCustomField.show();
+                    field.setWidth(COLUMN_PRIORITY_WIDTH - COLUMN_HEADER_OFFSET);
+//                    field.setAutoWidth(true);
+                    field.show();
 
                     if (model.getPriority() != -1)
                     {
                         long name2 = model.getPriority();
-                        priorityCustomField.setValue(Long.valueOf(name2).toString());
+                        field.setValue(Long.valueOf(name2).toString());
                     }
                     else
                     {
-                        priorityCustomField.setValue("-1");
+                        field.setValue("-1");
                     }
 
                     KeyListener keyListener = new KeyListener()
@@ -473,7 +506,7 @@ public class EditRuleWidget extends GeofenceFormWidget
                                     priorityEdited = true;
                                     try
                                     {
-                                        model.setPriority(Long.parseLong((String) priorityCustomField.getRawValue()));
+                                        model.setPriority(Long.parseLong((String) field.getRawValue()));
                                     }
                                     catch (Exception e)
                                     {
@@ -490,9 +523,9 @@ public class EditRuleWidget extends GeofenceFormWidget
                             }
                         };
 
-                    priorityCustomField.addKeyListener(keyListener);
+                    field.addKeyListener(keyListener);
 
-                    priorityCustomField.addListener(Events.Blur, new Listener<FieldEvent>()
+                    field.addListener(Events.Blur, new Listener<FieldEvent>()
                         {
 
                             public void handleEvent(FieldEvent be)
@@ -500,7 +533,7 @@ public class EditRuleWidget extends GeofenceFormWidget
                             	priorityEdited = true;
                                 try
                                 {
-                                    model.setPriority(Long.parseLong((String) priorityCustomField.getRawValue()));
+                                    model.setPriority(Long.parseLong((String) field.getRawValue()));
                                 }
                                 catch (Exception e)
                                 {
@@ -519,7 +552,7 @@ public class EditRuleWidget extends GeofenceFormWidget
                     
                     
                     
-                    return priorityCustomField;
+                    return field;
                 }
 
             };
@@ -532,56 +565,43 @@ public class EditRuleWidget extends GeofenceFormWidget
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<Rule> createUsersComboBox()
+    private GridCellRenderer<Rule> createUsersRenderer()
     {
         GridCellRenderer<Rule> comboRendered = new GridCellRenderer<Rule>()
             {
 
-                private boolean init;
+//                private boolean init;
 
                 public Object render(final Rule model, String property, ColumnData config,
                     int rowIndex, int colIndex, ListStore<Rule> store, Grid<Rule> grid)
                 {
 
-                    if (!init)
-                    {
-                        init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<Rule>>()
-                            {
-
-                                public void handleEvent(GridEvent<Rule> be)
-                                {
-                                    for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
-                                    {
-                                        if ((be.getGrid().getView().getWidget(i, be.getColIndex()) != null) &&
-                                                (be.getGrid().getView().getWidget(i, be.getColIndex()) instanceof BoxComponent))
-                                        {
-                                            ((BoxComponent) be.getGrid().getView().getWidget(i,
-                                                    be.getColIndex())).setWidth(be.getWidth() - 10);
-                                        }
-                                    }
-                                }
-                            });
-                    }
+//                    if (!init)
+//                    {
+//                        init = true;
+//                        grid.addListener(Events.ColumnResize, new ResizeListener(10));
+//                    }
 
                     // TODO: generalize this!
-                    ComboBox<GSUser> usersComboBox = new ComboBox<GSUser>();
-                    usersComboBox.setId("ruleUsersCombo");
-                    usersComboBox.setName("ruleUsersCombo");
-                    usersComboBox.setEmptyText("(No profile available)");
-                    usersComboBox.setDisplayField(BeanKeyValue.NAME.getValue());
-                    usersComboBox.setEditable(false);
-                    usersComboBox.setStore(getAvailableUsers());
-                    usersComboBox.setTypeAhead(true);
-                    usersComboBox.setTriggerAction(TriggerAction.ALL);
-                    usersComboBox.setWidth(100);
+                    ComboBox<GSUser> combo = new ComboBox<GSUser>();
+                    combo.setId("editRuleUser");
+                    combo.setName("editRuleUser");
+                    combo.setEmptyText("(No user available)");
+                    combo.setDisplayField(BeanKeyValue.NAME.getValue());
+                    combo.setEditable(false);
+                    combo.setStore(getAvailableUsers());
+                    combo.setTypeAhead(true);
+                    combo.setTriggerAction(TriggerAction.ALL);
+//                    usersComboBox.setWidth(100);
+                    combo.setWidth(COLUMN_USER_WIDTH - COLUMN_HEADER_OFFSET);
+//                    combo.setAutoWidth(true);
 
                     if (model.getUser() != null)
                     {
-                        usersComboBox.setValue(model.getUser());
+                        combo.setValue(model.getUser());
                     }
 
-                    usersComboBox.addListener(Events.Select, new Listener<FieldEvent>()
+                    combo.addListener(Events.Select, new Listener<FieldEvent>()
                         {
 
                             public void handleEvent(FieldEvent be)
@@ -598,7 +618,7 @@ public class EditRuleWidget extends GeofenceFormWidget
                             }
                         });
 
-                    return usersComboBox;
+                    return combo;
                 }
 
                 /**
@@ -740,57 +760,44 @@ public class EditRuleWidget extends GeofenceFormWidget
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<Rule> createProfilesComboBox()
+    private GridCellRenderer<Rule> createGroupsRenderer()
     {
         GridCellRenderer<Rule> comboRendered = new GridCellRenderer<Rule>()
             {
 
-                private boolean init;
+//                private boolean init;
 
                 public Object render(final Rule model, String property, ColumnData config,
                     int rowIndex, int colIndex, ListStore<Rule> store, Grid<Rule> grid)
                 {
 
-                    if (!init)
-                    {
-                        init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<Rule>>()
-                            {
-
-                                public void handleEvent(GridEvent<Rule> be)
-                                {
-                                    for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
-                                    {
-                                        if ((be.getGrid().getView().getWidget(i, be.getColIndex()) != null) &&
-                                                (be.getGrid().getView().getWidget(i, be.getColIndex()) instanceof BoxComponent))
-                                        {
-                                            ((BoxComponent) be.getGrid().getView().getWidget(i,
-                                                    be.getColIndex())).setWidth(be.getWidth() - 10);
-                                        }
-                                    }
-                                }
-                            });
-                    }
+//                    if (!init)
+//                    {
+//                        init = true;
+//                        grid.addListener(Events.ColumnResize, new ResizeListener(10));
+//                    }
 
                     // TODO: generalize this!
-                    ComboBox<UserGroup> profilesComboBox = new ComboBox<UserGroup>();
-                    profilesComboBox.setId("ruleProfilesCombo");
-                    profilesComboBox.setName("ruleProfilesCombo");
-                    profilesComboBox.setEmptyText("(No profile available)");
-                    profilesComboBox.setDisplayField(BeanKeyValue.NAME.getValue());
-                    profilesComboBox.setEditable(false);
-                    profilesComboBox.setStore(getAvailableProfiles());
-                    profilesComboBox.setTypeAhead(true);
-                    profilesComboBox.setTriggerAction(TriggerAction.ALL);
-                    profilesComboBox.setWidth(100);
+                    ComboBox<UserGroup> combo = new ComboBox<UserGroup>();
+                    combo.setId("editRuleGroup");
+                    combo.setName("editRuleGroup");
+                    combo.setEmptyText("(No group available)");
+                    combo.setDisplayField(BeanKeyValue.NAME.getValue());
+                    combo.setEditable(false);
+                    combo.setStore(getAvailableGroups());
+                    combo.setTypeAhead(true);
+                    combo.setTriggerAction(TriggerAction.ALL);
+                    combo.setWidth(COLUMN_GROUPS_WIDTH -COLUMN_HEADER_OFFSET);
+//                    combo.setAutoWidth(true);
+
 
                     if (model.getProfile() != null)
                     {
-                        profilesComboBox.setValue(model.getProfile());
-                        profilesComboBox.setSelection(Arrays.asList(model.getProfile()));
+                        combo.setValue(model.getProfile());
+                        combo.setSelection(Arrays.asList(model.getProfile()));
                     }
 
-                    profilesComboBox.addListener(Events.Select, new Listener<FieldEvent>()
+                    combo.addListener(Events.Select, new Listener<FieldEvent>()
                         {
 
                             public void handleEvent(FieldEvent be)
@@ -800,7 +807,7 @@ public class EditRuleWidget extends GeofenceFormWidget
                             }
                         });
 
-                    return profilesComboBox;
+                    return combo;
                 }
 
                 /**
@@ -808,9 +815,9 @@ public class EditRuleWidget extends GeofenceFormWidget
                  *
                  * @return
                  */
-                private ListStore<UserGroup> getAvailableProfiles()
+                private ListStore<UserGroup> getAvailableGroups()
                 {
-                    ListStore<UserGroup> availableProfiles = new ListStore<UserGroup>();
+                    ListStore<UserGroup> groups = new ListStore<UserGroup>();
                     RpcProxy<PagingLoadResult<UserGroup>> profileProxy = new RpcProxy<PagingLoadResult<UserGroup>>()
                         {
 
@@ -822,13 +829,13 @@ public class EditRuleWidget extends GeofenceFormWidget
 
                         };
 
-                    BasePagingLoader<PagingLoadResult<ModelData>> profilesLoader =
+                    BasePagingLoader<PagingLoadResult<ModelData>> groupLoader =
                         new BasePagingLoader<PagingLoadResult<ModelData>>(
                             profileProxy);
-                    profilesLoader.setRemoteSort(false);
-                    availableProfiles = new ListStore<UserGroup>(profilesLoader);
+                    groupLoader.setRemoteSort(false);
+                    groups = new ListStore<UserGroup>(groupLoader);
 
-                    return availableProfiles;
+                    return groups;
                 }
             };
 
@@ -840,54 +847,40 @@ public class EditRuleWidget extends GeofenceFormWidget
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<Rule> createInstancesComboBox()
+    private GridCellRenderer<Rule> createInstancesRenderer()
     {
         GridCellRenderer<Rule> comboRendered = new GridCellRenderer<Rule>()
             {
 
-                private boolean init;
+//                private boolean init;
 
                 public Object render(final Rule model, String property, ColumnData config,
                     int rowIndex, int colIndex, ListStore<Rule> store, Grid<Rule> grid)
                 {
 
-                    if (!init)
-                    {
-                        init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<Rule>>()
-                            {
-
-                                public void handleEvent(GridEvent<Rule> be)
-                                {
-                                    for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
-                                    {
-                                        if ((be.getGrid().getView().getWidget(i, be.getColIndex()) != null) &&
-                                                (be.getGrid().getView().getWidget(i, be.getColIndex()) instanceof BoxComponent))
-                                        {
-                                            ((BoxComponent) be.getGrid().getView().getWidget(i,
-                                                    be.getColIndex())).setWidth(be.getWidth() - 10);
-                                        }
-                                    }
-                                }
-                            });
-                    }
+//                    if (!init)
+//                    {
+//                        init = true;
+//                        grid.addListener(Events.ColumnResize, new ResizeListener(10));
+//                    }
 
                     // TODO: generalize this!
-                    ComboBox<GSInstance> instancesComboBox = new ComboBox<GSInstance>();
-                    instancesComboBox.setId("ruleInstancesCombo");
-                    instancesComboBox.setName("ruleInstancesCombo");
-                    instancesComboBox.setEmptyText("(No instances available)");
-                    instancesComboBox.setDisplayField(BeanKeyValue.NAME.getValue());
-                    instancesComboBox.setEditable(false);
-                    instancesComboBox.setStore(getAvailableInstances());
-                    instancesComboBox.setTypeAhead(true);
-                    instancesComboBox.setTriggerAction(TriggerAction.ALL);
-                    instancesComboBox.setWidth(120);
+                    ComboBox<GSInstance> combo = new ComboBox<GSInstance>();
+                    combo.setId("editRuleInstance");
+                    combo.setName("editRuleInstance");
+                    combo.setEmptyText("(No instance available)");
+                    combo.setDisplayField(BeanKeyValue.NAME.getValue());
+                    combo.setEditable(false);
+                    combo.setStore(getAvailableInstances());
+                    combo.setTypeAhead(true);
+                    combo.setTriggerAction(TriggerAction.ALL);
+                    combo.setWidth(COLUMN_INSTANCE_WIDTH - COLUMN_HEADER_OFFSET);
+//                    combo.setAutoWidth(true);
 
                     if (model.getInstance() != null)
                     {
-                        instancesComboBox.setValue(model.getInstance());
-                        instancesComboBox.setSelection(Arrays.asList(model.getInstance()));
+                        combo.setValue(model.getInstance());
+                        combo.setSelection(Arrays.asList(model.getInstance()));
                     }
                     else
                     {
@@ -895,11 +888,11 @@ public class EditRuleWidget extends GeofenceFormWidget
                         all.setId(-1);
                         all.setName("*");
                         all.setBaseURL("*");
-                        instancesComboBox.setValue(all);
-                        instancesComboBox.setSelection(Arrays.asList(all));
+                        combo.setValue(all);
+                        combo.setSelection(Arrays.asList(all));
                     }
 
-                    instancesComboBox.addListener(Events.Select, new Listener<FieldEvent>()
+                    combo.addListener(Events.Select, new Listener<FieldEvent>()
                         {
 
                             public void handleEvent(FieldEvent be)
@@ -955,7 +948,7 @@ public class EditRuleWidget extends GeofenceFormWidget
                             }
                         });
 
-                    return instancesComboBox;
+                    return combo;
                 }
 
                 /**
@@ -992,54 +985,182 @@ public class EditRuleWidget extends GeofenceFormWidget
         return comboRendered;
     }
 
+    class IPRangeRenderer implements GridCellRenderer<Rule> {
+
+
+        public Object render(final Rule model, String property, ColumnData config,
+            int rowIndex, int colIndex, ListStore<Rule> store, Grid<Rule> grid)
+        {
+
+            TextField<String> field = new TextField<String>();
+
+            field.setId("editRuleIpRange");
+            field.setName("editRuleIpRange");
+            field.setEmptyText("*");
+            field.setRegex(CIDR_FORMAT);
+            field.setAutoValidate(true);
+            field.setWidth(COLUMN_IPRANGE_WIDTH - COLUMN_HEADER_OFFSET);
+//            ipRangeField.setValidator(null);
+
+            if (model.getSourceIPRange() != null) {
+                field.setValue(model.getSourceIPRange());
+            } else {
+                field.setValue("*");
+            }
+
+//            field.addListener(Events.Change,
+//                    new Listener<FieldEvent>()
+//                {
+//
+//                    public void handleEvent(FieldEvent be)
+//                    {
+//                        if( ((TextField)be.getSource()).isValid()) {
+//
+//                            String value = (String)be.getField().getValue();
+//
+//                            if(value.equals(model.getSourceIPRange())) {
+//                                Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
+//                                new String[]
+//                                {
+//                                    "DEBUG","No change in IP range: " + value
+//                                });
+//                                return;
+//                            }
+//
+//                            model.setSourceIPRange(value);
+//
+//                            Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
+//                            new String[]
+//                            {
+//                                "IP range","Updating current IP range: " + value
+//                            });
+//
+//                            Dispatcher.forwardEvent(GeofenceEvents.RULE_UPDATE_EDIT_GRID_COMBO, model);
+//                        }
+//                    }
+//                });
+
+                field.addListener(Events.Blur, new Listener<FieldEvent>()
+                    {
+                        public void handleEvent(FieldEvent be)
+                        {
+                            try
+                            {
+                                String value = (String)be.getField().getRawValue().trim();
+                                if ( checkIpRange(value)) {
+                                    model.setSourceIPRange(value);
+                                } else {
+                                    Dispatcher.forwardEvent(GeofenceEvents.SEND_INFO_MESSAGE,
+                                        new String[]
+                                        {
+                                            "Input error", "IP range has bad format. e.g: 100.111.112.0/24"
+                                        });
+                                }
+
+                            }
+                            catch (Exception e)
+                            {
+                                Dispatcher.forwardEvent(GeofenceEvents.SEND_ALERT_MESSAGE,
+                                    new String[]
+                                    {
+                                        I18nProvider.getMessages().remoteServiceName(),
+                                        e.getMessage()
+                                    });
+                            }
+                            
+                            Dispatcher.forwardEvent(GeofenceEvents.RULE_UPDATE_EDIT_GRID_COMBO, model);
+                        }
+
+                    });
+
+
+            return field;
+        }
+    }
+
+    private static final String IP_ADDRESS = "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})";
+    private static final String CIDR_FORMAT = IP_ADDRESS + "/(\\d{1,3})";
+
+    public boolean checkIpRange(String s) {
+        if(s == null || s.trim().equals(""))
+            return true;
+
+        RegExp regExp = RegExp.compile(CIDR_FORMAT);
+        MatchResult matcher = regExp.exec(s);
+        boolean matchFound = (matcher != null); // equivalent to regExp.test(inputStr);
+
+        if (! matchFound) {
+            Dispatcher.forwardEvent(GeofenceEvents.SEND_ALERT_MESSAGE,
+                new String[]
+                {
+                    "Input error", "Bad Range format"
+                });
+            return false;
+        }
+
+        // Get address bytes
+        for (int i=1; i<5; i++) {
+            String groupStr = matcher.getGroup(i);
+            int b = Integer.parseInt(groupStr);
+            if(b>255) {
+                Dispatcher.forwardEvent(GeofenceEvents.SEND_ALERT_MESSAGE,
+                    new String[]
+                    {
+                        "Input error", "Range bytes should be 0..255"
+                    });
+                return false;
+            }
+
+        }
+
+        int size = Integer.parseInt(matcher.getGroup(5));
+        if(size > 32) {
+            Dispatcher.forwardEvent(GeofenceEvents.SEND_ALERT_MESSAGE,
+                new String[]
+                {
+                    "Input error", "Bad CIDR block size"
+                });
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * Creates the services combo box.
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<Rule> createServicesComboBox()
+    private GridCellRenderer<Rule> createServicesRenderer()
     {
         GridCellRenderer<Rule> comboRendered = new GridCellRenderer<Rule>()
             {
 
-                private boolean init;
+//                private boolean init;
 
                 public Object render(final Rule model, String property, ColumnData config,
                     int rowIndex, int colIndex, ListStore<Rule> store, Grid<Rule> grid)
                 {
 
-                    if (!init)
-                    {
-                        init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<Rule>>()
-                            {
-
-                                public void handleEvent(GridEvent<Rule> be)
-                                {
-                                    for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
-                                    {
-                                        if ((be.getGrid().getView().getWidget(i, be.getColIndex()) != null) &&
-                                                (be.getGrid().getView().getWidget(i, be.getColIndex()) instanceof BoxComponent))
-                                        {
-                                            ((BoxComponent) be.getGrid().getView().getWidget(i,
-                                                    be.getColIndex())).setWidth(be.getWidth() - 10);
-                                        }
-                                    }
-                                }
-                            });
-                    }
+//                    if (!init)
+//                    {
+//                        init = true;
+//                        grid.addListener(Events.ColumnResize, new ResizeListener(10));
+//                    }
 
                     // TODO: generalize this!
-                    final ComboBox<Service> servicesComboBox = new ComboBox<Service>();
-                    servicesComboBox.setId("ruleServicesCombo");
-                    servicesComboBox.setName("ruleServicesCombo");
-                    servicesComboBox.setEmptyText("(No service available)");
-                    servicesComboBox.setDisplayField(BeanKeyValue.SERVICE.getValue());
-                    servicesComboBox.setStore(getAvailableServices(model.getInstance()));
-                    servicesComboBox.setEditable(true);
-                    servicesComboBox.setTypeAhead(true);
-                    servicesComboBox.setTriggerAction(TriggerAction.ALL);
-                    servicesComboBox.setWidth(90);
+                    final ComboBox<Service> combo = new ComboBox<Service>();
+                    combo.setId("editRuleService");
+                    combo.setName("editRuleService");
+                    combo.setEmptyText("(No service available)");
+                    combo.setDisplayField(BeanKeyValue.SERVICE.getValue());
+                    combo.setStore(getAvailableServices(model.getInstance()));
+                    combo.setEditable(true);
+                    combo.setTypeAhead(true);
+                    combo.setTriggerAction(TriggerAction.ALL);
+//                    servicesComboBox.setWidth(90);
+                    combo.setWidth(COLUMN_SERVICE_WIDTH - COLUMN_HEADER_OFFSET);
+//                    combo.setAutoWidth(true);
 
                     KeyListener keyListener = new KeyListener()
                         {
@@ -1051,7 +1172,7 @@ public class EditRuleWidget extends GeofenceFormWidget
                                 {
                                     event.cancelBubble();
 
-                                    model.setService(servicesComboBox.getRawValue());
+                                    model.setService(combo.getRawValue());
                                     //model.setRequest("*");
                                     Dispatcher.forwardEvent(GeofenceEvents.RULE_UPDATE_EDIT_GRID_COMBO,
                                         model);
@@ -1059,14 +1180,14 @@ public class EditRuleWidget extends GeofenceFormWidget
                             }
                         };
 
-                    servicesComboBox.addKeyListener(keyListener);
+                    combo.addKeyListener(keyListener);
 
-                    servicesComboBox.addListener(Events.Blur, new Listener<FieldEvent>()
+                    combo.addListener(Events.Blur, new Listener<FieldEvent>()
                             {
 
                                 public void handleEvent(FieldEvent be)
                                 {
-                                	model.setService(servicesComboBox.getRawValue());
+                                	model.setService(combo.getRawValue());
                                     //model.setRequest("*");
                                     Dispatcher.forwardEvent(GeofenceEvents.RULE_UPDATE_EDIT_GRID_COMBO,
                                         model);
@@ -1076,11 +1197,11 @@ public class EditRuleWidget extends GeofenceFormWidget
                     
                     if (model.getService() != null)
                     {
-                        servicesComboBox.setValue(new Service(model.getService()));
-                        servicesComboBox.setSelection(Arrays.asList(new Service(model.getService())));
+                        combo.setValue(new Service(model.getService()));
+                        combo.setSelection(Arrays.asList(new Service(model.getService())));
                     }
 
-                    servicesComboBox.addListener(Events.Select, new Listener<FieldEvent>()
+                    combo.addListener(Events.Select, new Listener<FieldEvent>()
                         {
 
                             public void handleEvent(FieldEvent be)
@@ -1094,7 +1215,7 @@ public class EditRuleWidget extends GeofenceFormWidget
 
                         });
 
-                    return servicesComboBox;
+                    return combo;
                 }
 
                 /**
@@ -1139,50 +1260,37 @@ public class EditRuleWidget extends GeofenceFormWidget
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<Rule> createServicesRequestComboBox()
+    private GridCellRenderer<Rule> createRequestRenderer()
     {
         GridCellRenderer<Rule> comboRendered = new GridCellRenderer<Rule>()
             {
 
-                private boolean init;
+//                private boolean init;
 
                 public Object render(final Rule model, String property, ColumnData config,
                     int rowIndex, int colIndex, ListStore<Rule> store, Grid<Rule> grid)
                 {
 
-                    if (!init)
-                    {
-                        init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<Rule>>()
-                            {
-
-                                public void handleEvent(GridEvent<Rule> be)
-                                {
-                                    for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
-                                    {
-                                        if ((be.getGrid().getView().getWidget(i, be.getColIndex()) != null) &&
-                                                (be.getGrid().getView().getWidget(i, be.getColIndex()) instanceof BoxComponent))
-                                        {
-                                            ((BoxComponent) be.getGrid().getView().getWidget(i,
-                                                    be.getColIndex())).setWidth(be.getWidth() - 10);
-                                        }
-                                    }
-                                }
-                            });
-                    }
+//                    if (!init)
+//                    {
+//                        init = true;
+//                        grid.addListener(Events.ColumnResize, new ResizeListener(10));
+//                    }
 
                     // TODO: generalize this!
-                    final ComboBox<Request> serviceRequestsComboBox = new ComboBox<Request>();
-                    serviceRequestsComboBox.setId("ruleServicesRequestCombo");
-                    serviceRequestsComboBox.setName("ruleServicesRequestCombo");
-                    serviceRequestsComboBox.setEmptyText("(No service request available)");
-                    serviceRequestsComboBox.setDisplayField(BeanKeyValue.REQUEST.getValue());
-                    serviceRequestsComboBox.setStore(getAvailableServicesRequest(model.getInstance(),
+                    final ComboBox<Request> combo = new ComboBox<Request>();
+                    combo.setId("editRuleRequest");
+                    combo.setName("editRuleRequest");
+                    combo.setEmptyText("(No OGC request available)");
+                    combo.setDisplayField(BeanKeyValue.REQUEST.getValue());
+                    combo.setStore(getSampleRequests(model.getInstance(),
                             model.getService()));
-                    serviceRequestsComboBox.setEditable(true);
-                    serviceRequestsComboBox.setTypeAhead(true);
-                    serviceRequestsComboBox.setTriggerAction(TriggerAction.ALL);
-                    serviceRequestsComboBox.setWidth(150);
+                    combo.setEditable(true);
+                    combo.setTypeAhead(true);
+                    combo.setTriggerAction(TriggerAction.ALL);
+//                    serviceRequestsComboBox.setWidth(150);
+                    combo.setWidth(COLUMN_REQUEST_WIDTH - COLUMN_HEADER_OFFSET);
+//                    combo.setAutoWidth(true);
 
                     KeyListener keyListener = new KeyListener()
                         {
@@ -1194,32 +1302,32 @@ public class EditRuleWidget extends GeofenceFormWidget
                                 {
                                     event.cancelBubble();
 
-                                    model.setRequest(serviceRequestsComboBox.getRawValue());
+                                    model.setRequest(combo.getRawValue());
                                     Dispatcher.forwardEvent(GeofenceEvents.RULE_UPDATE_EDIT_GRID_COMBO,
                                         model);
                                 }
                             }
                         };
 
-                    serviceRequestsComboBox.addKeyListener(keyListener);
+                    combo.addKeyListener(keyListener);
 
-                    serviceRequestsComboBox.addListener(Events.Blur, new Listener<FieldEvent>()
+                    combo.addListener(Events.Blur, new Listener<FieldEvent>()
                             {
 
                                 public void handleEvent(FieldEvent be)
                                 {
-                                    model.setRequest(serviceRequestsComboBox.getRawValue());
+                                    model.setRequest(combo.getRawValue());
                                     Dispatcher.forwardEvent(GeofenceEvents.RULE_UPDATE_EDIT_GRID_COMBO, model);
                                 }
                             });
 
                     if (model.getService() != null)
                     {
-                        serviceRequestsComboBox.setValue(new Request(model.getRequest()));
-                        serviceRequestsComboBox.setSelection(Arrays.asList(new Request(model.getRequest())));
+                        combo.setValue(new Request(model.getRequest()));
+                        combo.setSelection(Arrays.asList(new Request(model.getRequest())));
                     }
 
-                    serviceRequestsComboBox.addListener(Events.Select, new Listener<FieldEvent>()
+                    combo.addListener(Events.Select, new Listener<FieldEvent>()
                         {
 
                             public void handleEvent(FieldEvent be)
@@ -1231,7 +1339,7 @@ public class EditRuleWidget extends GeofenceFormWidget
                             }
                         });
 
-                    return serviceRequestsComboBox;
+                    return combo;
                 }
 
                 /**
@@ -1242,8 +1350,7 @@ public class EditRuleWidget extends GeofenceFormWidget
                  *
                  * @return
                  */
-                private ListStore<Request> getAvailableServicesRequest(GSInstance gsInstance,
-                    String service)
+                private ListStore<Request> getSampleRequests(GSInstance gsInstance, String service)
                 {
                     ListStore<Request> availableServicesRequests = new ListStore<Request>();
                     List<Request> requests = new ArrayList<Request>();
@@ -1307,57 +1414,44 @@ public class EditRuleWidget extends GeofenceFormWidget
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<Rule> createServiceWorkspacesComboBox()
+    private GridCellRenderer<Rule> createWorkspacesRenderer()
     {
         GridCellRenderer<Rule> comboRendered = new GridCellRenderer<Rule>()
             {
 
-                private boolean init;
+//                private boolean init;
 				
                 public Object render(final Rule model, String property, ColumnData config,
                     int rowIndex, int colIndex, ListStore<Rule> store, Grid<Rule> grid)
                 {
 
-                    if (!init)
-                    {
-                        init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<Rule>>()
-                            {
-
-                                public void handleEvent(GridEvent<Rule> be)
-                                {
-                                    for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
-                                    {
-                                        if ((be.getGrid().getView().getWidget(i, be.getColIndex()) != null) &&
-                                                (be.getGrid().getView().getWidget(i, be.getColIndex()) instanceof BoxComponent))
-                                        {
-                                            ((BoxComponent) be.getGrid().getView().getWidget(i,
-                                                    be.getColIndex())).setWidth(be.getWidth() - 10);
-                                        }
-                                    }
-                                }
-                            });
-                    }
+//                    if (!init)
+//                    {
+//                        init = true;
+//                        grid.addListener(Events.ColumnResize, new ResizeListener(10));
+//                    }
 
                     // TODO: generalize this!
-                    ComboBox<Workspace> workspacesComboBox = new ComboBox<Workspace>();
-                    workspacesComboBox.setId("ruleWorkspacesCombo");
-                    workspacesComboBox.setName("ruleWorkspacesCombo");
+                    ComboBox<Workspace> combo = new ComboBox<Workspace>();
+                    combo.setId("editRuleWorkspace");
+                    combo.setName("editRuleWorkspace");
 
-                    workspacesComboBox.setDisplayField(BeanKeyValue.WORKSPACE.getValue());
-                    workspacesComboBox.setStore(workspaces);
-                    workspacesComboBox.setEditable(true);
-                    workspacesComboBox.setTypeAhead(true);
-                    workspacesComboBox.setTriggerAction(TriggerAction.ALL);
-                    workspacesComboBox.setWidth(120);
+                    combo.setDisplayField(BeanKeyValue.WORKSPACE.getValue());
+                    combo.setStore(workspaces);
+                    combo.setEditable(true);
+                    combo.setTypeAhead(true);
+                    combo.setTriggerAction(TriggerAction.ALL);
+//                    workspacesComboBox.setWidth(120);
+                    combo.setWidth(COLUMN_WORKSPACE_WIDTH - COLUMN_HEADER_OFFSET);
+//                    combo.setAutoWidth(true);
 
                     if (model.getWorkspace() != null)
                     {
-                        workspacesComboBox.setValue(new Workspace(model.getWorkspace()));
-                        workspacesComboBox.setSelection(Arrays.asList(new Workspace(model.getWorkspace())));
+                        combo.setValue(new Workspace(model.getWorkspace()));
+                        combo.setSelection(Arrays.asList(new Workspace(model.getWorkspace())));
                     }
-                    workspacesComboBox.setEmptyText("(No workspace available)");
-                    workspacesComboBox.addListener(Events.Select, new Listener<FieldEvent>()
+                    combo.setEmptyText("(No workspace available)");
+                    combo.addListener(Events.Select, new Listener<FieldEvent>()
                         {
 
                             public void handleEvent(FieldEvent be)
@@ -1410,7 +1504,7 @@ public class EditRuleWidget extends GeofenceFormWidget
 
                         });
 
-                    return workspacesComboBox;
+                    return combo;
                 }
             };
 
@@ -1422,57 +1516,45 @@ public class EditRuleWidget extends GeofenceFormWidget
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<Rule> createWorkspacesLayersComboBox()
+    private GridCellRenderer<Rule> createLayersRenderer()
     {
         GridCellRenderer<Rule> comboRendered = new GridCellRenderer<Rule>()
             {
 
-                private boolean init;
+//                private boolean init;
 
                 public Object render(final Rule model, String property, ColumnData config,
                     int rowIndex, int colIndex, ListStore<Rule> store, Grid<Rule> grid)
                 {
 
-                    if (!init)
-                    {
-                        init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<Rule>>()
-                            {
-
-                                public void handleEvent(GridEvent<Rule> be)
-                                {
-                                    for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
-                                    {
-                                        if ((be.getGrid().getView().getWidget(i, be.getColIndex()) != null) &&
-                                                (be.getGrid().getView().getWidget(i, be.getColIndex()) instanceof BoxComponent))
-                                        {
-                                            ((BoxComponent) be.getGrid().getView().getWidget(i,
-                                                    be.getColIndex())).setWidth(be.getWidth() - 10);
-                                        }
-                                    }
-                                }
-                            });
-                    }
+//                    if (!init)
+//                    {
+//                        init = true;
+//                        grid.addListener(Events.ColumnResize, new ResizeListener(10));
+//                    }
 
                     // TODO: generalize this!
-                    ComboBox<Layer> workspaceLayersComboBox = new ComboBox<Layer>();
-                    workspaceLayersComboBox.setId("ruleLayersCombo");
-                    workspaceLayersComboBox.setName("ruleLayersCombo");
+                    ComboBox<Layer> combo = new ComboBox<Layer>();
+                    combo.setId("editRuleLayer");
+                    combo.setName("editRuleLayer");
 
-                    workspaceLayersComboBox.setDisplayField(BeanKeyValue.LAYER.getValue());
-                    workspaceLayersComboBox.setStore(layers);
-                    workspaceLayersComboBox.setEditable(true);
-                    workspaceLayersComboBox.setTypeAhead(true);
-                    workspaceLayersComboBox.setTriggerAction(TriggerAction.ALL);
-                    workspaceLayersComboBox.setWidth(120);
+                    combo.setDisplayField(BeanKeyValue.LAYER.getValue());
+                    combo.setStore(layers);
+                    combo.setEditable(true);
+                    combo.setTypeAhead(true);
+                    combo.setTriggerAction(TriggerAction.ALL);
+//                    workspaceLayersComboBox.setWidth(120);
+                    combo.setWidth(COLUMN_LAYER_WIDTH - COLUMN_HEADER_OFFSET);
+//                    combo.setAutoWidth(true);
+
 
                     if (model.getLayer() != null)
                     {
-                        workspaceLayersComboBox.setValue(new Layer(model.getLayer()));
-                        workspaceLayersComboBox.setSelection(Arrays.asList(new Layer(model.getLayer())));
+                        combo.setValue(new Layer(model.getLayer()));
+                        combo.setSelection(Arrays.asList(new Layer(model.getLayer())));
                     }
-                    workspaceLayersComboBox.setEmptyText("(No layer available)");
-                    workspaceLayersComboBox.addListener(Events.Select, new Listener<FieldEvent>()
+                    combo.setEmptyText("(No layer available)");
+                    combo.addListener(Events.Select, new Listener<FieldEvent>()
                         {
 
                             public void handleEvent(FieldEvent be)
@@ -1484,7 +1566,7 @@ public class EditRuleWidget extends GeofenceFormWidget
                             }
                         });
 
-                    return workspaceLayersComboBox;
+                    return combo;
                 }
             };
 
@@ -1496,57 +1578,44 @@ public class EditRuleWidget extends GeofenceFormWidget
      *
      * @return the grid cell renderer
      */
-    private GridCellRenderer<Rule> createGrantsComboBox()
+    private GridCellRenderer<Rule> createGrantsRenderer()
     {
         GridCellRenderer<Rule> comboRendered = new GridCellRenderer<Rule>()
             {
 
-                private boolean init;
+//                private boolean init;
 
                 public Object render(final Rule model, String property, ColumnData config,
                     int rowIndex, int colIndex, ListStore<Rule> store, Grid<Rule> grid)
                 {
 
-                    if (!init)
-                    {
-                        init = true;
-                        grid.addListener(Events.ColumnResize, new Listener<GridEvent<Rule>>()
-                            {
-
-                                public void handleEvent(GridEvent<Rule> be)
-                                {
-                                    for (int i = 0; i < be.getGrid().getStore().getCount(); i++)
-                                    {
-                                        if ((be.getGrid().getView().getWidget(i, be.getColIndex()) != null) &&
-                                                (be.getGrid().getView().getWidget(i, be.getColIndex()) instanceof BoxComponent))
-                                        {
-                                            ((BoxComponent) be.getGrid().getView().getWidget(i,
-                                                    be.getColIndex())).setWidth(be.getWidth() - 10);
-                                        }
-                                    }
-                                }
-                            });
-                    }
+//                    if (!init)
+//                    {
+//                        init = true;
+//    					grid.addListener(Events.ColumnResize, new ResizeListener(10));
+//                    }
 
                     // TODO: generalize this!
-                    final ComboBox<Grant> grantsComboBox = new ComboBox<Grant>();
-                    grantsComboBox.setId("grantsCombo");
-                    grantsComboBox.setName("grantsCombo");
+                    final ComboBox<Grant> combo = new ComboBox<Grant>();
+                    combo.setId("editRuleGrant");
+                    combo.setName("editRuleGrant");
 
-                    grantsComboBox.setDisplayField(BeanKeyValue.GRANT.getValue());
-                    grantsComboBox.setEditable(false);
-                    grantsComboBox.setStore(getAvailableGrants());
-                    grantsComboBox.setTypeAhead(true);
-                    grantsComboBox.setTriggerAction(TriggerAction.ALL);
-                    grantsComboBox.setWidth(70);
+                    combo.setDisplayField(BeanKeyValue.GRANT.getValue());
+                    combo.setEditable(false);
+                    combo.setStore(getAvailableGrants());
+                    combo.setTypeAhead(true);
+                    combo.setTriggerAction(TriggerAction.ALL);
+//                    grantsComboBox.setWidth(70);
+                    combo.setWidth(COLUMN_GRANT_WIDTH - COLUMN_HEADER_OFFSET);
+//                    combo.setAutoWidth(true);
 
                     if (model.getGrant() != null)
                     {
-                        grantsComboBox.setValue(new Grant(model.getGrant()));
-                        grantsComboBox.setSelection(Arrays.asList(new Grant(model.getGrant())));
+                        combo.setValue(new Grant(model.getGrant()));
+                        combo.setSelection(Arrays.asList(new Grant(model.getGrant())));
                     }
-                    grantsComboBox.setEmptyText("(No grant types available)");
-                    grantsComboBox.addListener(Events.Select, new Listener<FieldEvent>()
+                    combo.setEmptyText("(No grant types available)");
+                    combo.addListener(Events.Select, new Listener<FieldEvent>()
                         {
 
                             public void handleEvent(FieldEvent be)
@@ -1569,7 +1638,7 @@ public class EditRuleWidget extends GeofenceFormWidget
                                             }
                                             else
                                             {
-                                                grantsComboBox.setValue(new Grant(model.getGrant()));
+                                                combo.setValue(new Grant(model.getGrant()));
                                             }
                                         }
                                     };
@@ -1589,7 +1658,7 @@ public class EditRuleWidget extends GeofenceFormWidget
                             }
                         });
 
-                    return grantsComboBox;
+                    return combo;
                 }
 
                 /**
@@ -1725,6 +1794,8 @@ public class EditRuleWidget extends GeofenceFormWidget
             grid.getStore().setSortField(BeanKeyValue.PRIORITY.getValue());
             grid.getStore().setSortDir(SortDir.ASC);
         }
+
+        grid.addListener(Events.ColumnResize, new ResizeListener(COLUMN_HEADER_OFFSET));
     }
 
     /**

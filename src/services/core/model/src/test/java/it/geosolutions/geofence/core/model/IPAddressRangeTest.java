@@ -51,6 +51,8 @@ public class IPAddressRangeTest {
 
         assertTrue(r.match("1.2.3.4"));
         assertFalse(r.match("1.1.3.4"));
+
+        assertTrue(new IPAddressRange("10.10.100.80/32").match("10.10.100.80"));
     }
 
     @Test

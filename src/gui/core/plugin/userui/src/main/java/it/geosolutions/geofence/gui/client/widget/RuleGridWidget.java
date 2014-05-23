@@ -1,11 +1,6 @@
-/*
- * $ Header: it.geosolutions.geofence.gui.client.widget.RuleGridWidget,v. 0.1 25-feb-2011 16.31.40 created by afabiani <alessio.fabiani at geo-solutions.it> $
- * $ Revision: 0.1 $
- * $ Date: 25-feb-2011 16.31.40 $
+/* ====================================================================
  *
- * ====================================================================
- *
- * Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ * Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
  * http://www.geo-solutions.it
  *
  * GPLv3 + Classpath exception
@@ -80,12 +75,21 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Widget;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class RuleGridWidget.
+ *
+  *  Note:
+ * There's a bug preventing the proper header alignment:
+ * http://www.sencha.com/forum/showthread.php?234952-Sencha-Ext-GWT-grid-columns-not-aligned-with-grid-header
+
  */
 public class RuleGridWidget extends GeofenceGridWidget<Rule> {
+
+	private static final int COLUMN_HEADER_OFFSET = 10;
+
 
 	/** The Constant COLUMN_PRIORITY_WIDTH. */
 	private static final int COLUMN_PRIORITY_WIDTH = 30;
@@ -94,10 +98,12 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 	private static final int COLUMN_USER_WIDTH = 100; // 130;
 
 	/** The Constant COLUMN_PROFILE_WIDTH. */
-	private static final int COLUMN_PROFILE_WIDTH = 80; // 160;
+	private static final int COLUMN_GROUP_WIDTH = 80; // 160;
 
 	/** The Constant COLUMN_INSTANCE_WIDTH. */
 	private static final int COLUMN_INSTANCE_WIDTH = 150; // 60;
+
+    private static final int COLUMN_IPRANGE_WIDTH = 150;
 
 	/** The Constant COLUMN_SERVICE_WIDTH. */
 	private static final int COLUMN_SERVICE_WIDTH = 60; // 100;
@@ -253,7 +259,7 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 		ruleUserColumn.setId(BeanKeyValue.USER.getValue());
 		ruleUserColumn.setHeader("User");
 		ruleUserColumn.setWidth(COLUMN_USER_WIDTH);
-		ruleUserColumn.setRenderer(this.createUsersCustomField()); // CustomField//createUsersComboBox
+		ruleUserColumn.setRenderer(new UserRenderer());
 		ruleUserColumn.setMenuDisabled(true);
 		ruleUserColumn.setSortable(false);
 		configs.add(ruleUserColumn);
@@ -261,8 +267,8 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 		ColumnConfig ruleProfileColumn = new ColumnConfig();
 		ruleProfileColumn.setId(BeanKeyValue.PROFILE.getValue());
 		ruleProfileColumn.setHeader("Group");
-		ruleProfileColumn.setWidth(COLUMN_PROFILE_WIDTH);
-		ruleProfileColumn.setRenderer(this.createProfilesCustomField()); // createProfilesComboBox
+		ruleProfileColumn.setWidth(COLUMN_GROUP_WIDTH);
+		ruleProfileColumn.setRenderer(new GroupRenderer());
 		ruleProfileColumn.setMenuDisabled(true);
 		ruleProfileColumn.setSortable(false);
 		configs.add(ruleProfileColumn);
@@ -271,49 +277,57 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 		ruleInstanceColumn.setId(BeanKeyValue.INSTANCE.getValue());
 		ruleInstanceColumn.setHeader("Instance");
 		ruleInstanceColumn.setWidth(COLUMN_INSTANCE_WIDTH);
-		ruleInstanceColumn.setRenderer(this.createInstancesCustomField()); // createInstancesComboBox
+		ruleInstanceColumn.setRenderer(new InstanceRenderer());
 		ruleInstanceColumn.setMenuDisabled(true);
 		ruleInstanceColumn.setSortable(false);
 		configs.add(ruleInstanceColumn);
+
+
+        ColumnConfig ipcfg = new ColumnConfig();
+		ipcfg.setId(BeanKeyValue.SOURCE_IP_RANGE.getValue());
+		ipcfg.setHeader("Src IP addr");
+		ipcfg.setWidth(COLUMN_IPRANGE_WIDTH);
+		ipcfg.setRenderer(new IPRangeRenderer());
+		ipcfg.setMenuDisabled(true);
+		ipcfg.setSortable(false);
+		configs.add(ipcfg);
 
 		ColumnConfig ruleServiceColumn = new ColumnConfig();
 		ruleServiceColumn.setId(BeanKeyValue.SERVICE.getValue());
 		ruleServiceColumn.setHeader("Service");
 		ruleServiceColumn.setWidth(COLUMN_SERVICE_WIDTH);
-		ruleServiceColumn.setRenderer(this.createServicesCustomField()); // createServicesComboBox
+		ruleServiceColumn.setRenderer(new ServiceRenderer());
 		ruleServiceColumn.setMenuDisabled(true);
 		ruleServiceColumn.setSortable(false);
 		configs.add(ruleServiceColumn);
 
-		ColumnConfig ruleServiceRequestColumn = new ColumnConfig();
-		ruleServiceRequestColumn.setId(BeanKeyValue.REQUEST.getValue());
-		ruleServiceRequestColumn.setHeader("Request");
-		ruleServiceRequestColumn.setWidth(COLUMN_REQUEST_WIDTH);
-		ruleServiceRequestColumn.setRenderer(this
-				.createServicesRequestCustomField()); // createServicesRequestComboBox
-		ruleServiceRequestColumn.setMenuDisabled(true);
-		ruleServiceRequestColumn.setSortable(false);
-		configs.add(ruleServiceRequestColumn);
+		ColumnConfig ruleRequestColumn = new ColumnConfig();
+		ruleRequestColumn.setId(BeanKeyValue.REQUEST.getValue());
+		ruleRequestColumn.setHeader("Request");
+		ruleRequestColumn.setWidth(COLUMN_REQUEST_WIDTH);
+		ruleRequestColumn.setRenderer(new RequestRenderer());
+		ruleRequestColumn.setMenuDisabled(true);
+		ruleRequestColumn.setSortable(false);
+		configs.add(ruleRequestColumn);
 
-		ColumnConfig ruleServiceWorkspacesColumn = new ColumnConfig();
-		ruleServiceWorkspacesColumn.setId(BeanKeyValue.WORKSPACE.getValue());
-		ruleServiceWorkspacesColumn.setHeader("Workspace");
-		ruleServiceWorkspacesColumn.setWidth(COLUMN_WORKSPACE_WIDTH);
-		ruleServiceWorkspacesColumn.setRenderer(this
-				.createServiceWorkspacesCustomField());
-		ruleServiceWorkspacesColumn.setMenuDisabled(true);
-		ruleServiceWorkspacesColumn.setSortable(false);
-		configs.add(ruleServiceWorkspacesColumn);
+		ColumnConfig ruleWorkspacesColumn = new ColumnConfig();
+		ruleWorkspacesColumn.setId(BeanKeyValue.WORKSPACE.getValue());
+		ruleWorkspacesColumn.setHeader("Workspace");
+		ruleWorkspacesColumn.setWidth(COLUMN_WORKSPACE_WIDTH);
+		ruleWorkspacesColumn.setRenderer(new WorkspaceRenderer());
+		ruleWorkspacesColumn.setMenuDisabled(true);
+		ruleWorkspacesColumn.setSortable(false);
+		configs.add(ruleWorkspacesColumn);
 
-		ColumnConfig ruleWorkspaceLayersColumn = new ColumnConfig();
-		ruleWorkspaceLayersColumn.setId(BeanKeyValue.LAYER.getValue());
-		ruleWorkspaceLayersColumn.setHeader("Layer");
-		ruleWorkspaceLayersColumn.setWidth(COLUMN_LAYER_WIDTH);
-		ruleWorkspaceLayersColumn.setRenderer(this
-				.createWorkspacesLayersCustomField());
-		ruleWorkspaceLayersColumn.setMenuDisabled(true);
-		ruleWorkspaceLayersColumn.setSortable(false);
-		configs.add(ruleWorkspaceLayersColumn);
+		ColumnConfig ruleLayersColumn = new ColumnConfig();
+		ruleLayersColumn.setId(BeanKeyValue.LAYER.getValue());
+		ruleLayersColumn.setHeader("Layer");
+		ruleLayersColumn.setWidth(COLUMN_LAYER_WIDTH);
+		ruleLayersColumn.setRenderer(new LayerRenderer());
+		ruleLayersColumn.setMenuDisabled(true);
+		ruleLayersColumn.setSortable(false);
+		configs.add(ruleLayersColumn);
+
 
 		ColumnConfig ruleGrantsColumn = new ColumnConfig();
 		ruleGrantsColumn.setId(BeanKeyValue.GRANT.getValue());
@@ -376,477 +390,186 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 		return new ColumnModel(configs);
 	}
 
-	/**
-	 * Creates the users custom field.
-	 * 
-	 * @return the grid cell renderer
-	 */
-	private GridCellRenderer<Rule> createUsersCustomField() {
-		GridCellRenderer<Rule> comboRendered = new GridCellRenderer<Rule>() {
-
-			private boolean init;
-
-			public Object render(final Rule model, String property,
-					ColumnData config, int rowIndex, int colIndex,
-					ListStore<Rule> store, Grid<Rule> grid) {
-
-				if (!init) {
-					init = true;
-					grid.addListener(Events.ColumnResize,
-							new Listener<GridEvent<Rule>>() {
-
-								public void handleEvent(GridEvent<Rule> be) {
-									for (int i = 0; i < be.getGrid().getStore()
-											.getCount(); i++) {
-										if ((be.getGrid().getView()
-												.getWidget(i, be.getColIndex()) != null)
-												&& (be.getGrid()
-														.getView()
-														.getWidget(
-																i,
-																be.getColIndex()) instanceof BoxComponent)) {
-											((BoxComponent) be
-													.getGrid()
-													.getView()
-													.getWidget(i,
-															be.getColIndex()))
-													.setWidth(be.getWidth() - 10);
-										}
-									}
-								}
-							});
-				}
-
-				// TODO: generalize this!
-				ArrayList<Rule> list = new ArrayList<Rule>();
-
-				for (int i = 0; i < store.getCount(); i++) {
-					Rule rule = ((Rule) store.getAt(i));
-					list.add(rule);
-				}
-
-				LabelField usersCustomField = new LabelField();
-				usersCustomField.setId("ruleUsersCombo");
-				usersCustomField.setName("ruleUsersCombo");
-				usersCustomField.setEmptyText("*");
-				usersCustomField.setFieldLabel(BeanKeyValue.NAME.getValue());
-				usersCustomField.setValue(BeanKeyValue.NAME.getValue());
-				usersCustomField.setReadOnly(true);
-
-				usersCustomField.setWidth(COLUMN_USER_WIDTH - 10);
-				usersCustomField.show();
-
-				if ((model.getUser() != null)
-						&& (model.getUser().getName() != null)) {
-					String name2 = model.getUser().getName();
-					usersCustomField.setValue(name2);
-				} else {
-					usersCustomField.setValue("*");
-				}
-
-				return usersCustomField;
-			}
-		};
-
-		return comboRendered;
-	}
-
-	/**
-	 * Creates the profiles custom field.
-	 * 
-	 * @return the grid cell renderer
-	 */
-	private GridCellRenderer<Rule> createProfilesCustomField() {
-		GridCellRenderer<Rule> comboRendered = new GridCellRenderer<Rule>() {
-
-			private boolean init;
-
-			public Object render(final Rule model, String property,
-					ColumnData config, int rowIndex, int colIndex,
-					ListStore<Rule> store, Grid<Rule> grid) {
-
-				if (!init) {
-					init = true;
-					grid.addListener(Events.ColumnResize,
-							new Listener<GridEvent<Rule>>() {
-
-								public void handleEvent(GridEvent<Rule> be) {
-									for (int i = 0; i < be.getGrid().getStore()
-											.getCount(); i++) {
-										if ((be.getGrid().getView()
-												.getWidget(i, be.getColIndex()) != null)
-												&& (be.getGrid()
-														.getView()
-														.getWidget(
-																i,
-																be.getColIndex()) instanceof BoxComponent)) {
-											((BoxComponent) be
-													.getGrid()
-													.getView()
-													.getWidget(i,
-															be.getColIndex()))
-													.setWidth(be.getWidth() - 10);
-										}
-									}
-								}
-							});
-				}
-
-				// TODO: generalize this!
-				LabelField profilesCustomField = new LabelField();
-				profilesCustomField.setId("ruleProfilesCombo");
-				profilesCustomField.setName("ruleProfilesCombo");
-				profilesCustomField.setEmptyText("(No group available)");
-				profilesCustomField.setFieldLabel(BeanKeyValue.NAME.getValue());
-				profilesCustomField.setValue(BeanKeyValue.NAME.getValue());
-				profilesCustomField.setReadOnly(false);
-				profilesCustomField.setWidth(COLUMN_PROFILE_WIDTH - 10);
-
-				if ((model.getProfile() != null)
-						&& (model.getProfile().getName() != null)) {
-					String name2 = model.getProfile().getName();
-					profilesCustomField.setValue(name2);
-				} else {
-					profilesCustomField.setValue("*");
-				}
-
-				return profilesCustomField;
-			}
-		};
-
-		return comboRendered;
-	}
-
-	/**
-	 * Creates the instances custom field.
-	 * 
-	 * @return the grid cell renderer
-	 */
-	private GridCellRenderer<Rule> createInstancesCustomField() {
-		GridCellRenderer<Rule> comboRendered = new GridCellRenderer<Rule>() {
-
-			private boolean init;
-
-			public Object render(final Rule model, String property,
-					ColumnData config, int rowIndex, int colIndex,
-					ListStore<Rule> store, Grid<Rule> grid) {
-
-				if (!init) {
-					init = true;
-					grid.addListener(Events.ColumnResize,
-							new Listener<GridEvent<Rule>>() {
-
-								public void handleEvent(GridEvent<Rule> be) {
-									for (int i = 0; i < be.getGrid().getStore()
-											.getCount(); i++) {
-										if ((be.getGrid().getView()
-												.getWidget(i, be.getColIndex()) != null)
-												&& (be.getGrid()
-														.getView()
-														.getWidget(
-																i,
-																be.getColIndex()) instanceof BoxComponent)) {
-											((BoxComponent) be
-													.getGrid()
-													.getView()
-													.getWidget(i,
-															be.getColIndex()))
-													.setWidth(be.getWidth() - 10);
-										}
-									}
-								}
-							});
-				}
-
-				// TODO: generalize this!
-				LabelField instancesCustomField = new LabelField();
-				instancesCustomField.setId("ruleInstancesCombo");
-				instancesCustomField.setName("ruleInstancesCombo");
-				instancesCustomField.setEmptyText("(No instances available)");
-				instancesCustomField
-						.setFieldLabel(BeanKeyValue.NAME.getValue());
-				instancesCustomField.setReadOnly(false);
-				instancesCustomField.setWidth(COLUMN_INSTANCE_WIDTH - 10);
-
-				if ((model.getInstance() != null)
-						&& (model.getInstance().getName() != null)) {
-					instancesCustomField
-							.setValue(model.getInstance().getName());
-				} else {
-					instancesCustomField.setValue("*");
-				}
-
-				return instancesCustomField;
-			}
-
-		};
-
-		return comboRendered;
-	}
-
-	/**
-	 * Creates the services custom field.
-	 * 
-	 * @return the grid cell renderer
-	 */
-	private GridCellRenderer<Rule> createServicesCustomField() {
-		GridCellRenderer<Rule> comboRendered = new GridCellRenderer<Rule>() {
-
-			private boolean init;
-
-			public Object render(final Rule model, String property,
-					ColumnData config, int rowIndex, int colIndex,
-					ListStore<Rule> store, Grid<Rule> grid) {
-
-				if (!init) {
-					init = true;
-					grid.addListener(Events.ColumnResize,
-							new Listener<GridEvent<Rule>>() {
-
-								public void handleEvent(GridEvent<Rule> be) {
-									for (int i = 0; i < be.getGrid().getStore()
-											.getCount(); i++) {
-										if ((be.getGrid().getView()
-												.getWidget(i, be.getColIndex()) != null)
-												&& (be.getGrid()
-														.getView()
-														.getWidget(
-																i,
-																be.getColIndex()) instanceof BoxComponent)) {
-											((BoxComponent) be
-													.getGrid()
-													.getView()
-													.getWidget(i,
-															be.getColIndex()))
-													.setWidth(be.getWidth() - 10);
-										}
-									}
-								}
-							});
-				}
-
-				// TODO: generalize this!
-				final LabelField servicesCustomField = new LabelField();
-				servicesCustomField.setId("ruleServicesCombo");
-				servicesCustomField.setName("ruleServicesCombo");
-				servicesCustomField.setEmptyText("(No service available)");
-				servicesCustomField.setFieldLabel(BeanKeyValue.SERVICE
-						.getValue());
-				servicesCustomField.setReadOnly(true);
-				servicesCustomField.setWidth(COLUMN_SERVICE_WIDTH - 10);
-
-				if (model.getService() != null) {
-					servicesCustomField.setValue(model.getService());
-				} else {
-					servicesCustomField.setValue("*");
-				}
-
-				return servicesCustomField;
-			}
-
-		};
-
-		return comboRendered;
-	}
-
-	/**
-	 * Creates the services request custom field.
-	 * 
-	 * @return the grid cell renderer
-	 */
-	private GridCellRenderer<Rule> createServicesRequestCustomField() {
-		GridCellRenderer<Rule> comboRendered = new GridCellRenderer<Rule>() {
-
-			private boolean init;
-
-			public Object render(final Rule model, String property,
-					ColumnData config, int rowIndex, int colIndex,
-					ListStore<Rule> store, Grid<Rule> grid) {
-
-				if (!init) {
-					init = true;
-					grid.addListener(Events.ColumnResize,
-							new Listener<GridEvent<Rule>>() {
-
-								public void handleEvent(GridEvent<Rule> be) {
-									for (int i = 0; i < be.getGrid().getStore()
-											.getCount(); i++) {
-										if ((be.getGrid().getView()
-												.getWidget(i, be.getColIndex()) != null)
-												&& (be.getGrid()
-														.getView()
-														.getWidget(
-																i,
-																be.getColIndex()) instanceof BoxComponent)) {
-											((BoxComponent) be
-													.getGrid()
-													.getView()
-													.getWidget(i,
-															be.getColIndex()))
-													.setWidth(be.getWidth() - 10);
-										}
-									}
-								}
-							});
-				}
-
-				// TODO: generalize this!
-				final LabelField serviceRequestsCustomField = new LabelField();
-				serviceRequestsCustomField.setId("ruleServicesRequestCombo");
-				serviceRequestsCustomField.setName("ruleServicesRequestCombo");
-				serviceRequestsCustomField
-						.setEmptyText("(No service request available)");
-				serviceRequestsCustomField.setFieldLabel(BeanKeyValue.REQUEST
-						.getValue());
-				serviceRequestsCustomField.setReadOnly(true);
-				serviceRequestsCustomField.setWidth(COLUMN_SERVICE_WIDTH - 10);
-
-				if (model.getService() != null) {
-					serviceRequestsCustomField.setValue(model.getRequest());
-				} else {
-					serviceRequestsCustomField.setValue("*");
-				}
-
-				return serviceRequestsCustomField;
-			}
-
-		};
-
-		return comboRendered;
-	}
-
-	/**
-	 * Creates the service workspaces custom field.
-	 * 
-	 * @return the grid cell renderer
-	 */
-	private GridCellRenderer<Rule> createServiceWorkspacesCustomField() {
-		GridCellRenderer<Rule> comboRendered = new GridCellRenderer<Rule>() {
-
-			private boolean init;
-
-			public Object render(final Rule model, String property,
-					ColumnData config, int rowIndex, int colIndex,
-					ListStore<Rule> store, Grid<Rule> grid) {
-
-				if (!init) {
-					init = true;
-					grid.addListener(Events.ColumnResize,
-							new Listener<GridEvent<Rule>>() {
-
-								public void handleEvent(GridEvent<Rule> be) {
-									for (int i = 0; i < be.getGrid().getStore()
-											.getCount(); i++) {
-										if ((be.getGrid().getView()
-												.getWidget(i, be.getColIndex()) != null)
-												&& (be.getGrid()
-														.getView()
-														.getWidget(
-																i,
-																be.getColIndex()) instanceof BoxComponent)) {
-											((BoxComponent) be
-													.getGrid()
-													.getView()
-													.getWidget(i,
-															be.getColIndex()))
-													.setWidth(be.getWidth() - 10);
-										}
-									}
-								}
-							});
-				}
-
-				// TODO: generalize this!
-				LabelField workspacesCustomField = new LabelField();
-				workspacesCustomField.setId("ruleWorkspacesCombo");
-				workspacesCustomField.setName("ruleWorkspacesCombo");
-
-				workspacesCustomField.setFieldLabel(BeanKeyValue.WORKSPACE
-						.getValue());
-				workspacesCustomField.setReadOnly(false);
-				workspacesCustomField.setWidth(COLUMN_WORKSPACE_WIDTH - 10);
-
-				if (model.getWorkspace() != null) {
-					workspacesCustomField.setValue(model.getWorkspace());
-				} else {
-					workspacesCustomField.setValue("*");
-				}
-
-				workspacesCustomField.setEmptyText("(No workspace available)");
-
-				return workspacesCustomField;
-			}
-
-		};
-
-		return comboRendered;
-	}
-
-	/**
-	 * Creates the workspaces layers custom field.
-	 * 
-	 * @return the grid cell renderer
-	 */
-	private GridCellRenderer<Rule> createWorkspacesLayersCustomField() {
-		GridCellRenderer<Rule> comboRendered = new GridCellRenderer<Rule>() {
-
-			private boolean init;
-
-			public Object render(final Rule model, String property,
-					ColumnData config, int rowIndex, int colIndex,
-					ListStore<Rule> store, Grid<Rule> grid) {
-
-				if (!init) {
-					init = true;
-					grid.addListener(Events.ColumnResize,
-							new Listener<GridEvent<Rule>>() {
-
-								public void handleEvent(GridEvent<Rule> be) {
-									for (int i = 0; i < be.getGrid().getStore()
-											.getCount(); i++) {
-										if ((be.getGrid().getView()
-												.getWidget(i, be.getColIndex()) != null)
-												&& (be.getGrid()
-														.getView()
-														.getWidget(
-																i,
-																be.getColIndex()) instanceof BoxComponent)) {
-											((BoxComponent) be
-													.getGrid()
-													.getView()
-													.getWidget(i,
-															be.getColIndex()))
-													.setWidth(be.getWidth() - 10);
-										}
-									}
-								}
-							});
-				}
-
-				// TODO: generalize this!
-				LabelField workspaceLayersCustomField = new LabelField();
-				workspaceLayersCustomField.setId("ruleLayersCombo");
-				workspaceLayersCustomField.setName("ruleLayersCombo");
-
-				workspaceLayersCustomField.setFieldLabel(BeanKeyValue.LAYER
-						.getValue());
-				workspaceLayersCustomField.setReadOnly(false);
-				workspaceLayersCustomField.setWidth(COLUMN_LAYER_WIDTH - 10);
-
-				if (model.getLayer() != null) {
-					workspaceLayersCustomField.setValue(model.getLayer());
-				} else {
-					workspaceLayersCustomField.setValue("*");
-				}
-				workspaceLayersCustomField.setEmptyText("(No layer available)");
-
-				return workspaceLayersCustomField;
-			}
-
-		};
-
-		return comboRendered;
-	}
+
+    class ResizeListener implements Listener<GridEvent<Rule>> {
+        private final int offset;
+
+        public ResizeListener(int offset) {
+            this.offset = offset;
+        }
+
+        public void handleEvent(GridEvent<Rule> be) {
+            for (int i = 0; i < be.getGrid().getStore().getCount(); i++) {
+                final Widget wid = be.getGrid().getView().getWidget(i, be.getColIndex());
+                if ((wid != null) && (wid instanceof BoxComponent)) {
+                    ((BoxComponent) wid).setWidth(be.getWidth() - offset);
+                }
+            }
+        }
+    }
+
+
+
+    abstract class FieldRenderer implements GridCellRenderer<Rule> {
+
+        private boolean init;
+
+        private final String fieldId;
+        private final int initialWidth;
+
+        public FieldRenderer(String fieldId, int initialWidth) {
+            this.fieldId = fieldId;
+            this.initialWidth = initialWidth;
+        }
+
+        public Object render(final Rule model, String property,
+                ColumnData config, int rowIndex, int colIndex,
+                ListStore<Rule> store, Grid<Rule> grid) {
+
+            if (!init) {
+                init = true;
+                grid.addListener(Events.ColumnResize, new ResizeListener(20));
+            }
+
+            LabelField field = new LabelField();
+            field.setId(fieldId);
+            field.setName(fieldId);
+            field.setEmptyText("*");
+            field.setFieldLabel(BeanKeyValue.NAME.getValue());
+            field.setValue(BeanKeyValue.NAME.getValue());
+            field.setReadOnly(true);
+
+//            field.setWidth(initialWidth - 10);
+            field.setAutoWidth(true);
+            field.show();
+
+            setFieldValue(model, field);
+            
+            return field;
+        }
+
+        abstract void setFieldValue(Rule model, LabelField field);
+        
+    }
+
+    class UserRenderer extends FieldRenderer {
+        public UserRenderer() {
+            super("viewRuleUser", COLUMN_USER_WIDTH);
+        }
+
+        void setFieldValue(Rule model, LabelField field) {
+            if ((model.getUser() != null)
+                    && (model.getUser().getName() != null)) {
+                String name2 = model.getUser().getName();
+                field.setValue(name2);
+            } else {
+                field.setValue("*");
+            }
+        }
+    }
+
+    class GroupRenderer extends FieldRenderer {
+        public GroupRenderer() {
+            super("viewRuleGroup", COLUMN_GROUP_WIDTH);
+        }
+
+        void setFieldValue(Rule model, LabelField field) {
+            if ((model.getProfile() != null)
+                    && (model.getProfile().getName() != null)) {
+                String name2 = model.getProfile().getName();
+                field.setValue(name2);
+            } else {
+                field.setValue("*");
+            }
+        }
+    }
+
+    class InstanceRenderer extends FieldRenderer {
+        public InstanceRenderer() {
+            super("viewRuleInstance", COLUMN_INSTANCE_WIDTH);
+        }
+
+        void setFieldValue(Rule model, LabelField field) {
+            if ((model.getInstance() != null)
+                    && (model.getInstance().getName() != null)) {
+                field.setValue(model.getInstance().getName());
+            } else {
+                field.setValue("*");
+            }
+        }
+    }
+
+    class IPRangeRenderer extends FieldRenderer {
+        public IPRangeRenderer() {
+            super("viewRuleIPRange", COLUMN_IPRANGE_WIDTH);
+        }
+
+        void setFieldValue(Rule model, LabelField field) {
+            if (model.getSourceIPRange() != null) {
+                field.setValue(model.getSourceIPRange());
+            } else {
+                field.setValue("*");
+            }
+        }
+    }
+
+    class ServiceRenderer extends FieldRenderer {
+        public ServiceRenderer() {
+            super("viewRuleService", COLUMN_SERVICE_WIDTH);
+        }
+
+        void setFieldValue(Rule model, LabelField field) {
+            if (model.getService() != null) {
+                field.setValue(model.getService());
+            } else {
+                field.setValue("*");
+            }
+        }
+    }
+
+    class RequestRenderer extends FieldRenderer {
+        public RequestRenderer() {
+            super("viewRuleRequest", COLUMN_REQUEST_WIDTH);
+        }
+
+        void setFieldValue(Rule model, LabelField field) {
+            if (model.getRequest() != null) {
+                field.setValue(model.getRequest());
+            } else {
+                field.setValue("*");
+            }
+        }
+    }
+
+    class WorkspaceRenderer extends FieldRenderer {
+        public WorkspaceRenderer() {
+            super("viewRuleWorkspace", COLUMN_WORKSPACE_WIDTH);
+        }
+
+        void setFieldValue(Rule model, LabelField field) {
+            if (model.getWorkspace() != null) {
+                field.setValue(model.getWorkspace());
+            } else {
+                field.setValue("*");
+            }
+        }
+    }
+
+    class LayerRenderer extends FieldRenderer {
+        public LayerRenderer() {
+            super("viewRuleLayer", COLUMN_LAYER_WIDTH);
+        }
+
+        void setFieldValue(Rule model, LabelField field) {
+            if (model.getLayer() != null) {
+                field.setValue(model.getLayer());
+            } else {
+                field.setValue("*");
+            }
+        }
+    }
+
+
 
 	/**
 	 * Creates the grants custom field.
@@ -890,23 +613,23 @@ public class RuleGridWidget extends GeofenceGridWidget<Rule> {
 				}
 
 				// TODO: generalize this!
-				LabelField grantsCustomField = new LabelField();
-				grantsCustomField.setId("grantsCombo");
-				grantsCustomField.setName("grantsCombo");
+				LabelField field = new LabelField();
+				field.setId("grantsCombo");
+				field.setName("grantsCombo");
 
-				grantsCustomField.setFieldLabel(BeanKeyValue.GRANT.getValue());
-				grantsCustomField.setReadOnly(false);
-				grantsCustomField.setWidth(COLUMN_GRANT_WIDTH - 10);
+				field.setFieldLabel(BeanKeyValue.GRANT.getValue());
+				field.setReadOnly(false);
+				field.setWidth(COLUMN_GRANT_WIDTH - 10);
 
 				if (model.getGrant() != null) {
-					grantsCustomField.setValue(model.getGrant());
+					field.setValue(model.getGrant());
 				} else {
-					grantsCustomField.setValue("ALLOW");
+					field.setValue("ALLOW");
 				}
 
-				grantsCustomField.setEmptyText("(No grant types available)");
+				field.setEmptyText("(No grant available)");
 
-				return grantsCustomField;
+				return field;
 			}
 
 		};

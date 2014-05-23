@@ -90,6 +90,8 @@ public enum BeanKeyValue {
     
     /** The PRIORITY. */
     PRIORITY("rulePriority"),
+
+    SOURCE_IP_RANGE("sourceIPRange"),
     
     /** The BASE url. */
     BASE_URL("baseUrl"),

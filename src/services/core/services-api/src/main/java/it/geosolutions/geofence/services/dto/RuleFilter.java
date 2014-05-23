@@ -358,11 +358,11 @@ public class RuleFilter implements Serializable {
         sb.append("user:").append(user);
         sb.append(" grp:").append(userGroup);
         sb.append(" inst:").append(instance);
+        sb.append(" ip:").append(sourceAddress);
         sb.append(" serv:").append(service);
         sb.append(" req:").append(request);
         sb.append(" ws:").append(workspace);
         sb.append(" layer:").append(layer);
-        sb.append(" ip:").append(sourceAddress);
         sb.append(']');
 
         return sb.toString();
@@ -535,7 +535,7 @@ public class RuleFilter implements Serializable {
         /**
          * Only used in TYPE_NAME, tells if also default Rules should be matched. 
          */
-        private boolean includeDefault = false;
+        private boolean includeDefault = true;
 
         public TextFilter(FilterType type) {
             this.type = type;

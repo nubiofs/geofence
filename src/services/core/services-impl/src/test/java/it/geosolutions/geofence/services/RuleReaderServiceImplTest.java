@@ -728,10 +728,10 @@ public class RuleReaderServiceImplTest extends ServiceTestBase {
         assertEquals(0, ruleReaderService.getMatchingRules("","","",          "*",  "ZZ", "*","*","*").size());
 
         // test with  address filtering
-        assertEquals(2, ruleReaderService.getMatchingRules("*","*","*","10.10.100.4",  "*", "*","*","*").size());
-        assertEquals(1, ruleReaderService.getMatchingRules("*","g1","*","10.10.100.4",  "*", "*","*","*").size());
-        assertEquals(0, ruleReaderService.getMatchingRules("*","*","*","10.10.1.4",  "*", "*","*","*").size());
-        assertEquals(1, ruleReaderService.getMatchingRules("*","*","*","192.168.1.1",  "*", "*","*","*").size());
+        assertEquals(3, ruleReaderService.getMatchingRules("*","*","*","10.10.100.4",  "*", "*","*","*").size());
+        assertEquals(2, ruleReaderService.getMatchingRules("*","g1","*","10.10.100.4",  "*", "*","*","*").size());
+        assertEquals(1, ruleReaderService.getMatchingRules("*","*","*","10.10.1.4",  "*", "*","*","*").size());
+        assertEquals(2, ruleReaderService.getMatchingRules("*","*","*","192.168.1.1",  "*", "*","*","*").size());
         assertEquals(1, ruleReaderService.getMatchingRules("*","*","*",null,  "*", "*","*","*").size());
 
         assertEquals(0, ruleReaderService.getMatchingRules("*","*","*","BAD",  "*", "*","*","*").size());

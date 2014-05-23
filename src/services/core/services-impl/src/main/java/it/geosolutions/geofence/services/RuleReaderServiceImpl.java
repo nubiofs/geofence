@@ -640,28 +640,41 @@ public class RuleReaderServiceImpl implements RuleReaderService {
         List<Rule> ret = new ArrayList<Rule>(rules.size());
 
         for (Rule rule : rules) {
+            boolean added = false;
+
             switch(type) {
                 case DEFAULT:
                     if(rule.getAddressRange() == null) {
                         ret.add(rule);
+                        added = true;
                     }
                     break;
 
                 case NAMEVALUE:
-                    if(rule.getAddressRange() != null) {
-                        if( rule.getAddressRange().match(ipvalue)) {
-                            ret.add(rule);                            
+                    if ( filter.getSourceAddress().isIncludeDefault()) {
+                        if(rule.getAddressRange() == null || rule.getAddressRange().match(ipvalue) ) {                        
+                            ret.add(rule);
+                            added = true; 
                         }
-                    } else if ( filter.getSourceAddress().isIncludeDefault()) {
-                        ret.add(rule);
+                    } else {
+                        if(rule.getAddressRange() != null && rule.getAddressRange().match(ipvalue) ) {
+                            ret.add(rule);
+                            added = true;
+                        }
                     }
-
                     break;
 
                 case IDVALUE:
                 default:
                     LOGGER.error("Bad address filter type" + type);
                     return Collections.EMPTY_LIST;
+            }
+
+            if(LOGGER.isDebugEnabled()) {
+                if(added)
+                    LOGGER.debug("ADDED " + rule);
+                else
+                    LOGGER.debug("NOT ADDED " + rule);
             }
         }
 

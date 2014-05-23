@@ -75,8 +75,10 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
+import it.geosolutions.geofence.core.model.IPAddressRange;
 import it.geosolutions.geofence.core.model.enums.CatalogMode;
 import it.geosolutions.geofence.gui.client.model.data.ClientCatalogMode;
+import it.geosolutions.geofence.services.util.IPUtils;
 import org.springframework.dao.DuplicateKeyException;
 
 /**
@@ -126,61 +128,60 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 		Iterator<ShortRule> it = rulesList.iterator();
 
 		while (it.hasNext()) {
-			ShortRule short_rule = it.next();
+			ShortRule shortRule = it.next();
 
-			it.geosolutions.geofence.core.model.Rule remote_rule;
+			it.geosolutions.geofence.core.model.Rule fullRule;
 			try {
-				remote_rule = geofenceRemoteService.getRuleAdminService().get(
-						short_rule.getId());
+				fullRule = geofenceRemoteService.getRuleAdminService().get(shortRule.getId());
 			} catch (NotFoundServiceEx e) {
 				if (logger.isErrorEnabled()) {
-					logger.error("Details for rule " + short_rule.getPriority()
+					logger.error("Details for rule " + shortRule.getPriority()
 							+ " not found on Server!");
 				}
 				throw new ApplicationException("Details for profile "
-						+ short_rule.getPriority() + " not found on Server!");
+						+ shortRule.getPriority() + " not found on Server!");
 			}
 
-			Rule local_rule = new Rule();
+			Rule ruleDTO = new Rule();
 
-			local_rule.setId(short_rule.getId());
-			local_rule.setPriority(remote_rule.getPriority());
+			ruleDTO.setId(shortRule.getId());
+			ruleDTO.setPriority(fullRule.getPriority());
 
-			if (remote_rule.getGsuser() == null) {
+			if (fullRule.getGsuser() == null) {
 				GSUser all = new GSUser();
 				all.setId(-1);
 				all.setName("*");
-				local_rule.setUser(all);
+				ruleDTO.setUser(all);
 			} else {
-				it.geosolutions.geofence.core.model.GSUser remote_user = remote_rule
+				it.geosolutions.geofence.core.model.GSUser remote_user = fullRule
 						.getGsuser();
 				GSUser local_user = new GSUser();
 				local_user.setId(remote_user.getId());
 				local_user.setName(remote_user.getName());
-				local_rule.setUser(local_user);
+				ruleDTO.setUser(local_user);
 			}
 
-			if (remote_rule.getUserGroup() == null) {
+			if (fullRule.getUserGroup() == null) {
 				UserGroup all = new UserGroup();
 				all.setId(-1);
 				all.setName("*");
-				local_rule.setProfile(all);
+				ruleDTO.setProfile(all);
 			} else {
-				it.geosolutions.geofence.core.model.UserGroup remote_profile = remote_rule
+				it.geosolutions.geofence.core.model.UserGroup remote_profile = fullRule
 						.getUserGroup();
 				UserGroup local_profile = new UserGroup();
 				local_profile.setId(remote_profile.getId());
 				local_profile.setName(remote_profile.getName());
-				local_rule.setProfile(local_profile);
+				ruleDTO.setProfile(local_profile);
 			}
 
-			if (remote_rule.getInstance() == null) {
+			if (fullRule.getInstance() == null) {
 				GSInstance all = new GSInstance();
 				all.setId(-1);
 				all.setName("*");
 				all.setBaseURL("*");
 			} else {
-				it.geosolutions.geofence.core.model.GSInstance remote_instance = remote_rule
+				it.geosolutions.geofence.core.model.GSInstance remote_instance = fullRule
 						.getInstance();
 				GSInstance local_instance = new GSInstance();
 				local_instance.setId(remote_instance.getId());
@@ -188,24 +189,28 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 				local_instance.setBaseURL(remote_instance.getBaseURL());
 				local_instance.setUsername(remote_instance.getUsername());
 				local_instance.setPassword(remote_instance.getPassword());
-				local_rule.setInstance(local_instance);
+				ruleDTO.setInstance(local_instance);
 			}
 
-			local_rule
-					.setService((remote_rule.getService() != null) ? remote_rule
-							.getService() : "*");
-			local_rule
-					.setRequest((remote_rule.getRequest() != null) ? remote_rule
-							.getRequest() : "*");
-			local_rule
-					.setWorkspace((remote_rule.getWorkspace() != null) ? remote_rule
-							.getWorkspace() : "*");
-			local_rule.setLayer((remote_rule.getLayer() != null) ? remote_rule
-					.getLayer() : "*");
-			local_rule.setGrant((remote_rule.getAccess() != null) ? remote_rule
-					.getAccess().toString() : "ALLOW");
+            ruleDTO.setSourceIPRange(fullRule.getAddressRange() != null?
+                    fullRule.getAddressRange().getCidrSignature() : "*");
 
-			ruleListDTO.add(local_rule);
+			ruleDTO.setService((fullRule.getService() != null) ?
+                    fullRule.getService() : "*");
+
+            ruleDTO.setRequest((fullRule.getRequest() != null) ?
+                    fullRule.getRequest() : "*");
+
+            ruleDTO.setWorkspace((fullRule.getWorkspace() != null) ?
+                    fullRule.getWorkspace() : "*");
+
+			ruleDTO.setLayer((fullRule.getLayer() != null) ?
+                    fullRule.getLayer() : "*");
+
+			ruleDTO.setGrant((fullRule.getAccess() != null) ?
+                    fullRule.getAccess().toString() : "ALLOW");
+
+			ruleListDTO.add(ruleDTO);
 		}
 
 		return new RpcPageLoadResult<Rule>(ruleListDTO, offset, t.intValue());
@@ -223,10 +228,13 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
         if(logger.isDebugEnabled())
             logger.debug("Trying to save rule " + rule);
 
+        IPAddressRange addressRange = validateSourceRange(rule.getSourceIPRange());
+
         it.geosolutions.geofence.core.model.Rule modelRule = new it.geosolutions.geofence.core.model.Rule(
                 rule.getPriority(), getUser(rule.getUser()),
                 getProfile(rule.getProfile()),
                 getInstance(rule.getInstance()),
+                addressRange,
                 "*".equals(rule.getService()) ? null : rule.getService(),
                 "*".equals(rule.getRequest()) ? null : rule.getRequest(),
                 "*".equals(rule.getWorkspace()) ? null : rule.getWorkspace(),
@@ -259,6 +267,18 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
         }
 	}
 
+    protected IPAddressRange validateSourceRange(String srcIP) throws ApplicationException {
+        IPAddressRange addressRange = null;
+        if(srcIP != null && ! "*".equals(srcIP) ) {
+            if ( ! IPUtils.isRangeValid(srcIP) ) {
+                logger.error("Invalid IP range '"+srcIP+"'");
+                throw new ApplicationException("Invalid IP range '"+srcIP+"'");
+            }
+            addressRange = new IPAddressRange(srcIP);
+        }
+        return addressRange;
+    }
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -273,8 +293,7 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 				geofenceRemoteService.getRuleAdminService()
 						.delete(rule.getId());
 			} catch (NotFoundServiceEx e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+    			logger.warn("Trying to delete not existing rule #" + rule.getId());
 			}
 		}
 
@@ -308,17 +327,20 @@ public class RulesManagerServiceImpl implements IRulesManagerService {
 		}
 
 		for (Rule localRule : rules) {
+
+            IPAddressRange addressRange = validateSourceRange(localRule.getSourceIPRange());
+
 			it.geosolutions.geofence.core.model.Rule rule = new it.geosolutions.geofence.core.model.Rule(
-					localRule.getPriority(), getUser(localRule.getUser()),
+					localRule.getPriority(),
+                    getUser(localRule.getUser()),
 					getProfile(localRule.getProfile()),
-					getInstance(localRule.getInstance()), "*".equals(localRule
-							.getService()) ? null : localRule.getService(),
-					"*".equals(localRule.getRequest()) ? null : localRule
-							.getRequest(),
-					"*".equals(localRule.getWorkspace()) ? null : localRule
-							.getWorkspace(),
-					"*".equals(localRule.getLayer()) ? null : localRule
-							.getLayer(), getAccessType(localRule.getGrant()));
+					getInstance(localRule.getInstance()),
+                    addressRange,
+                    "*".equals(localRule.getService()) ?   null : localRule.getService(),
+					"*".equals(localRule.getRequest()) ?   null : localRule.getRequest(),
+					"*".equals(localRule.getWorkspace()) ? null : localRule.getWorkspace(),
+					"*".equals(localRule.getLayer()) ?     null : localRule.getLayer(),
+                    getAccessType(localRule.getGrant()));
 			geofenceRemoteService.getRuleAdminService().insert(rule);
 		}
 	}

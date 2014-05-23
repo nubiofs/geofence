@@ -146,11 +146,13 @@ public class RuleAdminServiceImplTest extends ServiceTestBase {
         assertEquals(3, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY).setUserGroup(p1.getId())));
         assertEquals(3, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY).setUserGroup(p1.getName())));
         assertEquals(1, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY).setUserGroup(p2.getId())));
-        assertEquals(2, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY).setService("s1")));
-        assertEquals(0, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY).setService("ZZ")));
+        assertEquals(3, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY).setService("s1")));
+        assertEquals(1, ruleAdminService.count(new RuleFilter(SpecialFilterType.ANY).setService("ZZ")));
         RuleFilter f1 = new RuleFilter(SpecialFilterType.ANY).setService("s1");
         f1.getService().setIncludeDefault(true);
         assertEquals(3, ruleAdminService.count(f1));
+        f1.getService().setIncludeDefault(false);
+        assertEquals(2, ruleAdminService.count(f1));
     }
 
     @Test

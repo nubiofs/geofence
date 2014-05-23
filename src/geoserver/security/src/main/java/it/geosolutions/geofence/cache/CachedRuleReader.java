@@ -172,9 +172,9 @@ public class CachedRuleReader implements RuleReaderService {
      * @deprecated Use {@link #getAccessInfo(RuleFilter filter) }
      */
     @Override
-    public AccessInfo getAccessInfo(String userName, String profileName, String instanceName, String service, String request, String workspace, String layer) {
+    public AccessInfo getAccessInfo(String userName, String profileName, String instanceName, String sourceAddress, String service, String request, String workspace, String layer) {
         LOGGER.severe("DEPRECATED METHODS ARE NOT CACHED");
-        return realRuleReaderService.getAccessInfo(userName, profileName, instanceName, service, request, workspace, layer);
+        return realRuleReaderService.getAccessInfo(userName, profileName, instanceName, sourceAddress, service, request, workspace, layer);
     }
 
     private AtomicLong dumpCnt = new AtomicLong(0);
@@ -204,9 +204,9 @@ public class CachedRuleReader implements RuleReaderService {
      * @deprecated Use {@link #getMatchingRules(RuleFilter filter) }
      */
     @Override
-    public List<ShortRule> getMatchingRules(String userName, String profileName, String instanceName, String service, String request, String workspace, String layer) {
+    public List<ShortRule> getMatchingRules(String userName, String profileName, String instanceName, String sourceAddress, String service, String request, String workspace, String layer) {
         LOGGER.severe("DEPRECATED METHODS ARE NOT CACHED");
-        return realRuleReaderService.getMatchingRules(userName, profileName, instanceName, service, request, workspace, layer);
+        return realRuleReaderService.getMatchingRules(userName, profileName, instanceName, sourceAddress, service, request, workspace, layer);
     }
 
     @Override

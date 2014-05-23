@@ -1,11 +1,6 @@
-/*
- * $ Header: it.geosolutions.geofence.gui.client.model.Rule,v. 0.1 25-gen-2011 16.49.27 created by afabiani <alessio.fabiani at geo-solutions.it> $
- * $ Revision: 0.1 $
- * $ Date: 25-gen-2011 16.49.27 $
+/* ====================================================================
  *
- * ====================================================================
- *
- * Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
+ * Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
  * http://www.geo-solutions.it
  *
  * GPLv3 + Classpath exception
@@ -61,6 +56,8 @@ public class Rule extends BeanModel implements IsSerializable
 
     /** The instance. */
     private GSInstance instance;
+
+    private String sourceIPRange;
 
     /** The service. */
     private String service;
@@ -195,6 +192,15 @@ public class Rule extends BeanModel implements IsSerializable
     public GSInstance getInstance()
     {
         return instance;
+    }
+
+    public String getSourceIPRange() {
+        return sourceIPRange;
+    }
+
+    public void setSourceIPRange(String sourceIPRange) {
+        this.sourceIPRange = sourceIPRange;
+        set(BeanKeyValue.SOURCE_IP_RANGE.getValue(), this.sourceIPRange);
     }
 
     /**
@@ -340,6 +346,7 @@ public class Rule extends BeanModel implements IsSerializable
         result = (prime * result) + ((grant == null) ? 0 : grant.hashCode());
         result = (prime * result) + (int) (id ^ (id >>> 32));
         result = (prime * result) + ((instance == null) ? 0 : instance.hashCode());
+        result = (prime * result) + ((sourceIPRange == null) ? 0 : sourceIPRange.hashCode());
         result = (prime * result) + ((layer == null) ? 0 : layer.hashCode());
         result = (prime * result) + ((path == null) ? 0 : path.hashCode());
         result = (prime * result) + (int) (priority ^ (priority >>> 32));
@@ -356,127 +363,92 @@ public class Rule extends BeanModel implements IsSerializable
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-    public boolean equals(Object obj)
-    {
-        if (this == obj)
-        {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (obj == null)
-        {
+        if (obj == null) {
             return false;
         }
-        if (!(obj instanceof Rule))
-        {
+        if (!(obj instanceof Rule)) {
             return false;
         }
 
         Rule other = (Rule) obj;
-        if (grant == null)
-        {
-            if (other.grant != null)
-            {
+        if (grant == null) {
+            if (other.grant != null) {
                 return false;
             }
-        }
-        else if (!grant.equals(other.grant))
-        {
+        } else if (!grant.equals(other.grant)) {
             return false;
         }
-        if (id != other.id)
-        {
+        if (id != other.id) {
             return false;
         }
-        if (instance == null)
-        {
-            if (other.instance != null)
-            {
+        if (instance == null) {
+            if (other.instance != null) {
                 return false;
             }
-        }
-        else if (!instance.equals(other.instance))
-        {
+        } else if (!instance.equals(other.instance)) {
             return false;
         }
-        if (layer == null)
-        {
-            if (other.layer != null)
-            {
+        if (layer == null) {
+            if (other.layer != null) {
                 return false;
             }
-        }
-        else if (!layer.equals(other.layer))
-        {
+        } else if (!layer.equals(other.layer)) {
             return false;
         }
-        if (path == null)
-        {
-            if (other.path != null)
-            {
+        if (path == null) {
+            if (other.path != null) {
                 return false;
             }
-        }
-        else if (!path.equals(other.path))
-        {
+        } else if (!path.equals(other.path)) {
             return false;
         }
-        if (priority != other.priority)
-        {
+        if (priority != other.priority) {
             return false;
         }
-        if (profile == null)
-        {
-            if (other.profile != null)
-            {
+        if (profile == null) {
+            if (other.profile != null) {
                 return false;
             }
-        }
-        else if (!profile.equals(other.profile))
-        {
+        } else if (!profile.equals(other.profile)) {
             return false;
         }
-        if (request == null)
-        {
-            if (other.request != null)
-            {
+        if (request == null) {
+            if (other.request != null) {
                 return false;
             }
-        }
-        else if (!request.equals(other.request))
-        {
+        } else if (!request.equals(other.request)) {
             return false;
         }
-        if (service == null)
-        {
-            if (other.service != null)
-            {
+        if (service == null) {
+            if (other.service != null) {
                 return false;
             }
-        }
-        else if (!service.equals(other.service))
-        {
+        } else if (!service.equals(other.service)) {
             return false;
         }
-        if (user == null)
-        {
-            if (other.user != null)
-            {
+        if (user == null) {
+            if (other.user != null) {
                 return false;
             }
-        }
-        else if (!user.equals(other.user))
-        {
+        } else if (!user.equals(other.user)) {
             return false;
         }
-        if (workspace == null)
-        {
-            if (other.workspace != null)
-            {
+        if (workspace == null) {
+            if (other.workspace != null) {
                 return false;
             }
+        } else if (!workspace.equals(other.workspace)) {
+            return false;
         }
-        else if (!workspace.equals(other.workspace))
-        {
+        if (sourceIPRange == null) {
+            if (other.sourceIPRange != null) {
+                return false;
+            }
+        } else if (!sourceIPRange.equals(other.sourceIPRange)) {
             return false;
         }
 
@@ -487,46 +459,39 @@ public class Rule extends BeanModel implements IsSerializable
      * @see java.lang.Object#toString()
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("Rule [");
-        if (grant != null)
-        {
+        if (grant != null) {
             builder.append("grant=").append(grant).append(", ");
         }
         builder.append("id=").append(id).append(", ");
-        if (instance != null)
-        {
+        if (instance != null) {
             builder.append("instance=").append(instance).append(", ");
         }
-        if (layer != null)
-        {
+        if (sourceIPRange != null) {
+            builder.append("src=").append(sourceIPRange).append(", ");
+        }
+        if (layer != null) {
             builder.append("layer=").append(layer).append(", ");
         }
-        if (path != null)
-        {
+        if (path != null) {
             builder.append("path=").append(path).append(", ");
         }
         builder.append("priority=").append(priority).append(", ");
-        if (profile != null)
-        {
+        if (profile != null) {
             builder.append("profile=").append(profile).append(", ");
         }
-        if (request != null)
-        {
+        if (request != null) {
             builder.append("request=").append(request).append(", ");
         }
-        if (service != null)
-        {
+        if (service != null) {
             builder.append("service=").append(service).append(", ");
         }
-        if (user != null)
-        {
+        if (user != null) {
             builder.append("user=").append(user).append(", ");
         }
-        if (workspace != null)
-        {
+        if (workspace != null) {
             builder.append("workspace=").append(workspace);
         }
         builder.append("]");

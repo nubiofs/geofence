@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -32,8 +32,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -99,6 +97,8 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 
 /**
@@ -259,14 +259,10 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
         return new WorkspaceAccessLimits(DEFAULT_CATALOG_MODE, true, false);
     }
 
-    InetAddress getSourceAddress(Request owsRequest) {
-        if (owsRequest == null) {
-            return null;
-        }
+    String getSourceAddress(HttpServletRequest http) {
         try {
-            HttpServletRequest http = owsRequest.getHttpRequest();
             if (http == null) {
-                LOGGER.log(Level.WARNING, "No HTTP connection available. Are we testing?");
+                LOGGER.log(Level.WARNING, "No HTTP connection available.");
                 return null;
             }
 
@@ -274,16 +270,39 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
             if (forwardedFor != null) {
                 String[] ips = forwardedFor.split(", ");
 
-                return InetAddress.getByName(ips[0]);
+                return InetAddress.getByName(ips[0]).getHostAddress();
             } else {
-                return InetAddress.getByName(http.getRemoteAddr());
+                return http.getRemoteAddr();
             }
         } catch (Exception e) {
             LOGGER.log(Level.INFO, "Failed to get remote address", e);
-
             return null;
         }
     }
+
+
+    private String retrieveCallerIpAddress() {
+
+        // is this an OWS request
+        Request owsRequest = Dispatcher.REQUEST.get();
+        if(owsRequest != null ) {
+            HttpServletRequest httpReq = owsRequest.getHttpRequest();
+            String sourceAddress = getSourceAddress(httpReq);
+            if(sourceAddress == null) {
+                LOGGER.log(Level.WARNING, "Could not retrieve source address from OWSRequest");
+            }
+            return sourceAddress;
+        }
+        
+        // try Spring
+        HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getRequest();
+        String sourceAddress = getSourceAddress(request);
+        if(sourceAddress == null) {
+            LOGGER.log(Level.WARNING, "Could not retrieve source address from Spring Request");
+        }
+        return sourceAddress;
+    }
+
 
     private WorkspaceAccessLimits buildAccessLimits(WorkspaceInfo workspace, AccessInfo rule) {
         if (rule == null) {
@@ -389,7 +408,14 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
         }
         ruleFilter.setWorkspace(workspace);
         ruleFilter.setLayer(layer);
-        ruleFilter.setSourceAddress(getSourceAddress(owsRequest));
+
+        String sourceAddress = retrieveCallerIpAddress();
+        if(sourceAddress != null) {
+            ruleFilter.setSourceAddress(sourceAddress);
+        } else {
+            LOGGER.log(Level.WARNING, "No source IP address found");
+            ruleFilter.setSourceAddress(RuleFilter.SpecialFilterType.DEFAULT);
+        }
 
         LOGGER.log(Level.FINE, "ResourceInfo filter: {0}", ruleFilter);
 

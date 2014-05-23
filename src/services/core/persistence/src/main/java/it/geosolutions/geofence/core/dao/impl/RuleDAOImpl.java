@@ -52,6 +52,8 @@ public class RuleDAOImpl extends BaseDAO<Rule, Long> implements RuleDAO {
     @Override
     public void persist(Rule... entities) {
 
+        // TODO: check if there are any dups in the input list
+
         for (Rule rule : entities) {
             // check there are no dups for the rules received
             if ( rule.getAccess() != GrantType.LIMIT ) { // there may be as many LIMIT rules as desired
@@ -59,6 +61,11 @@ public class RuleDAOImpl extends BaseDAO<Rule, Long> implements RuleDAO {
                 List<Rule> dups = search(search);
                 for (Rule dup : dups) {
                     if ( dup.getAccess() != GrantType.LIMIT ) {
+                        if(dup.getId().equals(rule.getId())) {
+                            // avoid check against self
+                            continue;
+                        }
+
                         LOGGER.warn(" ORIG: " + dup);
                         LOGGER.warn(" DUP : " + rule);
                         throw new DuplicateKeyException("Duplicate Rule " + rule);
