@@ -708,7 +708,7 @@ public class EditRuleWidget extends GeofenceFormWidget
     public void initSize()
     {
         setHeading( /* TODO: I18nProvider.getMessages().addAoiDialogTitle() */"Edit rule");
-        setSize(1205, 175);
+        setSize(800, 175);
     }
 
     /*
