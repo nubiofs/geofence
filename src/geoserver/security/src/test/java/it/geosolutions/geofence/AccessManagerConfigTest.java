@@ -19,6 +19,8 @@
  */
 package it.geosolutions.geofence;
 
+import it.geosolutions.geofence.config.GeoFenceConfiguration;
+import it.geosolutions.geofence.config.GeoFenceConfigurationManager;
 import it.geosolutions.geofence.config.GeoFencePropertyPlaceholderConfigurer;
 import it.geosolutions.geofence.services.RuleReaderService;
 import it.geosolutions.geofence.utils.GeofenceTestUtils;
@@ -38,9 +40,10 @@ import org.springframework.core.io.UrlResource;
 public class AccessManagerConfigTest extends GeoServerTestSupport {
 
 
-    protected GeofenceAccessManager manager;
-    protected RuleReaderService geofenceService;
+//    protected GeofenceAccessManager manager;
+//    protected RuleReaderService geofenceService;
     GeoFencePropertyPlaceholderConfigurer configurer;
+    GeoFenceConfigurationManager manager;
 
     @Override
     protected void oneTimeSetUp() throws Exception {
@@ -65,9 +68,11 @@ public class AccessManagerConfigTest extends GeoServerTestSupport {
         super.setUpInternal();
 
         // get the beans we use for testing
-        manager = (GeofenceAccessManager) applicationContext.getBean("geofenceRuleAccessManager");
-        geofenceService = (RuleReaderService) applicationContext.getBean("ruleReaderService");
-        configurer = (GeoFencePropertyPlaceholderConfigurer) applicationContext.getBean("geofence-gs-property-configurer");
+//        manager = (GeofenceAccessManager) applicationContext.getBean("geofenceRuleAccessManager");
+//        geofenceService = (RuleReaderService) applicationContext.getBean("ruleReaderService");
+        manager = (GeoFenceConfigurationManager) applicationContext.getBean("geofenceConfigurationManager");
+
+        configurer = (GeoFencePropertyPlaceholderConfigurer) applicationContext.getBean("geofence-configurer");
         configurer.setLocation(new UrlResource(this.getClass().getResource("/test-config.properties")));
     }
 
@@ -75,7 +80,7 @@ public class AccessManagerConfigTest extends GeoServerTestSupport {
     public void testSave() throws IOException, URISyntaxException {
         GeofenceTestUtils.emptyFile("test-config.properties");
        
-        GeofenceAccessManagerConfiguration config = new GeofenceAccessManagerConfiguration();
+        GeoFenceConfiguration config = new GeoFenceConfiguration();
         config.setInstanceName("TEST_INSTANCE");
         config.setServicesUrl("http://fakeservice");
         config.setAllowDynamicStyles(true);
@@ -84,9 +89,13 @@ public class AccessManagerConfigTest extends GeoServerTestSupport {
         config.setUseRolesToFilter(true);
         config.setAcceptedRoles("A,B");
         
-        manager.saveConfiguration(config);
+        manager.setConfiguration(config);
+        manager.storeConfiguration();
+        
         String content = GeofenceTestUtils.readConfig("test-config.properties");
-        assertEquals("instanceName=TEST_INSTANCEservicesUrl=http://fakeserviceallowRemoteAndInlineLayers=trueallowDynamicStyles=truegrantWriteToWorkspacesToAuthenticatedUsers=trueuseRolesToFilter=trueacceptedRoles=A,B", content);
+        assertTrue(content.contains("fakeservice"));
+        assertTrue(content.contains("TEST_INSTANCE"));
+
     }
 
     

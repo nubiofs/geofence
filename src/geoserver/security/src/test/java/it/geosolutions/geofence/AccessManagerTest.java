@@ -45,13 +45,13 @@ public class AccessManagerTest extends GeofenceBaseTest
 
         // check workspace access
         WorkspaceInfo citeWS = getCatalog().getWorkspaceByName(MockData.CITE_PREFIX);
-        WorkspaceAccessLimits wl = manager.getAccessLimits(user, citeWS);
+        WorkspaceAccessLimits wl = accessManager.getAccessLimits(user, citeWS);
         assertTrue(wl.isReadable());
         assertTrue(wl.isWritable());
 
         // check layer access
         LayerInfo layer = getCatalog().getLayerByName(getLayerId(MockData.BASIC_POLYGONS));
-        VectorAccessLimits vl = (VectorAccessLimits) manager.getAccessLimits(user, layer);
+        VectorAccessLimits vl = (VectorAccessLimits) accessManager.getAccessLimits(user, layer);
         assertEquals(Filter.INCLUDE, vl.getReadFilter());
         assertEquals(Filter.INCLUDE, vl.getWriteFilter());
         assertNull(vl.getReadAttributes());
@@ -60,7 +60,7 @@ public class AccessManagerTest extends GeofenceBaseTest
     
     public void testCiteCannotWriteOnWorkspace()
     {
-    	manager.getConfiguration().setGrantWriteToWorkspacesToAuthenticatedUsers(false);
+    	configManager.getConfiguration().setGrantWriteToWorkspacesToAuthenticatedUsers(false);
         UsernamePasswordAuthenticationToken user = new UsernamePasswordAuthenticationToken("cite",
                 "cite",
                 Arrays.asList(
@@ -68,14 +68,14 @@ public class AccessManagerTest extends GeofenceBaseTest
 
         // check workspace access
         WorkspaceInfo citeWS = getCatalog().getWorkspaceByName(MockData.CITE_PREFIX);
-        WorkspaceAccessLimits wl = manager.getAccessLimits(user, citeWS);
+        WorkspaceAccessLimits wl = accessManager.getAccessLimits(user, citeWS);
         assertTrue(wl.isReadable());
         assertFalse(wl.isWritable());
     }
     
     public void testCiteCanWriteOnWorkspace()
     {
-    	manager.getConfiguration().setGrantWriteToWorkspacesToAuthenticatedUsers(true);
+    	configManager.getConfiguration().setGrantWriteToWorkspacesToAuthenticatedUsers(true);
         UsernamePasswordAuthenticationToken user = new UsernamePasswordAuthenticationToken("cite",
                 "cite",
                 Arrays.asList(
@@ -83,10 +83,10 @@ public class AccessManagerTest extends GeofenceBaseTest
 
         // check workspace access
         WorkspaceInfo citeWS = getCatalog().getWorkspaceByName(MockData.CITE_PREFIX);
-        WorkspaceAccessLimits wl = manager.getAccessLimits(user, citeWS);
+        WorkspaceAccessLimits wl = accessManager.getAccessLimits(user, citeWS);
         assertTrue(wl.isReadable());
         assertTrue(wl.isWritable());
-        manager.getConfiguration().setGrantWriteToWorkspacesToAuthenticatedUsers(false);
+        configManager.getConfiguration().setGrantWriteToWorkspacesToAuthenticatedUsers(false);
     }
 
     public void testAnonymousUser()
@@ -99,7 +99,7 @@ public class AccessManagerTest extends GeofenceBaseTest
 
         // check layer access
         LayerInfo layer = getCatalog().getLayerByName(getLayerId(MockData.BASIC_POLYGONS));
-        VectorAccessLimits vl = (VectorAccessLimits) manager.getAccessLimits(null, layer);
+        VectorAccessLimits vl = (VectorAccessLimits) accessManager.getAccessLimits(null, layer);
         assertEquals(Filter.EXCLUDE, vl.getReadFilter());
         assertEquals(Filter.EXCLUDE, vl.getWriteFilter());
         assertNull(vl.getReadAttributes());
@@ -113,19 +113,19 @@ public class AccessManagerTest extends GeofenceBaseTest
 
         // check workspace access on cite
         WorkspaceInfo citeWS = getCatalog().getWorkspaceByName(MockData.CITE_PREFIX);
-        WorkspaceAccessLimits wl = manager.getAccessLimits(user, citeWS);
+        WorkspaceAccessLimits wl = accessManager.getAccessLimits(user, citeWS);
         assertTrue(wl.isReadable());
         assertTrue(wl.isWritable());
 
         // check workspace access on any other but not cite and sf (should fail)
         WorkspaceInfo cdfWS = getCatalog().getWorkspaceByName(MockData.CDF_PREFIX);
-        wl = manager.getAccessLimits(user, cdfWS);
+        wl = accessManager.getAccessLimits(user, cdfWS);
         assertFalse(wl.isReadable());
         assertFalse(wl.isWritable());
 
         // check workspace access on sf (should work, we can do at least a getmap)
         WorkspaceInfo sfWS = getCatalog().getWorkspaceByName(MockData.SF_PREFIX);
-        wl = manager.getAccessLimits(user, sfWS);
+        wl = accessManager.getAccessLimits(user, sfWS);
         assertTrue(wl.isReadable());
         assertTrue(wl.isWritable());
     }
@@ -137,7 +137,7 @@ public class AccessManagerTest extends GeofenceBaseTest
 
         // check layer in the cite workspace
         LayerInfo bpolygons = getCatalog().getLayerByName(getLayerId(MockData.BASIC_POLYGONS));
-        VectorAccessLimits vl = (VectorAccessLimits) manager.getAccessLimits(user, bpolygons);
+        VectorAccessLimits vl = (VectorAccessLimits) accessManager.getAccessLimits(user, bpolygons);
         assertEquals(Filter.INCLUDE, vl.getReadFilter());
         assertEquals(Filter.INCLUDE, vl.getWriteFilter());
         assertNull(vl.getReadAttributes());
@@ -150,7 +150,7 @@ public class AccessManagerTest extends GeofenceBaseTest
         Dispatcher.REQUEST.set(request);
 
         LayerInfo generic = getCatalog().getLayerByName(getLayerId(MockData.GENERICENTITY));
-        vl = (VectorAccessLimits) manager.getAccessLimits(user, generic);
+        vl = (VectorAccessLimits) accessManager.getAccessLimits(user, generic);
         assertEquals(Filter.EXCLUDE, vl.getReadFilter());
         assertEquals(Filter.EXCLUDE, vl.getWriteFilter());
 
@@ -160,7 +160,7 @@ public class AccessManagerTest extends GeofenceBaseTest
         request.setService("WmS");
         request.setRequest("gETmAP");
         Dispatcher.REQUEST.set(request);
-        vl = (VectorAccessLimits) manager.getAccessLimits(user, generic);
+        vl = (VectorAccessLimits) accessManager.getAccessLimits(user, generic);
         assertEquals(Filter.INCLUDE, vl.getReadFilter());
         assertEquals(Filter.INCLUDE, vl.getWriteFilter());
     }
@@ -177,7 +177,7 @@ public class AccessManagerTest extends GeofenceBaseTest
         Dispatcher.REQUEST.set(request);
 
         LayerInfo generic = getCatalog().getLayerByName(getLayerId(MockData.GENERICENTITY));
-        VectorAccessLimits vl = (VectorAccessLimits) manager.getAccessLimits(user, generic);
+        VectorAccessLimits vl = (VectorAccessLimits) accessManager.getAccessLimits(user, generic);
         assertEquals(Filter.EXCLUDE, vl.getReadFilter());
         assertEquals(Filter.EXCLUDE, vl.getWriteFilter());
 
@@ -186,7 +186,7 @@ public class AccessManagerTest extends GeofenceBaseTest
         request = new Request();
         request.setService("wms");
         Dispatcher.REQUEST.set(request);
-        vl = (VectorAccessLimits) manager.getAccessLimits(user, generic);
+        vl = (VectorAccessLimits) accessManager.getAccessLimits(user, generic);
         assertEquals(Filter.INCLUDE, vl.getReadFilter());
         assertEquals(Filter.INCLUDE, vl.getWriteFilter());
     }
@@ -198,7 +198,7 @@ public class AccessManagerTest extends GeofenceBaseTest
 
         // check we have the geometry filter set
         LayerInfo generic = getCatalog().getLayerByName(getLayerId(MockData.GENERICENTITY));
-        VectorAccessLimits vl = (VectorAccessLimits) manager.getAccessLimits(user, generic);
+        VectorAccessLimits vl = (VectorAccessLimits) accessManager.getAccessLimits(user, generic);
 
         FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
         Geometry limit = new WKTReader().read("MULTIPOLYGON(((48 62, 48 63, 49 63, 49 62, 48 62)))");

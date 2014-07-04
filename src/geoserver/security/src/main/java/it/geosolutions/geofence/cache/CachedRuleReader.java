@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  * 
  *  GPLv3 + Classpath exception
@@ -19,18 +19,12 @@
  */
 package it.geosolutions.geofence.cache;
 
-import it.geosolutions.geofence.config.GeoFencePropertyPlaceholderConfigurer;
 import it.geosolutions.geofence.services.RuleReaderService;
 import it.geosolutions.geofence.services.dto.AccessInfo;
 import it.geosolutions.geofence.services.dto.AuthUser;
 import it.geosolutions.geofence.services.dto.RuleFilter;
 import it.geosolutions.geofence.services.dto.ShortRule;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -40,13 +34,13 @@ import java.util.logging.Logger;
 
 import org.geotools.util.logging.Logging;
 
-import com.google.common.base.Ticker;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.CacheStats;
 import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import it.geosolutions.geofence.config.GeoFenceConfigurationManager;
 
 /**
  * A delegating {@link it.geosolutions.georepo.services.RuleReaderService} with caching capabilities.
@@ -66,36 +60,48 @@ public class CachedRuleReader implements RuleReaderService {
     private LoadingCache<RuleFilter, AccessInfo> ruleCache;
     private LoadingCache<NamePw, AuthUser>       userCache;
 
-    private final CacheInitParams cacheInitParams = new CacheInitParams();
-
-    GeoFencePropertyPlaceholderConfigurer configurer;
-    
-    public CachedRuleReader(GeoFencePropertyPlaceholderConfigurer configurer) {
-        this.configurer = configurer;
-    }
+    private final GeoFenceConfigurationManager configurationManager;
 
     /**
-     * Init the cache, using the provided init params.
+     * Latest configuration used
+     */
+    private CacheConfiguration cacheConfiguration = new CacheConfiguration();
+    
+    public CachedRuleReader(GeoFenceConfigurationManager configurationManager) {
+        this.configurationManager = configurationManager;
+
+        // pull config when initializing
+        init();
+    }
+
+
+    /**
+     * (Re)Init the cache, pulling the configuration from the configurationManager.
+     *
      * Please use {@link #getCacheInitParams() } to set the cache parameters before
      * <code>init()</code>ting the cache
      */
-    public void init() {
+    public final void init() {
+
+        cacheConfiguration = configurationManager.getCacheConfiguration();
+
         ruleCache  = getCacheBuilder().build(new RuleLoader());
         userCache = getCacheBuilder().build(new UserLoader());
     }
 
+
     protected CacheBuilder getCacheBuilder() {
         CacheBuilder builder = CacheBuilder.newBuilder()
-                .maximumSize(cacheInitParams.getSize())
-                .refreshAfterWrite(cacheInitParams.getRefreshMilliSec(), TimeUnit.MILLISECONDS) // reloadable after x time
-                .expireAfterWrite(cacheInitParams.getExpireMilliSec(), TimeUnit.MILLISECONDS) // throw away entries too old
+                .maximumSize(cacheConfiguration.getSize())
+                .refreshAfterWrite(cacheConfiguration.getRefreshMilliSec(), TimeUnit.MILLISECONDS) // reloadable after x time
+                .expireAfterWrite(cacheConfiguration.getExpireMilliSec(), TimeUnit.MILLISECONDS) // throw away entries too old
                 ;
         //.expireAfterAccess(timeoutMillis, TimeUnit.MILLISECONDS)
         //                .removalListener(MY_LISTENER)
         // this should only be used while testing
-        if(cacheInitParams.getCustomTicker() != null) {
-            LOGGER.log(Level.SEVERE, "Setting a custom Ticker in the cache {0}", cacheInitParams.getCustomTicker().getClass().getName());
-            builder.ticker(cacheInitParams.getCustomTicker());
+        if(cacheConfiguration.getCustomTicker() != null) {
+            LOGGER.log(Level.SEVERE, "Setting a custom Ticker in the cache {0}", cacheConfiguration.getCustomTicker().getClass().getName());
+            builder.ticker(cacheConfiguration.getCustomTicker());
         }
         return builder;
     }
@@ -188,7 +194,7 @@ public class CachedRuleReader implements RuleReaderService {
             if(dumpCnt.incrementAndGet() % 10 == 0) {
                 LOGGER.info("Rules  :"+ruleCache.stats());
                 LOGGER.info("Users  :"+userCache.stats());
-                LOGGER.fine("params :"+cacheInitParams);
+                LOGGER.fine("params :"+cacheConfiguration);
             }
 
         try {
@@ -234,14 +240,9 @@ public class CachedRuleReader implements RuleReaderService {
         this.realRuleReaderService = realRuleReaderService;
     }
 
-    
 
-    public RuleReaderService getRealRuleReaderService() {
-        return realRuleReaderService;
-    }
-
-    public CacheInitParams getCacheInitParams() {
-        return cacheInitParams;
+    public CacheConfiguration getCacheInitParams() {
+        return cacheConfiguration;
     }
 
     public CacheStats getStats() {
@@ -267,15 +268,13 @@ public class CachedRuleReader implements RuleReaderService {
         return ruleCache.stats().toString();
     }
 
-    
-
     @Override
     public String toString() {
         return getClass().getSimpleName()
                 +"["
                 + "Rule:"+ruleCache.stats()
                 + " User:"+userCache.stats()
-                + " " + cacheInitParams
+                + " " + cacheConfiguration
                 + "]";
     }
 
@@ -352,40 +351,4 @@ public class CachedRuleReader implements RuleReaderService {
         }
     
     }
-
-    /**
-     * @param params
-     * @throws IOException 
-     */
-    public void saveConfiguration(CacheInitParams params) throws IOException {
-        cacheInitParams.setSize(params.getSize());
-        cacheInitParams.setRefreshMilliSec(params.getRefreshMilliSec());
-        cacheInitParams.setExpireMilliSec(params.getExpireMilliSec());
-        
-        init();
-        
-        File configurationFile =  configurer.getConfigFile();
-        if (configurationFile != null && configurationFile.exists()
-                && configurationFile.canWrite()) {
-            BufferedWriter writer = null;
-            try {
-                writer = new BufferedWriter(new FileWriter(configurationFile));
-                writer.write("cacheSize=" + params.getSize()
-                        + "\n");
-                writer.write("cacheRefresh=" + params.getRefreshMilliSec()
-                        + "\n");
-                writer.write("cacheExpire=" + params.getExpireMilliSec() 
-                        + "\n");
-                
-            } finally {
-                if (writer != null) {
-                    writer.close();
-                }
-            }
-        } else {
-            throw new IOException("Cannot save GeoFence cache configuration file");
-        }
-    }
-
- 
 }

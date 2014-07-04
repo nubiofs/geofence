@@ -20,8 +20,8 @@
 package it.geosolutions.geofence.web;
 
 import it.geosolutions.geofence.GeofenceAccessManager;
-import it.geosolutions.geofence.GeofenceAccessManagerConfiguration;
-import it.geosolutions.geofence.cache.CacheInitParams;
+import it.geosolutions.geofence.config.GeoFenceConfiguration;
+import it.geosolutions.geofence.cache.CacheConfiguration;
 import it.geosolutions.geofence.cache.CachedRuleReader;
 import it.geosolutions.geofence.services.RuleReaderService;
 import it.geosolutions.geofence.services.dto.RuleFilter;
@@ -48,6 +48,8 @@ import org.geoserver.web.GeoServerSecuredPage;
 import org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean;
 
 import com.google.common.cache.CacheStats;
+import it.geosolutions.geofence.config.GeoFenceConfigurationController;
+import it.geosolutions.geofence.config.GeoFenceConfigurationManager;
 
 /**
  * GeoFence wicket administration UI for GeoServer.
@@ -61,33 +63,31 @@ public class GeofencePage extends GeoServerSecuredPage {
     /**
      * Configuration object.
      */
-    private GeofenceAccessManagerConfiguration config;
+    private GeoFenceConfiguration config;
     
-    private CacheInitParams cacheParams;
+    private CacheConfiguration cacheParams;
     
     public GeofencePage() {
         // extracts cfg object from the registered probe instance
-        config = GeoServerExtensions.bean(GeofenceAccessManager.class)
-                .getConfiguration();
+        GeoFenceConfigurationManager configManager = GeoServerExtensions.bean(GeoFenceConfigurationManager.class);
+
+        config = configManager.getConfiguration().clone();
+        cacheParams = configManager.getCacheConfiguration().clone();
         
-        CachedRuleReader cacheRuleReader = GeoServerExtensions
-                .bean(CachedRuleReader.class);
-        
-        cacheParams = cacheRuleReader.getCacheInitParams().clone();
     
-        final IModel<GeofenceAccessManagerConfiguration> managerModel = getAccessManagerModel();
-        final IModel<CacheInitParams> cacheModel = getCacheModel();
-        Form<IModel<GeofenceAccessManagerConfiguration>> form = new Form<IModel<GeofenceAccessManagerConfiguration>>(
+        final IModel<GeoFenceConfiguration> configModel = getGeoFenceConfigModel();
+        final IModel<CacheConfiguration> cacheModel = getCacheConfigModel();
+        Form<IModel<GeoFenceConfiguration>> form = new Form<IModel<GeoFenceConfiguration>>(
                 "form",
-                new CompoundPropertyModel<IModel<GeofenceAccessManagerConfiguration>>(
-                        managerModel));
+                new CompoundPropertyModel<IModel<GeoFenceConfiguration>>(
+                        configModel));
         form.setOutputMarkupId(true);
         add(form);
     
-        form.add(new TextField<String>("instanceName", new PropertyModel<String>(
-                managerModel, "instanceName")).setRequired(true));
-        form.add(new TextField<String>("servicesUrl", new PropertyModel<String>(
-                managerModel, "servicesUrl")).setRequired(true));
+        form.add(new TextField<String>("instanceName", 
+                new PropertyModel<String>(configModel, "instanceName")).setRequired(true));
+        form.add(new TextField<String>("servicesUrl", 
+                new PropertyModel<String>(configModel, "servicesUrl")).setRequired(true));
     
         form.add(new AjaxSubmitLink("test") {
             @Override
@@ -118,18 +118,18 @@ public class GeofencePage extends GeoServerSecuredPage {
         }.setDefaultFormProcessing(false));
         
         form.add(new CheckBox("allowRemoteAndInlineLayers",
-                new PropertyModel<Boolean>(managerModel,
+                new PropertyModel<Boolean>(configModel,
                         "allowRemoteAndInlineLayers")));
         form.add(new CheckBox("allowDynamicStyles", new PropertyModel<Boolean>(
-                managerModel, "allowDynamicStyles")));
+                configModel, "allowDynamicStyles")));
         form.add(new CheckBox("grantWriteToWorkspacesToAuthenticatedUsers",
-                new PropertyModel<Boolean>(managerModel,
+                new PropertyModel<Boolean>(configModel,
                         "grantWriteToWorkspacesToAuthenticatedUsers")));
         form.add(new CheckBox("useRolesToFilter", new PropertyModel<Boolean>(
-                managerModel, "useRolesToFilter")));
+                configModel, "useRolesToFilter")));
     
         form.add(new TextField<String>("acceptedRoles", new PropertyModel<String>(
-                managerModel, "acceptedRoles")));
+                configModel, "acceptedRoles")));
     
         Button submit = new Button("submit", new StringResourceModel("submit",
                 this, null)) {
@@ -139,10 +139,9 @@ public class GeofencePage extends GeoServerSecuredPage {
             public void onSubmit() {
                 try {
                     // save the changed configuration
-                    GeoServerExtensions.bean(GeofenceAccessManager.class)
-                            .saveConfiguration(config);
-                    GeoServerExtensions.bean(CachedRuleReader.class)
-                            .saveConfiguration(cacheParams);
+                    GeoServerExtensions
+                            .bean(GeoFenceConfigurationController.class)
+                            .storeConfiguration(config, cacheParams);
                     doReturn();
                 } catch (Exception e) {
                     LOGGER.log(Level.WARNING, "Save error", e);
@@ -175,7 +174,10 @@ public class GeofencePage extends GeoServerSecuredPage {
         
         form.add(new TextField<Long>("cacheExpire", new PropertyModel<Long>(
                 cacheModel, "expireMilliSec")).setRequired(true));
-        
+
+
+        CachedRuleReader cacheRuleReader = GeoServerExtensions.bean(CachedRuleReader.class);
+
         final Model<String> ruleStatsModel = new Model(getStats(cacheRuleReader));
         final Label ruleStats = new Label("rulestats", ruleStatsModel);
         ruleStats.setOutputMarkupId(true); 
@@ -193,8 +195,7 @@ public class GeofencePage extends GeoServerSecuredPage {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 CachedRuleReader cacheRuleReader = GeoServerExtensions
                     .bean(CachedRuleReader.class);
-                cacheRuleReader
-                    .invalidateAll();
+                cacheRuleReader.invalidateAll();
                 info(new StringResourceModel(GeofencePage.class.getSimpleName() + 
                         ".cacheInvalidated", null).getObject());
                 ruleStatsModel.setObject(getStats(cacheRuleReader));
@@ -216,13 +217,14 @@ public class GeofencePage extends GeoServerSecuredPage {
         return new StringBuilder()
                 .append("<b>RuleStats</b><ul>")
                 .append("<li>size: ").append(cacheRuleReader.getCacheSize())
-                .append("/").append(cacheRuleReader.getCacheInitParams().getSize() + "</li>")
-                .append("<li>hitCount: ").append(stats.hitCount() + "</li>")
-                .append("<li>missCount: ").append(stats.missCount())
-                .append("<li>loadSuccessCount: ").append(stats.loadSuccessCount() + "</li>")
-                .append("<li>loadExceptionCount: ").append(stats.loadExceptionCount() + "</li>")
-                .append("<li>totalLoadTime: ").append(stats.totalLoadTime() + "</li>")
-                .append("<li>evictionCount: ").append(stats.evictionCount() + "</li>")
+                    .append("/")
+                    .append(cacheRuleReader.getCacheInitParams().getSize()).append("</li>")
+                .append("<li>hitCount: ").append(stats.hitCount()).append("</li>")
+                .append("<li>missCount: ").append(stats.missCount()).append("</li>")
+                .append("<li>loadSuccessCount: ").append(stats.loadSuccessCount()).append("</li>")
+                .append("<li>loadExceptionCount: ").append(stats.loadExceptionCount()).append("</li>")
+                .append("<li>totalLoadTime: ").append(stats.totalLoadTime()).append("</li>")
+                .append("<li>evictionCount: ").append(stats.evictionCount()).append("</li>")
                 .append("</ul>").toString();
         
     }
@@ -233,13 +235,14 @@ public class GeofencePage extends GeoServerSecuredPage {
         stats = cacheRuleReader.getUserStats();
         sb = new StringBuilder().append("<b>UserStats</b><ul>")
                 .append("<li>size: ").append(cacheRuleReader.getUserCacheSize())
-                .append("/").append(cacheRuleReader.getCacheInitParams().getSize() + "</li>")
-                .append("<li>hitCount: ").append(stats.hitCount() + "</li>")
-                .append("<li>missCount: ").append(stats.missCount() + "</li>")
-                .append("<li>loadSuccessCount: ").append(stats.loadSuccessCount() + "</li>")
-                .append("<li>loadExceptionCount: ").append(stats.loadExceptionCount() + "</li>")
-                .append("<li>totalLoadTime: ").append(stats.totalLoadTime() + "</li>")
-                .append("<li>evictionCount: ").append(stats.evictionCount() + "</li>")
+                    .append("/")
+                    .append(cacheRuleReader.getCacheInitParams().getSize()).append("</li>")
+                .append("<li>hitCount: ").append(stats.hitCount()).append("</li>")
+                .append("<li>missCount: ").append(stats.missCount()).append("</li>")
+                .append("<li>loadSuccessCount: ").append(stats.loadSuccessCount()).append("</li>")
+                .append("<li>loadExceptionCount: ").append(stats.loadExceptionCount()).append("</li>")
+                .append("<li>totalLoadTime: ").append(stats.totalLoadTime()).append("</li>")
+                .append("<li>evictionCount: ").append(stats.evictionCount()).append("</li>")
                 .append("</ul>");
         return sb.toString();
     }
@@ -249,8 +252,8 @@ public class GeofencePage extends GeoServerSecuredPage {
      * 
      * @return
      */
-    private IModel<GeofenceAccessManagerConfiguration> getAccessManagerModel() {
-        return new Model<GeofenceAccessManagerConfiguration>(config);
+    private IModel<GeoFenceConfiguration> getGeoFenceConfigModel() {
+        return new Model<GeoFenceConfiguration>(config);
     }
     
     /**
@@ -258,8 +261,8 @@ public class GeofencePage extends GeoServerSecuredPage {
      * 
      * @return
      */
-    private IModel<CacheInitParams> getCacheModel() {
-        return new Model<CacheInitParams>(cacheParams);
+    private IModel<CacheConfiguration> getCacheConfigModel() {
+        return new Model<CacheConfiguration>(cacheParams);
     }
 
 

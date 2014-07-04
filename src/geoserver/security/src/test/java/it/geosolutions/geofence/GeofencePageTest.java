@@ -40,42 +40,39 @@ import org.springframework.core.io.UrlResource;
 public class GeofencePageTest extends GeoServerWicketTestSupport {
     
     GeoFencePropertyPlaceholderConfigurer configurer;
-    GeoFencePropertyPlaceholderConfigurer cacheConfigurer;
 
     @Override
     protected void setUpInternal() throws Exception {
         super.setUpInternal();
     
         // get the beans we use for testing
-        configurer = (GeoFencePropertyPlaceholderConfigurer) applicationContext.getBean("geofence-gs-property-configurer");
+        configurer = (GeoFencePropertyPlaceholderConfigurer) applicationContext.getBean("geofence-configurer");
         configurer.setLocation(new UrlResource(this.getClass().getResource("/test-config.properties")));
-        cacheConfigurer = (GeoFencePropertyPlaceholderConfigurer) applicationContext.getBean("geofence-cache-property-configurer");
-        cacheConfigurer.setLocation(new UrlResource(this.getClass().getResource("/test-cache-config.properties")));
     }
     
 
     public void testSave() throws URISyntaxException, IOException {
         GeofenceTestUtils.emptyFile("test-config.properties");
-        GeofenceTestUtils.emptyFile("test-cache-config.properties");
+//        GeofenceTestUtils.emptyFile("test-cache-config.properties");
         login();
         tester.startPage(GeofencePage.class);
         FormTester ft = tester.newFormTester("form");
         ft.submit("submit");
         tester.assertRenderedPage(GeoServerHomePage.class);
         assertTrue(GeofenceTestUtils.readConfig("test-config.properties").length() > 0);
-        assertTrue(GeofenceTestUtils.readConfig("test-cache-config.properties").length() > 0);
+//        assertTrue(GeofenceTestUtils.readConfig("test-cache-config.properties").length() > 0);
     }
     
     public void testCancel() throws URISyntaxException, IOException {
         GeofenceTestUtils.emptyFile("test-config.properties");
-        GeofenceTestUtils.emptyFile("test-cache-config.properties");
+//        GeofenceTestUtils.emptyFile("test-cache-config.properties");
         login();
         tester.startPage(GeofencePage.class);
         FormTester ft = tester.newFormTester("form");
         ft.submit("cancel");
         tester.assertRenderedPage(GeoServerHomePage.class);
         assertTrue(GeofenceTestUtils.readConfig("test-config.properties").length() == 0);
-        assertTrue(GeofenceTestUtils.readConfig("test-cache-config.properties").length() == 0);
+//        assertTrue(GeofenceTestUtils.readConfig("test-cache-config.properties").length() == 0);
     }
     
     public void testErrorEmptyInstance()  {

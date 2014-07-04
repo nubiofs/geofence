@@ -1,5 +1,7 @@
 package it.geosolutions.geofence;
 
+import it.geosolutions.geofence.config.GeoFenceConfiguration;
+import it.geosolutions.geofence.config.GeoFenceConfigurationManager;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.HashMap;
@@ -17,7 +19,8 @@ import org.geoserver.test.GeoServerTestSupport;
 public abstract class GeofenceBaseTest extends GeoServerTestSupport {
 
     private static Boolean IS_GEOFENCE_AVAILABLE;
-    protected GeofenceAccessManager manager;
+    protected GeofenceAccessManager accessManager;
+    protected GeoFenceConfigurationManager configManager;
     protected RuleReaderService geofenceService;
 
     @Override
@@ -43,8 +46,10 @@ public abstract class GeofenceBaseTest extends GeoServerTestSupport {
         super.setUpInternal();
 
         // get the beans we use for testing
-        manager = (GeofenceAccessManager) applicationContext.getBean("geofenceRuleAccessManager");
+        accessManager = (GeofenceAccessManager) applicationContext.getBean("geofenceRuleAccessManager");
         geofenceService = (RuleReaderService) applicationContext.getBean("ruleReaderService");
+        configManager = (GeoFenceConfigurationManager) applicationContext.getBean("geofenceConfigurationManager");
+
     }
 
     @Override

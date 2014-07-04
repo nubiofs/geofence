@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2013 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -17,9 +17,12 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.geofence;
+package it.geosolutions.geofence.config;
 
+import com.google.common.collect.Lists;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Configuration object for GeofenceAccessManager.
@@ -27,24 +30,20 @@ import java.io.Serializable;
  * @author "Mauro Bartolomeoli - mauro.bartolomeoli@geo-solutions.it"
  *
  */
-public class GeofenceAccessManagerConfiguration implements Serializable, Cloneable {
+public class GeoFenceConfiguration implements Serializable, Cloneable {
     
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 3L;
 
-    String servicesUrl;
-    
-    String instanceName;
-    
-    boolean allowRemoteAndInlineLayers;
-    
-    boolean allowDynamicStyles;
-    
-    boolean grantWriteToWorkspacesToAuthenticatedUsers;
-    
-    boolean useRolesToFilter;
-    
-    String acceptedRoles;
-    
+    private String servicesUrl;    
+    private String instanceName;    
+    private boolean allowRemoteAndInlineLayers;    
+    private boolean allowDynamicStyles;
+    private boolean grantWriteToWorkspacesToAuthenticatedUsers;
+    private boolean useRolesToFilter;
+    private String acceptedRoles = "";
+
+    private List<String> roles = new ArrayList<String>();
+
     /**
      * Remote GeoFence services url.
      * @return
@@ -171,23 +170,33 @@ public class GeofenceAccessManagerConfiguration implements Serializable, Cloneab
      * @param acceptedRoles the acceptedRoles to set
      */
     public void setAcceptedRoles(String acceptedRoles) {
+        if( acceptedRoles == null) {
+            acceptedRoles = "";
+        }
     
         this.acceptedRoles = acceptedRoles;
+
+        // from comma delimited to list
+        roles = Lists.newArrayList(acceptedRoles.split(","));
     }
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
     
     /**
      * Creates a copy of the configuration object.
      */
-    public GeofenceAccessManagerConfiguration clone() {
-        GeofenceAccessManagerConfiguration copy = new GeofenceAccessManagerConfiguration();
-        copy.setServicesUrl(servicesUrl);
-        copy.setInstanceName(instanceName);
-        copy.setAcceptedRoles(acceptedRoles);
-        copy.setAllowDynamicStyles(allowDynamicStyles);
-        copy.setAllowRemoteAndInlineLayers(allowRemoteAndInlineLayers);
-        copy.setGrantWriteToWorkspacesToAuthenticatedUsers(grantWriteToWorkspacesToAuthenticatedUsers);
-        copy.setUseRolesToFilter(useRolesToFilter);
-        return copy;
+    @Override
+    public GeoFenceConfiguration clone() {
+        try {
+            GeoFenceConfiguration clone = (GeoFenceConfiguration)super.clone();
+            clone.setAcceptedRoles(acceptedRoles); // make sure the computed list is properly initted
+            return clone;
+        } catch (CloneNotSupportedException ex) {
+            throw new UnknownError("Unexpected exception: " + ex.getMessage());
+        }
     }
 
 }

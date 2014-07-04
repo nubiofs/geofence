@@ -19,7 +19,6 @@
  */
 package it.geosolutions.geofence;
 
-import it.geosolutions.geofence.config.GeoFencePropertyPlaceholderConfigurer;
 import it.geosolutions.geofence.core.model.LayerAttribute;
 import it.geosolutions.geofence.core.model.enums.AccessType;
 import it.geosolutions.geofence.core.model.enums.GrantType;
@@ -27,9 +26,6 @@ import it.geosolutions.geofence.services.RuleReaderService;
 import it.geosolutions.geofence.services.dto.AccessInfo;
 import it.geosolutions.geofence.services.dto.RuleFilter;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -92,11 +88,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.google.common.collect.Lists;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
+import it.geosolutions.geofence.config.GeoFenceConfiguration;
+import it.geosolutions.geofence.config.GeoFenceConfigurationManager;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -109,7 +106,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class GeofenceAccessManager implements ResourceAccessManager, DispatcherCallback
 {
 
-    static final Logger LOGGER = Logging.getLogger(GeofenceAccessManager.class);
+    private static final Logger LOGGER = Logging.getLogger(GeofenceAccessManager.class);
 
     /**
      * The role given to the administrators
@@ -130,102 +127,19 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
 
     Catalog catalog;
 
-    GeofenceAccessManagerConfiguration configuration;
-    
-    GeoFencePropertyPlaceholderConfigurer configurer;
-        
+    private final GeoFenceConfigurationManager configurationManager;
+
+            
     // list of accepted roles, for the useRolesToFilter option
-    List<String> roles = new ArrayList<String>();
+//    List<String> roles = new ArrayList<String>();
 
     public GeofenceAccessManager(RuleReaderService rules, Catalog catalog,
-            GeoFencePropertyPlaceholderConfigurer configurer,
-            GeofenceAccessManagerConfiguration configuration) {
+            GeoFenceConfigurationManager configurationManager) {
 
         this.rules = rules;
         this.catalog = catalog;
-        this.configurer = configurer;
-        setConfiguration(configuration);
+        this.configurationManager = configurationManager;
     }
-   
-   /**
-    * Returns a copy of the configuration.
-    * @return
-    */
-    public GeofenceAccessManagerConfiguration getConfiguration() {
-        return configuration.clone();
-    }
-    
-
-    /**
-     * Updates the configuration.
-     * 
-     * @param configuration
-     */
-    public void setConfiguration(GeofenceAccessManagerConfiguration configuration) {
-        this.configuration = checkConfiguration(configuration);
-        // from comma delimited to list
-        roles = Lists.newArrayList(this.configuration.getAcceptedRoles().split(","));
-        LOGGER.log(Level.INFO,
-                "Initializing the Geofence access manager with instance name {0}",
-                configuration.getInstanceName());
-    }
-    
-    /**
-     * Checks configuration object validity.
-     * 
-     * @param configuration
-     * @return
-     */
-    private GeofenceAccessManagerConfiguration checkConfiguration(
-            GeofenceAccessManagerConfiguration configuration) {
-        if(configuration.getAcceptedRoles() == null) {
-            configuration.setAcceptedRoles("");
-        }
-        return configuration;
-    }
-
-    /**
-     * Saves current configuration to disk.
-     * 
-     * @param configuration
-     * @throws IOException
-     */
-    public void saveConfiguration(GeofenceAccessManagerConfiguration configuration)
-            throws IOException {
-        setConfiguration(configuration);
-        File configurationFile =  configurer.getConfigFile();
-        if (configurationFile != null && configurationFile.exists()
-                && configurationFile.canWrite()) {
-            BufferedWriter writer = null;
-            try {
-                writer = new BufferedWriter(new FileWriter(configurationFile));
-                writer.write("instanceName=" + configuration.getInstanceName()
-                        + "\n");
-                writer.write("servicesUrl=" + configuration.getServicesUrl()
-                        + "\n");
-                writer.write("allowRemoteAndInlineLayers="
-                        + configuration.isAllowRemoteAndInlineLayers() + "\n");
-                writer.write("allowDynamicStyles="
-                        + configuration.isAllowDynamicStyles() + "\n");
-                writer.write("grantWriteToWorkspacesToAuthenticatedUsers="
-                        + configuration
-                                .isGrantWriteToWorkspacesToAuthenticatedUsers()
-                        + "\n");
-                writer.write("useRolesToFilter="
-                        + configuration.isUseRolesToFilter() + "\n");
-                writer.write("acceptedRoles="
-                        + configuration.getAcceptedRoles() + "\n");
-            } finally {
-                if (writer != null) {
-                    writer.close();
-                }
-            }
-        } else {
-            throw new IOException("Cannot save GeoFence configuration file");
-        }
-       
-    }
-
 
     boolean isAdmin(Authentication user) {
         if (user.getAuthorities() != null) {
@@ -252,7 +166,7 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
 
                 return new WorkspaceAccessLimits(DEFAULT_CATALOG_MODE, true, true);
             }
-            return new WorkspaceAccessLimits(DEFAULT_CATALOG_MODE, true, configuration.isGrantWriteToWorkspacesToAuthenticatedUsers());
+            return new WorkspaceAccessLimits(DEFAULT_CATALOG_MODE, true, configurationManager.getConfiguration().isGrantWriteToWorkspacesToAuthenticatedUsers());
         }
 
         // further logic disabled because of https://github.com/geosolutions-it/geofence/issues/6
@@ -378,7 +292,7 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
         RuleFilter ruleFilter = new RuleFilter(RuleFilter.SpecialFilterType.ANY);
         setRuleFilterUserOrRole(user, ruleFilter);
         
-        ruleFilter.setInstance(configuration.getInstanceName());
+        ruleFilter.setInstance(configurationManager.getConfiguration().getInstanceName());
         if (service != null)
         {
             if ("*".equals(service))
@@ -438,11 +352,12 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
      */
     private void setRuleFilterUserOrRole(Authentication user, RuleFilter ruleFilter) {
         if (user != null) {
-            if (configuration.isUseRolesToFilter() && roles.size() > 0) {
+            GeoFenceConfiguration config = configurationManager.getConfiguration();
+            if (config.isUseRolesToFilter() && config.getRoles().size() > 0) {
                 
                 String role = "UNKNOWN";
                 for (GrantedAuthority authority : user.getAuthorities()) {
-                    if (roles.contains(authority.getAuthority())) {
+                    if (config.getRoles().contains(authority.getAuthority())) {
                         role = authority.getAuthority();
                         
                     }
@@ -725,7 +640,7 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
             // get the rule, it contains default and allowed styles
             RuleFilter ruleFilter = new RuleFilter(RuleFilter.SpecialFilterType.ANY);
             setRuleFilterUserOrRole(user, ruleFilter);            
-            ruleFilter.setInstance(configuration.getInstanceName());
+            ruleFilter.setInstance(configurationManager.getConfiguration().getInstanceName());
             ruleFilter.setService(service);
             ruleFilter.setRequest(request);
             ruleFilter.setWorkspace(resource.getStore().getWorkspace().getName());
@@ -768,7 +683,7 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
 		
         // check for dynamic style
         if ((getMap.getSld() != null) || (getMap.getSldBody() != null)) {
-            if( !configuration.isAllowDynamicStyles() ) {	                
+            if( !configurationManager.getConfiguration().isAllowDynamicStyles() ) {
                 throw new ServiceException("Dynamic style usage is forbidden");
             }
         }
@@ -791,7 +706,7 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
             ResourceInfo info = null;
             if(layer.getType() == MapLayerInfo.TYPE_VECTOR || layer.getType() == MapLayerInfo.TYPE_RASTER) {
             	info = layer.getResource();
-            } else if(!configuration.isAllowRemoteAndInlineLayers()) {            	
+            } else if(!configurationManager.getConfiguration().isAllowRemoteAndInlineLayers()) {
                 throw new ServiceException("Remote layers are not allowed");                
             }
 
@@ -799,7 +714,7 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
             RuleFilter ruleFilter = new RuleFilter(RuleFilter.SpecialFilterType.ANY);
 
             setRuleFilterUserOrRole(user, ruleFilter);
-            ruleFilter.setInstance(configuration.getInstanceName());
+            ruleFilter.setInstance(configurationManager.getConfiguration().getInstanceName());
             ruleFilter.setService(service);
             ruleFilter.setRequest(request);
             if(info != null) {
@@ -868,7 +783,7 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
     protected void checkDynStyles(GetMapRequest getMap, AccessInfo rule, MapLayerInfo layer) throws ServiceException {
         if ((getMap.getSld() != null) || (getMap.getSldBody() != null))
         {
-            if( !configuration.isAllowDynamicStyles() ) {
+            if( !configurationManager.getConfiguration().isAllowDynamicStyles() ) {
                 LOGGER.info("Denying dynamic style; allowed#"+rule.getAllowedStyles().size() + " avail#"+layer.getLayerInfo().getStyles().size());
                 throw new ServiceException("Dynamic style usage is forbidden");
             }

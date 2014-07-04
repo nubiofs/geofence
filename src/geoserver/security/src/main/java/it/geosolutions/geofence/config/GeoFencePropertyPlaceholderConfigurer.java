@@ -1,7 +1,23 @@
-/* Copyright (c) 2011 GeoSolutions - http://www.geo-solutions.it/.  All rights reserved.
- * This code is licensed under the GPL 2.0 license, available at the root
- * application directory.
+/*
+ *  Copyright (C) 2014 GeoSolutions S.A.S.
+ *  http://www.geo-solutions.it
+ *
+ *  GPLv3 + Classpath exception
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package it.geosolutions.geofence.config;
 
 import java.io.File;
@@ -18,20 +34,16 @@ import org.springframework.core.io.UrlResource;
 
 public class GeoFencePropertyPlaceholderConfigurer extends GeoServerPropertyConfigurer {
 
-    static Logger LOGGER = Logging.getLogger("it.geosolutions.geofence.config");
+    private static final Logger LOGGER = Logging.getLogger(GeoFencePropertyPlaceholderConfigurer.class);
 
-    GeoServerDataDirectory dataDirectory;
-    File configFile;
+    private GeoServerDataDirectory data;
+    private File configFile;
 
     public GeoFencePropertyPlaceholderConfigurer(GeoServerDataDirectory data) {
         super(data);
-        this.dataDirectory = data;
+        this.data = data;
     }
-    
-    public Properties[] getProperties() {
-        return localProperties;
-    }
-    
+        
     public Properties getMergedProperties() throws IOException {
         return mergeProperties();
     }
@@ -46,34 +58,19 @@ public class GeoFencePropertyPlaceholderConfigurer extends GeoServerPropertyConf
     @Override
     public void setLocation(Resource location) {
         super.setLocation(location);
+
         try {
-            configFile = location.getFile();
-        } catch (IOException e) {
-            LOGGER.log(Level.FINER, e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void setLocations(Resource[] locations) {
-        for(Resource location : locations) {
-            try {
-                File f = location.getFile();
-                if (f != null && !f.isAbsolute()) {
-                    //make relative to data directory
-                    f = new File(dataDirectory.root(), f.getPath());
-                }
+            File f = location.getFile();
+            if (f != null && !f.isAbsolute()) {
+                //make relative to data directory
+                f = new File(data.root(), f.getPath());
                 location = new UrlResource(f.toURI());
-                if(f.exists()) {
-                    configFile = f;
-                    super.setLocation(location);
-                }
-            }
-            catch(IOException e) {
-                LOGGER.log(Level.WARNING, "Error reading resource " + location, e);
+                this.configFile = f;
             }
         }
-        
+        catch(IOException e) {
+            LOGGER.log(Level.WARNING, "Error reading resource " + location, e);
+        }
     }
 
-	
 }
