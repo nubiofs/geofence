@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>it.geosolutions.geofence</groupId>
 		<artifactId>geofence-geoserver</artifactId>
-		<version>2.2-SNAPSHOT</version>
+		<version>2.6-SNAPSHOT</version>
 	</parent>
 
 	<groupId>it.geosolutions.geofence.geoserver</groupId>
@@ -17,7 +17,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.geoserver</groupId>
-			<artifactId>main</artifactId>
+			<artifactId>gs-main</artifactId>
 			<version>${geoserver-version}</version>
 			<exclusions>
 				<exclusion>
@@ -28,12 +28,12 @@
 		</dependency>
          <dependency>
           <groupId>org.geoserver.web</groupId>
-          <artifactId>web-core</artifactId>
+          <artifactId>gs-web-core</artifactId>
           <version>${geoserver-version}</version>
         </dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
-			<artifactId>wms</artifactId>
+			<artifactId>gs-wms</artifactId>
 			<version>${geoserver-version}</version>
 		</dependency>
 		<dependency>
@@ -79,7 +79,7 @@
         
 		<dependency>
 			<groupId>org.geoserver</groupId>
-			<artifactId>rest</artifactId>
+			<artifactId>gs-rest</artifactId>
 			<version>${geoserver-version}</version>
 		</dependency>
         
@@ -92,7 +92,7 @@
 		<!-- test dependencies -->
 		<dependency>
 			<groupId>org.geoserver</groupId>
-			<artifactId>main</artifactId>
+			<artifactId>gs-main</artifactId>
 			<version>${geoserver-version}</version>
 			<classifier>tests</classifier>
 			<exclusions>
@@ -106,7 +106,7 @@
         
         <dependency>
           <groupId>org.geoserver.web</groupId>
-          <artifactId>web-core</artifactId>          
+          <artifactId>gs-web-core</artifactId>          
           <version>${geoserver-version}</version>
           <classifier>tests</classifier>
           <scope>test</scope>
@@ -143,7 +143,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
-			<artifactId>wfs</artifactId>
+			<artifactId>gs-wfs</artifactId>
 			<version>${geoserver-version}</version>
 			<scope>test</scope>
 		</dependency>

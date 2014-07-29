@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>it.geosolutions.geofence</groupId>
 		<artifactId>geofence-gui-core</artifactId>
-		<version>2.2-SNAPSHOT</version>
+		<version>2.6-SNAPSHOT</version>
 	</parent>
 
 	<groupId>it.geosolutions.geofence</groupId>
