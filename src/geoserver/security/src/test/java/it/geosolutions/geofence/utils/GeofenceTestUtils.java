@@ -63,20 +63,18 @@ public class GeofenceTestUtils {
     }
 
     public static File emptyFile(File file) throws IOException {
-        if(file.exists() && file.isFile())
-        {
-        FileWriter writer = null;
-        try {
-            writer = new FileWriter(file);
-            writer.write("");
-            return file;
-        } finally {
-            if (writer != null) {
-                writer.close();
+        if (file.exists() && file.isFile()) {
+            FileWriter writer = null;
+            try {
+                writer = new FileWriter(file);
+                writer.write("");
+                return file;
+            } finally {
+                if (writer != null) {
+                    writer.close();
+                }
             }
-        }
-        }
-        else {
+        } else {
             return new File(file.getAbsolutePath());
         }
     }
