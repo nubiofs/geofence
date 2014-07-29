@@ -1,15 +1,15 @@
 package it.geosolutions.geofence;
 
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
+
 import java.util.Collections;
 import java.util.List;
-
-import com.mockrunner.mock.web.MockHttpServletResponse;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.platform.GeoServerExtensions;
 import org.w3c.dom.Document;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
+import com.mockrunner.mock.web.MockHttpServletResponse;
 
 
 public class ServicesTest extends GeofenceBaseTest

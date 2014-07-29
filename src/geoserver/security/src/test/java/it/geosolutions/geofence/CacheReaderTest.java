@@ -25,10 +25,7 @@ import it.geosolutions.geofence.config.GeoFencePropertyPlaceholderConfigurer;
 import it.geosolutions.geofence.services.RuleReaderService;
 import it.geosolutions.geofence.services.dto.AccessInfo;
 import it.geosolutions.geofence.services.dto.RuleFilter;
-import it.geosolutions.geofence.utils.GeofenceTestUtils;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

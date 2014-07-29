@@ -24,26 +24,28 @@ import it.geosolutions.geofence.core.model.GSInstance;
 import it.geosolutions.geofence.core.model.GSUser;
 import it.geosolutions.geofence.core.model.LayerAttribute;
 import it.geosolutions.geofence.core.model.LayerDetails;
-import it.geosolutions.geofence.core.model.UserGroup;
 import it.geosolutions.geofence.core.model.Rule;
 import it.geosolutions.geofence.core.model.RuleLimits;
+import it.geosolutions.geofence.core.model.UserGroup;
 import it.geosolutions.geofence.core.model.enums.AccessType;
 import it.geosolutions.geofence.core.model.enums.GrantType;
 import it.geosolutions.geofence.services.InstanceAdminService;
-import it.geosolutions.geofence.services.UserGroupAdminService;
 import it.geosolutions.geofence.services.RuleAdminService;
 import it.geosolutions.geofence.services.RuleReaderService;
 import it.geosolutions.geofence.services.UserAdminService;
+import it.geosolutions.geofence.services.UserGroupAdminService;
 import it.geosolutions.geofence.services.dto.AccessInfo;
+import it.geosolutions.geofence.services.dto.RuleFilter;
+import it.geosolutions.geofence.services.dto.RuleFilter.SpecialFilterType;
 import it.geosolutions.geofence.services.dto.ShortGroup;
 import it.geosolutions.geofence.services.dto.ShortRule;
 import it.geosolutions.geofence.services.dto.ShortUser;
+import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
@@ -53,9 +55,6 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
 
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.io.WKTReader;
-import it.geosolutions.geofence.services.dto.RuleFilter;
-import it.geosolutions.geofence.services.dto.RuleFilter.SpecialFilterType;
-import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 
 /**
  *
@@ -137,30 +136,30 @@ public class MainTest implements InitializingBean, ApplicationContextAware {
 
         /* Cite user rules */
         // allow user cite full control over the cite workspace
-        ruleAdminService.insert(new Rule(priority++, cite, null, null, null, null, "cite", null, GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(priority++, cite, null, null, null, null, null, "cite", null, GrantType.ALLOW));
         // allow only getmap, getcapatbilities and reflector usage on workspace sf
-        ruleAdminService.insert((new Rule(priority++, cite, null, null, "wms", "GetMap", "sf", null, GrantType.ALLOW)));
-        ruleAdminService.insert((new Rule(priority++, cite, null, null, "wms", "GetCapabilities", "sf", null, GrantType.ALLOW)));
-        ruleAdminService.insert((new Rule(priority++, cite, null, null, "wms", "reflect", "sf", null, GrantType.ALLOW)));
+        ruleAdminService.insert((new Rule(priority++, cite, null, null, null, "wms", "GetMap", "sf", null, GrantType.ALLOW)));
+        ruleAdminService.insert((new Rule(priority++, cite, null, null, null, "wms", "GetCapabilities", "sf", null, GrantType.ALLOW)));
+        ruleAdminService.insert((new Rule(priority++, cite, null, null, null, "wms", "reflect", "sf", null, GrantType.ALLOW)));
         // allow only GetMap and GetFeature the topp workspace
 
         /* wms user rules */
-        ruleAdminService.insert((new Rule(priority++, wmsUser, null, null, "wms", null, null, null, GrantType.ALLOW)));
+        ruleAdminService.insert((new Rule(priority++, wmsUser, null, null, null, "wms", null, null, null, GrantType.ALLOW)));
 
         /* all powerful but only in a restricted area */
-        Rule areaRestriction = new Rule(priority++, areaUser, null, null, null, null, null, null, GrantType.LIMIT);
+        Rule areaRestriction = new Rule(priority++, areaUser, null, null, null, null, null, null, null, GrantType.LIMIT);
         RuleLimits limits = new RuleLimits();
         limits.setAllowedArea((MultiPolygon) new WKTReader().read(MULTIPOLYGONWKT));
         long ruleId = ruleAdminService.insert(areaRestriction);
         ruleAdminService.setLimits(ruleId, limits);
-        ruleAdminService.insert((new Rule(priority++, areaUser, null, null, null, null, null, null, GrantType.ALLOW)));
+        ruleAdminService.insert((new Rule(priority++, areaUser, null, null, null, null, null, null, null, GrantType.ALLOW)));
 
         /* some users for interactive testing with the default data directory */
         // uStates can do whatever, but only on topp:states
-        ruleAdminService.insert(new Rule(priority++, uStates, null, null, null, null, "topp", "states", GrantType.ALLOW));
+        ruleAdminService.insert(new Rule(priority++, uStates, null, null, null, null, null, "topp", "states", GrantType.ALLOW));
 
         // deny everything else
-        ruleAdminService.insert(new Rule(priority++, null, null, null,  null, null, null, null, GrantType.DENY));
+        ruleAdminService.insert(new Rule(priority++, null, null, null, null,  null, null, null, null, GrantType.DENY));
         new Thread(new Runnable() {
 
             @Override

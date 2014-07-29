@@ -22,7 +22,6 @@ package it.geosolutions.geofence;
 import it.geosolutions.geofence.config.GeoFenceConfiguration;
 import it.geosolutions.geofence.config.GeoFenceConfigurationManager;
 import it.geosolutions.geofence.config.GeoFencePropertyPlaceholderConfigurer;
-import it.geosolutions.geofence.services.RuleReaderService;
 import it.geosolutions.geofence.utils.GeofenceTestUtils;
 
 import java.io.IOException;
@@ -34,8 +33,6 @@ import java.util.logging.Level;
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.geoserver.test.GeoServerTestSupport;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 
 public class AccessManagerConfigTest extends GeoServerTestSupport {
 
@@ -73,12 +70,12 @@ public class AccessManagerConfigTest extends GeoServerTestSupport {
         manager = (GeoFenceConfigurationManager) applicationContext.getBean("geofenceConfigurationManager");
 
         configurer = (GeoFencePropertyPlaceholderConfigurer) applicationContext.getBean("geofence-configurer");
-        configurer.setLocation(new UrlResource(this.getClass().getResource("/test-config.properties")));
+        //configurer.setLocation(new UrlResource(this.getClass().getResource("/geofence.properties")));
     }
 
 
     public void testSave() throws IOException, URISyntaxException {
-        GeofenceTestUtils.emptyFile("test-config.properties");
+        GeofenceTestUtils.emptyFile(configurer.getConfigFile());
        
         GeoFenceConfiguration config = new GeoFenceConfiguration();
         config.setInstanceName("TEST_INSTANCE");
@@ -92,7 +89,7 @@ public class AccessManagerConfigTest extends GeoServerTestSupport {
         manager.setConfiguration(config);
         manager.storeConfiguration();
         
-        String content = GeofenceTestUtils.readConfig("test-config.properties");
+        String content = GeofenceTestUtils.readConfig(configurer.getConfigFile());
         assertTrue(content.contains("fakeservice"));
         assertTrue(content.contains("TEST_INSTANCE"));
 

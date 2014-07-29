@@ -1,20 +1,24 @@
 package it.geosolutions.geofence;
 
-import it.geosolutions.geofence.config.GeoFenceConfiguration;
+import it.geosolutions.geofence.GeofenceAccessManager;
 import it.geosolutions.geofence.config.GeoFenceConfigurationManager;
+import it.geosolutions.geofence.services.RuleReaderService;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
-import it.geosolutions.geofence.services.RuleReaderService;
-
 import java.util.logging.Level;
+
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.geoserver.data.test.MockData;
 import org.geoserver.test.GeoServerTestSupport;
+
+import junit.extensions.TestSetup;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 public abstract class GeofenceBaseTest extends GeoServerTestSupport {
 

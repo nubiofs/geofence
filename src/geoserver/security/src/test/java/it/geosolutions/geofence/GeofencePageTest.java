@@ -19,9 +19,12 @@
  */
 package it.geosolutions.geofence;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import it.geosolutions.geofence.config.GeoFencePropertyPlaceholderConfigurer;
-import it.geosolutions.geofence.services.RuleReaderService;
 import it.geosolutions.geofence.utils.GeofenceTestUtils;
 import it.geosolutions.geofence.web.GeofencePage;
 
@@ -32,7 +35,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.tester.FormTester;
-import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.data.test.SystemTestData;
 import org.geoserver.web.GeoServerHomePage;
 import org.geoserver.web.GeoServerWicketTestSupport;
 import org.springframework.core.io.UrlResource;
@@ -42,8 +45,8 @@ public class GeofencePageTest extends GeoServerWicketTestSupport {
     GeoFencePropertyPlaceholderConfigurer configurer;
 
     @Override
-    protected void setUpInternal() throws Exception {
-        super.setUpInternal();
+    protected void onSetUp(SystemTestData testData) throws Exception {
+        super.onSetUp(testData);
     
         // get the beans we use for testing
         configurer = (GeoFencePropertyPlaceholderConfigurer) applicationContext.getBean("geofence-configurer");

@@ -28,11 +28,15 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 public class GeofenceTestUtils {
+
     public static String readConfig(String fileName) throws URISyntaxException,
             FileNotFoundException, IOException {
-        File configFile = new File(GeofenceTestUtils.class.getResource("/" + fileName)
-                .toURI());
-        
+        File configFile = new File(GeofenceTestUtils.class.getResource("/" + fileName).toURI());
+
+        return readConfig(configFile);
+    }
+
+    public static String readConfig(File configFile) throws IOException {
         BufferedReader reader = null;
         StringBuilder content = new StringBuilder();
         try {
@@ -48,23 +52,33 @@ public class GeofenceTestUtils {
         }
         return content.toString();
     }
-    
+
     public static File emptyFile(String fileName) throws URISyntaxException, IOException {
         if (GeofenceTestUtils.class.getResource("/" + fileName) != null) {
-            File file = new File(GeofenceTestUtils.class.getResource("/" + fileName)
-                    .toURI());
-            FileWriter writer = null;
-            try {
-                writer = new FileWriter(file);
-                writer.write("");
-                return file;
-            } finally {
-                if (writer != null) {
-                    writer.close();
-                }
-            }
-    
+            File file = new File(GeofenceTestUtils.class.getResource("/" + fileName).toURI());
+
+            return emptyFile(file);
         }
         return null;
     }
+
+    public static File emptyFile(File file) throws IOException {
+        if(file.exists() && file.isFile())
+        {
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(file);
+            writer.write("");
+            return file;
+        } finally {
+            if (writer != null) {
+                writer.close();
+            }
+        }
+        }
+        else {
+            return new File(file.getAbsolutePath());
+        }
+    }
+
 }

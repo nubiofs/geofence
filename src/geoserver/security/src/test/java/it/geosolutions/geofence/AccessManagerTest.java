@@ -1,8 +1,5 @@
 package it.geosolutions.geofence;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 
 import org.geoserver.catalog.Catalog;
