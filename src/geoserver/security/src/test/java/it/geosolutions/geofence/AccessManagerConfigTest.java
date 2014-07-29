@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2013 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  * 
  *  GPLv3 + Classpath exception
@@ -22,8 +22,8 @@ package it.geosolutions.geofence;
 import it.geosolutions.geofence.config.GeoFenceConfiguration;
 import it.geosolutions.geofence.config.GeoFenceConfigurationManager;
 import it.geosolutions.geofence.config.GeoFencePropertyPlaceholderConfigurer;
-import it.geosolutions.geofence.services.RuleReaderService;
 import it.geosolutions.geofence.utils.GeofenceTestUtils;
+import java.io.File;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -34,7 +34,6 @@ import java.util.logging.Level;
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.geoserver.test.GeoServerTestSupport;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
 public class AccessManagerConfigTest extends GeoServerTestSupport {
@@ -91,8 +90,11 @@ public class AccessManagerConfigTest extends GeoServerTestSupport {
         
         manager.setConfiguration(config);
         manager.storeConfiguration();
-        
-        String content = GeofenceTestUtils.readConfig("test-config.properties");
+
+        File configFile = configurer.getConfigFile();
+        LOGGER.info("Config file is " + configFile);
+
+        String content = GeofenceTestUtils.readConfig(configFile);
         assertTrue(content.contains("fakeservice"));
         assertTrue(content.contains("TEST_INSTANCE"));
 

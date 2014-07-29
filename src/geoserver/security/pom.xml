@@ -31,6 +31,11 @@
           <artifactId>web-core</artifactId>
           <version>${geoserver-version}</version>
         </dependency>
+         <dependency>
+          <groupId>org.geoserver.web</groupId>
+          <artifactId>web-security</artifactId>
+          <version>${geoserver-version}</version>
+        </dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>wms</artifactId>

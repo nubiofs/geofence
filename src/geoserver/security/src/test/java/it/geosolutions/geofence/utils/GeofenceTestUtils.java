@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2013 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  * 
  *  GPLv3 + Classpath exception
@@ -28,11 +28,31 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 public class GeofenceTestUtils {
+
     public static String readConfig(String fileName) throws URISyntaxException,
             FileNotFoundException, IOException {
         File configFile = new File(GeofenceTestUtils.class.getResource("/" + fileName)
                 .toURI());
         
+        BufferedReader reader = null;
+        StringBuilder content = new StringBuilder();
+        try {
+            reader = new BufferedReader(new FileReader(configFile));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content.append(line.trim());
+            }
+        } finally {
+            if (reader != null) {
+                reader.close();
+            }
+        }
+        return content.toString();
+    }
+
+    public static String readConfig(File configFile) 
+            throws URISyntaxException, FileNotFoundException, IOException {
+
         BufferedReader reader = null;
         StringBuilder content = new StringBuilder();
         try {

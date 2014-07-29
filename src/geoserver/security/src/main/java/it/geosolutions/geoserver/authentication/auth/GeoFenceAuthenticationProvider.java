@@ -21,14 +21,18 @@ package it.geosolutions.geoserver.authentication.auth;
 
 import it.geosolutions.geofence.services.RuleReaderService;
 import it.geosolutions.geofence.services.dto.AuthUser;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.geoserver.security.GeoServerAuthenticationProvider;
+import org.geoserver.security.config.SecurityNamedServiceConfig;
 import org.geoserver.security.impl.GeoServerRole;
+import org.geotools.util.logging.Logging;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -40,11 +44,25 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
  * Authentication provider that delegates to GeoFence
  * @author ETj (etj at geo-solutions.it)
  */
-public class GeofenceAuthenticationProvider 
+public class GeoFenceAuthenticationProvider 
         extends GeoServerAuthenticationProvider
         implements AuthenticationManager {
 
+    private final static Logger LOGGER = Logging.getLogger(GeoFenceAuthenticationProvider.class.getName());
+//    protected static Logger LOGGER = Logging.getLogger("org.geoserver.security");
+
+
     private RuleReaderService ruleReaderService;
+
+    @Override
+    public void initializeFromConfig(SecurityNamedServiceConfig config)
+            throws IOException {
+
+        LOGGER.warning("INIT FROM CONFIG");
+
+        super.initializeFromConfig(config);
+    }
+
 
     @Override
     public boolean supports(Class<? extends Object> authentication, HttpServletRequest request) {

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2013 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  * 
  *  GPLv3 + Classpath exception
@@ -24,6 +24,7 @@ import it.geosolutions.geofence.config.GeoFencePropertyPlaceholderConfigurer;
 import it.geosolutions.geofence.services.RuleReaderService;
 import it.geosolutions.geofence.utils.GeofenceTestUtils;
 import it.geosolutions.geofence.web.GeofencePage;
+import java.io.File;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -50,17 +51,18 @@ public class GeofencePageTest extends GeoServerWicketTestSupport {
         configurer.setLocation(new UrlResource(this.getClass().getResource("/test-config.properties")));
     }
     
-
     public void testSave() throws URISyntaxException, IOException {
         GeofenceTestUtils.emptyFile("test-config.properties");
-//        GeofenceTestUtils.emptyFile("test-cache-config.properties");
         login();
         tester.startPage(GeofencePage.class);
         FormTester ft = tester.newFormTester("form");
         ft.submit("submit");
         tester.assertRenderedPage(GeoServerHomePage.class);
-        assertTrue(GeofenceTestUtils.readConfig("test-config.properties").length() > 0);
-//        assertTrue(GeofenceTestUtils.readConfig("test-cache-config.properties").length() > 0);
+
+        File configFile = configurer.getConfigFile();
+        LOGGER.info("Config file is " + configFile);
+
+        assertTrue(GeofenceTestUtils.readConfig(configFile).length() > 0);
     }
     
     public void testCancel() throws URISyntaxException, IOException {
