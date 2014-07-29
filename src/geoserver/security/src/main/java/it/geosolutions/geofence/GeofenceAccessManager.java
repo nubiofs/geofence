@@ -19,6 +19,8 @@
  */
 package it.geosolutions.geofence;
 
+import it.geosolutions.geofence.config.GeoFenceConfiguration;
+import it.geosolutions.geofence.config.GeoFenceConfigurationManager;
 import it.geosolutions.geofence.core.model.LayerAttribute;
 import it.geosolutions.geofence.core.model.enums.AccessType;
 import it.geosolutions.geofence.core.model.enums.GrantType;
@@ -38,10 +40,12 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CatalogInfo;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.Predicates;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.StyleInfo;
@@ -87,15 +91,13 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
-import it.geosolutions.geofence.config.GeoFenceConfiguration;
-import it.geosolutions.geofence.config.GeoFenceConfigurationManager;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * Makes GeoServer use the Geofence to assess data access rules
@@ -776,6 +778,11 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
     @Override
     public Service serviceDispatched(Request request, Service service) throws ServiceException {
         return service;
+    }
+
+    @Override
+    public Filter getSecurityFilter(Authentication arg0, Class<? extends CatalogInfo> arg1) {
+        return Predicates.acceptAll();
     }
 
 }
