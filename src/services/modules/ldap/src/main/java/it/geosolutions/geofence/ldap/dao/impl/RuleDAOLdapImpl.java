@@ -20,6 +20,9 @@
 package it.geosolutions.geofence.ldap.dao.impl;
 
 import static it.geosolutions.geofence.core.dao.util.SearchUtil.addSearchField;
+
+import java.util.List;
+
 import it.geosolutions.geofence.core.dao.GSUserDAO;
 import it.geosolutions.geofence.core.dao.UserGroupDAO;
 import it.geosolutions.geofence.core.dao.impl.RuleDAOImpl;
@@ -93,6 +96,27 @@ public class RuleDAOLdapImpl extends RuleDAOImpl {
             userGroupDao.persist(group);
             entity.setUserGroup(group);
         }
+        else {
+            UserGroup group = getGroup(entity.getUserGroup());
+            entity.setUserGroup(group);
+        }
+    }
+
+    private UserGroup getGroup(UserGroup userGroup) {
+        UserGroup group = userGroupDao.find(userGroup.getId());
+        if (group == null)
+        {
+            Search search = new Search(UserGroup.class);
+            addSearchField(search, "name", userGroup.getName());
+            List<UserGroup> found = userGroupDao.search(search);
+            int numFound = found.size();
+            LOGGER.debug("[getGroup] -> ('name' = "+userGroup.getName()+") : " + numFound);
+            if (numFound > 0) {
+                group = found.get(0);
+            }
+        }
+        
+        return group;
     }
 
     /**
@@ -102,14 +126,22 @@ public class RuleDAOLdapImpl extends RuleDAOImpl {
      * @return
      */
     private boolean notPersistedGroup(Rule rule) {
-        Search search = new Search(UserGroup.class);
-        addSearchField(search, "name", rule.getUserGroup().getName());
+        if (rule.getUserGroup() != null)
+        {
+            if (userGroupDao.find(rule.getUserGroup().getId()) == null)
+            {
+                Search search = new Search(UserGroup.class);
+                addSearchField(search, "name", rule.getUserGroup().getName());
+                int numFound = userGroupDao.search(search).size();
+                LOGGER.debug("[notPersistedGroup] -> ('name' = "+rule.getUserGroup().getName()+") : " + numFound);
+    
+                return numFound <= 0;
+            }
+            
+            return true;
+        }
         
-        LOGGER.debug("[notPersistedGroup] -> ('name' = "+rule.getUserGroup().getName()+") : " + userGroupDao.search(search).toArray(new UserGroup[1]));
-
-        return rule.getUserGroup() != null
-                && (userGroupDao.find(rule.getUserGroup().getId()) == null || userGroupDao.search(
-                        search).size() <= 0);
+        return true;
     }
 
     /**
