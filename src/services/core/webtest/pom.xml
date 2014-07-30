@@ -53,7 +53,12 @@
 
         <!-- =============================================================== -->
         <!-- =============================================================== -->
-        
+
+        <dependency>
+            <groupId>org.hibernatespatial</groupId>
+            <artifactId>hibernate-spatial-h2-geodb</artifactId>
+        </dependency>
+
         <!-- =============================================================== -->
         <!-- APACHE COMMONS -->
         <!-- =============================================================== -->
@@ -88,6 +93,7 @@
             <artifactId>postgresql</artifactId>
             <version>8.4-701.jdbc3</version>
         </dependency>-->
+
 
         <!-- =============================================================== -->
        	<!-- 4J UTILS -->
@@ -318,7 +324,7 @@
 					</webAppConfig>
 					<connectors>
 						<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-							<port>8081</port>
+							<port>9191</port>
 							<maxIdleTime>60000</maxIdleTime>
 						</connector>
 					</connectors>
