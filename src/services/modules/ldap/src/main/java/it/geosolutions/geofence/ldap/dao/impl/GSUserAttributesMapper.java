@@ -22,31 +22,27 @@ import it.geosolutions.geofence.core.model.GSUser;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
+
 /**
  * AttributeMapper for GSUser objects.
  * 
  * @author "Mauro Bartolomeoli - mauro.bartolomeoli@geo-solutions.it"
- *
+ * 
  */
 public class GSUserAttributesMapper extends BaseAttributesMapper {
 
-	
+    @Override
+    public Object mapFromAttributes(Attributes attrs) throws NamingException {
+        GSUser user = new GSUser();
+        user.setId(Long.parseLong(getAttribute(attrs, "id")));
+        user.setExtId(-user.getId() + "");
+        user.setName(getAttribute(attrs, "username"));
+        user.setEmailAddress(getAttribute(attrs, "email"));
+        user.setEnabled(true);
+        user.setFullName(getAttribute(attrs, "name") + " " + getAttribute(attrs, "surname"));
+        user.setPassword(getAttribute(attrs, "password"));
 
-	@Override
-	public Object mapFromAttributes(Attributes attrs) throws NamingException {
-		GSUser user = new GSUser();
-		user.setId(Long.parseLong(getAttribute(attrs, "id")));
-		user.setExtId(-user.getId()+"");
-		user.setName(getAttribute(attrs, "username"));
-		user.setEmailAddress(getAttribute(attrs, "email"));
-		user.setEnabled(true);
-		user.setFullName(getAttribute(attrs, "name") + " "
-				+ getAttribute(attrs, "surname"));
-		user.setPassword(getAttribute(attrs, "password"));
-				
-		return user;
-	}
-	
-	
+        return user;
+    }
 
 }

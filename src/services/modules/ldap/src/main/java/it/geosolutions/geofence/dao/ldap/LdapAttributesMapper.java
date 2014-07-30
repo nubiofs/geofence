@@ -26,11 +26,11 @@ import org.springframework.ldap.core.AttributesMapper;
  * 
  */
 public interface LdapAttributesMapper extends AttributesMapper {
-	/**
-	 * Maps a DAO attribute to the LDAP one.
-	 * 
-	 * @param attributeName
-	 * @return
-	 */
-	public String getLdapAttribute(String attributeName);
+    /**
+     * Maps a DAO attribute to the LDAP one.
+     * 
+     * @param attributeName
+     * @return
+     */
+    public String getLdapAttribute(String attributeName);
 }

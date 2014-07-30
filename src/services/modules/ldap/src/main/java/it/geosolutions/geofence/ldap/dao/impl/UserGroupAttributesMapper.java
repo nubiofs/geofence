@@ -1,4 +1,4 @@
- /*
+/*
  *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
@@ -28,23 +28,19 @@ import javax.naming.directory.Attributes;
  * AttributeMapper for UserGroup objects.
  * 
  * @author "Mauro Bartolomeoli - mauro.bartolomeoli@geo-solutions.it"
- *
+ * 
  */
 public class UserGroupAttributesMapper extends BaseAttributesMapper {
 
-	
+    @Override
+    public Object mapFromAttributes(Attributes attrs) throws NamingException {
+        UserGroup group = new UserGroup();
+        group.setId(Long.parseLong(getAttribute(attrs, "id")));
+        group.setExtId(-group.getId() + "");
+        group.setName(getAttribute(attrs, "groupname"));
+        group.setEnabled(true);
 
-	@Override
-	public Object mapFromAttributes(Attributes attrs) throws NamingException {
-		UserGroup group = new UserGroup();
-		group.setId(Long.parseLong(getAttribute(attrs, "id")));
-		group.setExtId(-group.getId()+"");
-		group.setName(getAttribute(attrs, "groupname"));		
-		group.setEnabled(true);		
-				
-		return group;
-	}
-	
-	
+        return group;
+    }
 
 }
