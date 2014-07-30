@@ -20,15 +20,17 @@
 package it.geosolutions.geofence.ldap.dao.impl;
 
 import static it.geosolutions.geofence.core.dao.util.SearchUtil.addSearchField;
-
-import com.googlecode.genericdao.search.Search;
-
 import it.geosolutions.geofence.core.dao.GSUserDAO;
 import it.geosolutions.geofence.core.dao.UserGroupDAO;
 import it.geosolutions.geofence.core.dao.impl.RuleDAOImpl;
 import it.geosolutions.geofence.core.model.GSUser;
 import it.geosolutions.geofence.core.model.Rule;
 import it.geosolutions.geofence.core.model.UserGroup;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.googlecode.genericdao.search.Search;
 
 /**
  * Implementation of RuleDAO compatible with ldap user and group daos.
@@ -39,6 +41,8 @@ import it.geosolutions.geofence.core.model.UserGroup;
  * 
  */
 public class RuleDAOLdapImpl extends RuleDAOImpl {
+    
+    private static final Logger LOGGER = LogManager.getLogger(RuleDAOLdapImpl.class);
 
     private GSUserDAO userDao;
 
@@ -100,6 +104,8 @@ public class RuleDAOLdapImpl extends RuleDAOImpl {
     private boolean notPersistedGroup(Rule rule) {
         Search search = new Search(UserGroup.class);
         addSearchField(search, "name", rule.getUserGroup().getName());
+        
+        LOGGER.debug("[notPersistedGroup] -> ('name' = "+rule.getUserGroup().getName()+") : " + userGroupDao.search(search).toArray(new UserGroup[1]));
 
         return rule.getUserGroup() != null
                 && (userGroupDao.find(rule.getUserGroup().getId()) == null || userGroupDao.search(
