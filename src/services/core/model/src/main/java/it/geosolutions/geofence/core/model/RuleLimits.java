@@ -49,8 +49,8 @@ import org.hibernate.annotations.Type;
  * @author ETj (etj at geo-solutions.it)
  */
 @Entity(name = "RuleLimits")
-@Table(name = "gf_rule_limits",
-    uniqueConstraints= @UniqueConstraint(columnNames="rule_id"))
+@Table(name = "gf_rule_limits", uniqueConstraints=
+        @UniqueConstraint(columnNames="rule_id"))
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "RuleLimits")
 @XmlRootElement(name = "RuleLimits")
 public class RuleLimits implements Serializable {

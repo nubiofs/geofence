@@ -101,8 +101,7 @@ public class LayerDetails implements Serializable {
 
     /** Styles allowed for this layer */
     @org.hibernate.annotations.CollectionOfElements(fetch=FetchType.EAGER)
-    @JoinTable( name = "gf_layer_styles",
-                joinColumns = @JoinColumn(name = "details_id"))
+    @JoinTable( name = "gf_layer_styles", joinColumns = @JoinColumn(name = "details_id"))
     @ForeignKey(name="fk_styles_layer")
     @Column(name="styleName")
     private Set<String> allowedStyles = new HashSet<String>();
@@ -112,9 +111,7 @@ public class LayerDetails implements Serializable {
      * To do so, we have to perform some trick on the <TT>{@link LayerAttribute#access}</TT> field.
      */
     @org.hibernate.annotations.CollectionOfElements(fetch=FetchType.EAGER)
-    @JoinTable( name = "gf_layer_attributes",
-                joinColumns = @JoinColumn(name = "details_id"),
-                uniqueConstraints = @UniqueConstraint(columnNames={"details_id", "name"}))
+    @JoinTable( name = "gf_layer_attributes",  joinColumns = @JoinColumn(name = "details_id"),  uniqueConstraints = @UniqueConstraint(columnNames={"details_id", "name"}))
     // override is used to set the pk as {"details_id", "name"}
 //    @AttributeOverride( name="access", column=@Column(name="access", nullable=false) )
     @ForeignKey(name="fk_attribute_layer")

@@ -77,8 +77,7 @@ import org.hibernate.annotations.Index;
  * @author ETj (etj at geo-solutions.it)
  */
 @Entity(name = "Rule")
-@Table(name = "gf_rule",
-    uniqueConstraints = {
+@Table(name = "gf_rule", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"gsuser_id", "usergroup_id", "instance_id", "service", "request", "workspace", "layer"})})
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Rule")
 @XmlRootElement(name = "Rule")
@@ -118,8 +117,7 @@ public class Rule implements Identifiable, Serializable {
     @AttributeOverrides({
         @AttributeOverride(name="low", column=@Column(name="ip_low")),
         @AttributeOverride(name="high", column=@Column(name="ip_high")),
-        @AttributeOverride(name="size", column=@Column(name="ip_size"))
-      })
+        @AttributeOverride(name="size", column=@Column(name="ip_size"))   })
     private IPAddressRange addressRange;
 
     @Column
