@@ -40,7 +40,7 @@
 
         <dependency>
             <groupId>it.geosolutions.geofence</groupId>
-            <artifactId>geofence-model</artifactId>
+            <artifactId>geofence-model-internal</artifactId>
         </dependency>
 
         <!-- =========================================================== -->
@@ -252,46 +252,38 @@
   
     <build>
         <plugins>
-<!--            <plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>hibernate3-maven-plugin</artifactId>
-                <version>2.2</version>
+                <version>3.0</version>
+
                 <executions>
                     <execution>
-                        <phase>process-classes</phase>
+                        <phase>generate-sources</phase>
                         <goals>
-                            <goal>hbm2ddl</goal>
+                            <goal>run</goal>
                         </goals>
+                        <!--<phase>process-classes</phase>-->
                     </execution>
                 </executions>
                 <configuration>
-                    <components>
-                        <component>
-                            <name>hbm2ddl</name>
-                            <implementation>annotationconfiguration</implementation>
-                            <outputDirectory>target/classes</outputDirectory>
-                        </component>
-                        <component>
-                            <name>hbmdoc</name>
-                        </component>
-                    </components>
-                    <componentProperties>
-                        <configurationfile>/src/test/resources/hibernate.cfg.xml</configurationfile>
-                        <outputfilename>geofence.ddl</outputfilename>
-                        <namingstrategy>mycompany.myapp.IRDNamingStrategy</namingstrategy>
+                    <hibernatetool destdir="target/classes">
 
-                        <scan-classes>true</scan-classes>
-                        <filepattern>it.geosolutions.geofence/core/model</filepattern>
+                        <annotationconfiguration configurationfile="src/test/resources/hibernate.cfg.xml"/>
+                        <!--<jdbcconfiguration packagename="it"/>-->
+                        <!--<hbm2hbmxml destdir="target/generated-sources/hibernate"/>-->
+                        <!--<hbm2cfgxml/>-->
+                        <!--<hbm2dao jdk5="true" ejb3="true"/>-->
+                        <!--hbm2ddl-->
+                        <classpath>
+                            <path location="target/classes"/>
+                        </classpath>
 
-                        <jdk5>true</jdk5>
+                    </hibernatetool>
 
-                        <drop>false</drop>
-                        <create>true</create>
-                        <export>false</export>
-                        <format>true</format>
-                    </componentProperties>
+
                 </configuration>
-            </plugin>-->
+            </plugin>
         </plugins>
 
     </build>

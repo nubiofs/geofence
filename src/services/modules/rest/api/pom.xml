@@ -41,8 +41,9 @@
         <!-- ================================================================-->
 
         <dependency>
-	    <groupId>it.geosolutions.geofence</groupId>
+            <groupId>it.geosolutions.geofence</groupId>
             <artifactId>geofence-model</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
