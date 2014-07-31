@@ -209,9 +209,14 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
         }
         
         // try Spring
-        HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getRequest();
-        String sourceAddress = getSourceAddress(request);
-        if(sourceAddress == null) {
+        String sourceAddress = null;
+        try {
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+            sourceAddress = getSourceAddress(request);
+        } catch (IllegalStateException e) {
+            LOGGER.log(Level.WARNING, "Could not find request: " + e.getMessage());
+        }
+        if (sourceAddress == null) {
             LOGGER.log(Level.WARNING, "Could not retrieve source address from Spring Request");
         }
         return sourceAddress;
@@ -375,6 +380,8 @@ public class GeofenceAccessManager implements ResourceAccessManager, DispatcherC
                     ruleFilter.setUser(username);
                 }
             }
+        } else {
+            ruleFilter.setUser(RuleFilter.SpecialFilterType.DEFAULT);
         }
     
     }
