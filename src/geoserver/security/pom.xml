@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>org.geoserver</groupId>
-            <artifactId>main</artifactId>
+            <artifactId>gs-main</artifactId>
             <version>${geoserver-version}</version>
             <exclusions>
                 <exclusion>
@@ -28,17 +28,29 @@
         </dependency>
         <dependency>
             <groupId>org.geoserver.web</groupId>
-            <artifactId>web-core</artifactId>
+            <artifactId>gs-web-core</artifactId>
+            <version>${geoserver-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.geoserver.web</groupId>
+            <artifactId>gs-web-sec-core</artifactId>
             <version>${geoserver-version}</version>
         </dependency>
         <dependency>
             <groupId>org.geoserver.web</groupId>
-            <artifactId>web-security</artifactId>
+            <artifactId>gs-web-sec-jdbc</artifactId>
             <version>${geoserver-version}</version>
         </dependency>
         <dependency>
+            <groupId>org.geoserver.web</groupId>
+            <artifactId>gs-web-sec-ldap</artifactId>
+            <version>${geoserver-version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.geoserver</groupId>
-            <artifactId>wms</artifactId>
+            <artifactId>gs-wms</artifactId>
             <version>${geoserver-version}</version>
         </dependency>
         <dependency>
@@ -54,7 +66,7 @@
         
         <dependency>
             <groupId>org.geoserver</groupId>
-            <artifactId>rest</artifactId>
+            <artifactId>gs-rest</artifactId>
             <version>${geoserver-version}</version>
         </dependency>
         
@@ -67,7 +79,7 @@
         <!-- test dependencies -->
         <dependency>
             <groupId>org.geoserver</groupId>
-            <artifactId>main</artifactId>
+            <artifactId>gs-main</artifactId>
             <version>${geoserver-version}</version>
             <classifier>tests</classifier>
             <exclusions>
@@ -79,14 +91,6 @@
             <scope>test</scope>
         </dependency>
         
-        <dependency>
-            <groupId>org.geoserver.web</groupId>
-            <artifactId>web-core</artifactId>
-            <version>${geoserver-version}</version>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-        </dependency>
-
 		<dependency>
 			<groupId>org.geoserver.web</groupId>
 			<artifactId>gs-web-core</artifactId>
