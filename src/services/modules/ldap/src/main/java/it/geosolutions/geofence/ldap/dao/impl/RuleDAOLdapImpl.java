@@ -168,6 +168,7 @@ public class RuleDAOLdapImpl extends RuleDAOImpl {
      */
     private GSUser copyUser(GSUser user) {
         GSUser newUser = new GSUser();
+        newUser.setId(user.getId());
         newUser.setName(user.getName());
         newUser.setFullName(user.getFullName());
         newUser.setEmailAddress(user.getEmailAddress());
@@ -188,6 +189,7 @@ public class RuleDAOLdapImpl extends RuleDAOImpl {
      */
     private UserGroup copyGroup(UserGroup group) {
         UserGroup newGroup = new UserGroup();
+        newGroup.setId(group.getId());
         newGroup.setName(group.getName());
         newGroup.setExtId(-group.getId() + "");
         newGroup.setEnabled(true);
