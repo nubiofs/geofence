@@ -2,7 +2,8 @@
 <configuration>
 
     <properties>
-        <property name="geofence_logpath">/tmp/logs</property>
+<!--        <property name="geofence_logpath">/tmp/logs</property> -->
+            <property name="geofence_logpath">${sys:catalina.base}/logs</property>
     </properties>
 
     <appenders>
@@ -37,7 +38,7 @@
             <!--<appender-ref ref="R"/>-->
         </logger>
 
-        <root level="info">
+        <root level="debug">
             <appender-ref ref="STDOUT" />
             <appender-ref ref="R" />
         </root>

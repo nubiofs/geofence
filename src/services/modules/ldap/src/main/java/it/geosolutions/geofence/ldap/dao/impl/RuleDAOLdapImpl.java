@@ -85,13 +85,13 @@ public class RuleDAOLdapImpl extends RuleDAOImpl {
      */
     private void checkUserAndGroup(Rule entity) {
         if (notPersistedUser(entity)) {
-            // create a new persistable user, persist it and update the rule
+            LOGGER.debug("create a new persistable user, persist it and update the rule");
             GSUser user = copyUser(entity.getGsuser());
             userDao.persist(user);
             entity.setGsuser(user);
         }
         if (notPersistedGroup(entity)) {
-            // create a new persistable group, persist it and update the rule
+            LOGGER.debug("create a new persistable group, persist it and update the rule");
             UserGroup group = copyGroup(entity.getUserGroup());
             userGroupDao.persist(group);
             entity.setUserGroup(group);
@@ -134,7 +134,7 @@ public class RuleDAOLdapImpl extends RuleDAOImpl {
                 addSearchField(search, "name", rule.getUserGroup().getName());
                 int numFound = userGroupDao.search(search).size();
                 LOGGER.debug("[notPersistedGroup] -> ('name' = "+rule.getUserGroup().getName()+") : " + numFound);
-    
+
                 return numFound <= 0;
             }
             
@@ -168,7 +168,7 @@ public class RuleDAOLdapImpl extends RuleDAOImpl {
      */
     private GSUser copyUser(GSUser user) {
         GSUser newUser = new GSUser();
-        newUser.setId(user.getId());
+        //newUser.setId(user.getId());
         newUser.setName(user.getName());
         newUser.setFullName(user.getFullName());
         newUser.setEmailAddress(user.getEmailAddress());
@@ -189,7 +189,7 @@ public class RuleDAOLdapImpl extends RuleDAOImpl {
      */
     private UserGroup copyGroup(UserGroup group) {
         UserGroup newGroup = new UserGroup();
-        newGroup.setId(group.getId());
+        //newGroup.setId(group.getId());
         newGroup.setName(group.getName());
         newGroup.setExtId(-group.getId() + "");
         newGroup.setEnabled(true);
@@ -197,3 +197,4 @@ public class RuleDAOLdapImpl extends RuleDAOImpl {
     }
 
 }
+

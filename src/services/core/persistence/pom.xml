@@ -94,20 +94,20 @@
             <artifactId>spring-jdbc</artifactId>
         </dependency>
 
-		<!-- =========================================================== -->
-		<!--     Persistence libs                                        -->
-		<!-- =========================================================== -->
-        <!-- dependency>
+	<!-- =========================================================== -->
+	<!--     Persistence libs                                        -->
+	<!-- =========================================================== -->
+        <dependency>
            <groupId>javax.persistence</groupId>
            <artifactId>persistence-api</artifactId>
-        </dependency -->
-        <dependency>
+        </dependency>
+        <!-- dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.0-api</artifactId>
             <version>${persistence-version}</version>
-        </dependency>
+        </dependency -->
 
-		<!-- HIBERNATE-GENERIC-DAO -->
+	<!-- HIBERNATE-GENERIC-DAO -->
         <dependency>
             <groupId>com.googlecode.genericdao</groupId>
             <artifactId>dao</artifactId>

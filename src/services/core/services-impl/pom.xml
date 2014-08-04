@@ -119,11 +119,11 @@
             <artifactId>persistence-api</artifactId>
             <scope>provided</scope>
         </dependency-->
-        <dependency>
+        <!-- dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.0-api</artifactId>
             <version>${persistence-version}</version>
-        </dependency>
+        </dependency -->
         
         <dependency>
             <groupId>org.hibernatespatial</groupId>
