@@ -70,7 +70,7 @@
 
 		<dependency>
         	<groupId>it.geosolutions.geofence</groupId>
-			<artifactId>geofence-model</artifactId>
+			<artifactId>geofence-model-internal</artifactId>
 		</dependency>
 
 		<dependency>

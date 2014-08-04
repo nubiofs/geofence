@@ -137,6 +137,12 @@
             <!-- =========================================================== -->
             <dependency>
                 <groupId>it.geosolutions.geofence</groupId>
+                <artifactId>geofence-model-internal</artifactId>
+                <version>${geofence-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>it.geosolutions.geofence</groupId>
                 <artifactId>geofence-model</artifactId>
                 <version>${geofence-version}</version>
             </dependency>

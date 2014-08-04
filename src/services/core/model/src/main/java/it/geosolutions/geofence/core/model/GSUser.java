@@ -136,10 +136,7 @@ public class GSUser implements Identifiable, Serializable {
 
     /** Groups to which the user is associated */
     @ManyToMany(fetch= FetchType.LAZY)
-    @JoinTable( name = "gf_user_usergroups",
-                joinColumns = @JoinColumn(name = "user_id"),
-                inverseJoinColumns=@JoinColumn(name = "group_id")
-              )
+    @JoinTable( name = "gf_user_usergroups", joinColumns = @JoinColumn(name = "user_id"),  inverseJoinColumns=@JoinColumn(name = "group_id") )
     @Column(name = "u_id")
     @ForeignKey(name="fk_uug_user", inverseName="fk_uug_group")
     @Fetch(FetchMode.SUBSELECT) // without this, hibernate will duplicate results(!)
