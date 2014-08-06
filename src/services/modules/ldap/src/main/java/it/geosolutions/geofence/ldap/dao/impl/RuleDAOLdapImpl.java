@@ -84,25 +84,25 @@ public class RuleDAOLdapImpl extends RuleDAOImpl {
      * @param rule
      */
     private void checkUserAndGroup(Rule entity) {
-        if (notPersistedUser(entity)) {
+        if (entity.getGsuser() != null && notPersistedUser(entity)) {
             LOGGER.debug("create a new persistable user, persist it and update the rule");
             GSUser user = copyUser(entity.getGsuser());
             userDao.persist(user);
             entity.setGsuser(user);
         }
-        else {
+        else if (entity.getGsuser() != null) {
             // load entity from the DB otherwise detached
             GSUser user = getUser(entity.getGsuser());
             entity.setGsuser(user);
         }
 
-        if (notPersistedGroup(entity)) {
+        if (entity.getUserGroup() != null && notPersistedGroup(entity)) {
             LOGGER.debug("create a new persistable group, persist it and update the rule");
             UserGroup group = copyGroup(entity.getUserGroup());
             userGroupDao.persist(group);
             entity.setUserGroup(group);
         }
-        else {
+        else if (entity.getUserGroup() != null) {
             // load entity from the DB otherwise detached
             UserGroup group = getGroup(entity.getUserGroup());
             entity.setUserGroup(group);
@@ -140,7 +140,7 @@ public class RuleDAOLdapImpl extends RuleDAOImpl {
         GSUser gsUser = userDao.find(user.getId());
         if (gsUser == null)
         {
-            Search search = new Search(UserGroup.class);
+            Search search = new Search(GSUser.class);
             addSearchField(search, "extid", user.getExtId());
             List<GSUser> found = userDao.search(search);
             int numFound = found.size();
@@ -172,7 +172,7 @@ public class RuleDAOLdapImpl extends RuleDAOImpl {
                 return numFound <= 0;
             }
             
-            return true;
+            return false;
         }
         
         return true;
@@ -189,7 +189,7 @@ public class RuleDAOLdapImpl extends RuleDAOImpl {
         {
             if (userDao.find(rule.getGsuser().getId()) == null)
             {
-                Search search = new Search(UserGroup.class);
+                Search search = new Search(GSUser.class);
                 addSearchField(search, "name", rule.getGsuser().getName());
                 int numFound = userDao.search(search).size();
                 LOGGER.debug("[notPersistedUser] -> ('name' = "+rule.getGsuser().getName()+") : " + numFound);
@@ -197,7 +197,7 @@ public class RuleDAOLdapImpl extends RuleDAOImpl {
                 return numFound <= 0;
             }
             
-            return true;
+            return false;
         }
         
         return true;
@@ -226,7 +226,7 @@ public class RuleDAOLdapImpl extends RuleDAOImpl {
         newUser.setPassword(user.getPassword());
         // set external id to negative ldap id, so that it's easily identifiable in
         // searches
-        newUser.setExtId(-user.getId() + "");
+        newUser.setExtId(user.getId() + "");
         newUser.setDateCreation(user.getDateCreation());
         return newUser;
     }
@@ -240,7 +240,7 @@ public class RuleDAOLdapImpl extends RuleDAOImpl {
         UserGroup newGroup = new UserGroup();
         //newGroup.setId(group.getId());
         newGroup.setName(group.getName());
-        newGroup.setExtId(-group.getId() + "");
+        newGroup.setExtId(group.getId() + "");
         newGroup.setEnabled(true);
         return newGroup;
     }

@@ -40,7 +40,7 @@
 
         <dependency>
             <groupId>it.geosolutions.geofence</groupId>
-            <artifactId>geofence-model-internal</artifactId>
+            <artifactId>geofence-model</artifactId>
         </dependency>
 
         <!-- =========================================================== -->
@@ -97,15 +97,15 @@
 	<!-- =========================================================== -->
 	<!--     Persistence libs                                        -->
 	<!-- =========================================================== -->
-        <dependency>
+        <!-- dependency>
            <groupId>javax.persistence</groupId>
            <artifactId>persistence-api</artifactId>
-        </dependency>
-        <!-- dependency>
+        </dependency -->
+        <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.0-api</artifactId>
             <version>${persistence-version}</version>
-        </dependency -->
+        </dependency>
 
 	<!-- HIBERNATE-GENERIC-DAO -->
         <dependency>

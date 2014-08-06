@@ -35,7 +35,7 @@
   
     <modules>
         <module>model</module>             <!-- artifactid: model-internal -->
-        <!-- module>model-external</module -->    <!-- artifactid: model -->
+        <module>model-external</module>    <!-- artifactid: model -->
         <module>persistence</module>
         <module>services-api</module>
         <module>services-impl</module>

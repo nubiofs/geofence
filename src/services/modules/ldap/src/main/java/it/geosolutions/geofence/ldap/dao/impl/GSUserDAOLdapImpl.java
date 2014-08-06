@@ -52,7 +52,7 @@ public class GSUserDAOLdapImpl extends BaseDAO<GSUserDAO, GSUser> implements GSU
         super();
         // set default search base and filter for users
         setSearchBase("ou=People");
-        setSearchFilter("objectClass=posixAccount");
+        setSearchFilter("objectClass=inetOrgPerson");
     }
 
     /**

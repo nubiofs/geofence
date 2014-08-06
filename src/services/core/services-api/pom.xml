@@ -43,7 +43,7 @@
     <!-- GeoFence -->
         <dependency>
             <groupId>it.geosolutions.geofence</groupId>
-            <artifactId>geofence-model-internal</artifactId>
+            <artifactId>geofence-model</artifactId>
             <!-- we don't want to export this dep transitively 
                  because we may want to use the model-internal somewhere.
                  Let's make this lib's users import the model on their own.

@@ -29,7 +29,8 @@
     </parent>
   
     <groupId>it.geosolutions.geofence</groupId>
-    <artifactId>geofence-model-internal</artifactId>
+    <!-- artifactId>geofence-model-internal</artifactId -->
+    <artifactId>geofence-model</artifactId>
     <packaging>jar</packaging>
     <name>GeoFence - Core - Model internal</name>
     <description>Model with JPA annotation used internally</description>

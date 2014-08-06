@@ -23,8 +23,7 @@
         <jaxws-version>2.1</jaxws-version>
         <cxf-version>2.3.2</cxf-version>
 
-        <!-- persistence-version>1.0.2</persistence-version -->
-        <!-- persistence-version>1.0.1.Final</persistence-version -->
+        <persistence-version>1.0.1.Final</persistence-version>
         <hibernate-version>3.3.2.GA</hibernate-version>
         <hibernate-spatial-version>1.0</hibernate-spatial-version>
         <hibernate-annotations-version>3.3.1.GA</hibernate-annotations-version>
@@ -195,7 +194,7 @@
 	    <!-- =========================================================== -->
             <dependency>
                 <groupId>it.geosolutions.geofence</groupId>
-                <artifactId>geofence-model-internal</artifactId>
+                <artifactId>geofence-model</artifactId>
                 <version>${geofence-version}</version>
             </dependency>
 

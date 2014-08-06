@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </parent>
   
     <groupId>it.geosolutions.geofence</groupId>
-    <artifactId>geofence-model</artifactId>
+    <artifactId>geofence-model-external</artifactId>
     <packaging>jar</packaging>
     <name>GeoFence - Core - Model external</name>
     <description>Model used for external deps, cleaned from JPA annotations</description>
@@ -90,8 +90,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <artifactItems>
                         <artifactItem>
                             <groupId>it.geosolutions.geofence</groupId>
-                            <artifactId>geofence-model-internal</artifactId>
-                            <version>${project.version}</version>
+                            <artifactId>geofence-model</artifactId>
+                            <!-- version>${project.version}</version -->
                             <type>jar</type>
                             <classifier>sources</classifier>
                             <overWrite>true</overWrite>
