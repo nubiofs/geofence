@@ -119,10 +119,10 @@ public class RuleDAOLdapImpl extends RuleDAOImpl {
         if (group == null)
         {
             Search search = new Search(UserGroup.class);
-            addSearchField(search, "extid", userGroup.getExtId());
+            addSearchField(search, "name", userGroup.getName());
             List<UserGroup> found = userGroupDao.search(search);
             int numFound = found.size();
-            LOGGER.debug("[getGroup] -> ('extid' = "+userGroup.getExtId()+") : " + numFound);
+            LOGGER.debug("[getGroup] -> ('name' = "+userGroup.getName()+") : " + numFound);
             if (numFound > 0) {
                 group = found.get(0);
             }
@@ -141,10 +141,10 @@ public class RuleDAOLdapImpl extends RuleDAOImpl {
         if (gsUser == null)
         {
             Search search = new Search(GSUser.class);
-            addSearchField(search, "extid", user.getExtId());
+            addSearchField(search, "name", user.getName());
             List<GSUser> found = userDao.search(search);
             int numFound = found.size();
-            LOGGER.debug("[getUser] -> ('extid' = "+user.getExtId()+") : " + numFound);
+            LOGGER.debug("[getUser] -> ('name' = "+user.getName()+") : " + numFound);
             if (numFound > 0) {
                 gsUser = found.get(0);
             }
@@ -226,7 +226,7 @@ public class RuleDAOLdapImpl extends RuleDAOImpl {
         newUser.setPassword(user.getPassword());
         // set external id to negative ldap id, so that it's easily identifiable in
         // searches
-        newUser.setExtId(user.getId() + "");
+        newUser.setExtId((-user.getId()) + "");
         newUser.setDateCreation(user.getDateCreation());
         return newUser;
     }
@@ -240,7 +240,7 @@ public class RuleDAOLdapImpl extends RuleDAOImpl {
         UserGroup newGroup = new UserGroup();
         //newGroup.setId(group.getId());
         newGroup.setName(group.getName());
-        newGroup.setExtId(group.getId() + "");
+        newGroup.setExtId((-group.getId()) + "");
         newGroup.setEnabled(true);
         return newGroup;
     }

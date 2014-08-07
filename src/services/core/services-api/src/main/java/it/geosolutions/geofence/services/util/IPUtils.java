@@ -38,7 +38,7 @@ public class IPUtils {
             return false;
         }
 
-        return ipv4Pattern.matcher(ipAddress).matches();
+        return (ipv4Pattern.matcher(ipAddress).matches() || "0:0:0:0:0:0:0:1".equals(ipAddress));
     }
 
     public static boolean isRangeValid(String ipAddressRange) {

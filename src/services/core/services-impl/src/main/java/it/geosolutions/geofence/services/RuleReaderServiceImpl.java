@@ -572,7 +572,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
             ret.put(null, found);
         } else {
             for (UserGroup userGroup : finalGroupFilter) {
-                IdNameFilter groupFilter = new IdNameFilter(userGroup.getId());
+                IdNameFilter groupFilter = new IdNameFilter(userGroup.getName(), true);
                 groupFilter.setIncludeDefault(true);
                 List<Rule> found = getRuleAux(filter, groupFilter);
                 ret.put(userGroup, found);

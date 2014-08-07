@@ -36,7 +36,7 @@ public class UserGroupAttributesMapper extends BaseAttributesMapper {
     public Object mapFromAttributes(Attributes attrs) throws NamingException {
         UserGroup group = new UserGroup();
         group.setId(Long.parseLong(getAttribute(attrs, "id")));
-        group.setExtId(group.getId() + "");
+        group.setExtId((-group.getId()) + "");
         group.setName(getAttribute(attrs, "groupname"));
         group.setEnabled(true);
 

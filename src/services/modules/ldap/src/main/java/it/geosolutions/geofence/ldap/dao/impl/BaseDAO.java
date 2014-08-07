@@ -183,25 +183,25 @@ public abstract class BaseDAO<T extends RestrictedGenericDAO<R>, R> implements
      */
     private R searchOnDb(Long id) {
         if (dao != null) {
-            if (id < 0) {
-                // If negative, it's an extId (id from LDAP server)
-                // we must search on that attribute
-                Search search = new Search();
-                Filter filter = new Filter("extId", id + "");
-                List<Filter> filters = new ArrayList<Filter>();
-                filters.add(filter);
-                search.setFilters(filters);
-                List<R> objects = dao.search(search);
-                if (objects.size() > 0) {
-                    return objects.get(0);
-                }
-            } else {
-                // else it's a classic id
-                R object = (R) dao.find(id);
-                if (object != null) {
-                    return object;
-                }
+
+            // Try the classic id first
+            R object = (R) dao.find(id);
+            if (object != null) {
+                return object;
             }
+
+            // Try the extId (id from LDAP server)
+            // we must search on that attribute
+            Search search = new Search();
+            Filter filter = Filter.or(new Filter("extId", (-id) + ""), new Filter("extId", id + ""));
+            List<Filter> filters = new ArrayList<Filter>();
+            filters.add(filter);
+            search.setFilters(filters);
+            List<R> objects = dao.search(search);
+            if (objects != null && objects.size() > 0) {
+                return objects.get(0);
+            }
+            
         }
 
         return null;

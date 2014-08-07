@@ -35,7 +35,7 @@ public class GSUserAttributesMapper extends BaseAttributesMapper {
     public Object mapFromAttributes(Attributes attrs) throws NamingException {
         GSUser user = new GSUser();
         user.setId(Long.parseLong(getAttribute(attrs, "id")));
-        user.setExtId(-user.getId() + "");
+        user.setExtId((-user.getId()) + "");
         user.setName(getAttribute(attrs, "username"));
         user.setEmailAddress(getAttribute(attrs, "email"));
         user.setEnabled(true);
