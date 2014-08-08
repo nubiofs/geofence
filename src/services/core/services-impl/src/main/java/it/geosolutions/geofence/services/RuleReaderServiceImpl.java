@@ -601,7 +601,7 @@ public class RuleReaderServiceImpl implements RuleReaderService {
     protected List<Rule> getRuleAux(RuleFilter filter, IdNameFilter groupFilter) {
         Search searchCriteria = new Search(Rule.class);
         searchCriteria.addSortAsc("priority");
-        addCriteria(searchCriteria, "gsuser", new IdNameFilter(filter.getUser().getName(), true));
+        addCriteria(searchCriteria, "gsuser", (filter.getUser().getName() != null && !filter.getUser().getName().isEmpty() ? new IdNameFilter(filter.getUser().getName(), true) : filter.getUser()));
         addCriteria(searchCriteria, "userGroup", groupFilter);
         addCriteria(searchCriteria, "instance", filter.getInstance());
         addStringCriteria(searchCriteria, "service", filter.getService()); // see class' javadoc
