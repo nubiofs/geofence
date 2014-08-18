@@ -48,7 +48,7 @@
                  because we may want to use the model-internal somewhere.
                  Let's make this lib's users import the model on their own.
             -->
-            <!-- scope>provided</scope -->
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -124,6 +124,7 @@
                 <inherited>true</inherited>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
+                <version>2.3</version>
                 <configuration>
                     <attach>true</attach>
                 </configuration>

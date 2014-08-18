@@ -87,7 +87,7 @@
 		<!-- =============================================================== --> 
 		<dependency>
 			<groupId>it.geosolutions.geofence</groupId>
-			<artifactId>geofence-model</artifactId>
+			<artifactId>geofence-model-internal</artifactId>
 		</dependency>
 
 		<dependency>
@@ -335,6 +335,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
 				<configuration>
 					<encoding>utf8</encoding>
 					<source>1.5</source>

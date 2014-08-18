@@ -34,7 +34,7 @@ import it.geosolutions.geofence.services.RuleReaderService;
 import it.geosolutions.geofence.services.dto.AuthUser;
 
 import it.geosolutions.geoserver.authentication.auth.GeoFenceSecurityProvider;
-import it.geosolutions.geoserver.authentication.auth.GeofenceAuthenticationProvider;
+import it.geosolutions.geoserver.authentication.auth.GeoFenceAuthenticationProvider;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -94,7 +94,7 @@ public class GeoFenceAuthFilter
 
 //        BasicAuthenticationFilterConfig authConfig = (BasicAuthenticationFilterConfig) config;
         SecurityNamedServiceConfig authCfg = securityManager.loadAuthenticationProviderConfig("geofence");
-        GeofenceAuthenticationProvider geofenceAuthProvider = geofenceAuth.createAuthenticationProvider(authCfg);
+        GeoFenceAuthenticationProvider geofenceAuthProvider = geofenceAuth.createAuthenticationProvider(authCfg);
         BasicAuthenticationFilter filter = new BasicAuthenticationFilter(geofenceAuthProvider ,aep);
 
 //        if (authConfig.isUseRememberMe()) {

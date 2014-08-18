@@ -649,6 +649,14 @@
                 <groupId>com.googlecode.genericdao</groupId>
                 <artifactId>dao</artifactId>
                 <version>1.1.0</version>
+                    <exclusions>
+                        <!-- exclude JPA1 dependency -->
+                        <!-- JPA2 is needed and imported by hibernate3.-->
+                        <exclusion>
+                            <groupId>javax.persistence</groupId>
+                            <artifactId>persistence-api</artifactId>
+                        </exclusion>
+                    </exclusions>                
             </dependency>
             <dependency>
                 <groupId>com.googlecode.genericdao</groupId>
@@ -689,11 +697,6 @@
                 <version>3.1.0.GA</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-core</artifactId>
-                <version>3.6.0.Final</version>
-            </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
@@ -862,8 +865,8 @@
                 <artifactId>gt-epsg-wkt</artifactId>
                 <version>${gt-version}</version>
             </dependency>
-
         </dependencies>
+
     </dependencyManagement>
 
     <build>
@@ -872,7 +875,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.1</version>
+                <version>3.1</version>
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
@@ -891,6 +894,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
                 </configuration>

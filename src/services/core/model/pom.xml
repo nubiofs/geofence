@@ -29,8 +29,7 @@
     </parent>
   
     <groupId>it.geosolutions.geofence</groupId>
-    <!-- artifactId>geofence-model-internal</artifactId -->
-    <artifactId>geofence-model</artifactId>
+    <artifactId>geofence-model-internal</artifactId>
     <packaging>jar</packaging>
     <name>GeoFence - Core - Model internal</name>
     <description>Model with JPA annotation used internally</description>
@@ -167,6 +166,7 @@
                 <inherited>true</inherited>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
+                <version>2.3</version>
                 <configuration>
                     <attach>true</attach>
                 </configuration>

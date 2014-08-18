@@ -194,7 +194,7 @@
 	    <!-- =========================================================== -->
             <dependency>
                 <groupId>it.geosolutions.geofence</groupId>
-                <artifactId>geofence-model</artifactId>
+                <artifactId>geofence-model-internal</artifactId>
                 <version>${geofence-version}</version>
             </dependency>
 
@@ -432,7 +432,7 @@
                 <version>1.0-beta-2</version>
             </dependency>
 			
-			<!-- =========================================================== -->
+	    <!-- =========================================================== -->
 	    <!--     GEOTOOLS                                                -->
 	    <!-- =========================================================== -->			
 	        <dependency>
@@ -478,6 +478,16 @@
 	        <dependency>
 	            <groupId>org.geotools</groupId>
 	            <artifactId>gt-epsg-h2</artifactId>
+	            <version>${gt-version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.geotools</groupId>
+	            <artifactId>gt-wms</artifactId>
+	            <version>${gt-version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.geotools</groupId>
+	            <artifactId>gt-wfs</artifactId>
 	            <version>${gt-version}</version>
 	        </dependency>
 

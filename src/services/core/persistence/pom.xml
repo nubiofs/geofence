@@ -40,7 +40,7 @@
 
         <dependency>
             <groupId>it.geosolutions.geofence</groupId>
-            <artifactId>geofence-model</artifactId>
+            <artifactId>geofence-model-internal</artifactId>
         </dependency>
 
         <!-- =========================================================== -->
@@ -111,6 +111,7 @@
         <dependency>
             <groupId>com.googlecode.genericdao</groupId>
             <artifactId>dao</artifactId>
+            <!-- JPA1 dependency will excluded by exclusions in depenendency management -->
         </dependency>
         <dependency>
             <groupId>com.googlecode.genericdao</groupId>

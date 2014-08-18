@@ -155,8 +155,9 @@
 
     <bean id="geofenceAuth" class="it.geosolutions.geoserver.authentication.auth.GeoFenceSecurityProvider">
         <property name="ruleReaderService" ref="ruleReaderService"/>
+        <property name="securityManager" ref="geoServerSecurityManager"/>
     </bean>
-    
+
     <!-- Admin page -->
     <bean id="geofencePage" class="org.geoserver.web.MenuPageInfo">
       <property name="id" value="geofencePage"/>
@@ -166,6 +167,15 @@
       <property name="category" ref="securityCategory" />
       <property name="order" value="1000" />
       <property name="icon" value="img/icons/geofence.png" />
+    </bean>
+
+
+  <!-- ui auth provider panel info-->
+    <bean id="geofenceAuthPanelInfo" class="it.geosolutions.geofence.web.authentication.GeoFenceAuthProviderPanelInfo">
+        <property name="id" value="security.geofenceAuthProvider" />
+        <property name="shortTitleKey"  value="GeoFenceAuthProviderPanel.short"/>
+        <property name="titleKey"       value="GeoFenceAuthProviderPanel.title"/>
+        <property name="descriptionKey" value="GeoFenceAuthProviderPanel.description"/>
     </bean>
 
 </beans>
