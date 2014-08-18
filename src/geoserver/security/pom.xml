@@ -67,8 +67,14 @@
         </dependency>
         <dependency>
             <groupId>it.geosolutions.geofence</groupId>
+            <artifactId>geofence-model-internal</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>it.geosolutions.geofence</groupId>
             <artifactId>geofence-model</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
         
         <dependency>

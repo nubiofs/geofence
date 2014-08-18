@@ -40,7 +40,13 @@
 
         <dependency>
             <groupId>it.geosolutions.geofence</groupId>
+            <artifactId>geofence-model-internal</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>it.geosolutions.geofence</groupId>
             <artifactId>geofence-model</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
