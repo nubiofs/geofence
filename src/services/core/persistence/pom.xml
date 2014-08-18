@@ -94,20 +94,16 @@
             <artifactId>spring-jdbc</artifactId>
         </dependency>
 
-		<!-- =========================================================== -->
-		<!--     Persistence libs                                        -->
-		<!-- =========================================================== -->
+	<!-- =========================================================== -->
+	<!--     Persistence libs                                        -->
+	<!-- =========================================================== -->
 
-        <dependency>
-           <groupId>javax.persistence</groupId>
-           <artifactId>persistence-api</artifactId>
-<!--            <scope>provided</scope>-->
-        </dependency>
 
-		<!-- HIBERNATE-GENERIC-DAO -->
+	<!-- HIBERNATE-GENERIC-DAO -->
         <dependency>
             <groupId>com.googlecode.genericdao</groupId>
             <artifactId>dao</artifactId>
+            <!-- JPA1 dependency will excluded by exclusions in depenendency management -->
         </dependency>
         <dependency>
             <groupId>com.googlecode.genericdao</groupId>

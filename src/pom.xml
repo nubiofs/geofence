@@ -47,7 +47,7 @@
 
     <ciManagement>
         <system>jenkins</system>
-        <url>http://ci.geo-solutions.it/</url>
+        <url>http://build.geo-solutions.it/</url>
     </ciManagement>
     
     <distributionManagement>
@@ -98,7 +98,7 @@
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
                 <artifactId>wagon-ftp</artifactId>
-                <version>1.0</version>
+                <version>2.6</version>
             </extension>
         </extensions>
     </build>

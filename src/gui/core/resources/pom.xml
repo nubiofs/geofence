@@ -24,20 +24,39 @@
 	    <!-- GeoGWT Core                                                 -->
 	    <!-- =========================================================== -->
 	
-	    <dependency>
-			<groupId>it.geosolutions.geogwt.core</groupId>
-	        <artifactId>geogwt-resources</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>jcl-over-slf4j</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>log4j-over-slf4j</artifactId>
-                </exclusion>
-            </exclusions>
-		</dependency>
+	<dependency>
+		<groupId>it.geosolutions.geogwt.core</groupId>
+		<artifactId>geogwt-resources</artifactId>
+		<exclusions>
+			<exclusion>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+			</exclusion>
+			<exclusion>
+				<groupId>org.slf4j</groupId>
+				<artifactId>log4j-over-slf4j</artifactId>
+			</exclusion>
+			<exclusion> <!-- includes SNAPSHOT version we don't want-->
+				<groupId>org.geotools</groupId>
+				<artifactId>gt-wfs</artifactId>
+			</exclusion>
+			<exclusion> <!-- includes SNAPSHOT version we don't want-->
+				<groupId>org.geotools</groupId>
+				<artifactId>gt-wms</artifactId>
+			</exclusion>
+		</exclusions>
+	</dependency>
+
+	<!-- re-include proper versions -->
+	<dependency>
+		<groupId>org.geotools</groupId>
+		<artifactId>gt-wfs</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.geotools</groupId>
+		<artifactId>gt-wms</artifactId>
+	</dependency>
+	
     	<!-- =============================================================== -->
 
 		<!-- GeoGWT -->
@@ -187,6 +206,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
 				<configuration>
 					<source>1.5</source>
 					<target>1.5</target>
