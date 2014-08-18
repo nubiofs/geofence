@@ -22,6 +22,12 @@ High level arch
 This last module provides a jar file that will be plugged into GeoServer. 
 The GeoFence code base includes a module that will build a GeoServer .war file ready to be integrated with GeoFence.
 
+License
+==================================================
+GeoFence is free and Open Source software since it is released under the GPL V 3.0 license.
+
+The probe for GeoServer as it implements a GeoServer Java API is released under the same license as GeoServer which is GPL V 2.0.
+
 Download
 ==================================================
 * [**GeoFence** .war file](http://maven.geo-solutions.it/it/geosolutions/geofence/geofence-gui-web/2.2-SNAPSHOT/geofence-gui-web-2.2-SNAPSHOT.war)
