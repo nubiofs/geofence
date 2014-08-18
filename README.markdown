@@ -28,7 +28,7 @@ GeoFence is free and Open Source software since it is released under the GPL V 3
 
 The probe for GeoServer as it implements a GeoServer Java API is released under the same license as GeoServer which is GPL V 2.0.
 
-Download
+Installing and Running GeoFence
 ==================================================
 * [Latest **GeoFence** .war file](http://build.geo-solutions.it/geofence/nightly/latest/geofence.war)
 * [Latest GeoFence probe for GeoServer](http://build.geo-solutions.it/geofence/nightly/latest/geofence-security-2.2-SNAPSHOT.jar) (todo: add refs to ancillary libs)
