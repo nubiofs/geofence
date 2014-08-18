@@ -30,8 +30,8 @@ The probe for GeoServer as it implements a GeoServer Java API is released under 
 
 Download
 ==================================================
-* [**GeoFence** .war file](http://maven.geo-solutions.it/it/geosolutions/geofence/geofence-gui-web/2.2-SNAPSHOT/geofence-gui-web-2.2-SNAPSHOT.war)
-* [Latest **GeoServer 2.1.x** GeoFence integration module .jar file](http://maven.geo-solutions.it/it/geosolutions/geofence/geoserver/geofence-security21/2.2-SNAPSHOT/geofence-security21-2.2-SNAPSHOT.jar) (todo: add refs to ancillary libs)
+* [Latest **GeoFence** .war file](http://build.geo-solutions.it/geofence/nightly/latest/geofence.war)
+* [Latest GeoFence probe for GeoServer](http://build.geo-solutions.it/geofence/nightly/latest/geofence-security-2.2-SNAPSHOT.jar) (todo: add refs to ancillary libs)
 * [Latest GeoFence **integration configuration file**](https://github.com/geosolutions-it/geofence/blob/master/src/geoserver21x/web-app/src/main/resources/geofence-geoserver.properties)
 
 
