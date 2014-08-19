@@ -47,7 +47,7 @@
 
     <ciManagement>
         <system>jenkins</system>
-        <url>http://build.geo-solutions.it/</url>
+        <url>http://build.geo-solutions.it/jenkins</url>
     </ciManagement>
     
     <distributionManagement>
