@@ -1,38 +1,31 @@
 GeoFence
 ==================================================
 
-**GeoFence** is a java web application that handles authorization rules, 
-integrating with [GeoServer](http://www.geoserver.org) using the interface 
+**GeoFence** is a java web application that provides an authentication/authorization engine to [GeoServer](http://www.geoserver.org).
+
+**GeoFence** integrates with [GeoServer](http://www.geoserver.org) using the interface 
 described in [GSIP 57](http://geoserver.org/display/GEOS/GSIP+57+-+Improving+GeoServer+authorization+framework).
 
 How to interact with GeoFence
 --------------------------------------------------
 **GeoFence** provides a _GWT-based_ user interface to administer the basic objects and the authorization rules.
 
-Furthermore, some [REST API](https://github.com/geosolutions-it/geofence/wiki/REST-API) have already been implemented that allows the administration of some ancillary data.
+Furthermore, a quite complete [REST API](https://github.com/geosolutions-it/geofence/wiki/REST-API) allows the programmatic administration of the rules and their ancillary data.
 
 GeoServer will send authorization queries to GeoFence using a configurable internal protocol (by default it uses Spring remoting over HTTP).
 
-High level arch
---------------------------------------------------
-**GeoFence** is split in 3 main modules:
-* The Core module contains the model, the persistence logic and the service logic
-* The GUI module contains the GWT GUI used to administer the authorization rules and the related objects
-* The bridge/probe module is the wrapper that converts the Rule logic into the authorization objects required by GeoServer.
-This last module provides a jar file that will be plugged into GeoServer. 
-The GeoFence code base includes a module that will build a GeoServer .war file ready to be integrated with GeoFence.
-
 License
 ==================================================
-GeoFence is free and Open Source software since it is released under the GPL V 3.0 license.
+GeoFence is free and Open Source software, released under the [GPL v3](http://www.gnu.org/licenses/gpl.html) license.
 
-The probe for GeoServer as it implements a GeoServer Java API is released under the same license as GeoServer which is GPL V 2.0.
+The part of GeoFence that shall be installed as a module into GeoServer is released under the same license as GeoServer (which is [GPL v2.0](http://www.gnu.org/licenses/old-licenses/gpl-2.0.html)), as it implements a GeoServer Java API.
 
 Installing and Running GeoFence
 ==================================================
 * [Latest **GeoFence** .war file](http://build.geo-solutions.it/geofence/nightly/latest/geofence.war)
-* [Latest GeoFence probe for GeoServer](http://build.geo-solutions.it/geofence/nightly/latest/geofence-security-2.2-SNAPSHOT.jar) (todo: add refs to ancillary libs)
-* [Latest GeoFence **integration configuration file**](https://github.com/geosolutions-it/geofence/blob/master/src/geoserver21x/web-app/src/main/resources/geofence-geoserver.properties)
+* [Latest GeoFence **probe** for GeoServer **Master**](http://build.geo-solutions.it/geofence/nightly/latest/geofence-security-2.2-SNAPSHOT.jar) (TODO)
+* [Latest GeoFence **probe** for GeoServer **2.5.x** ](http://build.geo-solutions.it/geofence/nightly/latest/geofence-security-2.2-SNAPSHOT.jar) (TODO)
+* [Latest GeoServer 2.5.x with GeoFence probe preinstalled ](http://build.geo-solutions.it/geofence/nightly/latest/geofence-security-2.2-SNAPSHOT.jar) (TODO)
 
 
 Documentation
