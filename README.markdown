@@ -1,16 +1,12 @@
 GeoFence
 ==================================================
 
-**GeoFence** is a java web application that provides an authentication/authorization engine to [GeoServer](http://www.geoserver.org).
+**GeoFence** is a java web application that provides an advanced authentication/authorization engine to [GeoServer](http://www.geoserver.org).
 
-**GeoFence** integrates with [GeoServer](http://www.geoserver.org) using the interface 
+GeoFence integrates with [GeoServer](http://www.geoserver.org) using the interface 
 described in [GSIP 57](http://geoserver.org/display/GEOS/GSIP+57+-+Improving+GeoServer+authorization+framework).
 
-How to interact with GeoFence
---------------------------------------------------
-**GeoFence** provides a _GWT-based_ user interface to administer the basic objects and the authorization rules.
-
-Furthermore, a quite complete [REST API](https://github.com/geosolutions-it/geofence/wiki/REST-API) allows the programmatic administration of the rules and their ancillary data.
+**GeoFence** provides a graphical user interface to administer the basic objects and the authorization rules. Furthermore, a quite complete [REST API](https://github.com/geosolutions-it/geofence/wiki/REST-API) allows the programmatic administration of the rules and their ancillary data.
 
 GeoServer will send authorization queries to GeoFence using a configurable internal protocol (by default it uses Spring remoting over HTTP).
 
