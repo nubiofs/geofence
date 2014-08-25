@@ -27,9 +27,6 @@ import it.geosolutions.geofence.services.dto.ShortRule;
 
 import java.util.List;
 
-import javax.ws.rs.PathParam;
-
-
 /**
  * Operations on
  *
@@ -49,14 +46,14 @@ public interface RuleReaderService
      *
      * @deprecated Use {@link #getAccessInfo(RuleFilter filter) }
      */
-    AccessInfo getAccessInfo(@PathParam("user") String userName,
-        @PathParam("profile") String profileName,
-        @PathParam("instance") String instanceName,
+    AccessInfo getAccessInfo(String userName,
+        String profileName,
+        String instanceName,
         String sourceAddress,
-        @PathParam("service") String service,
-        @PathParam("request") String request,
-        @PathParam("workspace") String workspace,
-        @PathParam("layer") String layer);
+        String service,
+        String request,
+        String workspace,
+        String layer);
 
     /**
      * Return info on resource accessibility.
@@ -80,14 +77,14 @@ public interface RuleReaderService
      * @deprecated Use {@link #getMatchingRules(RuleFilter filter) }
      */
 
-    List<ShortRule> getMatchingRules(@PathParam("user") String userName,
-        @PathParam("profile") String profileName,
-        @PathParam("instance") String instanceName,
+    List<ShortRule> getMatchingRules(String userName,
+        String profileName,
+        String instanceName,
         String sourceAddress,
-        @PathParam("service") String service,
-        @PathParam("request") String request,
-        @PathParam("workspace") String workspace,
-        @PathParam("layer") String layer);
+        String service,
+        String request,
+        String workspace,
+        String layer);
 
     /**
      * Return the unprocessed {@link Rule} list matching a given filter, sorted

@@ -28,11 +28,7 @@
 
 package it.geosolutions.geofence.core.model;
 
-import com.vividsolutions.jts.geom.MultiPolygon;
-import it.geosolutions.geofence.core.model.adapter.FK2UserGroupAdapter;
 import it.geosolutions.geofence.core.model.adapter.FK2UserGroupSetAdapter;
-//import it.geosolutions.geofence.core.model.adapter.FK2UserGroupSetAdapter2;
-import it.geosolutions.geofence.core.model.adapter.MultiPolygonAdapter;
 import it.geosolutions.geofence.core.model.util.PwEncoder;
 import java.io.Serializable;
 import java.util.Date;
@@ -50,10 +46,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -64,7 +58,6 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.Index;
-import org.hibernate.annotations.Type;
 
 /**
  * A User that can access GeoServer resources.

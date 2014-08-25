@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- Copyright (C) 2007 - 2010 GeoSolutions S.A.S.
+ Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
  http://www.geo-solutions.it
 
  GPLv3 + Classpath exception
@@ -36,10 +36,6 @@
     <dependencies>
 
    	<!-- APACHE COMMONS -->
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-        </dependency>
     <!-- GeoFence -->
         <dependency>
             <groupId>it.geosolutions.geofence</groupId>
@@ -52,12 +48,12 @@
         </dependency>
 
         <dependency>
-            <groupId>dom4j</groupId>
-            <artifactId>dom4j</artifactId>
+            <groupId>com.vividsolutions</groupId>
+            <artifactId>jts</artifactId>
         </dependency>
-	
+
     	<!-- SPRING -->
-        <dependency>
+<!--        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jmx</artifactId>
             <scope>provided</scope>
@@ -77,13 +73,7 @@
             <artifactId>spring-core</artifactId>
             <scope>provided</scope>
         </dependency>
-    
-	
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
+    -->
     
     <!-- JUnit -->
         <dependency>
@@ -92,32 +82,9 @@
             <scope>test</scope>
         </dependency>
 	      
-			<!-- CXF -->
-        <dependency>
-            <groupId>javax.xml.ws</groupId>
-            <artifactId>jaxws-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jra</groupId>
-            <artifactId>jra</artifactId>
-            <version>1.0-alpha-4</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>jsr311-api</artifactId>
-            <version>1.1.1</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>com.vividsolutions</groupId>
-            <artifactId>jts</artifactId>
-        </dependency>
     </dependencies>
   
     <build>
-<!--        <finalName>${main-prefix}-${project.artifactId}-${project.version}</finalName>-->
-
         <plugins>
             <!-- Attach sources ============================================ -->
             <plugin>
