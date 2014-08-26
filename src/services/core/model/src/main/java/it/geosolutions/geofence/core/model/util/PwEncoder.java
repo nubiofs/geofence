@@ -10,8 +10,7 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
-
-import org.apache.commons.codec.binary.Base64;
+import javax.xml.bind.DatatypeConverter;
 
 /**
  * 
@@ -31,8 +30,8 @@ public class PwEncoder {
 
             byte[] input = msg.getBytes();
             byte[] encrypted = cipher.doFinal(input);
-            byte[] output = Base64.encodeBase64(encrypted);
-            return new String(output);
+            return DatatypeConverter.printBase64Binary(encrypted);
+
         } catch (NoSuchAlgorithmException ex) {
             throw new RuntimeException("Error while encoding", ex);
         } catch (NoSuchPaddingException ex) {
@@ -52,7 +51,7 @@ public class PwEncoder {
             Cipher cipher = Cipher.getInstance("AES");
             cipher.init(Cipher.DECRYPT_MODE, keySpec);
 
-            byte[] de64 = Base64.decodeBase64(msg);
+            byte[] de64 = DatatypeConverter.parseBase64Binary(msg);
             byte[] decrypted = cipher.doFinal(de64);
 
             return new String(decrypted);

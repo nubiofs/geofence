@@ -41,6 +41,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assume.*;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 /**
  *
@@ -192,7 +193,9 @@ public class GeoFenceClientTest {
         assertEquals(3, rsh.get(null, null, true, null, new RuleFilter.IdNameFilter("group01", true), null, null, null, null, null).getList().size());
     }
 
-    protected void testReassign() {
+    @Test
+    @Ignore
+    public void testReassign() {
         GeoFenceClient client = createClient();
         
         for(String name: Arrays.asList("group01", "group02", "group3")) {

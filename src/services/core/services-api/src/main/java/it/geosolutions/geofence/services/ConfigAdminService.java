@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2010 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -23,57 +23,31 @@ import it.geosolutions.geofence.core.model.GSUser;
 import it.geosolutions.geofence.services.dto.ShortUser;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 
+
 import java.util.List;
-
-import javax.jws.WebParam;
-import javax.jws.WebService;
-
-import org.codehaus.jra.Delete;
-import org.codehaus.jra.Get;
-import org.codehaus.jra.HttpResource;
-import org.codehaus.jra.Post;
-import org.codehaus.jra.Put;
-
 
 /**
  * Operations on {@link GSUser GSUser}s.
  *
  * @author Emanuele Tajariol (etj at geo-solutions.it)
  */
-@WebService(name = "ConfigAdminService", targetNamespace = "http://geosolutions.it/geofence")
 public interface ConfigAdminService
 {
 
     // ==========================================================================
     // Basic operations
 
-    @Put
-    @HttpResource(location = "/users")
-    long insert(@WebParam(name = "user") GSUser user);
+    long insert(GSUser user);
 
-    @Post
-    @HttpResource(location = "/users")
-    long update(@WebParam(name = "user") GSUser user) throws NotFoundServiceEx;
+    long update(GSUser user) throws NotFoundServiceEx;
 
-    @Delete
-    @HttpResource(location = "/users/{id}")
-    boolean delete(@WebParam(name = "id") long id) throws NotFoundServiceEx;
+    boolean delete(long id) throws NotFoundServiceEx;
 
-    @Get
-    @HttpResource(location = "/users/{id}")
-    GSUser get(@WebParam(name = "id") long id) throws NotFoundServiceEx;
+    GSUser get(long id) throws NotFoundServiceEx;
 
-    @Get
-    @HttpResource(location = "/users")
     List<ShortUser> getAll();
 
-    @Get
-    @HttpResource(location = "/users/{nameLike}/{page}/{entries}")
-    List<ShortUser> getList(@WebParam(name = "nameLike") String nameLike,
-        @WebParam(name = "page") Integer page,
-        @WebParam(name = "entries") Integer entries);
+    List<ShortUser> getList(String nameLike, Integer page, Integer entries);
 
-    @Get
-    @HttpResource(location = "/userscount/{nameLike}")
-    long getCount(@WebParam(name = "nameLike") String nameLike);
+    long getCount(String nameLike);
 }
