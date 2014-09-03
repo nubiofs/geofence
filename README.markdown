@@ -35,9 +35,9 @@ Once you have downloaded the resources you need, please follow the instructions 
 
 Documentation
 ==================================================
-* [How to build GeoFence](https://github.com/geosolutions-it/geofence/wiki/Building-instructions)
 * [How to install GeoFence](https://github.com/geosolutions-it/geofence/wiki/GeoFence-installation)
 * [How to configure GeoFence](https://github.com/geosolutions-it/geofence/wiki/WebApps-configuration)
+* [How to build GeoFence](https://github.com/geosolutions-it/geofence/wiki/Building-instructions)
 
 Community
 ==================================================
