@@ -1,36 +1,9 @@
-/*
- * $ Header: it.geosolutions.geofence.gui.client.controller.RulesController,v. 0.1 31-gen-2011 13.41.27 created by afabiani <alessio.fabiani at geo-solutions.it> $
- * $ Revision: 0.1 $
- * $ Date: 31-gen-2011 13.41.27 $
- *
- * ====================================================================
- *
- * Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
- * http://www.geo-solutions.it
- *
- * GPLv3 + Classpath exception
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.
- *
- * ====================================================================
- *
- * This software consists of voluntary contributions made by developers
- * of GeoSolutions.  For more information on GeoSolutions, please see
- * <http://www.geo-solutions.it/>.
- *
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
  */
-package it.geosolutions.geofence.gui.client.controller;
+
+package org.geoserver.geofence.gui.client.controller;
 
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.mvc.AppEvent;
@@ -39,13 +12,13 @@ import com.extjs.gxt.ui.client.mvc.Dispatcher;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import it.geosolutions.geofence.gui.client.GeofenceEvents;
-import it.geosolutions.geofence.gui.client.model.GSInstance;
-import it.geosolutions.geofence.gui.client.service.InstancesManagerRemoteServiceAsync;
-import it.geosolutions.geofence.gui.client.view.InstancesView;
-import it.geosolutions.geofence.gui.client.widget.InstanceGridWidget;
-import it.geosolutions.geofence.gui.client.widget.tab.InstancesTabItem;
-import it.geosolutions.geofence.gui.client.widget.tab.TabWidget;
+import org.geoserver.geofence.gui.client.GeofenceEvents;
+import org.geoserver.geofence.gui.client.model.GSInstance;
+import org.geoserver.geofence.gui.client.service.InstancesManagerRemoteServiceAsync;
+import org.geoserver.geofence.gui.client.view.InstancesView;
+import org.geoserver.geofence.gui.client.widget.InstanceGridWidget;
+import org.geoserver.geofence.gui.client.widget.tab.InstancesTabItem;
+import org.geoserver.geofence.gui.client.widget.tab.TabWidget;
 
 
 // TODO: Auto-generated Javadoc

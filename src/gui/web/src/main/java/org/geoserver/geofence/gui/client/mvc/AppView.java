@@ -1,42 +1,19 @@
-/*
- * ====================================================================
- *
- * Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
- * http://www.geo-solutions.it
- *
- * GPLv3 + Classpath exception
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.
- *
- * ====================================================================
- *
- * This software consists of voluntary contributions made by developers
- * of GeoSolutions.  For more information on GeoSolutions, please see
- * <http://www.geo-solutions.it/>.
- *
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
  */
-package it.geosolutions.geofence.gui.client.mvc;
 
-import it.geosolutions.geofence.gui.client.Constants;
-import it.geosolutions.geofence.gui.client.GeofenceEvents;
-import it.geosolutions.geofence.gui.client.GeofenceUtils;
-import it.geosolutions.geofence.gui.client.action.application.LogoutAction;
-//import it.geosolutions.geofence.gui.client.action.toolbar.UpdateUsersAction;
-import it.geosolutions.geofence.gui.client.configuration.ConfigurationMainUI;
-import it.geosolutions.geofence.gui.client.configuration.GeofenceGlobalConfiguration;
-import it.geosolutions.geofence.gui.client.i18n.I18nProvider;
-import it.geosolutions.geofence.gui.client.widget.tab.TabWidget;
+package org.geoserver.geofence.gui.client.mvc;
+
+import org.geoserver.geofence.gui.client.Constants;
+import org.geoserver.geofence.gui.client.GeofenceEvents;
+import org.geoserver.geofence.gui.client.GeofenceUtils;
+import org.geoserver.geofence.gui.client.action.application.LogoutAction;
+//import org.geoserver.geofence.gui.client.action.toolbar.UpdateUsersAction;
+import org.geoserver.geofence.gui.client.configuration.ConfigurationMainUI;
+import org.geoserver.geofence.gui.client.configuration.GeofenceGlobalConfiguration;
+import org.geoserver.geofence.gui.client.i18n.I18nProvider;
+import org.geoserver.geofence.gui.client.widget.tab.TabWidget;
 import it.geosolutions.geogwt.gui.client.GeoGWTEvents;
 import it.geosolutions.geogwt.gui.client.GeoGWTUtils;
 import it.geosolutions.geogwt.gui.client.ToolbarItemManager;

@@ -1,45 +1,18 @@
-/*
- * $ Header: it.geosolutions.geofence.gui.client.widget.rule.detail.RuleDetailsGridWidget,v. 0.1 25-feb-2011 16.30.38 created by afabiani <alessio.fabiani at geo-solutions.it> $
- * $ Revision: 0.1 $
- * $ Date: 25-feb-2011 16.30.38 $
- *
- * ====================================================================
- *
- * Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
- * http://www.geo-solutions.it
- *
- * GPLv3 + Classpath exception
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.
- *
- * ====================================================================
- *
- * This software consists of voluntary contributions made by developers
- * of GeoSolutions.  For more information on GeoSolutions, please see
- * <http://www.geo-solutions.it/>.
- *
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
  */
-package it.geosolutions.geofence.gui.client.widget.rule.detail;
 
-import it.geosolutions.geofence.gui.client.GeofenceEvents;
-import it.geosolutions.geofence.gui.client.i18n.I18nProvider;
-import it.geosolutions.geofence.gui.client.model.BeanKeyValue;
-import it.geosolutions.geofence.gui.client.model.GSUser;
-import it.geosolutions.geofence.gui.client.model.UserGroup;
-import it.geosolutions.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
-import it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
-import it.geosolutions.geofence.gui.client.widget.GeofenceGridWidget;
+package org.geoserver.geofence.gui.client.widget.rule.detail;
+
+import org.geoserver.geofence.gui.client.GeofenceEvents;
+import org.geoserver.geofence.gui.client.i18n.I18nProvider;
+import org.geoserver.geofence.gui.client.model.BeanKeyValue;
+import org.geoserver.geofence.gui.client.model.GSUser;
+import org.geoserver.geofence.gui.client.model.UserGroup;
+import org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
+import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
+import org.geoserver.geofence.gui.client.widget.GeofenceGridWidget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,7 +90,7 @@ public class ProfilesGridWidget extends GeofenceGridWidget<UserGroup>
 
     /*
      * (non-Javadoc)
-     * @see it.geosolutions.geofence.gui.client.widget.GEOFENCEGridWidget#setGridProperties ()
+     * @see org.geoserver.geofence.gui.client.widget.GEOFENCEGridWidget#setGridProperties ()
      */
     @Override
     public void setGridProperties()
@@ -140,7 +113,7 @@ public class ProfilesGridWidget extends GeofenceGridWidget<UserGroup>
     /*
      * (non-Javadoc)
      *
-     * @see it.geosolutions.geofence.gui.client.widget.GEOFENCEGridWidget#createStore()
+     * @see org.geoserver.geofence.gui.client.widget.GEOFENCEGridWidget#createStore()
      */
     @Override
     public void createStore()
@@ -217,7 +190,7 @@ public class ProfilesGridWidget extends GeofenceGridWidget<UserGroup>
     }
 
     /* (non-Javadoc)
-     * @see it.geosolutions.geofence.gui.client.widget.GeofenceGridWidget#prepareColumnModel()
+     * @see org.geoserver.geofence.gui.client.widget.GeofenceGridWidget#prepareColumnModel()
      */
     @Override
     public ColumnModel prepareColumnModel()

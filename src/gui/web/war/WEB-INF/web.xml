@@ -37,7 +37,7 @@
 	<!-- CUSOM Authentication Filter -->
     <filter>
      <filter-name>Georepository CUSTOM security filter</filter-name>
-     <filter-class>it.geosolutions.geofence.gui.AuthenticationFilter</filter-class>
+     <filter-class>org.geoserver.geofence.gui.AuthenticationFilter</filter-class>
     </filter>
 
     <filter-mapping>
@@ -48,7 +48,7 @@
     <!-- Standard Context -->
 	<servlet>
 		<servlet-name>ConfigurationRemote</servlet-name>
-		<servlet-class>it.geosolutions.geofence.gui.server.gwt.ConfigurationRemoteImpl</servlet-class>
+		<servlet-class>org.geoserver.geofence.gui.server.gwt.ConfigurationRemoteImpl</servlet-class>
 		<load-on-startup>1</load-on-startup>
 
 	</servlet>
@@ -60,7 +60,7 @@
 
 	<servlet>
 		<servlet-name>LoginRemoteService</servlet-name>
-		<servlet-class>it.geosolutions.geofence.gui.server.gwt.LoginRemoteServiceImpl</servlet-class>
+		<servlet-class>org.geoserver.geofence.gui.server.gwt.LoginRemoteServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>LoginRemoteService</servlet-name>
@@ -81,7 +81,7 @@
 	<!-- *****************************************************************************************  -->
 	<servlet>
 		<servlet-name>GsUsersManagerRemoteService</servlet-name>
-		<servlet-class>it.geosolutions.geofence.gui.server.gwt.GsUsersManagerServiceImpl</servlet-class>
+		<servlet-class>org.geoserver.geofence.gui.server.gwt.GsUsersManagerServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>GsUsersManagerRemoteService</servlet-name>
@@ -90,7 +90,7 @@
 
 	<servlet>
 		<servlet-name>ProfilesManagerRemoteService</servlet-name>
-		<servlet-class>it.geosolutions.geofence.gui.server.gwt.ProfilesManagerServiceImpl</servlet-class>
+		<servlet-class>org.geoserver.geofence.gui.server.gwt.ProfilesManagerServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>ProfilesManagerRemoteService</servlet-name>
@@ -99,7 +99,7 @@
 
 	<servlet>
 		<servlet-name>InstancesManagerRemoteService</servlet-name>
-		<servlet-class>it.geosolutions.geofence.gui.server.gwt.InstancesManagerRemoteServiceImpl</servlet-class>
+		<servlet-class>org.geoserver.geofence.gui.server.gwt.InstancesManagerRemoteServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>InstancesManagerRemoteService</servlet-name>
@@ -108,7 +108,7 @@
 	
 	<servlet>
 		<servlet-name>RulesManagerRemoteService</servlet-name>
-		<servlet-class>it.geosolutions.geofence.gui.server.gwt.RulesManagerServiceImpl</servlet-class>
+		<servlet-class>org.geoserver.geofence.gui.server.gwt.RulesManagerServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>RulesManagerRemoteService</servlet-name>
@@ -117,7 +117,7 @@
 
 	<servlet>
 		<servlet-name>WorkspacesManagerRemoteService</servlet-name>
-		<servlet-class>it.geosolutions.geofence.gui.server.gwt.WorkspacesManagerServiceImpl</servlet-class>
+		<servlet-class>org.geoserver.geofence.gui.server.gwt.WorkspacesManagerServiceImpl</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>WorkspacesManagerRemoteService</servlet-name>
@@ -135,7 +135,7 @@
 
 	<servlet>
 		<servlet-name>uploadServlet</servlet-name>
-		<servlet-class>it.geosolutions.geofence.gui.server.UploadServlet</servlet-class>
+		<servlet-class>org.geoserver.geofence.gui.server.UploadServlet</servlet-class>
 	</servlet>
 
 	<servlet-mapping>

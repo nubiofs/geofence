@@ -1,48 +1,21 @@
-/*
- * $ Header: it.geosolutions.geofence.gui.server.gwt.ProfilesManagerServiceImpl,v. 0.1 10-feb-2011 17.06.19 created by afabiani <alessio.fabiani at geo-solutions.it> $
- * $ Revision: 0.1 $
- * $ Date: 10-feb-2011 17.06.19 $
- *
- * ====================================================================
- *
- * Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
- * http://www.geo-solutions.it
- *
- * GPLv3 + Classpath exception
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.
- *
- * ====================================================================
- *
- * This software consists of voluntary contributions made by developers
- * of GeoSolutions.  For more information on GeoSolutions, please see
- * <http://www.geo-solutions.it/>.
- *
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
  */
-package it.geosolutions.geofence.gui.server.gwt;
+
+package org.geoserver.geofence.gui.server.gwt;
 
 import java.util.List;
 
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-import it.geosolutions.geofence.gui.client.ApplicationException;
-import it.geosolutions.geofence.gui.client.model.UserGroup;
-import it.geosolutions.geofence.gui.client.model.data.ProfileCustomProps;
-import it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteService;
-import it.geosolutions.geofence.gui.server.service.IProfilesManagerService;
-import it.geosolutions.geofence.gui.spring.ApplicationContextUtil;
+import org.geoserver.geofence.gui.client.ApplicationException;
+import org.geoserver.geofence.gui.client.model.UserGroup;
+import org.geoserver.geofence.gui.client.model.data.ProfileCustomProps;
+import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteService;
+import org.geoserver.geofence.gui.server.service.IProfilesManagerService;
+import org.geoserver.geofence.gui.spring.ApplicationContextUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +47,7 @@ public class ProfilesManagerServiceImpl extends RemoteServiceServlet implements 
     }
 
     /* (non-Javadoc)
-     * @see it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteService#getProfiles(com.extjs.gxt.ui.client.data.PagingLoadConfig)
+     * @see org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteService#getProfiles(com.extjs.gxt.ui.client.data.PagingLoadConfig)
      */
     public PagingLoadResult<UserGroup> getProfiles(int offset, int limit, boolean full) throws ApplicationException
     {
@@ -82,7 +55,7 @@ public class ProfilesManagerServiceImpl extends RemoteServiceServlet implements 
     }
 
     /* (non-Javadoc)
-     * @see it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteService#deleteProfile(it.geosolutions.geofence.gui.client.model.Profile)
+     * @see org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteService#deleteProfile(org.geoserver.geofence.gui.client.model.Profile)
      */
     public void deleteProfile(UserGroup profile) throws ApplicationException
     {
@@ -90,7 +63,7 @@ public class ProfilesManagerServiceImpl extends RemoteServiceServlet implements 
     }
 
     /* (non-Javadoc)
-     * @see it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteService#saveProfile(it.geosolutions.geofence.gui.client.model.Profile)
+     * @see org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteService#saveProfile(org.geoserver.geofence.gui.client.model.Profile)
      */
     public void saveProfile(UserGroup profile) throws ApplicationException
     {
@@ -98,7 +71,7 @@ public class ProfilesManagerServiceImpl extends RemoteServiceServlet implements 
     }
 
     /* (non-Javadoc)
-     * @see it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteService#getProfileCustomProps(com.extjs.gxt.ui.client.data.PagingLoadConfig, it.geosolutions.geofence.gui.client.model.Rule)
+     * @see org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteService#getProfileCustomProps(com.extjs.gxt.ui.client.data.PagingLoadConfig, org.geoserver.geofence.gui.client.model.Rule)
      */
     public PagingLoadResult<ProfileCustomProps> getProfileCustomProps(int offset, int limit,
         UserGroup profile) throws ApplicationException
@@ -107,7 +80,7 @@ public class ProfilesManagerServiceImpl extends RemoteServiceServlet implements 
     }
 
     /* (non-Javadoc)
-     * @see it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteService#setProfileProps(java.lang.Long, java.util.List)
+     * @see org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteService#setProfileProps(java.lang.Long, java.util.List)
      */
     public void setProfileProps(Long profileId, List<ProfileCustomProps> customProps) throws ApplicationException
     {

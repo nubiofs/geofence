@@ -1,40 +1,18 @@
-/* ====================================================================
- *
- * Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
- * http://www.geo-solutions.it
- *
- * GPLv3 + Classpath exception
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.
- *
- * ====================================================================
- *
- * This software consists of voluntary contributions made by developers
- * of GeoSolutions.  For more information on GeoSolutions, please see
- * <http://www.geo-solutions.it/>.
- *
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
  */
-package it.geosolutions.geofence.gui.client.widget.rule.detail;
 
-import it.geosolutions.geofence.gui.client.GeofenceEvents;
-import it.geosolutions.geofence.gui.client.i18n.I18nProvider;
-import it.geosolutions.geofence.gui.client.model.BeanKeyValue;
-import it.geosolutions.geofence.gui.client.model.Rule;
-import it.geosolutions.geofence.gui.client.model.data.LayerDetailsInfo;
-import it.geosolutions.geofence.gui.client.model.data.LayerStyle;
-import it.geosolutions.geofence.gui.client.service.WorkspacesManagerRemoteServiceAsync;
-import it.geosolutions.geofence.gui.client.widget.GeofenceFormBindingWidget;
+package org.geoserver.geofence.gui.client.widget.rule.detail;
+
+import org.geoserver.geofence.gui.client.GeofenceEvents;
+import org.geoserver.geofence.gui.client.i18n.I18nProvider;
+import org.geoserver.geofence.gui.client.model.BeanKeyValue;
+import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.data.LayerDetailsInfo;
+import org.geoserver.geofence.gui.client.model.data.LayerStyle;
+import org.geoserver.geofence.gui.client.service.WorkspacesManagerRemoteServiceAsync;
+import org.geoserver.geofence.gui.client.widget.GeofenceFormBindingWidget;
 import it.geosolutions.geogwt.gui.client.Resources;
 
 import java.util.List;
@@ -58,7 +36,7 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import it.geosolutions.geofence.gui.client.model.data.ClientCatalogMode;
+import org.geoserver.geofence.gui.client.model.data.ClientCatalogMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -123,7 +101,7 @@ public class RuleDetailsInfoWidget extends GeofenceFormBindingWidget<LayerDetail
     }
 
     /* (non-Javadoc)
-     * @see it.geosolutions.geofence.gui.client.widget.GeofenceFormBindingWidget#createFormPanel()
+     * @see org.geoserver.geofence.gui.client.widget.GeofenceFormBindingWidget#createFormPanel()
      */
     @Override
     public FormPanel createFormPanel()

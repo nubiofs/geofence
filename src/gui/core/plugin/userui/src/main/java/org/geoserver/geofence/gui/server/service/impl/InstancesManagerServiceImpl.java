@@ -1,45 +1,18 @@
-/*
- * $ Header: it.geosolutions.geofence.gui.server.service.impl.InstancesManagerServiceImpl,v. 0.1 28-gen-2011 11.33.07 created by afabiani <alessio.fabiani at geo-solutions.it> $
- * $ Revision: 0.1 $
- * $ Date: 28-gen-2011 11.33.07 $
- *
- * ====================================================================
- *
- * Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
- * http://www.geo-solutions.it
- *
- * GPLv3 + Classpath exception
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.
- *
- * ====================================================================
- *
- * This software consists of voluntary contributions made by developers
- * of GeoSolutions.  For more information on GeoSolutions, please see
- * <http://www.geo-solutions.it/>.
- *
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
  */
-package it.geosolutions.geofence.gui.server.service.impl;
 
-import it.geosolutions.geofence.gui.client.ApplicationException;
-import it.geosolutions.geofence.gui.client.model.GSInstance;
-import it.geosolutions.geofence.gui.client.model.data.rpc.RpcPageLoadResult;
-import it.geosolutions.geofence.gui.server.service.IInstancesManagerService;
-import it.geosolutions.geofence.gui.service.GeofenceRemoteService;
-import it.geosolutions.geofence.services.dto.ShortInstance;
-import it.geosolutions.geofence.services.exception.BadRequestServiceEx;
-import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
+package org.geoserver.geofence.gui.server.service.impl;
+
+import org.geoserver.geofence.gui.client.ApplicationException;
+import org.geoserver.geofence.gui.client.model.GSInstance;
+import org.geoserver.geofence.gui.client.model.data.rpc.RpcPageLoadResult;
+import org.geoserver.geofence.gui.server.service.IInstancesManagerService;
+import org.geoserver.geofence.gui.service.GeofenceRemoteService;
+import org.geoserver.geofence.services.dto.ShortInstance;
+import org.geoserver.geofence.services.exception.BadRequestServiceEx;
+import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 
 import java.io.IOException;
@@ -82,7 +55,7 @@ public class InstancesManagerServiceImpl implements IInstancesManagerService {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * it.geosolutions.geofence.gui.server.service.IInstancesManagerService#
+	 * org.geoserver.geofence.gui.server.service.IInstancesManagerService#
 	 * getInstances(com.extjs.gxt.ui.client.data.PagingLoadConfig)
 	 */
 	public PagingLoadResult<GSInstance> getInstances(int offset, int limit,
@@ -120,7 +93,7 @@ public class InstancesManagerServiceImpl implements IInstancesManagerService {
 
 		while (it.hasNext()) {
             long id = it.next().getId();
-			it.geosolutions.geofence.core.model.GSInstance remote =
+			org.geoserver.geofence.core.model.GSInstance remote =
                     geofenceRemoteService.getInstanceAdminService().get(id);
 
 			GSInstance local = new GSInstance();
@@ -145,7 +118,7 @@ public class InstancesManagerServiceImpl implements IInstancesManagerService {
 	 * @return
 	 */
 	public GSInstance getInstance(int offset, int limit, long id) {
-		it.geosolutions.geofence.core.model.GSInstance remote_instance = geofenceRemoteService
+		org.geoserver.geofence.core.model.GSInstance remote_instance = geofenceRemoteService
 				.getInstanceAdminService().get(id);
 		if (remote_instance == null) {
 			if (logger.isErrorEnabled()) {
@@ -169,11 +142,11 @@ public class InstancesManagerServiceImpl implements IInstancesManagerService {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * it.geosolutions.geofence.gui.server.service.IInstancesManagerService#
-	 * deleteInstance(it.geosolutions.geofence.gui.client.model.Instance)
+	 * org.geoserver.geofence.gui.server.service.IInstancesManagerService#
+	 * deleteInstance(org.geoserver.geofence.gui.client.model.Instance)
 	 */
 	public void deleteInstance(GSInstance instance) {
-		it.geosolutions.geofence.core.model.GSInstance remote_instance = null;
+		org.geoserver.geofence.core.model.GSInstance remote_instance = null;
 		try {
 			remote_instance = geofenceRemoteService.getInstanceAdminService()
 					.get(instance.getId());
@@ -187,7 +160,7 @@ public class InstancesManagerServiceImpl implements IInstancesManagerService {
 	}
 
 
-	public void testConnection(it.geosolutions.geofence.gui.client.model.GSInstance instance) throws ApplicationException {
+	public void testConnection(org.geoserver.geofence.gui.client.model.GSInstance instance) throws ApplicationException {
 		try {
 			String response = getURL(instance.getBaseURL() + "/rest/geofence/info", instance.getUsername(), instance.getPassword());
 			if(response != null) {
@@ -260,11 +233,11 @@ public class InstancesManagerServiceImpl implements IInstancesManagerService {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * it.geosolutions.geofence.gui.server.service.IInstancesManagerService#
-	 * saveInstance(it.geosolutions.geofence.gui.client.model.Instance)
+	 * org.geoserver.geofence.gui.server.service.IInstancesManagerService#
+	 * saveInstance(org.geoserver.geofence.gui.client.model.Instance)
 	 */
 	public void saveInstance(GSInstance instance) {
-		it.geosolutions.geofence.core.model.GSInstance remote_instance = null;
+		org.geoserver.geofence.core.model.GSInstance remote_instance = null;
 		if (instance.getId() >= 0) {
 			try {
 				remote_instance = geofenceRemoteService
@@ -284,7 +257,7 @@ public class InstancesManagerServiceImpl implements IInstancesManagerService {
 			}
 		} else {
 			try {
-				remote_instance = new it.geosolutions.geofence.core.model.GSInstance();
+				remote_instance = new org.geoserver.geofence.core.model.GSInstance();
 				remote_instance.setName(instance.getName());
 				remote_instance.setDateCreation(instance.getDateCreation());
 				remote_instance.setDescription(instance.getDescription());

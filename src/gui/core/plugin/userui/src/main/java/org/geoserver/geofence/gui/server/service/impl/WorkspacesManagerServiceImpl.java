@@ -1,36 +1,9 @@
-/*
- * $ Header: it.geosolutions.geofence.gui.server.service.impl.WorkspacesManagerServiceImpl,v. 0.1 28-gen-2011 18.38.29 created by afabiani <alessio.fabiani at geo-solutions.it> $
- * $ Revision: 0.1 $
- * $ Date: 28-gen-2011 18.38.29 $
- *
- * ====================================================================
- *
- * Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
- * http://www.geo-solutions.it
- *
- * GPLv3 + Classpath exception
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.
- *
- * ====================================================================
- *
- * This software consists of voluntary contributions made by developers
- * of GeoSolutions.  For more information on GeoSolutions, please see
- * <http://www.geo-solutions.it/>.
- *
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
  */
-package it.geosolutions.geofence.gui.server.service.impl;
+
+package org.geoserver.geofence.gui.server.service.impl;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -40,18 +13,18 @@ import java.util.Set;
 
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
-import it.geosolutions.geofence.core.model.LayerDetails;
-import it.geosolutions.geofence.gui.client.ApplicationException;
-import it.geosolutions.geofence.gui.client.configuration.WorkspaceConfigOpts;
-import it.geosolutions.geofence.gui.client.model.GSInstance;
-import it.geosolutions.geofence.gui.client.model.Rule;
-import it.geosolutions.geofence.gui.client.model.data.Layer;
-import it.geosolutions.geofence.gui.client.model.data.LayerStyle;
-import it.geosolutions.geofence.gui.client.model.data.Workspace;
-import it.geosolutions.geofence.gui.client.model.data.rpc.RpcPageLoadResult;
-import it.geosolutions.geofence.gui.server.service.IWorkspacesManagerService;
-import it.geosolutions.geofence.gui.service.GeofenceRemoteService;
-import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
+import org.geoserver.geofence.core.model.LayerDetails;
+import org.geoserver.geofence.gui.client.ApplicationException;
+import org.geoserver.geofence.gui.client.configuration.WorkspaceConfigOpts;
+import org.geoserver.geofence.gui.client.model.GSInstance;
+import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.data.Layer;
+import org.geoserver.geofence.gui.client.model.data.LayerStyle;
+import org.geoserver.geofence.gui.client.model.data.Workspace;
+import org.geoserver.geofence.gui.client.model.data.rpc.RpcPageLoadResult;
+import org.geoserver.geofence.gui.server.service.IWorkspacesManagerService;
+import org.geoserver.geofence.gui.service.GeofenceRemoteService;
+import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 import it.geosolutions.geoserver.rest.decoder.RESTAbstractList;
 import it.geosolutions.geoserver.rest.decoder.RESTLayer;
@@ -91,7 +64,7 @@ public class WorkspacesManagerServiceImpl implements IWorkspacesManagerService
      * (non-Javadoc)
      *
      * @see
-     * it.geosolutions.geofence.gui.server.service.IWorkspacesManagerService#getWorkspaces(com.extjs
+     * org.geoserver.geofence.gui.server.service.IWorkspacesManagerService#getWorkspaces(com.extjs
      * .gxt.ui.client.data.PagingLoadConfig, java.lang.String)
      */
     public PagingLoadResult<Workspace> getWorkspaces(int offset, int limit, String remoteURL,
@@ -133,7 +106,7 @@ public class WorkspacesManagerServiceImpl implements IWorkspacesManagerService
      * (non-Javadoc)
      *
      * @see
-     * it.geosolutions.geofence.gui.server.service.IWorkspacesManagerService#getLayers(com.extjs.
+     * org.geoserver.geofence.gui.server.service.IWorkspacesManagerService#getLayers(com.extjs.
      * gxt.ui.client.data.PagingLoadConfig, java.lang.String, java.lang.String)
      */
     public PagingLoadResult<Layer> getLayers(int offset, int limit, String baseURL,
@@ -209,7 +182,7 @@ public class WorkspacesManagerServiceImpl implements IWorkspacesManagerService
      * (non-Javadoc)
      *
      * @see
-     * it.geosolutions.geofence.gui.server.service.IWorkspacesManagerService#getStyles(it.geosolutions
+     * org.geoserver.geofence.gui.server.service.IWorkspacesManagerService#getStyles(org.geoserver
      * .geofence.gui.client.model.GSInstance)
      */
     public List<LayerStyle> getStyles(Rule rule) throws ApplicationException

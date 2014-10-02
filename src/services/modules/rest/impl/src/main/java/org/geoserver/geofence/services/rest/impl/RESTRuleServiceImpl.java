@@ -1,51 +1,37 @@
-/*
- *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
- *  http://www.geo-solutions.it
- *
- *  GPLv3 + Classpath exception
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
  */
-package it.geosolutions.geofence.services.rest.impl;
+
+package org.geoserver.geofence.services.rest.impl;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
-import it.geosolutions.geofence.core.model.LayerAttribute;
-import it.geosolutions.geofence.core.model.LayerDetails;
-import it.geosolutions.geofence.core.model.Rule;
+import org.geoserver.geofence.core.model.LayerAttribute;
+import org.geoserver.geofence.core.model.LayerDetails;
+import org.geoserver.geofence.core.model.Rule;
 
-import it.geosolutions.geofence.core.model.enums.InsertPosition;
-import it.geosolutions.geofence.services.dto.RuleFilter;
-import it.geosolutions.geofence.services.dto.RuleFilter.IdNameFilter;
-import it.geosolutions.geofence.services.dto.RuleFilter.TextFilter;
-import it.geosolutions.geofence.services.dto.RuleFilter.SpecialFilterType;
-import it.geosolutions.geofence.services.exception.BadRequestServiceEx;
-import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
-import it.geosolutions.geofence.services.rest.RESTRuleService;
-import it.geosolutions.geofence.services.rest.exception.BadRequestRestEx;
-import it.geosolutions.geofence.services.rest.exception.GeoFenceRestEx;
-import it.geosolutions.geofence.services.rest.exception.InternalErrorRestEx;
-import it.geosolutions.geofence.services.rest.exception.NotFoundRestEx;
-import it.geosolutions.geofence.services.rest.model.RESTInputRule;
-import it.geosolutions.geofence.services.rest.model.RESTInputRule.RESTRulePosition.RulePosition;
-import it.geosolutions.geofence.services.rest.model.RESTLayerConstraints;
-import it.geosolutions.geofence.services.rest.model.RESTOutputRule;
-import it.geosolutions.geofence.services.rest.model.RESTOutputRuleList;
-import it.geosolutions.geofence.services.rest.model.config.RESTFullRuleList;
-import it.geosolutions.geofence.services.rest.model.util.IdName;
+import org.geoserver.geofence.core.model.enums.InsertPosition;
+import org.geoserver.geofence.services.dto.RuleFilter;
+import org.geoserver.geofence.services.dto.RuleFilter.IdNameFilter;
+import org.geoserver.geofence.services.dto.RuleFilter.TextFilter;
+import org.geoserver.geofence.services.dto.RuleFilter.SpecialFilterType;
+import org.geoserver.geofence.services.exception.BadRequestServiceEx;
+import org.geoserver.geofence.services.exception.NotFoundServiceEx;
+import org.geoserver.geofence.services.rest.RESTRuleService;
+import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
+import org.geoserver.geofence.services.rest.exception.GeoFenceRestEx;
+import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
+import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
+import org.geoserver.geofence.services.rest.model.RESTInputRule;
+import org.geoserver.geofence.services.rest.model.RESTInputRule.RESTRulePosition.RulePosition;
+import org.geoserver.geofence.services.rest.model.RESTLayerConstraints;
+import org.geoserver.geofence.services.rest.model.RESTOutputRule;
+import org.geoserver.geofence.services.rest.model.RESTOutputRuleList;
+import org.geoserver.geofence.services.rest.model.config.RESTFullRuleList;
+import org.geoserver.geofence.services.rest.model.util.IdName;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

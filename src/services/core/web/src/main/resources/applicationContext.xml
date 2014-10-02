@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+
+-->
+
 <beans xmlns="http://www.springframework.org/schema/beans"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	   xmlns:context="http://www.springframework.org/schema/context"
@@ -23,7 +32,7 @@
     <!-- Some extra bean here: we're replacing some functionalities we do not need in test -->
     <!-- ====================================================================-->
 
-<!--    <bean id="fakeRegistrationHandler" class="it.geosolutions.geofence.util.FakeUserRegistrationHandler">
+<!--    <bean id="fakeRegistrationHandler" class="org.geoserver.geofence.util.FakeUserRegistrationHandler">
         <property name="registrationDao" ref="registrationDAO"/>
     </bean>
 
@@ -50,7 +59,7 @@
 
 	<!-- Services -->
     <!-- Already defined in the appcontext of its own module -->
-<!--	<bean id="dgwatchService" class="it.geosolutions.geofence.services.DGWatchServiceImpl">
+<!--	<bean id="dgwatchService" class="org.geoserver.geofence.services.DGWatchServiceImpl">
 		<property name="aoiDao" ref="aoiDAO"/>
 		<property name="userDao" ref="userDAO"/>
 		<property name="aoiUserPrefsDao" ref="aoiUserPrefsDAO"/>
@@ -62,7 +71,7 @@
     
     <!-- Service endpoint -->
     <jaxws:endpoint id="dgwatchServiceSOAP"
-    	implementorClass="it.geosolutions.geofence.services.DGWatchServiceImpl"
+    	implementorClass="org.geoserver.geofence.services.DGWatchServiceImpl"
     	implementor="#dgwatchService"
     	address="/soap">
         <jaxws:serviceFactory>
@@ -80,7 +89,7 @@
 	</jaxws:endpoint>	
 
     <jaxws:endpoint id="dgwatchServiceXML"
-    	implementorClass="it.geosolutions.geofence.services.DGWatchServiceImpl"
+    	implementorClass="org.geoserver.geofence.services.DGWatchServiceImpl"
     	implementor="#dgwatchService"
     	address="/xml"
     	bindingUri="http://apache.org/cxf/binding/http">
@@ -92,7 +101,7 @@
 	</jaxws:endpoint>
 
     <jaxws:endpoint id="dgwatchServiceJSON"
-    	implementorClass="it.geosolutions.geofence.services.DGWatchServiceImpl"
+    	implementorClass="org.geoserver.geofence.services.DGWatchServiceImpl"
     	implementor="#dgwatchService"
     	address="/json"
     	bindingUri="http://apache.org/cxf/binding/http">

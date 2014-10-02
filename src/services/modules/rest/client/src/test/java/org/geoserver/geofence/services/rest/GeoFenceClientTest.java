@@ -1,35 +1,23 @@
-/*
- *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
- *  http://www.geo-solutions.it
- *
- *  GPLv3 + Classpath exception
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
  */
-package it.geosolutions.geofence.services.rest;
 
-import it.geosolutions.geofence.core.model.enums.GrantType;
-import it.geosolutions.geofence.services.dto.RuleFilter;
-import it.geosolutions.geofence.services.dto.ShortGroup;
-import it.geosolutions.geofence.services.dto.ShortInstance;
-import it.geosolutions.geofence.services.rest.model.RESTInputGroup;
-import it.geosolutions.geofence.services.rest.model.RESTInputRule;
-import it.geosolutions.geofence.services.rest.model.RESTInputUser;
-import it.geosolutions.geofence.services.rest.model.RESTOutputRule;
-import it.geosolutions.geofence.services.rest.model.RESTOutputRuleList;
-import it.geosolutions.geofence.services.rest.model.RESTShortUser;
-import it.geosolutions.geofence.services.rest.model.util.IdName;
+package org.geoserver.geofence.services.rest;
+
+import org.geoserver.geofence.services.rest.RuleServiceHelper;
+import org.geoserver.geofence.services.rest.GeoFenceClient;
+import org.geoserver.geofence.core.model.enums.GrantType;
+import org.geoserver.geofence.services.dto.RuleFilter;
+import org.geoserver.geofence.services.dto.ShortGroup;
+import org.geoserver.geofence.services.dto.ShortInstance;
+import org.geoserver.geofence.services.rest.model.RESTInputGroup;
+import org.geoserver.geofence.services.rest.model.RESTInputRule;
+import org.geoserver.geofence.services.rest.model.RESTInputUser;
+import org.geoserver.geofence.services.rest.model.RESTOutputRule;
+import org.geoserver.geofence.services.rest.model.RESTOutputRuleList;
+import org.geoserver.geofence.services.rest.model.RESTShortUser;
+import org.geoserver.geofence.services.rest.model.util.IdName;
 import java.net.ConnectException;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;

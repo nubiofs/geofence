@@ -1,41 +1,27 @@
-/*
- *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
- *  http://www.geo-solutions.it
- *
- *  GPLv3 + Classpath exception
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
  */
-package it.geosolutions.geofence.services.rest.impl;
 
-import it.geosolutions.geofence.services.rest.RESTBatchService;
-import it.geosolutions.geofence.services.rest.RESTGSInstanceService;
-import it.geosolutions.geofence.services.rest.RESTRuleService;
-import it.geosolutions.geofence.services.rest.RESTUserGroupService;
-import it.geosolutions.geofence.services.rest.RESTUserService;
-import it.geosolutions.geofence.services.rest.exception.BadRequestRestEx;
-import it.geosolutions.geofence.services.rest.exception.ConflictRestEx;
-import it.geosolutions.geofence.services.rest.exception.GeoFenceRestEx;
-import it.geosolutions.geofence.services.rest.exception.InternalErrorRestEx;
-import it.geosolutions.geofence.services.rest.exception.NotFoundRestEx;
-import it.geosolutions.geofence.services.rest.model.RESTBatch;
-import it.geosolutions.geofence.services.rest.model.RESTBatchOperation;
-import it.geosolutions.geofence.services.rest.model.RESTInputGroup;
-import it.geosolutions.geofence.services.rest.model.RESTInputInstance;
-import it.geosolutions.geofence.services.rest.model.RESTInputRule;
-import it.geosolutions.geofence.services.rest.model.RESTInputUser;
-import it.geosolutions.geofence.services.rest.model.util.IdName;
+package org.geoserver.geofence.services.rest.impl;
+
+import org.geoserver.geofence.services.rest.RESTBatchService;
+import org.geoserver.geofence.services.rest.RESTGSInstanceService;
+import org.geoserver.geofence.services.rest.RESTRuleService;
+import org.geoserver.geofence.services.rest.RESTUserGroupService;
+import org.geoserver.geofence.services.rest.RESTUserService;
+import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
+import org.geoserver.geofence.services.rest.exception.ConflictRestEx;
+import org.geoserver.geofence.services.rest.exception.GeoFenceRestEx;
+import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
+import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
+import org.geoserver.geofence.services.rest.model.RESTBatch;
+import org.geoserver.geofence.services.rest.model.RESTBatchOperation;
+import org.geoserver.geofence.services.rest.model.RESTInputGroup;
+import org.geoserver.geofence.services.rest.model.RESTInputInstance;
+import org.geoserver.geofence.services.rest.model.RESTInputRule;
+import org.geoserver.geofence.services.rest.model.RESTInputUser;
+import org.geoserver.geofence.services.rest.model.util.IdName;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 

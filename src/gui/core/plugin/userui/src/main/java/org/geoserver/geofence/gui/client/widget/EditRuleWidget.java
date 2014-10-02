@@ -1,51 +1,29 @@
-/* ====================================================================
- *
- * Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
- * http://www.geo-solutions.it
- *
- * GPLv3 + Classpath exception
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.
- *
- * ====================================================================
- *
- * This software consists of voluntary contributions made by developers
- * of GeoSolutions.  For more information on GeoSolutions, please see
- * <http://www.geo-solutions.it/>.
- *
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
  */
-package it.geosolutions.geofence.gui.client.widget;
 
-import it.geosolutions.geofence.gui.client.GeofenceEvents;
-import it.geosolutions.geofence.gui.client.form.GeofenceFormWidget;
-import it.geosolutions.geofence.gui.client.i18n.I18nProvider;
-import it.geosolutions.geofence.gui.client.model.BeanKeyValue;
-import it.geosolutions.geofence.gui.client.model.GSInstance;
-import it.geosolutions.geofence.gui.client.model.GSUser;
-import it.geosolutions.geofence.gui.client.model.Rule;
-import it.geosolutions.geofence.gui.client.model.UserGroup;
-import it.geosolutions.geofence.gui.client.model.data.Grant;
-import it.geosolutions.geofence.gui.client.model.data.Layer;
-import it.geosolutions.geofence.gui.client.model.data.Request;
-import it.geosolutions.geofence.gui.client.model.data.Service;
-import it.geosolutions.geofence.gui.client.model.data.Workspace;
-import it.geosolutions.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
-import it.geosolutions.geofence.gui.client.service.InstancesManagerRemoteServiceAsync;
-import it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
-import it.geosolutions.geofence.gui.client.service.RulesManagerRemoteServiceAsync;
-import it.geosolutions.geofence.gui.client.service.WorkspacesManagerRemoteServiceAsync;
-import it.geosolutions.geofence.gui.client.view.RulesView;
+package org.geoserver.geofence.gui.client.widget;
+
+import org.geoserver.geofence.gui.client.GeofenceEvents;
+import org.geoserver.geofence.gui.client.form.GeofenceFormWidget;
+import org.geoserver.geofence.gui.client.i18n.I18nProvider;
+import org.geoserver.geofence.gui.client.model.BeanKeyValue;
+import org.geoserver.geofence.gui.client.model.GSInstance;
+import org.geoserver.geofence.gui.client.model.GSUser;
+import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.UserGroup;
+import org.geoserver.geofence.gui.client.model.data.Grant;
+import org.geoserver.geofence.gui.client.model.data.Layer;
+import org.geoserver.geofence.gui.client.model.data.Request;
+import org.geoserver.geofence.gui.client.model.data.Service;
+import org.geoserver.geofence.gui.client.model.data.Workspace;
+import org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
+import org.geoserver.geofence.gui.client.service.InstancesManagerRemoteServiceAsync;
+import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
+import org.geoserver.geofence.gui.client.service.RulesManagerRemoteServiceAsync;
+import org.geoserver.geofence.gui.client.service.WorkspacesManagerRemoteServiceAsync;
+import org.geoserver.geofence.gui.client.view.RulesView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -267,7 +245,7 @@ public class EditRuleWidget extends GeofenceFormWidget
     /*
      * (non-Javadoc)
      *
-     * @see it.geosolutions.geofence.gui.client.form.IForm#execute()
+     * @see org.geoserver.geofence.gui.client.form.IForm#execute()
      */
     public void execute() {
         this.saveStatus.setBusy("Operation in progress");
@@ -290,7 +268,7 @@ public class EditRuleWidget extends GeofenceFormWidget
     /*
      * (non-Javadoc)
      *
-     * @see it.geosolutions.geofence.gui.client.form.GeofenceFormWidget#addComponentToForm ()
+     * @see org.geoserver.geofence.gui.client.form.GeofenceFormWidget#addComponentToForm ()
      */
     @Override
     public void addComponentToForm()
@@ -656,7 +634,7 @@ public class EditRuleWidget extends GeofenceFormWidget
     /*
      * (non-Javadoc)
      *
-     * @see it.geosolutions.geofence.gui.client.form.GeofenceFormWidget#cancel()
+     * @see org.geoserver.geofence.gui.client.form.GeofenceFormWidget#cancel()
      */
     @SuppressWarnings("deprecation")
     @Override
@@ -690,7 +668,7 @@ public class EditRuleWidget extends GeofenceFormWidget
     /*
      * (non-Javadoc)
      *
-     * @see it.geosolutions.geofence.gui.client.widget.AddGenericAOIWidget# addOtherComponents()
+     * @see org.geoserver.geofence.gui.client.widget.AddGenericAOIWidget# addOtherComponents()
      */
     /**
      * Adds the other components.
@@ -702,7 +680,7 @@ public class EditRuleWidget extends GeofenceFormWidget
     /*
      * (non-Javadoc)
      *
-     * @see it.geosolutions.geofence.gui.client.form.GeofenceFormWidget#initSize()
+     * @see org.geoserver.geofence.gui.client.form.GeofenceFormWidget#initSize()
      */
     @Override
     public void initSize()
@@ -714,7 +692,7 @@ public class EditRuleWidget extends GeofenceFormWidget
     /*
      * (non-Javadoc)
      *
-     * @see it.geosolutions.geofence.gui.client.form.GeofenceFormWidget#initSizeFormPanel ()
+     * @see org.geoserver.geofence.gui.client.form.GeofenceFormWidget#initSizeFormPanel ()
      */
     @Override
     public void initSizeFormPanel()
@@ -725,7 +703,7 @@ public class EditRuleWidget extends GeofenceFormWidget
     /*
      * (non-Javadoc)
      *
-     * @see it.geosolutions.geofence.gui.client.form.GeofenceFormWidget#injectEvent()
+     * @see org.geoserver.geofence.gui.client.form.GeofenceFormWidget#injectEvent()
      */
     @Override
     public void injectEvent()

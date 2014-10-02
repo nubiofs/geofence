@@ -1,12 +1,21 @@
+
+<!--
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+
+-->
 <module rename-to="geofence">
 
 	<!-- Inherit the core Web Toolkit stuff. -->
 	<inherits name='com.google.gwt.user.User' />
 	<inherits name='com.extjs.gxt.ui.GXT' />
-	<inherits name='it.geosolutions.geofence.gui.MAPSUI' />
-	<inherits name='it.geosolutions.geofence.gui.UserUI' />
+	<inherits name='org.geoserver.geofence.gui.MAPSUI' />
+	<inherits name='org.geoserver.geofence.gui.UserUI' />
 
-	<entry-point class='it.geosolutions.geofence.gui.client.Application' />
+	<entry-point class='org.geoserver.geofence.gui.client.Application' />
 	<source path="client" excludes="*/*Test*.java" />
 	
 	<script src="lib/proj4js-compressed.js" />
@@ -18,6 +27,6 @@
 
 	<!-- Servlet path -->
 	<servlet path="/ConfigurationRemote"
-		class="it.geosolutions.geofence.gui.server.gwt.ConfigurationRemoteImpl" />
+		class="org.geoserver.geofence.gui.server.gwt.ConfigurationRemoteImpl" />
 
 </module>

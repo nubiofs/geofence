@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+
+-->
+
 <beans xmlns="http://www.springframework.org/schema/beans"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	   xmlns:context="http://www.springframework.org/schema/context"
@@ -12,22 +21,22 @@
 			http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
        default-autowire="byName">
 
-    <bean id="userAdminService" class="it.geosolutions.geofence.services.UserAdminServiceImpl">
+    <bean id="userAdminService" class="org.geoserver.geofence.services.UserAdminServiceImpl">
     </bean>
 
-    <bean id="gfUserAdminService" class="it.geosolutions.geofence.services.GFUserAdminServiceImpl">
+    <bean id="gfUserAdminService" class="org.geoserver.geofence.services.GFUserAdminServiceImpl">
     </bean>
 
-    <bean id="userGroupAdminService" class="it.geosolutions.geofence.services.UserGroupAdminServiceImpl">
+    <bean id="userGroupAdminService" class="org.geoserver.geofence.services.UserGroupAdminServiceImpl">
     </bean>
 
-    <bean id="instanceAdminService" class="it.geosolutions.geofence.services.InstanceAdminServiceImpl">
+    <bean id="instanceAdminService" class="org.geoserver.geofence.services.InstanceAdminServiceImpl">
     </bean>
 
-    <bean id="ruleAdminService" class="it.geosolutions.geofence.services.RuleAdminServiceImpl">
+    <bean id="ruleAdminService" class="org.geoserver.geofence.services.RuleAdminServiceImpl">
     </bean>
 
-    <bean id="ruleReaderService" class="it.geosolutions.geofence.services.RuleReaderServiceImpl">
+    <bean id="ruleReaderService" class="org.geoserver.geofence.services.RuleReaderServiceImpl">
     </bean>
 
 </beans>

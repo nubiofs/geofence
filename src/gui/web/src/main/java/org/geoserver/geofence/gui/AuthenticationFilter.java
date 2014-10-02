@@ -1,6 +1,11 @@
-package it.geosolutions.geofence.gui;
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 
-import it.geosolutions.geofence.gui.server.GeofenceKeySessionValues;
+package org.geoserver.geofence.gui;
+
+import org.geoserver.geofence.gui.server.GeofenceKeySessionValues;
 
 import java.io.IOException;
 import java.util.Arrays;

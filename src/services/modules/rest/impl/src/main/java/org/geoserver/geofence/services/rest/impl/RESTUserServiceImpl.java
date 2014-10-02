@@ -1,40 +1,30 @@
-/*
- *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
- *  http://www.geo-solutions.it
- *
- *  GPLv3 + Classpath exception
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
  */
-package it.geosolutions.geofence.services.rest.impl;
 
+package org.geoserver.geofence.services.rest.impl;
+
+import org.geoserver.geofence.services.rest.exception.ConflictRestEx;
+import org.geoserver.geofence.services.rest.exception.GeoFenceRestEx;
+import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
+import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
+import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
 import java.util.List;
 
 
-import it.geosolutions.geofence.core.model.GSUser;
-import it.geosolutions.geofence.core.model.UserGroup;
-import it.geosolutions.geofence.services.dto.RuleFilter;
-import it.geosolutions.geofence.services.dto.RuleFilter.SpecialFilterType;
-import it.geosolutions.geofence.services.exception.BadRequestServiceEx;
-import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
-import it.geosolutions.geofence.services.rest.RESTUserService;
-import it.geosolutions.geofence.services.rest.exception.*;
-import it.geosolutions.geofence.services.rest.model.RESTInputUser;
-import it.geosolutions.geofence.services.rest.model.RESTOutputUser;
-import it.geosolutions.geofence.services.rest.model.RESTShortUser;
-import it.geosolutions.geofence.services.rest.model.RESTShortUserList;
-import it.geosolutions.geofence.services.rest.model.util.IdName;
+import org.geoserver.geofence.core.model.GSUser;
+import org.geoserver.geofence.core.model.UserGroup;
+import org.geoserver.geofence.services.dto.RuleFilter;
+import org.geoserver.geofence.services.dto.RuleFilter.SpecialFilterType;
+import org.geoserver.geofence.services.exception.BadRequestServiceEx;
+import org.geoserver.geofence.services.exception.NotFoundServiceEx;
+import org.geoserver.geofence.services.rest.RESTUserService;
+import org.geoserver.geofence.services.rest.model.RESTInputUser;
+import org.geoserver.geofence.services.rest.model.RESTOutputUser;
+import org.geoserver.geofence.services.rest.model.RESTShortUser;
+import org.geoserver.geofence.services.rest.model.RESTShortUserList;
+import org.geoserver.geofence.services.rest.model.util.IdName;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;

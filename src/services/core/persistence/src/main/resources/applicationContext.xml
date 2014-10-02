@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+
+-->
+
 <beans xmlns="http://www.springframework.org/schema/beans"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	   xmlns:context="http://www.springframework.org/schema/context"
@@ -38,31 +47,31 @@
     <!-- DAOs -->
     <!--=====================================================================-->
 
-	<bean id="gsUserDAO" class="it.geosolutions.geofence.core.dao.impl.GSUserDAOImpl">
+	<bean id="gsUserDAO" class="org.geoserver.geofence.core.dao.impl.GSUserDAOImpl">
 		<property name="searchProcessor" ref="geofenceSearchProcessor" />
 	</bean>
 	
-	<bean id="gfUserDAO" class="it.geosolutions.geofence.core.dao.impl.GFUserDAOImpl" >
+	<bean id="gfUserDAO" class="org.geoserver.geofence.core.dao.impl.GFUserDAOImpl" >
 		<property name="searchProcessor" ref="geofenceSearchProcessor" />
 	</bean>
 	
-	<bean id="userGroupDAO" class="it.geosolutions.geofence.core.dao.impl.UserGroupDAOImpl" >
+	<bean id="userGroupDAO" class="org.geoserver.geofence.core.dao.impl.UserGroupDAOImpl" >
 		<property name="searchProcessor" ref="geofenceSearchProcessor" />
 	</bean>
 	
-	<bean id="instanceDAO" class="it.geosolutions.geofence.core.dao.impl.GSInstanceDAOImpl" >
+	<bean id="instanceDAO" class="org.geoserver.geofence.core.dao.impl.GSInstanceDAOImpl" >
 		<property name="searchProcessor" ref="geofenceSearchProcessor" />
 	</bean>
 	
-	<bean id="ruleDAO" class="it.geosolutions.geofence.core.dao.impl.RuleDAOImpl" >
+	<bean id="ruleDAO" class="org.geoserver.geofence.core.dao.impl.RuleDAOImpl" >
 		<property name="searchProcessor" ref="geofenceSearchProcessor" />
 	</bean>
 	
-	<bean id="ruleLimitsDAO" class="it.geosolutions.geofence.core.dao.impl.RuleLimitsDAOImpl" >
+	<bean id="ruleLimitsDAO" class="org.geoserver.geofence.core.dao.impl.RuleLimitsDAOImpl" >
 		<property name="searchProcessor" ref="geofenceSearchProcessor" />
 	</bean>
 	
-	<bean id="layerDetailsDAO" class="it.geosolutions.geofence.core.dao.impl.LayerDetailsDAOImpl" >
+	<bean id="layerDetailsDAO" class="org.geoserver.geofence.core.dao.impl.LayerDetailsDAOImpl" >
 		<property name="searchProcessor" ref="geofenceSearchProcessor" />
 	</bean>
 	

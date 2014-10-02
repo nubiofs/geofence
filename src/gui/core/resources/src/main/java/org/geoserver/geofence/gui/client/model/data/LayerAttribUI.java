@@ -1,9 +1,14 @@
-package it.geosolutions.geofence.gui.client.model.data;
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+package org.geoserver.geofence.gui.client.model.data;
 
 import com.extjs.gxt.ui.client.data.BeanModel;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-import it.geosolutions.geofence.gui.client.model.BeanKeyValue;
+import org.geoserver.geofence.gui.client.model.BeanKeyValue;
 
 
 /**

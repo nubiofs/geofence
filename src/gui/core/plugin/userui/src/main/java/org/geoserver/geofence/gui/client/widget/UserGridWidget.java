@@ -1,37 +1,12 @@
-/*
- * $ Header: it.geosolutions.geofence.gui.client.widget.UserGridWidget,v. 0.1 25-feb-2011 16.31.41 created by afabiani <alessio.fabiani at geo-solutions.it> $
- * $ Revision: 0.1 $
- * $ Date: 25-feb-2011 16.31.41 $
- *
- * ====================================================================
- *
- * Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
- * http://www.geo-solutions.it
- *
- * GPLv3 + Classpath exception
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.
- *
- * ====================================================================
- *
- * This software consists of voluntary contributions made by developers
- * of GeoSolutions.  For more information on GeoSolutions, please see
- * <http://www.geo-solutions.it/>.
- *
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
  */
-package it.geosolutions.geofence.gui.client.widget;
 
+package org.geoserver.geofence.gui.client.widget;
+
+import org.geoserver.geofence.gui.client.widget.GeofenceGridWidget;
+import org.geoserver.geofence.gui.client.widget.SearchFilterField;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -71,15 +46,15 @@ import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import it.geosolutions.geofence.gui.client.Constants;
-import it.geosolutions.geofence.gui.client.GeofenceEvents;
-import it.geosolutions.geofence.gui.client.Resources;
-import it.geosolutions.geofence.gui.client.i18n.I18nProvider;
-import it.geosolutions.geofence.gui.client.model.BeanKeyValue;
-import it.geosolutions.geofence.gui.client.model.GSUser;
-//import it.geosolutions.geofence.gui.client.model.Profile;
-import it.geosolutions.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
-import it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
+import org.geoserver.geofence.gui.client.Constants;
+import org.geoserver.geofence.gui.client.GeofenceEvents;
+import org.geoserver.geofence.gui.client.Resources;
+import org.geoserver.geofence.gui.client.i18n.I18nProvider;
+import org.geoserver.geofence.gui.client.model.BeanKeyValue;
+import org.geoserver.geofence.gui.client.model.GSUser;
+//import org.geoserver.geofence.gui.client.model.Profile;
+import org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
+import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
 
 
 // TODO: Auto-generated Javadoc
@@ -134,7 +109,7 @@ public class UserGridWidget extends GeofenceGridWidget<GSUser>
     /*
      * (non-Javadoc)
      *
-     * @see it.geosolutions.geofence.gui.client.widget.GEOFENCEGridWidget#setGridProperties ()
+     * @see org.geoserver.geofence.gui.client.widget.GEOFENCEGridWidget#setGridProperties ()
      */
     @Override
     public void setGridProperties()
@@ -145,7 +120,7 @@ public class UserGridWidget extends GeofenceGridWidget<GSUser>
     /*
      * (non-Javadoc)
      *
-     * @see it.geosolutions.geofence.gui.client.widget.GEOFENCEGridWidget# prepareColumnModel()
+     * @see org.geoserver.geofence.gui.client.widget.GEOFENCEGridWidget# prepareColumnModel()
      */
     @Override
     public ColumnModel prepareColumnModel()
@@ -235,13 +210,13 @@ public class UserGridWidget extends GeofenceGridWidget<GSUser>
     /*
      * (non-Javadoc)
      *
-     * @see it.geosolutions.geofence.gui.client.widget.GEOFENCEGridWidget#createStore()
+     * @see org.geoserver.geofence.gui.client.widget.GEOFENCEGridWidget#createStore()
      */
     @Override
     public void createStore()
     {
         this.toolBar = new PagingToolBar(
-                it.geosolutions.geofence.gui.client.Constants.DEFAULT_PAGESIZE);
+                org.geoserver.geofence.gui.client.Constants.DEFAULT_PAGESIZE);
 
         // Loader fro gsUsersService
         this.proxy = new RpcProxy<PagingLoadResult<GSUser>>()

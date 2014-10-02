@@ -1,12 +1,17 @@
-package it.geosolutions.geofence.gui.client;
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+package org.geoserver.geofence.gui.client;
 
 import java.util.Iterator;
 import java.util.List;
 
-import it.geosolutions.geofence.gui.client.model.GSInstance;
-import it.geosolutions.geofence.gui.client.model.GSUser;
-import it.geosolutions.geofence.gui.client.model.UserGroup;
-import it.geosolutions.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.GSInstance;
+import org.geoserver.geofence.gui.client.model.GSUser;
+import org.geoserver.geofence.gui.client.model.UserGroup;
+import org.geoserver.geofence.gui.client.model.Rule;
 
 public class Constants {
 

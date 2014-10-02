@@ -1,3 +1,12 @@
+
+<!--
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+
+-->
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxws="http://cxf.apache.org/jaxws"
 	xmlns:context="http://www.springframework.org/schema/context"
@@ -9,7 +18,7 @@ http://www.springframework.org/schema/context
 	default-autowire="byName">
 
 
-       <bean id="workspaceConfigOpts" class="it.geosolutions.geofence.gui.client.configuration.WorkspaceConfigOpts">
+       <bean id="workspaceConfigOpts" class="org.geoserver.geofence.gui.client.configuration.WorkspaceConfigOpts">
          <property name="showDefaultGroups" value="false"/>
        </bean>
        

@@ -1,10 +1,15 @@
-package it.geosolutions.csv2geofence;
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 
-import it.geosolutions.csv2geofence.config.model.Configuration;
-import it.geosolutions.csv2geofence.config.model.GeofenceConfig;
-import it.geosolutions.csv2geofence.config.model.RuleFileConfig;
-import it.geosolutions.csv2geofence.config.model.RuleFileConfig.ServiceRequest.Type;
-import it.geosolutions.csv2geofence.config.model.UserFileConfig;
+package org.geoserver.csv2geofence;
+
+import org.geoserver.csv2geofence.config.model.Configuration;
+import org.geoserver.csv2geofence.config.model.GeofenceConfig;
+import org.geoserver.csv2geofence.config.model.RuleFileConfig;
+import org.geoserver.csv2geofence.config.model.RuleFileConfig.ServiceRequest.Type;
+import org.geoserver.csv2geofence.config.model.UserFileConfig;
 import java.io.File;
 import javax.xml.bind.JAXB;
 import org.junit.Test;

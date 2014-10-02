@@ -1,47 +1,33 @@
-/*
- *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
- *  http://www.geo-solutions.it
- *
- *  GPLv3 + Classpath exception
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
  */
-package it.geosolutions.csv2geofence;
 
-import it.geosolutions.csv2geofence.config.model.Configuration;
-import it.geosolutions.csv2geofence.config.model.GeofenceConfig;
-import it.geosolutions.csv2geofence.config.model.RuleFileConfig;
-import it.geosolutions.csv2geofence.config.model.UserFileConfig;
-import it.geosolutions.csv2geofence.config.model.internal.RuleOp;
-import it.geosolutions.csv2geofence.config.model.internal.RunInfo;
-import it.geosolutions.csv2geofence.config.model.internal.UserOp;
-import it.geosolutions.csv2geofence.impl.RuleFileLoader;
-import it.geosolutions.csv2geofence.impl.UserFileLoader;
-import it.geosolutions.csv2geofence.impl.RulesProcessor;
-import it.geosolutions.csv2geofence.impl.UsersProcessor;
-import it.geosolutions.geofence.services.dto.RuleFilter;
-import it.geosolutions.geofence.services.dto.ShortGroup;
-import it.geosolutions.geofence.services.rest.GeoFenceClient;
-import it.geosolutions.geofence.services.rest.RuleServiceHelper;
-import it.geosolutions.geofence.services.rest.model.RESTBatch;
-import it.geosolutions.geofence.services.rest.model.RESTBatchOperation;
-import it.geosolutions.geofence.services.rest.model.RESTInputRule;
-import it.geosolutions.geofence.services.rest.model.RESTInputUser;
-import it.geosolutions.geofence.services.rest.model.RESTOutputRule;
-import it.geosolutions.geofence.services.rest.model.RESTOutputRuleList;
-import it.geosolutions.geofence.services.rest.model.config.RESTFullUserGroupList;
-import it.geosolutions.geofence.services.rest.model.util.RESTBatchOperationFactory;
+package org.geoserver.csv2geofence;
+
+import org.geoserver.csv2geofence.config.model.Configuration;
+import org.geoserver.csv2geofence.config.model.GeofenceConfig;
+import org.geoserver.csv2geofence.config.model.RuleFileConfig;
+import org.geoserver.csv2geofence.config.model.UserFileConfig;
+import org.geoserver.csv2geofence.config.model.internal.RuleOp;
+import org.geoserver.csv2geofence.config.model.internal.RunInfo;
+import org.geoserver.csv2geofence.config.model.internal.UserOp;
+import org.geoserver.csv2geofence.impl.RuleFileLoader;
+import org.geoserver.csv2geofence.impl.UserFileLoader;
+import org.geoserver.csv2geofence.impl.RulesProcessor;
+import org.geoserver.csv2geofence.impl.UsersProcessor;
+import org.geoserver.geofence.services.dto.RuleFilter;
+import org.geoserver.geofence.services.dto.ShortGroup;
+import org.geoserver.geofence.services.rest.GeoFenceClient;
+import org.geoserver.geofence.services.rest.RuleServiceHelper;
+import org.geoserver.geofence.services.rest.model.RESTBatch;
+import org.geoserver.geofence.services.rest.model.RESTBatchOperation;
+import org.geoserver.geofence.services.rest.model.RESTInputRule;
+import org.geoserver.geofence.services.rest.model.RESTInputUser;
+import org.geoserver.geofence.services.rest.model.RESTOutputRule;
+import org.geoserver.geofence.services.rest.model.RESTOutputRuleList;
+import org.geoserver.geofence.services.rest.model.config.RESTFullUserGroupList;
+import org.geoserver.geofence.services.rest.model.util.RESTBatchOperationFactory;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;

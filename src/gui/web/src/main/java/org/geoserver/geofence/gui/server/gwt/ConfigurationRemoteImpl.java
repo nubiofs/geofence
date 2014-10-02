@@ -1,46 +1,19 @@
-/*
- * $ Header: it.geosolutions.geofence.gui.server.gwt.ConfigurationRemoteImpl,v. 0.1 14-gen-2011 19.27.45 created by afabiani <alessio.fabiani at geo-solutions.it> $
- * $ Revision: 0.1 $
- * $ Date: 14-gen-2011 19.27.45 $
- *
- * ====================================================================
- *
- * Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
- * http://www.geo-solutions.it
- *
- * GPLv3 + Classpath exception
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.
- *
- * ====================================================================
- *
- * This software consists of voluntary contributions made by developers
- * of GeoSolutions.  For more information on GeoSolutions, please see
- * <http://www.geo-solutions.it/>.
- *
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
  */
-package it.geosolutions.geofence.gui.server.gwt;
+
+package org.geoserver.geofence.gui.server.gwt;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-import it.geosolutions.geofence.gui.client.configuration.GeofenceGlobalConfiguration;
-import it.geosolutions.geofence.gui.client.service.ConfigurationRemote;
-import it.geosolutions.geofence.gui.server.service.IStartupService;
-import it.geosolutions.geofence.gui.spring.ApplicationContextUtil;
+import org.geoserver.geofence.gui.client.configuration.GeofenceGlobalConfiguration;
+import org.geoserver.geofence.gui.client.service.ConfigurationRemote;
+import org.geoserver.geofence.gui.server.service.IStartupService;
+import org.geoserver.geofence.gui.spring.ApplicationContextUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,7 +60,7 @@ public class ConfigurationRemoteImpl extends RemoteServiceServlet implements Con
     /*
      * (non-Javadoc)
      *
-     * @see it.geosolutions.geofence.gui.client.service.ConfigurationRemote#
+     * @see org.geoserver.geofence.gui.client.service.ConfigurationRemote#
      * initServerConfiguration()
      */
     public GeofenceGlobalConfiguration initServerConfiguration()

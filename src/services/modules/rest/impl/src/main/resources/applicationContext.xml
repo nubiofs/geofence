@@ -1,4 +1,12 @@
 
+<!--
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+
+-->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
@@ -26,32 +34,32 @@
     <!-- === Service providers ==============================================-->
     <!-- ====================================================================-->
 
-    <bean id="restUserService" class="it.geosolutions.geofence.services.rest.impl.RESTUserServiceImpl">
+    <bean id="restUserService" class="org.geoserver.geofence.services.rest.impl.RESTUserServiceImpl">
 <!--        <property name="userGroupAdminService" ref="userGroupAdminService"/>-->
 <!--        <property name="userAdminService" ref="userAdminService"/>-->
     </bean>
 
-    <bean id="restUserGroupService" class="it.geosolutions.geofence.services.rest.impl.RESTUserGroupServiceImpl">
+    <bean id="restUserGroupService" class="org.geoserver.geofence.services.rest.impl.RESTUserGroupServiceImpl">
 <!--        <property name="userGroupAdminService" ref="userGroupAdminService"/>-->
     </bean>
 
-    <bean id="restInstanceService" class="it.geosolutions.geofence.services.rest.impl.RESTInstanceServiceImpl">
+    <bean id="restInstanceService" class="org.geoserver.geofence.services.rest.impl.RESTInstanceServiceImpl">
 <!--        <property name="userGroupAdminService" ref="userGroupAdminService"/>-->
     </bean>
 
-    <bean id="restRuleService" class="it.geosolutions.geofence.services.rest.impl.RESTRuleServiceImpl">
+    <bean id="restRuleService" class="org.geoserver.geofence.services.rest.impl.RESTRuleServiceImpl">
     </bean>
 
-    <bean id="restBatchService" class="it.geosolutions.geofence.services.rest.impl.RESTBatchServiceImpl">
+    <bean id="restBatchService" class="org.geoserver.geofence.services.rest.impl.RESTBatchServiceImpl">
     </bean>
 
-    <bean id="restConfigService" class="it.geosolutions.geofence.services.rest.impl.RESTConfigServiceImpl">
+    <bean id="restConfigService" class="org.geoserver.geofence.services.rest.impl.RESTConfigServiceImpl">
     </bean>
 
     <!-- ====================================================================-->
 
 
-    <bean id="instanceCleaner" class="it.geosolutions.geofence.services.rest.utils.InstanceCleaner">
+    <bean id="instanceCleaner" class="org.geoserver.geofence.services.rest.utils.InstanceCleaner">
     </bean>
 
 
@@ -95,7 +103,7 @@
         </jaxrs:providers>
 
         <jaxrs:inInterceptors>
-<!--            <bean class="it.geosolutions.geostore.services.rest.utils.GeoStoreAuthenticationInterceptor"/>
+<!--            <bean class="org.geoserver.geostore.services.rest.utils.GeoStoreAuthenticationInterceptor"/>
             <bean class="org.apache.cxf.interceptor.security.SecureAnnotationsInterceptor">
                <property name="securedObject" ref="restResourceService"/>
             </bean>-->
@@ -118,7 +126,7 @@
         </jaxrs:providers>
 
         <jaxrs:inInterceptors>
-<!--            <bean class="it.geosolutions.geostore.services.rest.utils.GeoStoreAuthenticationInterceptor"/>
+<!--            <bean class="org.geoserver.geostore.services.rest.utils.GeoStoreAuthenticationInterceptor"/>
             <bean class="org.apache.cxf.interceptor.security.SecureAnnotationsInterceptor">
                <property name="securedObject" ref="restResourceService"/>
             </bean>-->
@@ -141,7 +149,7 @@
         </jaxrs:providers>
 
         <jaxrs:inInterceptors>
-<!--            <bean class="it.geosolutions.geostore.services.rest.utils.GeoStoreAuthenticationInterceptor"/>
+<!--            <bean class="org.geoserver.geostore.services.rest.utils.GeoStoreAuthenticationInterceptor"/>
             <bean class="org.apache.cxf.interceptor.security.SecureAnnotationsInterceptor">
                <property name="securedObject" ref="restResourceService"/>
             </bean>-->
@@ -195,13 +203,13 @@
 
     <bean id="jaxbXmlProvider" class="org.apache.cxf.jaxrs.provider.JAXBElementProvider"/>
     <bean id="jsonProvider" class="org.apache.cxf.jaxrs.provider.JSONProvider"/>
-<!--    <bean id="jaxbContextResolver" class="it.geosolutions.geostore.services.rest.auth.JAXBContextResolver" />-->
+<!--    <bean id="jaxbContextResolver" class="org.geoserver.geostore.services.rest.auth.JAXBContextResolver" />-->
 
     <!-- ====================================================================-->
     <!-- === CXF Interceptors ===============================================-->
     <!-- ====================================================================-->
 
-<!--    <bean id="securityInterceptor" class="it.geosolutions.geostore.services.rest.auth.AuthenticationHandler">
+<!--    <bean id="securityInterceptor" class="org.geoserver.geostore.services.rest.auth.AuthenticationHandler">
     	<property name="realm" value="GeoStore REST Service"/>
     </bean>-->
 

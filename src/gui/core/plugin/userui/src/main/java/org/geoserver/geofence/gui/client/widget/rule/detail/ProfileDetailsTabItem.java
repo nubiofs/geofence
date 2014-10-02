@@ -1,43 +1,16 @@
-/*
- * $ Header: it.geosolutions.geofence.gui.client.widget.rule.detail.LayerCustomPropsTabItem,v. 0.1 8-feb-2011 15.06.43 created by afabiani <alessio.fabiani at geo-solutions.it> $
- * $ Revision: 0.1 $
- * $ Date: 8-feb-2011 15.06.43 $
- *
- * ====================================================================
- *
- * Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
- * http://www.geo-solutions.it
- *
- * GPLv3 + Classpath exception
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.
- *
- * ====================================================================
- *
- * This software consists of voluntary contributions made by developers
- * of GeoSolutions.  For more information on GeoSolutions, please see
- * <http://www.geo-solutions.it/>.
- *
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
  */
-package it.geosolutions.geofence.gui.client.widget.rule.detail;
+
+package org.geoserver.geofence.gui.client.widget.rule.detail;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.widget.TabItem;
 
-import it.geosolutions.geofence.gui.client.Resources;
-import it.geosolutions.geofence.gui.client.model.UserGroup;
-import it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
+import org.geoserver.geofence.gui.client.Resources;
+import org.geoserver.geofence.gui.client.model.UserGroup;
+import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
 
 
 /**
@@ -85,7 +58,7 @@ public class ProfileDetailsTabItem extends TabItem
 
         setScrollMode(Scroll.NONE);
 
-        getProfileDetailsWidget().getProfileDetailsInfo().getLoader().load(0, it.geosolutions.geofence.gui.client.Constants.DEFAULT_PAGESIZE);
+        getProfileDetailsWidget().getProfileDetailsInfo().getLoader().load(0, org.geoserver.geofence.gui.client.Constants.DEFAULT_PAGESIZE);
 
     }
 

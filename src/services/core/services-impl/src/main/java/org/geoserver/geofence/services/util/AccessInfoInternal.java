@@ -1,35 +1,20 @@
-/*
- *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
- *  http://www.geo-solutions.it
- *
- *  GPLv3 + Classpath exception
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
  */
 
-package it.geosolutions.geofence.services.util;
+package org.geoserver.geofence.services.util;
 
 import java.io.Serializable;
 import java.util.Set;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-import it.geosolutions.geofence.core.model.LayerAttribute;
-import it.geosolutions.geofence.core.model.enums.CatalogMode;
-import it.geosolutions.geofence.core.model.enums.GrantType;
-import it.geosolutions.geofence.services.dto.AccessInfo;
-import it.geosolutions.geofence.services.dto.CatalogModeDTO;
+import org.geoserver.geofence.core.model.LayerAttribute;
+import org.geoserver.geofence.core.model.enums.CatalogMode;
+import org.geoserver.geofence.core.model.enums.GrantType;
+import org.geoserver.geofence.services.dto.AccessInfo;
+import org.geoserver.geofence.services.dto.CatalogModeDTO;
 import java.util.HashSet;
 
 

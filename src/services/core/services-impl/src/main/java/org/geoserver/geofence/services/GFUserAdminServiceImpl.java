@@ -1,26 +1,13 @@
-/*
- *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
- *  http://www.geo-solutions.it
- *
- *  GPLv3 + Classpath exception
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
  */
-package it.geosolutions.geofence.services;
 
+package org.geoserver.geofence.services;
+
+import org.geoserver.geofence.services.GFUserAdminService;
 import com.googlecode.genericdao.search.Search;
-import it.geosolutions.geofence.services.dto.ShortUser;
+import org.geoserver.geofence.services.dto.ShortUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +16,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 
-import it.geosolutions.geofence.core.dao.GFUserDAO;
-import it.geosolutions.geofence.core.model.GFUser;
-import it.geosolutions.geofence.services.exception.BadRequestServiceEx;
-import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
+import org.geoserver.geofence.core.dao.GFUserDAO;
+import org.geoserver.geofence.core.model.GFUser;
+import org.geoserver.geofence.services.exception.BadRequestServiceEx;
+import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 
 /**
  *

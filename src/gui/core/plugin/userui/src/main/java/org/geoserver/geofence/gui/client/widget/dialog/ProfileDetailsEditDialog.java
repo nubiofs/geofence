@@ -1,15 +1,20 @@
-package it.geosolutions.geofence.gui.client.widget.dialog;
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+package org.geoserver.geofence.gui.client.widget.dialog;
 
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 
-import it.geosolutions.geofence.gui.client.i18n.I18nProvider;
-import it.geosolutions.geofence.gui.client.model.UserGroup;
-import it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
-import it.geosolutions.geofence.gui.client.widget.SaveStaus;
-import it.geosolutions.geofence.gui.client.widget.rule.detail.ProfileDetailsTabItem;
-import it.geosolutions.geofence.gui.client.widget.tab.TabWidget;
+import org.geoserver.geofence.gui.client.i18n.I18nProvider;
+import org.geoserver.geofence.gui.client.model.UserGroup;
+import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
+import org.geoserver.geofence.gui.client.widget.SaveStaus;
+import org.geoserver.geofence.gui.client.widget.rule.detail.ProfileDetailsTabItem;
+import org.geoserver.geofence.gui.client.widget.tab.TabWidget;
 
 
 /**

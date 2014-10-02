@@ -1,6 +1,11 @@
-package it.geosolutions.csv2geofence;
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 
-import it.geosolutions.csv2geofence.config.model.internal.RunInfo;
+package org.geoserver.csv2geofence;
+
+import org.geoserver.csv2geofence.config.model.internal.RunInfo;
 import java.io.*;
 import java.util.Iterator;
 import org.apache.commons.cli.CommandLine;

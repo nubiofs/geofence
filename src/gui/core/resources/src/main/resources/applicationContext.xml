@@ -1,3 +1,12 @@
+
+<!--
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+
+-->
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxws="http://cxf.apache.org/jaxws"
 	xmlns:context="http://www.springframework.org/schema/context"
@@ -11,7 +20,7 @@ http://www.springframework.org/schema/context
 	<context:annotation-config />
 
 	<bean id="geofenceRemoteService"
-		class="it.geosolutions.geofence.gui.service.GeofenceRemoteService">
+		class="org.geoserver.geofence.gui.service.GeofenceRemoteService">
 		<property name="loginService" ref="mainLoginService" />
         <property name="userAdminService" ref="userAdminService" />
         <property name="gfUserAdminService" ref="gfUserAdminService" />

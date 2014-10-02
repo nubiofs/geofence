@@ -1,37 +1,11 @@
-/*
- * $ Header: it.geosolutions.geofence.gui.client.widget.UpdateUserWidget,v. 0.1 25-feb-2011 16.31.40 created by afabiani <alessio.fabiani at geo-solutions.it> $
- * $ Revision: 0.1 $
- * $ Date: 25-feb-2011 16.31.40 $
- *
- * ====================================================================
- *
- * Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
- * http://www.geo-solutions.it
- *
- * GPLv3 + Classpath exception
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.
- *
- * ====================================================================
- *
- * This software consists of voluntary contributions made by developers
- * of GeoSolutions.  For more information on GeoSolutions, please see
- * <http://www.geo-solutions.it/>.
- *
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
  */
-package it.geosolutions.geofence.gui.client.widget;
 
+package org.geoserver.geofence.gui.client.widget;
+
+import org.geoserver.geofence.gui.client.widget.GeofenceUpdateWidget;
 import com.extjs.gxt.ui.client.mvc.Dispatcher;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
@@ -41,14 +15,14 @@ import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 
-import it.geosolutions.geofence.gui.client.GeofenceEvents;
-import it.geosolutions.geofence.gui.client.GeofenceWidgetsData;
-import it.geosolutions.geofence.gui.client.SendType;
-import it.geosolutions.geofence.gui.client.SendType.SendTypeEnum;
-import it.geosolutions.geofence.gui.client.UpdateInterval;
-import it.geosolutions.geofence.gui.client.UpdateInterval.UpdateIntervalEnum;
-import it.geosolutions.geofence.gui.client.model.BeanKeyValue;
-import it.geosolutions.geofence.gui.client.model.User;
+import org.geoserver.geofence.gui.client.GeofenceEvents;
+import org.geoserver.geofence.gui.client.GeofenceWidgetsData;
+import org.geoserver.geofence.gui.client.SendType;
+import org.geoserver.geofence.gui.client.SendType.SendTypeEnum;
+import org.geoserver.geofence.gui.client.UpdateInterval;
+import org.geoserver.geofence.gui.client.UpdateInterval.UpdateIntervalEnum;
+import org.geoserver.geofence.gui.client.model.BeanKeyValue;
+import org.geoserver.geofence.gui.client.model.User;
 
 
 // TODO: Auto-generated Javadoc
@@ -120,7 +94,7 @@ public class UpdateUserWidget extends GeofenceUpdateWidget<User>
      * (non-Javadoc)
      *
      * @see
-     * it.geosolutions.geofence.gui.client.widget.GEOFENCEUpdateWidget#bind(com.extjs.gxt.ui.client
+     * org.geoserver.geofence.gui.client.widget.GEOFENCEUpdateWidget#bind(com.extjs.gxt.ui.client
      * .data.BaseModel)
      */
     @Override
@@ -143,7 +117,7 @@ public class UpdateUserWidget extends GeofenceUpdateWidget<User>
     /*
      * (non-Javadoc)
      *
-     * @see it.geosolutions.geofence.gui.client.form.IForm#execute()
+     * @see org.geoserver.geofence.gui.client.form.IForm#execute()
      */
     public void execute()
     {
@@ -154,7 +128,7 @@ public class UpdateUserWidget extends GeofenceUpdateWidget<User>
     /*
      * (non-Javadoc)
      *
-     * @see it.geosolutions.geofence.gui.client.form.GEOFENCEFormWidget#addComponentToForm()
+     * @see org.geoserver.geofence.gui.client.form.GEOFENCEFormWidget#addComponentToForm()
      */
     @Override
     public void addComponentToForm()
@@ -251,7 +225,7 @@ public class UpdateUserWidget extends GeofenceUpdateWidget<User>
     /*
      * (non-Javadoc)
      *
-     * @see it.geosolutions.geofence.gui.client.form.GEOFENCEFormWidget#initSize()
+     * @see org.geoserver.geofence.gui.client.form.GEOFENCEFormWidget#initSize()
      */
     @Override
     public void initSize()
@@ -264,7 +238,7 @@ public class UpdateUserWidget extends GeofenceUpdateWidget<User>
     /*
      * (non-Javadoc)
      *
-     * @see it.geosolutions.geofence.gui.client.form.GEOFENCEFormWidget#initSizeFormPanel()
+     * @see org.geoserver.geofence.gui.client.form.GEOFENCEFormWidget#initSizeFormPanel()
      */
     @Override
     public void initSizeFormPanel()
@@ -277,7 +251,7 @@ public class UpdateUserWidget extends GeofenceUpdateWidget<User>
     /*
      * (non-Javadoc)
      *
-     * @see it.geosolutions.geofence.gui.client.form.GEOFENCEFormWidget#cancel()
+     * @see org.geoserver.geofence.gui.client.form.GEOFENCEFormWidget#cancel()
      */
     @SuppressWarnings("deprecation")
     @Override

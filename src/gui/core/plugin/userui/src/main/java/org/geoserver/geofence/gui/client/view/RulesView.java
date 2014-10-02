@@ -1,70 +1,43 @@
-/*
- * $ Header: it.geosolutions.geofence.gui.client.view.RulesView,v. 0.1 9-feb-2011 11.42.29 created by afabiani <alessio.fabiani at geo-solutions.it> $
- * $ Revision: 0.1 $
- * $ Date: 9-feb-2011 11.42.29 $
- *
- * ====================================================================
- *
- * Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
- * http://www.geo-solutions.it
- *
- * GPLv3 + Classpath exception
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.
- *
- * ====================================================================
- *
- * This software consists of voluntary contributions made by developers
- * of GeoSolutions.  For more information on GeoSolutions, please see
- * <http://www.geo-solutions.it/>.
- *
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
  */
-package it.geosolutions.geofence.gui.client.view;
 
-import it.geosolutions.geofence.gui.client.GeofenceEvents;
-import it.geosolutions.geofence.gui.client.i18n.I18nProvider;
-import it.geosolutions.geofence.gui.client.model.GSUser;
-import it.geosolutions.geofence.gui.client.model.Rule;
-import it.geosolutions.geofence.gui.client.model.UserGroup;
-import it.geosolutions.geofence.gui.client.model.data.LayerCustomProps;
-import it.geosolutions.geofence.gui.client.model.data.LayerDetailsInfo;
-import it.geosolutions.geofence.gui.client.model.data.LayerLimitsInfo;
-import it.geosolutions.geofence.gui.client.model.data.ProfileCustomProps;
-import it.geosolutions.geofence.gui.client.model.data.UserLimitsInfo;
-import it.geosolutions.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
-import it.geosolutions.geofence.gui.client.service.InstancesManagerRemoteServiceAsync;
-import it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
-import it.geosolutions.geofence.gui.client.service.RulesManagerRemoteServiceAsync;
-import it.geosolutions.geofence.gui.client.service.WorkspacesManagerRemoteServiceAsync;
-import it.geosolutions.geofence.gui.client.widget.EditRuleWidget;
-import it.geosolutions.geofence.gui.client.widget.GridStatus;
-import it.geosolutions.geofence.gui.client.widget.dialog.ProfileDetailsEditDialog;
-import it.geosolutions.geofence.gui.client.widget.dialog.RuleDetailsEditDialog;
-import it.geosolutions.geofence.gui.client.widget.dialog.UserDetailsEditDialog;
-import it.geosolutions.geofence.gui.client.widget.rule.detail.LayerAttributesGridWidget;
-import it.geosolutions.geofence.gui.client.widget.rule.detail.LayerAttributesTabItem;
-import it.geosolutions.geofence.gui.client.widget.rule.detail.LayerCustomPropsGridWidget;
-import it.geosolutions.geofence.gui.client.widget.rule.detail.LayerCustomPropsTabItem;
-import it.geosolutions.geofence.gui.client.widget.rule.detail.ProfileDetailsGridWidget;
-import it.geosolutions.geofence.gui.client.widget.rule.detail.ProfileDetailsTabItem;
-import it.geosolutions.geofence.gui.client.widget.rule.detail.RuleDetailsGridWidget;
-import it.geosolutions.geofence.gui.client.widget.rule.detail.RuleDetailsInfoWidget;
-import it.geosolutions.geofence.gui.client.widget.rule.detail.RuleDetailsTabItem;
-import it.geosolutions.geofence.gui.client.widget.rule.detail.RuleLimitsInfoWidget;
-import it.geosolutions.geofence.gui.client.widget.rule.detail.RuleLimitsTabItem;
-import it.geosolutions.geofence.gui.client.widget.rule.detail.UserDetailsInfoWidget;
-import it.geosolutions.geofence.gui.client.widget.rule.detail.UserDetailsTabItem;
+package org.geoserver.geofence.gui.client.view;
+
+import org.geoserver.geofence.gui.client.GeofenceEvents;
+import org.geoserver.geofence.gui.client.i18n.I18nProvider;
+import org.geoserver.geofence.gui.client.model.GSUser;
+import org.geoserver.geofence.gui.client.model.Rule;
+import org.geoserver.geofence.gui.client.model.UserGroup;
+import org.geoserver.geofence.gui.client.model.data.LayerCustomProps;
+import org.geoserver.geofence.gui.client.model.data.LayerDetailsInfo;
+import org.geoserver.geofence.gui.client.model.data.LayerLimitsInfo;
+import org.geoserver.geofence.gui.client.model.data.ProfileCustomProps;
+import org.geoserver.geofence.gui.client.model.data.UserLimitsInfo;
+import org.geoserver.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
+import org.geoserver.geofence.gui.client.service.InstancesManagerRemoteServiceAsync;
+import org.geoserver.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
+import org.geoserver.geofence.gui.client.service.RulesManagerRemoteServiceAsync;
+import org.geoserver.geofence.gui.client.service.WorkspacesManagerRemoteServiceAsync;
+import org.geoserver.geofence.gui.client.widget.EditRuleWidget;
+import org.geoserver.geofence.gui.client.widget.GridStatus;
+import org.geoserver.geofence.gui.client.widget.dialog.ProfileDetailsEditDialog;
+import org.geoserver.geofence.gui.client.widget.dialog.RuleDetailsEditDialog;
+import org.geoserver.geofence.gui.client.widget.dialog.UserDetailsEditDialog;
+import org.geoserver.geofence.gui.client.widget.rule.detail.LayerAttributesGridWidget;
+import org.geoserver.geofence.gui.client.widget.rule.detail.LayerAttributesTabItem;
+import org.geoserver.geofence.gui.client.widget.rule.detail.LayerCustomPropsGridWidget;
+import org.geoserver.geofence.gui.client.widget.rule.detail.LayerCustomPropsTabItem;
+import org.geoserver.geofence.gui.client.widget.rule.detail.ProfileDetailsGridWidget;
+import org.geoserver.geofence.gui.client.widget.rule.detail.ProfileDetailsTabItem;
+import org.geoserver.geofence.gui.client.widget.rule.detail.RuleDetailsGridWidget;
+import org.geoserver.geofence.gui.client.widget.rule.detail.RuleDetailsInfoWidget;
+import org.geoserver.geofence.gui.client.widget.rule.detail.RuleDetailsTabItem;
+import org.geoserver.geofence.gui.client.widget.rule.detail.RuleLimitsInfoWidget;
+import org.geoserver.geofence.gui.client.widget.rule.detail.RuleLimitsTabItem;
+import org.geoserver.geofence.gui.client.widget.rule.detail.UserDetailsInfoWidget;
+import org.geoserver.geofence.gui.client.widget.rule.detail.UserDetailsTabItem;
 import it.geosolutions.geogwt.gui.client.GeoGWTEvents;
 
 import java.util.Map;

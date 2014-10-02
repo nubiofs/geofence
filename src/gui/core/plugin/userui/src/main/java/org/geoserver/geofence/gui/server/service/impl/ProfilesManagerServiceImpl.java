@@ -1,45 +1,18 @@
-/*
- * $ Header: it.geosolutions.geofence.gui.server.service.impl.ProfilesManagerServiceImpl,v. 0.1 10-feb-2011 17.07.06 created by afabiani <alessio.fabiani at geo-solutions.it> $
- * $ Revision: 0.1 $
- * $ Date: 10-feb-2011 17.07.06 $
- *
- * ====================================================================
- *
- * Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
- * http://www.geo-solutions.it
- *
- * GPLv3 + Classpath exception
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.
- *
- * ====================================================================
- *
- * This software consists of voluntary contributions made by developers
- * of GeoSolutions.  For more information on GeoSolutions, please see
- * <http://www.geo-solutions.it/>.
- *
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
  */
-package it.geosolutions.geofence.gui.server.service.impl;
 
-import it.geosolutions.geofence.gui.client.ApplicationException;
-import it.geosolutions.geofence.gui.client.model.UserGroup;
-import it.geosolutions.geofence.gui.client.model.data.ProfileCustomProps;
-import it.geosolutions.geofence.gui.client.model.data.rpc.RpcPageLoadResult;
-import it.geosolutions.geofence.gui.server.service.IProfilesManagerService;
-import it.geosolutions.geofence.gui.service.GeofenceRemoteService;
-import it.geosolutions.geofence.services.dto.ShortGroup;
-import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
+package org.geoserver.geofence.gui.server.service.impl;
+
+import org.geoserver.geofence.gui.client.ApplicationException;
+import org.geoserver.geofence.gui.client.model.UserGroup;
+import org.geoserver.geofence.gui.client.model.data.ProfileCustomProps;
+import org.geoserver.geofence.gui.client.model.data.rpc.RpcPageLoadResult;
+import org.geoserver.geofence.gui.server.service.IProfilesManagerService;
+import org.geoserver.geofence.gui.service.GeofenceRemoteService;
+import org.geoserver.geofence.services.dto.ShortGroup;
+import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,7 +49,7 @@ public class ProfilesManagerServiceImpl implements IProfilesManagerService
      * (non-Javadoc)
      *
      * @see
-     * it.geosolutions.geofence.gui.server.service.IFeatureService#loadFeature(com.extjs.gxt.ui.
+     * org.geoserver.geofence.gui.server.service.IFeatureService#loadFeature(com.extjs.gxt.ui.
      * client.data.PagingLoadConfig, java.lang.String)
      */
     public PagingLoadResult<UserGroup> getProfiles(int offset, int limit, boolean full) throws ApplicationException
@@ -120,7 +93,7 @@ public class ProfilesManagerServiceImpl implements IProfilesManagerService
         {
             ShortGroup short_profile = it.next();
 
-            it.geosolutions.geofence.core.model.UserGroup remote_profile;
+            org.geoserver.geofence.core.model.UserGroup remote_profile;
             try
             {
                 remote_profile = geofenceRemoteService.getUserGroupAdminService().get(
@@ -153,11 +126,11 @@ public class ProfilesManagerServiceImpl implements IProfilesManagerService
     }
 
     /* (non-Javadoc)
-     * @see it.geosolutions.geofence.gui.server.service.IProfilesManagerService#deleteProfile(it.geosolutions.geofence.gui.client.model.UserGroup)
+     * @see org.geoserver.geofence.gui.server.service.IProfilesManagerService#deleteProfile(org.geoserver.geofence.gui.client.model.UserGroup)
      */
     public void deleteProfile(UserGroup profile)
     {
-        it.geosolutions.geofence.core.model.UserGroup remote_profile = null;
+        org.geoserver.geofence.core.model.UserGroup remote_profile = null;
         try
         {
             remote_profile = geofenceRemoteService.getUserGroupAdminService().get(profile.getId());
@@ -171,11 +144,11 @@ public class ProfilesManagerServiceImpl implements IProfilesManagerService
     }
 
     /* (non-Javadoc)
-     * @see it.geosolutions.geofence.gui.server.service.IProfilesManagerService#saveProfile(it.geosolutions.geofence.gui.client.model.UserGroup)
+     * @see org.geoserver.geofence.gui.server.service.IProfilesManagerService#saveProfile(org.geoserver.geofence.gui.client.model.UserGroup)
      */
     public void saveProfile(UserGroup profile)
     {
-        it.geosolutions.geofence.core.model.UserGroup remote_profile = null;
+        org.geoserver.geofence.core.model.UserGroup remote_profile = null;
         if (profile.getId() >= 0)
         {
             try
@@ -198,7 +171,7 @@ public class ProfilesManagerServiceImpl implements IProfilesManagerService
         {
             try
             {
-                remote_profile = new it.geosolutions.geofence.core.model.UserGroup();
+                remote_profile = new org.geoserver.geofence.core.model.UserGroup();
 
                 ShortGroup short_profile = new ShortGroup();
                 short_profile.setName(profile.getName());
@@ -216,7 +189,7 @@ public class ProfilesManagerServiceImpl implements IProfilesManagerService
     }
 
     /* (non-Javadoc)
-     * @see it.geosolutions.geofence.gui.server.service.IProfilesManagerService#getProfileCustomProps(com.extjs.gxt.ui.client.data.PagingLoadConfig, it.geosolutions.geofence.gui.client.model.Rule)
+     * @see org.geoserver.geofence.gui.server.service.IProfilesManagerService#getProfileCustomProps(com.extjs.gxt.ui.client.data.PagingLoadConfig, org.geoserver.geofence.gui.client.model.Rule)
      */
     public PagingLoadResult<ProfileCustomProps> getProfileCustomProps(int offset, int limit, UserGroup profile)
     {

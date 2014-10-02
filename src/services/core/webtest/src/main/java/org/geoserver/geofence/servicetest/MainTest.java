@@ -1,43 +1,28 @@
-/*
- *  Copyright (C) 2007 - 2010 GeoSolutions S.A.S.
- *  http://www.geo-solutions.it
- *
- *  GPLv3 + Classpath exception
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
  */
 
-package it.geosolutions.geofence.servicetest;
+package org.geoserver.geofence.servicetest;
 
-import it.geosolutions.geofence.core.model.GSInstance;
-import it.geosolutions.geofence.core.model.GSUser;
-import it.geosolutions.geofence.core.model.LayerAttribute;
-import it.geosolutions.geofence.core.model.LayerDetails;
-import it.geosolutions.geofence.core.model.UserGroup;
-import it.geosolutions.geofence.core.model.Rule;
-import it.geosolutions.geofence.core.model.RuleLimits;
-import it.geosolutions.geofence.core.model.enums.AccessType;
-import it.geosolutions.geofence.core.model.enums.GrantType;
-import it.geosolutions.geofence.services.InstanceAdminService;
-import it.geosolutions.geofence.services.UserGroupAdminService;
-import it.geosolutions.geofence.services.RuleAdminService;
-import it.geosolutions.geofence.services.RuleReaderService;
-import it.geosolutions.geofence.services.UserAdminService;
-import it.geosolutions.geofence.services.dto.AccessInfo;
-import it.geosolutions.geofence.services.dto.ShortGroup;
-import it.geosolutions.geofence.services.dto.ShortRule;
-import it.geosolutions.geofence.services.dto.ShortUser;
+import org.geoserver.geofence.core.model.GSInstance;
+import org.geoserver.geofence.core.model.GSUser;
+import org.geoserver.geofence.core.model.LayerAttribute;
+import org.geoserver.geofence.core.model.LayerDetails;
+import org.geoserver.geofence.core.model.UserGroup;
+import org.geoserver.geofence.core.model.Rule;
+import org.geoserver.geofence.core.model.RuleLimits;
+import org.geoserver.geofence.core.model.enums.AccessType;
+import org.geoserver.geofence.core.model.enums.GrantType;
+import org.geoserver.geofence.services.InstanceAdminService;
+import org.geoserver.geofence.services.UserGroupAdminService;
+import org.geoserver.geofence.services.RuleAdminService;
+import org.geoserver.geofence.services.RuleReaderService;
+import org.geoserver.geofence.services.UserAdminService;
+import org.geoserver.geofence.services.dto.AccessInfo;
+import org.geoserver.geofence.services.dto.ShortGroup;
+import org.geoserver.geofence.services.dto.ShortRule;
+import org.geoserver.geofence.services.dto.ShortUser;
 
 import java.util.List;
 
@@ -53,9 +38,9 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
 
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.io.WKTReader;
-import it.geosolutions.geofence.services.dto.RuleFilter;
-import it.geosolutions.geofence.services.dto.RuleFilter.SpecialFilterType;
-import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
+import org.geoserver.geofence.services.dto.RuleFilter;
+import org.geoserver.geofence.services.dto.RuleFilter.SpecialFilterType;
+import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 
 /**
  *
@@ -210,7 +195,7 @@ public class MainTest implements InitializingBean, ApplicationContextAware {
 
     public void instantiateAndRunSpringRemoting() {
         HttpInvokerProxyFactoryBean httpInvokerProxyFactoryBean = new HttpInvokerProxyFactoryBean();
-        httpInvokerProxyFactoryBean.setServiceInterface(it.geosolutions.geofence.services.RuleReaderService.class);
+        httpInvokerProxyFactoryBean.setServiceInterface(org.geoserver.geofence.services.RuleReaderService.class);
         httpInvokerProxyFactoryBean.setServiceUrl("http://localhost:9191/geofence/remoting/RuleReader");
         httpInvokerProxyFactoryBean.afterPropertiesSet();
         RuleReaderService rrs = (RuleReaderService) httpInvokerProxyFactoryBean.getObject();

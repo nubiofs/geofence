@@ -1,10 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
  */
 
-package it.geosolutions.geofence.core.dao.util;
+package org.geoserver.geofence.core.dao.util;
 
+import org.geoserver.geofence.core.dao.util.PwEncoder;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.AfterClass;

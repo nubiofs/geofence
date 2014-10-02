@@ -22,7 +22,7 @@
 
     <bean name="/RuleReader" class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
         <property name="service" ref="ruleReaderService"/>
-        <property name="serviceInterface" value="it.geosolutions.geofence.services.RuleReaderService"/>
+        <property name="serviceInterface" value="org.geoserver.geofence.services.RuleReaderService"/>
     </bean>
 
 </beans>

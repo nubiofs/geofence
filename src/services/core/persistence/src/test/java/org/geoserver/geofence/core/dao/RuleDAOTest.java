@@ -1,37 +1,22 @@
-/*
- *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
- *  http://www.geo-solutions.it
- *
- *  GPLv3 + Classpath exception
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
  */
 
-package it.geosolutions.geofence.core.dao;
+package org.geoserver.geofence.core.dao;
 
 import com.googlecode.genericdao.search.Search;
 import com.vividsolutions.jts.geom.MultiPolygon;
-import static it.geosolutions.geofence.core.dao.BaseDAOTest.ruleDAO;
-import it.geosolutions.geofence.core.dao.util.SearchUtil;
-import it.geosolutions.geofence.core.model.GSUser;
-import it.geosolutions.geofence.core.model.IPAddressRange;
-import it.geosolutions.geofence.core.model.LayerAttribute;
-import it.geosolutions.geofence.core.model.LayerDetails;
-import it.geosolutions.geofence.core.model.Rule;
-import it.geosolutions.geofence.core.model.enums.AccessType;
-import it.geosolutions.geofence.core.model.enums.GrantType;
-import it.geosolutions.geofence.core.model.enums.InsertPosition;
+import static org.geoserver.geofence.core.dao.BaseDAOTest.ruleDAO;
+import org.geoserver.geofence.core.dao.util.SearchUtil;
+import org.geoserver.geofence.core.model.GSUser;
+import org.geoserver.geofence.core.model.IPAddressRange;
+import org.geoserver.geofence.core.model.LayerAttribute;
+import org.geoserver.geofence.core.model.LayerDetails;
+import org.geoserver.geofence.core.model.Rule;
+import org.geoserver.geofence.core.model.enums.AccessType;
+import org.geoserver.geofence.core.model.enums.GrantType;
+import org.geoserver.geofence.core.model.enums.InsertPosition;
 import java.util.List;
 
 import static org.junit.Assert.*;

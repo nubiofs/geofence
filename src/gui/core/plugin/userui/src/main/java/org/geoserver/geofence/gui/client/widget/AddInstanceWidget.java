@@ -1,36 +1,9 @@
-/*
- * $ Header: it.geosolutions.geofence.gui.client.widget.AddInstanceWidget,v. 0.1 25-feb-2011 16.31.41 created by afabiani <alessio.fabiani at geo-solutions.it> $
- * $ Revision: 0.1 $
- * $ Date: 25-feb-2011 16.31.41 $
- *
- * ====================================================================
- *
- * Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
- * http://www.geo-solutions.it
- *
- * GPLv3 + Classpath exception
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.
- *
- * ====================================================================
- *
- * This software consists of voluntary contributions made by developers
- * of GeoSolutions.  For more information on GeoSolutions, please see
- * <http://www.geo-solutions.it/>.
- *
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
  */
-package it.geosolutions.geofence.gui.client.widget;
+
+package org.geoserver.geofence.gui.client.widget;
 
 import java.util.Date;
 
@@ -40,9 +13,9 @@ import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 
-import it.geosolutions.geofence.gui.client.form.GeofenceFormWidget;
-import it.geosolutions.geofence.gui.client.model.GSInstance;
-import it.geosolutions.geofence.gui.client.service.InstancesManagerRemoteServiceAsync;
+import org.geoserver.geofence.gui.client.form.GeofenceFormWidget;
+import org.geoserver.geofence.gui.client.model.GSInstance;
+import org.geoserver.geofence.gui.client.service.InstancesManagerRemoteServiceAsync;
 
 
 // TODO: Auto-generated Javadoc
@@ -106,7 +79,7 @@ public class AddInstanceWidget extends GeofenceFormWidget
     /*
      * (non-Javadoc)
      *
-     * @see it.geosolutions.geofence.gui.client.form.IForm#execute()
+     * @see org.geoserver.geofence.gui.client.form.IForm#execute()
      */
     public void execute()
     {
@@ -129,7 +102,7 @@ public class AddInstanceWidget extends GeofenceFormWidget
     /*
      * (non-Javadoc)
      *
-     * @see it.geosolutions.geofence.gui.client.form.GeofenceFormWidget#addComponentToForm ()
+     * @see org.geoserver.geofence.gui.client.form.GeofenceFormWidget#addComponentToForm ()
      */
     @Override
     public void addComponentToForm()
@@ -175,7 +148,7 @@ public class AddInstanceWidget extends GeofenceFormWidget
     /*
      * (non-Javadoc)
      *
-     * @see it.geosolutions.geofence.gui.client.form.GeofenceFormWidget#cancel()
+     * @see org.geoserver.geofence.gui.client.form.GeofenceFormWidget#cancel()
      */
     @SuppressWarnings("deprecation")
     @Override
@@ -202,7 +175,7 @@ public class AddInstanceWidget extends GeofenceFormWidget
     /*
      * (non-Javadoc)
      *
-     * @see it.geosolutions.geofence.gui.client.widget.AddGenericAOIWidget# addOtherComponents()
+     * @see org.geoserver.geofence.gui.client.widget.AddGenericAOIWidget# addOtherComponents()
      */
     /**
      * Adds the other components.
@@ -214,7 +187,7 @@ public class AddInstanceWidget extends GeofenceFormWidget
     /*
      * (non-Javadoc)
      *
-     * @see it.geosolutions.geofence.gui.client.form.GeofenceFormWidget#initSize()
+     * @see org.geoserver.geofence.gui.client.form.GeofenceFormWidget#initSize()
      */
     @Override
     public void initSize()
@@ -226,7 +199,7 @@ public class AddInstanceWidget extends GeofenceFormWidget
     /*
      * (non-Javadoc)
      *
-     * @see it.geosolutions.geofence.gui.client.form.GeofenceFormWidget#initSizeFormPanel ()
+     * @see org.geoserver.geofence.gui.client.form.GeofenceFormWidget#initSizeFormPanel ()
      */
     @Override
     public void initSizeFormPanel()
@@ -236,7 +209,7 @@ public class AddInstanceWidget extends GeofenceFormWidget
     }
 
     /* (non-Javadoc)
-     * @see it.geosolutions.geofence.gui.client.form.GeofenceFormWidget#injectEvent()
+     * @see org.geoserver.geofence.gui.client.form.GeofenceFormWidget#injectEvent()
      */
     @Override
     public void injectEvent()

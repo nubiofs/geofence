@@ -1,3 +1,12 @@
+
+<!--
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
+
+
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -17,7 +26,7 @@
     <dependencies>
 
         <dependency>
-            <groupId>it.geosolutions.geofence</groupId>
+            <groupId>org.geoserver.geofence</groupId>
             <artifactId>geofence-rest-client</artifactId>
             <version>2.2-SNAPSHOT</version>
         </dependency>
@@ -67,7 +76,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>it.geosolutions.csv2geofence.Cvs2Xml</mainClass>
+                            <mainClass>org.geoserver.csv2geofence.Cvs2Xml</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

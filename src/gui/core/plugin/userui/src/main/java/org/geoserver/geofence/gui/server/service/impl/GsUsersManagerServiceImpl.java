@@ -1,46 +1,19 @@
-/*
- * $ Header: it.geosolutions.geofence.gui.server.service.impl.GsUsersManagerServiceImpl,v. 0.1 10-feb-2011 11.10.03 created by afabiani <alessio.fabiani at geo-solutions.it> $
- * $ Revision: 0.1 $
- * $ Date: 10-feb-2011 11.10.03 $
- *
- * ====================================================================
- *
- * Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
- * http://www.geo-solutions.it
- *
- * GPLv3 + Classpath exception
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.
- *
- * ====================================================================
- *
- * This software consists of voluntary contributions made by developers
- * of GeoSolutions.  For more information on GeoSolutions, please see
- * <http://www.geo-solutions.it/>.
- *
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
  */
-package it.geosolutions.geofence.gui.server.service.impl;
 
-import it.geosolutions.geofence.gui.client.ApplicationException;
-import it.geosolutions.geofence.gui.client.model.GSUser;
-import it.geosolutions.geofence.gui.client.model.UserGroup;
-import it.geosolutions.geofence.gui.client.model.data.UserLimitsInfo;
-import it.geosolutions.geofence.gui.client.model.data.rpc.RpcPageLoadResult;
-import it.geosolutions.geofence.gui.server.service.IGsUsersManagerService;
-import it.geosolutions.geofence.gui.service.GeofenceRemoteService;
-import it.geosolutions.geofence.services.dto.ShortUser;
-import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
+package org.geoserver.geofence.gui.server.service.impl;
+
+import org.geoserver.geofence.gui.client.ApplicationException;
+import org.geoserver.geofence.gui.client.model.GSUser;
+import org.geoserver.geofence.gui.client.model.UserGroup;
+import org.geoserver.geofence.gui.client.model.data.UserLimitsInfo;
+import org.geoserver.geofence.gui.client.model.data.rpc.RpcPageLoadResult;
+import org.geoserver.geofence.gui.server.service.IGsUsersManagerService;
+import org.geoserver.geofence.gui.service.GeofenceRemoteService;
+import org.geoserver.geofence.services.dto.ShortUser;
+import org.geoserver.geofence.services.exception.NotFoundServiceEx;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -72,7 +45,7 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
      * (non-Javadoc)
      *
      * @see
-     * it.geosolutions.geofence.gui.server.service.IFeatureService#loadFeature(com.extjs.gxt.ui.
+     * org.geoserver.geofence.gui.server.service.IFeatureService#loadFeature(com.extjs.gxt.ui.
      * client.data.PagingLoadConfig, java.lang.String)
      */
     public PagingLoadResult<GSUser> getGsUsers(int offset, int limit, boolean full) throws ApplicationException
@@ -113,7 +86,7 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
 
         for (ShortUser short_usr : usersList)
         {
-            it.geosolutions.geofence.core.model.GSUser remote_user;
+            org.geoserver.geofence.core.model.GSUser remote_user;
             try
             {
                 remote_user = geofenceRemoteService.getUserAdminService().getFull(short_usr.getId());
@@ -139,8 +112,8 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
             local_user.setPassword(remote_user.getPassword());
 
             /*logger.error("TODO: profile refactoring!!!");*/
-            //it.geosolutions.geofence.core.model.UserGroup remote_profile = remote_user.getGroups().iterator().next();
-            for(it.geosolutions.geofence.core.model.UserGroup remote_profile : remote_user.getGroups())
+            //org.geoserver.geofence.core.model.UserGroup remote_profile = remote_user.getGroups().iterator().next();
+            for(org.geoserver.geofence.core.model.UserGroup remote_profile : remote_user.getGroups())
             {
             	UserGroup local_group = new UserGroup();
             	local_group.setId(remote_profile.getId());
@@ -157,11 +130,11 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
     }
 
     /* (non-Javadoc)
-     * @see it.geosolutions.geofence.gui.server.service.IGsUsersManagerService#saveUser(it.geosolutions.geofence.gui.client.model.GSUser)
+     * @see org.geoserver.geofence.gui.server.service.IGsUsersManagerService#saveUser(org.geoserver.geofence.gui.client.model.GSUser)
      */
     public void saveUser(GSUser user) throws ApplicationException
     {
-        it.geosolutions.geofence.core.model.GSUser remote_user = null;
+        org.geoserver.geofence.core.model.GSUser remote_user = null;
         if (user.getId() >= 0)
         {
             try
@@ -180,7 +153,7 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
         {
             try
             {
-                remote_user = new it.geosolutions.geofence.core.model.GSUser();
+                remote_user = new org.geoserver.geofence.core.model.GSUser();
                 copyUser(user, remote_user);
                 geofenceRemoteService.getUserAdminService().insert(remote_user);
             }
@@ -198,7 +171,7 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
      * @param remote_user
      * @throws ResourceNotFoundFault
      */
-    private void copyUser(GSUser user, it.geosolutions.geofence.core.model.GSUser remote_user) throws NotFoundServiceEx
+    private void copyUser(GSUser user, org.geoserver.geofence.core.model.GSUser remote_user) throws NotFoundServiceEx
     {
         remote_user.setName(user.getName());
         remote_user.setFullName(user.getFullName());
@@ -208,10 +181,10 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
         remote_user.setPassword(user.getPassword());
         remote_user.setDateCreation(user.getDateCreation());
         
-        Set<it.geosolutions.geofence.core.model.UserGroup> remote_groups = new HashSet<it.geosolutions.geofence.core.model.UserGroup>();
+        Set<org.geoserver.geofence.core.model.UserGroup> remote_groups = new HashSet<org.geoserver.geofence.core.model.UserGroup>();
         for(UserGroup group : user.getUserGroups())
         {
-            it.geosolutions.geofence.core.model.UserGroup remote_group = geofenceRemoteService.getUserGroupAdminService().get(group.getId());
+            org.geoserver.geofence.core.model.UserGroup remote_group = geofenceRemoteService.getUserGroupAdminService().get(group.getId());
             logger.error("TODO: profile refactoring!!!");
             remote_groups.add(remote_group);
         }
@@ -220,11 +193,11 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
     }
 
     /* (non-Javadoc)
-     * @see it.geosolutions.geofence.gui.server.service.IGsUsersManagerService#deleteUser(it.geosolutions.geofence.gui.client.model.GSUser)
+     * @see org.geoserver.geofence.gui.server.service.IGsUsersManagerService#deleteUser(org.geoserver.geofence.gui.client.model.GSUser)
      */
     public void deleteUser(GSUser user) throws ApplicationException
     {
-        it.geosolutions.geofence.core.model.GSUser remote_user = null;
+        org.geoserver.geofence.core.model.GSUser remote_user = null;
         try
         {
             remote_user = geofenceRemoteService.getUserAdminService().get(user.getId());
@@ -238,12 +211,12 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
     }
 
     /* (non-Javadoc)
-     * @see it.geosolutions.geofence.gui.server.service.IGsUsersManagerService#getUserLimitsInfo(it.geosolutions.geofence.gui.client.model.GSUser)
+     * @see org.geoserver.geofence.gui.server.service.IGsUsersManagerService#getUserLimitsInfo(org.geoserver.geofence.gui.client.model.GSUser)
      */
     public UserLimitsInfo getUserLimitsInfo(GSUser user) throws ApplicationException
     {
         Long userId = user.getId();
-        it.geosolutions.geofence.core.model.GSUser gsUser = null;
+        org.geoserver.geofence.core.model.GSUser gsUser = null;
         UserLimitsInfo userLimitInfo = null;
 
         logger.error("TODO: allowed area removed from base model!!!");
@@ -281,14 +254,14 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
     }
 
     /* (non-Javadoc)
-     * @see it.geosolutions.geofence.gui.server.service.IGsUsersManagerService#saveUserLimitsInfo(it.geosolutions.geofence.gui.client.model.GSUser)
+     * @see org.geoserver.geofence.gui.server.service.IGsUsersManagerService#saveUserLimitsInfo(org.geoserver.geofence.gui.client.model.GSUser)
      */
     public UserLimitsInfo saveUserLimitsInfo(UserLimitsInfo userLimitInfo) throws ApplicationException
     {
         logger.error("TODO: allowed area removed from base model!!!");
 
         Long userId = userLimitInfo.getUserId();
-        it.geosolutions.geofence.core.model.GSUser gsUser = null;
+        org.geoserver.geofence.core.model.GSUser gsUser = null;
 
         try
         {

@@ -1,71 +1,59 @@
-/*
- * Copyright (C) 2007 - 2012 GeoSolutions S.A.S. http://www.geo-solutions.it
- *
- * GPLv3 + Classpath exception
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+/* (c) 2014 Open Source Geospatial Foundation - all rights reserved
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
  */
-package it.geosolutions.geofence.services.rest.impl;
+
+package org.geoserver.geofence.services.rest.impl;
 
 import com.vividsolutions.jts.geom.MultiPolygon;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import it.geosolutions.geofence.core.model.GFUser;
-import it.geosolutions.geofence.core.model.GSInstance;
-import it.geosolutions.geofence.core.model.GSUser;
-import it.geosolutions.geofence.core.model.LayerDetails;
-import it.geosolutions.geofence.core.model.UserGroup;
-import it.geosolutions.geofence.core.model.Rule;
-import it.geosolutions.geofence.core.model.RuleLimits;
-import it.geosolutions.geofence.services.GFUserAdminService;
-import it.geosolutions.geofence.services.GetProviderService;
-import it.geosolutions.geofence.services.InstanceAdminService;
-import it.geosolutions.geofence.services.UserGroupAdminService;
-import it.geosolutions.geofence.services.RuleAdminService;
-import it.geosolutions.geofence.services.UserAdminService;
-import it.geosolutions.geofence.services.dto.ShortGroup;
-import it.geosolutions.geofence.services.dto.ShortInstance;
-import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
-import it.geosolutions.geofence.services.rest.RESTBatchService;
-import it.geosolutions.geofence.services.rest.RESTConfigService;
-import it.geosolutions.geofence.services.rest.exception.BadRequestRestEx;
-import it.geosolutions.geofence.services.rest.exception.InternalErrorRestEx;
-import it.geosolutions.geofence.services.rest.exception.NotFoundRestEx;
-import it.geosolutions.geofence.services.rest.model.RESTBatch;
-import it.geosolutions.geofence.services.rest.model.RESTBatchOperation;
-import it.geosolutions.geofence.services.rest.model.RESTInputGroup;
-import it.geosolutions.geofence.services.rest.model.RESTInputInstance;
-import it.geosolutions.geofence.services.rest.model.RESTInputRule;
-import it.geosolutions.geofence.services.rest.model.RESTInputRule.RESTRulePosition;
-import it.geosolutions.geofence.services.rest.model.RESTInputUser;
-import it.geosolutions.geofence.services.rest.model.RESTLayerConstraints;
-import it.geosolutions.geofence.services.rest.model.RESTOutputRule;
-import it.geosolutions.geofence.services.rest.model.RESTOutputRuleList;
-import it.geosolutions.geofence.services.rest.model.RESTShortInstanceList;
-import it.geosolutions.geofence.services.rest.model.RESTShortUser;
-import it.geosolutions.geofence.services.rest.model.RESTShortUserList;
-import it.geosolutions.geofence.services.rest.model.config.RESTConfigurationRemapping;
-import it.geosolutions.geofence.services.rest.model.config.RESTFullConfiguration;
-import it.geosolutions.geofence.services.rest.model.config.RESTFullGRUserList;
-import it.geosolutions.geofence.services.rest.model.config.RESTFullGSInstanceList;
-import it.geosolutions.geofence.services.rest.model.config.RESTFullUserGroupList;
-import it.geosolutions.geofence.services.rest.model.config.RESTFullRuleList;
-import it.geosolutions.geofence.services.rest.model.config.RESTFullUserList;
-import it.geosolutions.geofence.services.rest.model.util.IdName;
-import it.geosolutions.geofence.services.rest.model.util.RESTBatchOperationFactory;
-import it.geosolutions.geofence.services.rest.utils.InstanceCleaner;
+import org.geoserver.geofence.core.model.GFUser;
+import org.geoserver.geofence.core.model.GSInstance;
+import org.geoserver.geofence.core.model.GSUser;
+import org.geoserver.geofence.core.model.LayerDetails;
+import org.geoserver.geofence.core.model.UserGroup;
+import org.geoserver.geofence.core.model.Rule;
+import org.geoserver.geofence.core.model.RuleLimits;
+import org.geoserver.geofence.services.GFUserAdminService;
+import org.geoserver.geofence.services.GetProviderService;
+import org.geoserver.geofence.services.InstanceAdminService;
+import org.geoserver.geofence.services.UserGroupAdminService;
+import org.geoserver.geofence.services.RuleAdminService;
+import org.geoserver.geofence.services.UserAdminService;
+import org.geoserver.geofence.services.dto.ShortGroup;
+import org.geoserver.geofence.services.dto.ShortInstance;
+import org.geoserver.geofence.services.exception.NotFoundServiceEx;
+import org.geoserver.geofence.services.rest.RESTBatchService;
+import org.geoserver.geofence.services.rest.RESTConfigService;
+import org.geoserver.geofence.services.rest.exception.BadRequestRestEx;
+import org.geoserver.geofence.services.rest.exception.InternalErrorRestEx;
+import org.geoserver.geofence.services.rest.exception.NotFoundRestEx;
+import org.geoserver.geofence.services.rest.model.RESTBatch;
+import org.geoserver.geofence.services.rest.model.RESTBatchOperation;
+import org.geoserver.geofence.services.rest.model.RESTInputGroup;
+import org.geoserver.geofence.services.rest.model.RESTInputInstance;
+import org.geoserver.geofence.services.rest.model.RESTInputRule;
+import org.geoserver.geofence.services.rest.model.RESTInputRule.RESTRulePosition;
+import org.geoserver.geofence.services.rest.model.RESTInputUser;
+import org.geoserver.geofence.services.rest.model.RESTLayerConstraints;
+import org.geoserver.geofence.services.rest.model.RESTOutputRule;
+import org.geoserver.geofence.services.rest.model.RESTOutputRuleList;
+import org.geoserver.geofence.services.rest.model.RESTShortInstanceList;
+import org.geoserver.geofence.services.rest.model.RESTShortUser;
+import org.geoserver.geofence.services.rest.model.RESTShortUserList;
+import org.geoserver.geofence.services.rest.model.config.RESTConfigurationRemapping;
+import org.geoserver.geofence.services.rest.model.config.RESTFullConfiguration;
+import org.geoserver.geofence.services.rest.model.config.RESTFullGRUserList;
+import org.geoserver.geofence.services.rest.model.config.RESTFullGSInstanceList;
+import org.geoserver.geofence.services.rest.model.config.RESTFullUserGroupList;
+import org.geoserver.geofence.services.rest.model.config.RESTFullRuleList;
+import org.geoserver.geofence.services.rest.model.config.RESTFullUserList;
+import org.geoserver.geofence.services.rest.model.util.IdName;
+import org.geoserver.geofence.services.rest.model.util.RESTBatchOperationFactory;
+import org.geoserver.geofence.services.rest.utils.InstanceCleaner;
 import java.util.ArrayList;
 
 import org.apache.logging.log4j.LogManager;
