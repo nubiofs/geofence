@@ -8,7 +8,7 @@
 
     <groupId>it.geosolutions</groupId>
     <artifactId>geofence</artifactId>
-    <version>2.2-SNAPSHOT</version>
+    <version>2.2-ENTERPRISE-SNAPSHOT-DESTINATION-20140328</version>
     <packaging>pom</packaging>
 
     <name>Master GeoFence POM</name>
@@ -102,5 +102,5 @@
             </extension>
         </extensions>
     </build>
-
+	
 </project>
