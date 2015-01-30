@@ -32,9 +32,6 @@
  */
 package it.geosolutions.geofence.gui.server.gwt;
 
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-
 import it.geosolutions.geofence.gui.client.ApplicationException;
 import it.geosolutions.geofence.gui.client.model.GSUser;
 import it.geosolutions.geofence.gui.client.model.data.UserLimitsInfo;
@@ -44,6 +41,9 @@ import it.geosolutions.geofence.gui.spring.ApplicationContextUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 
 /**
@@ -108,5 +108,13 @@ public class GsUsersManagerServiceImpl extends RemoteServiceServlet implements G
     public UserLimitsInfo saveUserLimitsInfo(UserLimitsInfo userLimitInfo) throws ApplicationException
     {
         return gsUserManagerService.saveUserLimitsInfo(userLimitInfo);
+    }
+
+    /* (non-Javadoc)
+     * @see it.geosolutions.geofence.gui.client.service.GsUsersManagerRemoteService#activateUserGroupTabs()
+     */
+    public boolean activateUserGroupTabs() throws ApplicationException 
+    {
+        return gsUserManagerService.activateUserGroupTabs();
     }
 }

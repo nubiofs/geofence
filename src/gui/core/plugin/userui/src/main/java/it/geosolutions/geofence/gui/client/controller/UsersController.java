@@ -32,15 +32,7 @@
  */
 package it.geosolutions.geofence.gui.client.controller;
 
-import com.extjs.gxt.ui.client.mvc.AppEvent;
-import com.extjs.gxt.ui.client.mvc.Controller;
-import com.extjs.gxt.ui.client.mvc.Dispatcher;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import it.geosolutions.geofence.gui.client.GeofenceEvents;
-import it.geosolutions.geofence.gui.client.i18n.I18nProvider;
 import it.geosolutions.geofence.gui.client.model.GSUser;
 import it.geosolutions.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
 import it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
@@ -48,6 +40,13 @@ import it.geosolutions.geofence.gui.client.view.UsersView;
 import it.geosolutions.geofence.gui.client.widget.UserGridWidget;
 import it.geosolutions.geofence.gui.client.widget.tab.GsUsersTabItem;
 import it.geosolutions.geofence.gui.client.widget.tab.TabWidget;
+
+import com.extjs.gxt.ui.client.mvc.AppEvent;
+import com.extjs.gxt.ui.client.mvc.Controller;
+import com.extjs.gxt.ui.client.mvc.Dispatcher;
+import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 
 // TODO: Auto-generated Javadoc
