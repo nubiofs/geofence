@@ -32,15 +32,15 @@
  */
 package it.geosolutions.geofence.gui.client.widget.tab;
 
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.widget.TabItem;
-
 import it.geosolutions.geofence.gui.client.Constants;
 import it.geosolutions.geofence.gui.client.Resources;
 import it.geosolutions.geofence.gui.client.i18n.I18nProvider;
 import it.geosolutions.geofence.gui.client.service.GsUsersManagerRemoteServiceAsync;
 import it.geosolutions.geofence.gui.client.service.ProfilesManagerRemoteServiceAsync;
 import it.geosolutions.geofence.gui.client.widget.UserManagementWidget;
+
+import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.widget.TabItem;
 
 
 // TODO: Auto-generated Javadoc
@@ -52,7 +52,7 @@ public class GsUsersTabItem extends TabItem
 
     /** The profile management widget. */
     private UserManagementWidget userManagementWidget;
-
+    
     /**
      * Instantiates a new gs users tab item.
      */
@@ -84,6 +84,9 @@ public class GsUsersTabItem extends TabItem
         add(getUserManagementWidget());
 
         getUserManagementWidget().getUsersInfo().getLoader().load(0, it.geosolutions.geofence.gui.client.Constants.DEFAULT_PAGESIZE);
+        
+        //Deactivate the "User Management" tab as configured in the activateTabs.property (Use Case geostoreIntegration)  
+        TabUtils.deactivateTabIfNeeded(gsManagerServiceRemote, this);
     }
 
     /**
@@ -106,5 +109,4 @@ public class GsUsersTabItem extends TabItem
     {
         return userManagementWidget;
     }
-
 }

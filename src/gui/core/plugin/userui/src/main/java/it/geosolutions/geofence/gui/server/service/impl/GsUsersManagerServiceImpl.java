@@ -42,9 +42,12 @@ import it.geosolutions.geofence.gui.service.GeofenceRemoteService;
 import it.geosolutions.geofence.services.dto.ShortUser;
 import it.geosolutions.geofence.services.exception.NotFoundServiceEx;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -322,5 +325,33 @@ public class GsUsersManagerServiceImpl implements IGsUsersManagerService
 //        }
 
         return userLimitInfo;
+    }
+
+    /* (non-Javadoc)
+     * @see it.geosolutions.geofence.gui.server.service.IGsUsersManagerService#activateUserGroupTabs()
+     */
+    public boolean activateUserGroupTabs() throws ApplicationException {
+        Properties property = new Properties();
+        InputStream in = getClass().getResourceAsStream("activateTabs.properties");
+        try {
+            property.load(in);
+            String outcome = property.getProperty("activateUserGroupTab");
+            if(outcome.equalsIgnoreCase("true")){
+                return true;
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            logger.error(e.getMessage(), e);
+            throw new ApplicationException(e.getMessage(), e);
+        }
+        finally{
+            try {
+                in.close();
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+                throw new ApplicationException(e.getMessage(), e);
+            }
+        }
+        return false;
     }
 }

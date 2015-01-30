@@ -123,6 +123,13 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+        
+        <dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-log4j12</artifactId>
+		    <version>1.7.7</version>
+		    <scope>test</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>junit</groupId>
@@ -255,4 +262,34 @@
 		</resources>
 
 	</build>
+	
+	<profiles>
+		<profile>
+	       	<id>geostoreIntegration</id>
+	       	<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.7</version>
+						<executions>
+							<execution>
+								<phase>compile</phase>
+								<configuration>
+									<tasks>
+										<echo message="Replacing tokens, the output directory is: ${project.build.outputDirectory}" />
+										<replace file="${project.build.outputDirectory}/it/geosolutions/geofence/gui/server/service/impl/activateTabs.properties" token="true" value="false" />
+									</tasks>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+	
+	
 </project>
