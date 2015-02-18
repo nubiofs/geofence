@@ -1,3 +1,5 @@
+**The current repository is not open for development, it is kept around for historical purposes. Please use the repository under the GeoServer account** 
+
 GeoFence
 ==================================================
 
