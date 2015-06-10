@@ -1,4 +1,7 @@
-**The current repository is not open for development, it is kept around for historical purposes. Please use the repository under the GeoServer account** 
+**The current repository is not open for development, it is kept around for historical purposes only.**
+====================================================================================================
+
+**Please use the repository https://github.com/geoserver/geofence instead.** 
 ====================================================================================================
 
 GeoFence
