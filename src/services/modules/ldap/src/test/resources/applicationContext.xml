@@ -47,6 +47,8 @@
     	</property>
     </bean>
     
+    <bean id="idConverter" class="it.geosolutions.geofence.dao.utils.IdExtractor" />
+    
     <bean id="geofenceLdapUserGroupAttributesMapper" class="it.geosolutions.geofence.ldap.dao.impl.UserGroupAttributesMapper">
     	<property name="ldapAttributeMappings">
     		<map>

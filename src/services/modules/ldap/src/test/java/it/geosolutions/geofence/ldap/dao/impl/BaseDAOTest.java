@@ -20,10 +20,6 @@
 
 package it.geosolutions.geofence.ldap.dao.impl;
 
-import static org.junit.Assert.assertNotNull;
-import it.geosolutions.geofence.core.dao.GSUserDAO;
-import it.geosolutions.geofence.core.dao.UserGroupDAO;
-
 import javax.naming.directory.DirContext;
 
 import org.apache.logging.log4j.LogManager;
@@ -39,17 +35,22 @@ import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.ldap.test.LdapTestUtils;
 
+import it.geosolutions.geofence.core.dao.GSUserDAO;
+import it.geosolutions.geofence.core.dao.UserGroupDAO;
+import junit.framework.Assert;
+
 
 
 /**
  *
  * @author ETj (etj at geo-solutions.it)
  */
-public abstract class BaseDAOTest {
+public abstract class BaseDAOTest extends Assert{
     protected final Logger LOGGER;
 
     protected static GSUserDAO userDAO;
     protected static UserGroupDAO userGroupDAO;
+    protected static GSUserAttributesMapper gsUserAttributesMapper;
     
     protected static ClassPathXmlApplicationContext ctx = null;
 
@@ -66,8 +67,10 @@ public abstract class BaseDAOTest {
                 };
                 ctx = new ClassPathXmlApplicationContext(paths);
 
-                userDAO = (GSUserDAO)ctx.getBean("gsLdapUserDAO");               
+                userDAO = (GSUserDAO)ctx.getBean("gsLdapUserDAO");
                 userGroupDAO = (UserGroupDAO)ctx.getBean("ldapUserGroupDAO");
+                gsUserAttributesMapper = (GSUserAttributesMapper)ctx.getBean("geofenceLdapUserAttributesMapper");
+                
             }
             
         }
@@ -122,6 +125,22 @@ public abstract class BaseDAOTest {
     @Test
     public void testCheckDAOs() {
     	assertNotNull(userDAO);      	
+    }
+    
+    public void setExtractorIdCoverter(){
+        synchronized(BaseDAOTest.class) {
+            String[] paths = {"applicationContext.xml"};
+            ctx = new ClassPathXmlApplicationContext(paths);
+            gsUserAttributesMapper = (GSUserAttributesMapper)ctx.getBean("geofenceLdapUserAttributesMapper");
+        }
+    }
+    
+    public void setHasherIdCoverter(){
+        synchronized(BaseDAOTest.class) {
+                String[] paths = {"applicationContextHashTest.xml"};
+                ctx = new ClassPathXmlApplicationContext(paths);
+                gsUserAttributesMapper = (GSUserAttributesMapper)ctx.getBean("geofenceLdapUserAttributesMapper");
+        }
     }
 
 }
